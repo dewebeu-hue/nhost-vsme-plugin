@@ -1,0 +1,42 @@
+{
+  "name": "nhost-vsme",
+  "version": "0.1.0",
+  "description": "Project guidance for using Nhost instead of Supabase in the VSME Supplier Passport app.",
+  "author": {
+    "name": "VSME Supplier Passport",
+    "email": "",
+    "url": ""
+  },
+  "homepage": "https://docs.nhost.io/",
+  "repository": "",
+  "license": "UNLICENSED",
+  "keywords": [
+    "nhost",
+    "nextjs",
+    "hasura",
+    "graphql",
+    "auth"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Nhost for VSME",
+    "shortDescription": "Guides this project toward Nhost auth, GraphQL, storage, and server integrations.",
+    "longDescription": "A repo-local Codex plugin for migrating or implementing VSME Supplier Passport data, authentication, document storage, and share-link workflows with Nhost instead of Supabase.",
+    "developerName": "VSME Supplier Passport",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Interactive",
+      "Write",
+      "Analyze"
+    ],
+    "websiteURL": "https://docs.nhost.io/",
+    "privacyPolicyURL": "",
+    "termsOfServiceURL": "",
+    "defaultPrompt": [
+      "Use Nhost for auth, GraphQL, and storage in this VSME Supplier Passport project.",
+      "Audit this app for Supabase assumptions and replace them with Nhost patterns.",
+      "Add a Next.js data layer for VSME Supplier Passport backed by Nhost GraphQL."
+    ],
+    "brandColor": "#1F8A70"
+  }
+}
