@@ -2,6 +2,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Logo } from "@/components/brand/logo";
 import { AdminNavItem } from "@/components/admin/admin-nav-item";
+import { defaultAdminLabels, type AdminLabels } from "@/lib/operational-labels";
 
 const adminNavigation = [
   { href: "/admin/organizations", label: "Organizations", icon: "building" },
@@ -13,7 +14,13 @@ const adminNavigation = [
   { href: "/admin/settings", label: "Settings", icon: "settings" },
 ] as const;
 
-export function AdminSidebar() {
+export function AdminSidebar({
+  labels = defaultAdminLabels,
+  localePrefix = "",
+}: {
+  labels?: AdminLabels;
+  localePrefix?: string;
+}) {
   return (
     <aside className="hidden min-h-screen w-72 shrink-0 border-r border-slate-200 bg-white lg:flex lg:flex-col">
       <div className="flex h-20 items-center border-b border-slate-200 px-6">
@@ -26,11 +33,16 @@ export function AdminSidebar() {
             variant="outline"
             className="mb-3 rounded-full border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold tracking-[0.16em] text-slate-500"
           >
-            ADMIN
+            {labels.admin}
           </Badge>
           <nav className="flex flex-col gap-1.5">
             {adminNavigation.map((item) => (
-              <AdminNavItem key={item.href} {...item} />
+              <AdminNavItem
+                key={item.href}
+                {...item}
+                href={`${localePrefix}${item.href}`}
+                label={labels.navigation[item.label] ?? item.label}
+              />
             ))}
           </nav>
         </div>
@@ -42,7 +54,7 @@ export function AdminSidebar() {
             </Avatar>
             <div>
               <p className="text-sm font-semibold text-slate-950">Anna Müller</p>
-              <p className="mt-1 text-xs font-medium text-slate-500">Concierge Admin</p>
+              <p className="mt-1 text-xs font-medium text-slate-500">{labels.conciergeAdmin}</p>
             </div>
           </div>
         </section>

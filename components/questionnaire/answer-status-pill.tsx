@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 
 type AnswerStatusPillProps = {
   status: QuestionnaireAnswerStatus;
+  label?: string;
 };
 
 const statusStyles: Record<QuestionnaireAnswerStatus, string> = {
@@ -13,7 +14,7 @@ const statusStyles: Record<QuestionnaireAnswerStatus, string> = {
   "Not started": "border-slate-200 bg-slate-50 text-slate-600",
 };
 
-export function AnswerStatusPill({ status }: AnswerStatusPillProps) {
+export function AnswerStatusPill({ status, label }: AnswerStatusPillProps) {
   return (
     <span
       className={cn(
@@ -21,7 +22,7 @@ export function AnswerStatusPill({ status }: AnswerStatusPillProps) {
         statusStyles[status],
       )}
     >
-      {status}
+      {label ?? status}
     </span>
   );
 }

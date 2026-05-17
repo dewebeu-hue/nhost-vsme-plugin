@@ -1,4 +1,5 @@
 import { Filter, Plus, Search, Star } from "lucide-react";
+import { redirect } from "next/navigation";
 import { AdminStatsWidget } from "@/components/admin/admin-stats-widget";
 import { OrganizationDetailPanel } from "@/components/admin/organization-detail-panel";
 import { OrganizationsTable } from "@/components/admin/organizations-table";
@@ -6,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
+
   Select,
   SelectContent,
   SelectGroup,
@@ -20,22 +22,29 @@ import {
   adminStatsWidgets,
   selectedAdminOrganization,
 } from "@/lib/mock-data";
+import { defaultAdminLabels, type AdminLabels } from "@/lib/operational-labels";
 
-export default function AdminOrganizationsPage() {
+export const dynamic = "force-dynamic";
+
+export function AdminOrganizationsPageContent({
+  labels = defaultAdminLabels,
+}: {
+  labels?: AdminLabels;
+}) {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col justify-between gap-4 xl:flex-row xl:items-end">
         <div>
           <h1 className="text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">
-            Organizations
+            {labels.title}
           </h1>
           <p className="mt-2 max-w-3xl text-base leading-7 text-slate-600">
-            Manage and support your client organizations.
+            {labels.subtitle}
           </p>
         </div>
         <Button className="h-11 w-fit rounded-xl bg-blue-600 px-5 hover:bg-blue-700">
           <Plus data-icon="inline-start" />
-          Add Organization
+          {labels.addOrganization}
         </Button>
       </div>
 
@@ -46,28 +55,28 @@ export default function AdminOrganizationsPage() {
             className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
           />
           <Input
-            placeholder="Search organizations, owners, or domains..."
+            placeholder={labels.searchPlaceholder}
             className="h-11 rounded-xl bg-slate-50 pl-10"
           />
         </div>
         <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-[1fr_160px_160px_160px_auto_auto]">
-          <Input placeholder="Search organizations..." className="h-11 rounded-xl bg-white" />
-          <FilterSelect placeholder="All status" values={["All status", "Verified", "Issues"]} />
+          <Input placeholder={labels.searchOrganizations} className="h-11 rounded-xl bg-white" />
+          <FilterSelect placeholder={labels.allStatus} values={[labels.allStatus, labels.verified, labels.issues]} />
           <FilterSelect
-            placeholder="All owners"
-            values={["All owners", "Anna Müller", "Sarah Johnson", "Michael Chen", "James Wilson"]}
+            placeholder={labels.allOwners}
+            values={[labels.allOwners, "Anna Müller", "Sarah Johnson", "Michael Chen", "James Wilson"]}
           />
           <FilterSelect
-            placeholder="All industries"
-            values={["All industries", "Manufacturing", "Technology", "Packaging", "Textiles"]}
+            placeholder={labels.allIndustries}
+            values={[labels.allIndustries, "Manufacturing", "Technology", "Packaging", "Textiles"]}
           />
           <Button variant="outline" className="h-11 rounded-xl bg-white">
             <Filter data-icon="inline-start" />
-            More filters
+            {labels.moreFilters}
           </Button>
           <Button variant="outline" className="h-11 rounded-xl bg-white">
             <Star data-icon="inline-start" />
-            Saved views
+            {labels.savedViews}
           </Button>
         </div>
       </section>
@@ -77,22 +86,24 @@ export default function AdminOrganizationsPage() {
           <OrganizationsTable
             organizations={adminOrganizationRows}
             selectedOrganizationId={selectedAdminOrganization.id}
+            labels={labels}
           />
         </div>
 
         <OrganizationDetailPanel
           organization={selectedAdminOrganization}
           checklist={adminChecklist}
+          labels={labels}
         />
 
         <aside className="flex flex-col gap-6">
           {adminStatsWidgets.map((widget) => (
-            <AdminStatsWidget key={widget.title} widget={widget} />
+            <AdminStatsWidget key={widget.title} widget={widget} labels={labels} />
           ))}
 
           <section className="supplier-surface rounded-2xl border-0 p-5">
             <h2 className="text-base font-semibold tracking-tight text-slate-950">
-              Recent activity
+              {labels.recentActivity}
             </h2>
             <div className="mt-4 flex flex-col gap-3">
               {adminRecentActivityFeed.map((item) => (
@@ -106,13 +117,17 @@ export default function AdminOrganizationsPage() {
               variant="outline"
               className="mt-4 rounded-full border-blue-200 bg-blue-50 text-blue-700"
             >
-              Live queue preview
+              {labels.liveQueuePreview}
             </Badge>
           </section>
         </aside>
       </div>
     </div>
   );
+}
+
+export default function AdminOrganizationsPage() {
+  redirect("/en/admin/organizations");
 }
 
 function FilterSelect({ placeholder, values }: { placeholder: string; values: string[] }) {

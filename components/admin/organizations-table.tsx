@@ -12,27 +12,30 @@ import {
 } from "@/components/ui/table";
 import type { AdminOrganizationRow } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
+import { defaultAdminLabels, interpolate, type AdminLabels } from "@/lib/operational-labels";
 
 type OrganizationsTableProps = {
   organizations: AdminOrganizationRow[];
   selectedOrganizationId: string;
+  labels?: AdminLabels;
 };
 
 export function OrganizationsTable({
   organizations,
   selectedOrganizationId,
+  labels = defaultAdminLabels,
 }: OrganizationsTableProps) {
   return (
     <section className="supplier-surface overflow-hidden rounded-2xl border-0">
       <Table>
         <TableHeader>
           <TableRow className="bg-slate-50/80">
-            <TableHead className="pl-5">Company</TableHead>
-            <TableHead>Completion</TableHead>
-            <TableHead>Evidence Status</TableHead>
-            <TableHead>Owner</TableHead>
-            <TableHead>Last Updated</TableHead>
-            <TableHead className="pr-5 text-right">Actions</TableHead>
+            <TableHead className="pl-5">{labels.company}</TableHead>
+            <TableHead>{labels.completion}</TableHead>
+            <TableHead>{labels.evidenceStatus}</TableHead>
+            <TableHead>{labels.owner}</TableHead>
+            <TableHead>{labels.lastUpdated}</TableHead>
+            <TableHead className="pr-5 text-right">{labels.actions}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -55,7 +58,7 @@ export function OrganizationsTable({
                           variant="outline"
                           className="rounded-full border-teal-200 bg-teal-50 text-teal-700"
                         >
-                          Verified
+                          {labels.verified}
                         </Badge>
                       ) : null}
                     </div>
@@ -83,10 +86,10 @@ export function OrganizationsTable({
                           : "border-teal-200 bg-teal-50 text-teal-700",
                       )}
                     >
-                      {organization.evidenceStatus}
+                      {labels.statuses[organization.evidenceStatus] ?? organization.evidenceStatus}
                     </Badge>
                     <span className="text-xs font-medium text-slate-500">
-                      {organization.documentCount} docs
+                      {organization.documentCount} {labels.docs}
                     </span>
                   </div>
                 </TableCell>
@@ -96,7 +99,7 @@ export function OrganizationsTable({
                   <Button
                     variant="ghost"
                     size="icon"
-                    aria-label={`Actions for ${organization.company}`}
+                    aria-label={interpolate(labels.actionsForCompany, { company: organization.company })}
                   >
                     <MoreHorizontal />
                   </Button>

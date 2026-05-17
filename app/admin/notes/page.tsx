@@ -1,10 +1,8 @@
-import { AdminPlaceholder } from "@/components/admin/admin-placeholder";
+import { redirect } from "next/navigation";
+
+export const dynamic = "force-dynamic";
+
 
 export default function AdminNotesPage() {
-  return (
-    <AdminPlaceholder
-      title="Notes"
-      subtitle="Coordinate internal concierge notes and client follow-up reminders."
-    />
-  );
+  redirect("/en/admin/notes");
 }

@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 
 type DocumentStatusBadgeProps = {
   status: EvidenceRoomStatus;
+  label?: string;
 };
 
 const statusStyles: Record<EvidenceRoomStatus, string> = {
@@ -13,7 +14,7 @@ const statusStyles: Record<EvidenceRoomStatus, string> = {
   "Expiring soon": "border-red-200 bg-red-50 text-red-700",
 };
 
-export function DocumentStatusBadge({ status }: DocumentStatusBadgeProps) {
+export function DocumentStatusBadge({ status, label }: DocumentStatusBadgeProps) {
   return (
     <span
       className={cn(
@@ -21,7 +22,7 @@ export function DocumentStatusBadge({ status }: DocumentStatusBadgeProps) {
         statusStyles[status],
       )}
     >
-      {status}
+      {label ?? status}
     </span>
   );
 }

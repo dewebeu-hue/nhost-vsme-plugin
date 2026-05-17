@@ -1,16 +1,21 @@
 import { LockKeyhole, ShieldCheck } from "lucide-react";
 import { SectionCard } from "@/components/shared/section-card";
 import type { PassportShareSetting } from "@/lib/mock-data";
+import { defaultPassportLabels, type PassportLabels } from "@/lib/passport-labels";
 
 type ShareSettingsPreviewProps = {
   settings: PassportShareSetting[];
+  labels?: PassportLabels;
 };
 
-export function ShareSettingsPreview({ settings }: ShareSettingsPreviewProps) {
+export function ShareSettingsPreview({
+  settings,
+  labels = defaultPassportLabels,
+}: ShareSettingsPreviewProps) {
   return (
     <SectionCard
-      title="Share settings preview"
-      description="Default controls for a new buyer link."
+      title={labels.shareSettingsPreview}
+      description={labels.shareSettingsPreviewDescription}
       action={
         <div className="flex size-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
           <LockKeyhole aria-hidden="true" />
@@ -23,15 +28,19 @@ export function ShareSettingsPreview({ settings }: ShareSettingsPreviewProps) {
             key={setting.label}
             className="flex items-center justify-between gap-4 rounded-xl bg-slate-50 px-4 py-3"
           >
-            <span className="text-sm font-medium text-slate-500">{setting.label}</span>
-            <span className="text-sm font-semibold text-slate-950">{setting.value}</span>
+            <span className="text-sm font-medium text-slate-500">
+              {labels.settings[setting.label] ?? setting.label}
+            </span>
+            <span className="text-sm font-semibold text-slate-950">
+              {labels.settingValues[setting.value] ?? setting.value}
+            </span>
           </div>
         ))}
       </div>
       <div className="mt-4 flex items-start gap-3 rounded-xl border border-teal-100 bg-teal-50/70 p-3">
         <ShieldCheck aria-hidden="true" className="mt-0.5 text-teal-700" />
         <p className="text-sm leading-6 text-slate-600">
-          Buyers can view the approved passport without changing answers or documents.
+          {labels.buyerReadOnlyNotice}
         </p>
       </div>
     </SectionCard>

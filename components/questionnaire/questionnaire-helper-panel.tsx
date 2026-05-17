@@ -3,8 +3,15 @@ import { Button } from "@/components/ui/button";
 import { EvidenceRecommendationCard } from "@/components/questionnaire/evidence-recommendation-card";
 
 type QuestionnaireHelperPanelProps = {
+  tipsTitle: string;
   guidance: string;
   learnMoreLabel: string;
+  evidenceRecommendationsTitle: string;
+  uploadEvidenceLabel: string;
+  relatedDocumentsTitle: string;
+  needHelpTitle: string;
+  needHelpText: string;
+  contactSupportLabel: string;
   evidenceRecommendations: readonly string[];
   relatedDocuments: readonly {
     name: string;
@@ -13,8 +20,15 @@ type QuestionnaireHelperPanelProps = {
 };
 
 export function QuestionnaireHelperPanel({
+  tipsTitle,
   guidance,
   learnMoreLabel,
+  evidenceRecommendationsTitle,
+  uploadEvidenceLabel,
+  relatedDocumentsTitle,
+  needHelpTitle,
+  needHelpText,
+  contactSupportLabel,
   evidenceRecommendations,
   relatedDocuments,
 }: QuestionnaireHelperPanelProps) {
@@ -22,7 +36,7 @@ export function QuestionnaireHelperPanel({
     <aside className="flex flex-col gap-5 lg:sticky lg:top-28">
       <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
         <h3 className="text-base font-semibold tracking-tight text-slate-950">
-          Tips & Guidance
+          {tipsTitle}
         </h3>
         <p className="mt-3 text-sm leading-6 text-slate-600">{guidance}</p>
         <a
@@ -34,11 +48,15 @@ export function QuestionnaireHelperPanel({
         </a>
       </section>
 
-      <EvidenceRecommendationCard recommendations={evidenceRecommendations} />
+      <EvidenceRecommendationCard
+        recommendations={evidenceRecommendations}
+        title={evidenceRecommendationsTitle}
+        uploadLabel={uploadEvidenceLabel}
+      />
 
       <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
         <h3 className="text-base font-semibold tracking-tight text-slate-950">
-          Related documents
+          {relatedDocumentsTitle}
         </h3>
         <div className="mt-4 flex flex-col gap-3">
           {relatedDocuments.map((document) => (
@@ -65,10 +83,11 @@ export function QuestionnaireHelperPanel({
           <LifeBuoy aria-hidden="true" className="size-5" />
         </div>
         <h3 className="text-base font-semibold tracking-tight text-slate-950">
-          Need help?
+          {needHelpTitle}
         </h3>
+        <p className="mt-2 text-sm leading-6 text-slate-600">{needHelpText}</p>
         <Button variant="outline" className="mt-4 w-full bg-white">
-          Contact Support
+          {contactSupportLabel}
         </Button>
       </section>
     </aside>

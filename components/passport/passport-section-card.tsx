@@ -3,12 +3,17 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import type { PassportSection } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
+import { defaultPassportLabels, type PassportLabels } from "@/lib/passport-labels";
 
 type PassportSectionCardProps = {
   section: PassportSection;
+  labels?: PassportLabels;
 };
 
-export function PassportSectionCard({ section }: PassportSectionCardProps) {
+export function PassportSectionCard({
+  section,
+  labels = defaultPassportLabels,
+}: PassportSectionCardProps) {
   const shared = section.visibility === "Shared";
   const VisibilityIcon = shared ? Eye : EyeOff;
 
@@ -17,9 +22,11 @@ export function PassportSectionCard({ section }: PassportSectionCardProps) {
       <div className="flex items-start justify-between gap-4">
         <div>
           <h3 className="text-base font-semibold tracking-tight text-slate-950">
-            {section.title}
+            {labels.modules[section.title] ?? section.title}
           </h3>
-          <p className="mt-1 text-sm text-slate-500">{section.completion}% completion</p>
+          <p className="mt-1 text-sm text-slate-500">
+            {section.completion}% {labels.completion}
+          </p>
         </div>
         <Badge
           variant="outline"
@@ -31,7 +38,7 @@ export function PassportSectionCard({ section }: PassportSectionCardProps) {
           )}
         >
           <VisibilityIcon aria-hidden="true" />
-          {section.visibility}
+          {shared ? labels.shared : labels.hidden}
         </Badge>
       </div>
 
@@ -43,7 +50,7 @@ export function PassportSectionCard({ section }: PassportSectionCardProps) {
             {section.approvedAnswers}
           </p>
           <p className="mt-1 text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
-            approved answers
+            {labels.approvedAnswers}
           </p>
         </div>
         <div className="rounded-xl bg-blue-50 p-3">
@@ -51,7 +58,7 @@ export function PassportSectionCard({ section }: PassportSectionCardProps) {
             {section.linkedDocuments}
           </p>
           <p className="mt-1 text-xs font-semibold uppercase tracking-[0.12em] text-blue-600">
-            linked documents
+            {labels.linkedDocuments}
           </p>
         </div>
       </div>

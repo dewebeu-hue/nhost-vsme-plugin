@@ -2,12 +2,18 @@ import { CheckCircle2 } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import type { QuestionnaireSectionProgress } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
+import {
+  defaultQuestionnaireLabels,
+  formatLabel,
+  type QuestionnaireLabels,
+} from "@/lib/workspace-labels";
 
 type QuestionnaireSectionListProps = {
   completion: number;
   completedQuestions: number;
   totalQuestions: number;
   sections: QuestionnaireSectionProgress[];
+  labels?: QuestionnaireLabels;
 };
 
 export function QuestionnaireSectionList({
@@ -15,19 +21,25 @@ export function QuestionnaireSectionList({
   completedQuestions,
   totalQuestions,
   sections,
+  labels = defaultQuestionnaireLabels,
 }: QuestionnaireSectionListProps) {
   return (
     <aside className="supplier-surface rounded-2xl border-0 p-5 lg:sticky lg:top-28">
       <div className="rounded-2xl border border-blue-100 bg-blue-50/70 p-4">
-        <p className="text-sm font-medium text-blue-700">Overall completion</p>
+        <p className="text-sm font-medium text-blue-700">{labels.overallCompletion}</p>
         <div className="mt-3 flex items-end justify-between gap-3">
           <p className="text-4xl font-semibold tracking-tight text-slate-950">{completion}%</p>
           <p className="pb-1 text-sm font-medium text-slate-600">
-            {completedQuestions} of {totalQuestions}
+            {completedQuestions} / {totalQuestions}
           </p>
         </div>
         <Progress value={completion} className="mt-4 h-2" />
-        <p className="mt-2 text-xs font-medium text-slate-500">questions completed</p>
+        <p className="mt-2 text-xs font-medium text-slate-500">
+          {formatLabel(labels.questionsCompleted, {
+            completed: completedQuestions,
+            total: totalQuestions,
+          })}
+        </p>
       </div>
 
       <nav className="mt-5 flex flex-col gap-1.5" aria-label="Questionnaire sections">
@@ -51,7 +63,9 @@ export function QuestionnaireSectionList({
                 ) : (
                   <span className="size-2 shrink-0 rounded-full bg-slate-300" />
                 )}
-                <span className="truncate text-sm font-semibold">{section.name}</span>
+                <span className="truncate text-sm font-semibold">
+                  {labels.sections[section.name] ?? section.name}
+                </span>
               </span>
               <span className="shrink-0 text-xs font-semibold">
                 {section.completed}/{section.total}

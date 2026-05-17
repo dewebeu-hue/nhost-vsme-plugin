@@ -1,9 +1,11 @@
 import { CheckCircle2, Circle, Clock3 } from "lucide-react";
 import type { AdminChecklistItem, AdminChecklistStatus } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
+import { defaultAdminLabels, type AdminLabels } from "@/lib/operational-labels";
 
 type AdminChecklistProps = {
   items: AdminChecklistItem[];
+  labels?: AdminLabels;
 };
 
 const statusConfig: Record<
@@ -27,7 +29,7 @@ const statusConfig: Record<
   },
 };
 
-export function AdminChecklist({ items }: AdminChecklistProps) {
+export function AdminChecklist({ items, labels = defaultAdminLabels }: AdminChecklistProps) {
   return (
     <div className="flex flex-col gap-3">
       {items.map((item) => {
@@ -48,10 +50,12 @@ export function AdminChecklist({ items }: AdminChecklistProps) {
               >
                 <Icon aria-hidden="true" />
               </span>
-              <span className="text-sm font-semibold text-slate-700">{item.label}</span>
+              <span className="text-sm font-semibold text-slate-700">
+                {labels.checklistLabels[item.label] ?? item.label}
+              </span>
             </div>
             <span className={cn("text-xs font-semibold", config.textClassName)}>
-              {item.status}
+              {labels.statuses[item.status] ?? item.status}
             </span>
           </div>
         );

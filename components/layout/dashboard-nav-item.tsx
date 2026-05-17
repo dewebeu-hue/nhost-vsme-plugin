@@ -46,7 +46,9 @@ export function DashboardNavItem({ href, label, icon: Icon }: DashboardNavItemPr
   const pathname = usePathname();
   const NavIcon = iconMap[Icon];
   const isActive =
-    href === "/dashboard" ? pathname === href : pathname === href || pathname.startsWith(`${href}/`);
+    href.endsWith("/dashboard")
+      ? pathname === href
+      : pathname === href || pathname.startsWith(`${href}/`);
 
   return (
     <Link
@@ -60,7 +62,7 @@ export function DashboardNavItem({ href, label, icon: Icon }: DashboardNavItemPr
       )}
     >
       <NavIcon aria-hidden="true" className="size-4" />
-      {label}
+      <span className="min-w-0 truncate">{label}</span>
     </Link>
   );
 }

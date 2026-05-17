@@ -1,10 +1,8 @@
-import { AdminPlaceholder } from "@/components/admin/admin-placeholder";
+import { redirect } from "next/navigation";
+
+export const dynamic = "force-dynamic";
+
 
 export default function AdminPassportsPage() {
-  return (
-    <AdminPlaceholder
-      title="Passports"
-      subtitle="Review generated supplier passports before client or buyer sharing."
-    />
-  );
+  redirect("/en/admin/passports");
 }

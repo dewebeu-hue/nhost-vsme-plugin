@@ -1,0 +1,2 @@
+-- No-op retained for migration history.
+-- `documents.file_id` is defined as text in the initial Nhost schema migration.

@@ -2,9 +2,11 @@ import { AlertCircle, CheckCircle2, Clock3, RefreshCw } from "lucide-react";
 import { SectionCard } from "@/components/shared/section-card";
 import type { PassportChecklistItem } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
+import { defaultPassportLabels, type PassportLabels } from "@/lib/passport-labels";
 
 type MissingDataChecklistProps = {
   items: PassportChecklistItem[];
+  labels?: PassportLabels;
 };
 
 const checklistStyles: Record<
@@ -29,11 +31,14 @@ const checklistStyles: Record<
   },
 };
 
-export function MissingDataChecklist({ items }: MissingDataChecklistProps) {
+export function MissingDataChecklist({
+  items,
+  labels = defaultPassportLabels,
+}: MissingDataChecklistProps) {
   return (
     <SectionCard
-      title="Missing data checklist"
-      description="Open items before this passport is shared externally."
+      title={labels.missingDataChecklist}
+      description={labels.missingDataChecklistDescription}
     >
       <div className="flex flex-col gap-3">
         {items.map((item) => {
@@ -53,7 +58,9 @@ export function MissingDataChecklist({ items }: MissingDataChecklistProps) {
               >
                 <Icon aria-hidden="true" />
               </span>
-              <span className="text-sm font-semibold leading-6 text-slate-700">{item.label}</span>
+              <span className="text-sm font-semibold leading-6 text-slate-700">
+                {labels.checklist[item.label] ?? item.label}
+              </span>
             </div>
           );
         })}

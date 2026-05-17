@@ -3,15 +3,19 @@ import { Button } from "@/components/ui/button";
 
 type EvidenceRecommendationCardProps = {
   recommendations: readonly string[];
+  title: string;
+  uploadLabel: string;
 };
 
 export function EvidenceRecommendationCard({
   recommendations,
+  title,
+  uploadLabel,
 }: EvidenceRecommendationCardProps) {
   return (
     <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
       <h3 className="text-base font-semibold tracking-tight text-slate-950">
-        Evidence recommendations
+        {title}
       </h3>
       <ul className="mt-4 flex flex-col gap-3">
         {recommendations.map((item) => (
@@ -23,7 +27,7 @@ export function EvidenceRecommendationCard({
       </ul>
       <Button className="mt-5 w-full shadow-lg shadow-blue-600/15">
         <Upload data-icon="inline-start" />
-        Upload evidence
+        {uploadLabel}
       </Button>
     </section>
   );

@@ -3,12 +3,13 @@ import { SectionCard } from "@/components/shared/section-card";
 
 type PassportDisclaimerProps = {
   text: string;
+  title?: string;
 };
 
-export function PassportDisclaimer({ text }: PassportDisclaimerProps) {
+export function PassportDisclaimer({ text, title = "Important disclaimer" }: PassportDisclaimerProps) {
   return (
     <SectionCard
-      title="Disclaimer"
+      title={title}
       action={
         <div className="flex size-10 items-center justify-center rounded-xl bg-amber-50 text-amber-600">
           <Info aria-hidden="true" />

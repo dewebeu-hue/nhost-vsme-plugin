@@ -1,23 +1,26 @@
+import { useTranslations } from "next-intl";
 import { BarChart3, ClipboardCheck, Database, Link2 } from "lucide-react";
-import { featureDescriptions } from "@/lib/copy";
 
 const icons = [ClipboardCheck, Database, BarChart3, Link2] as const;
 
 export function FeatureCards() {
+  const t = useTranslations("landing.features");
+  const features = t.raw("items") as Array<{ title: string; description: string }>;
+
   return (
     <section id="solutions" className="px-6 py-16 lg:px-8">
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-10">
         <div className="max-w-3xl">
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-600">
-            Product foundation
+            {t("eyebrow")}
           </p>
           <h2 className="mt-4 text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl">
-            One workspace for VSME answers, evidence, gaps, and buyer sharing.
+            {t("title")}
           </h2>
         </div>
 
         <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-          {featureDescriptions.map((feature, index) => {
+          {features.map((feature, index) => {
             const Icon = icons[index];
 
             return (

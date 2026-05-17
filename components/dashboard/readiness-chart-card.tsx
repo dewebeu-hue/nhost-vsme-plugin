@@ -10,6 +10,7 @@ import {
 } from "recharts";
 import { Badge } from "@/components/ui/badge";
 import { SectionCard } from "@/components/shared/section-card";
+import { defaultDashboardOverviewLabels, type DashboardOverviewLabels } from "@/lib/dashboard-labels";
 
 type ReadinessPoint = {
   day: string;
@@ -21,6 +22,7 @@ type ReadinessChartCardProps = {
   improvementText: string;
   rangeLabel: string;
   endValue: number;
+  labels?: DashboardOverviewLabels;
 };
 
 export function ReadinessChartCard({
@@ -28,10 +30,11 @@ export function ReadinessChartCard({
   improvementText,
   rangeLabel,
   endValue,
+  labels = defaultDashboardOverviewLabels,
 }: ReadinessChartCardProps) {
   return (
     <SectionCard
-      title="Readiness over time"
+      title={labels.readinessOverTime}
       description={improvementText}
       action={
         <Badge variant="outline" className="rounded-full border-blue-200 bg-blue-50 text-blue-700">
@@ -42,7 +45,7 @@ export function ReadinessChartCard({
     >
       <div className="mb-4 flex items-end justify-between gap-4">
         <div>
-          <p className="text-sm font-medium text-slate-500">End value</p>
+          <p className="text-sm font-medium text-slate-500">{labels.endValue}</p>
           <p className="text-3xl font-semibold tracking-tight text-slate-950">{endValue}%</p>
         </div>
       </div>

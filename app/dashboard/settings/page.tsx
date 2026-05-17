@@ -1,32 +1,45 @@
+import { redirect } from "next/navigation";
 import { DashboardPlaceholder } from "@/components/dashboard/dashboard-placeholder";
 import { currentUser } from "@/lib/mock-data";
+import { defaultSettingsLabels, interpolate, type SettingsLabels } from "@/lib/operational-labels";
 
-export default function SettingsPage() {
+export const dynamic = "force-dynamic";
+
+
+export function SettingsPageContent({
+  labels = defaultSettingsLabels,
+}: {
+  labels?: SettingsLabels;
+}) {
   return (
     <DashboardPlaceholder
-      title="Settings"
-      subtitle="Prepare organization, team, notification, and sharing settings for future app steps."
-      primaryAction="Open settings"
+      title={labels.title}
+      subtitle={labels.subtitle}
+      primaryAction={labels.openSettings}
       cards={[
         {
-          title: "Workspace settings",
-          description: "Manage organization preferences and buyer-facing profile defaults.",
+          title: labels.workspaceSettings,
+          description: labels.workspaceSettingsDescription,
           icon: "settings",
-          metric: "Starter",
+          metric: labels.starter,
         },
         {
-          title: "Team access",
-          description: `${currentUser.name} is the mock workspace owner for this phase.`,
+          title: labels.teamAccess,
+          description: interpolate(labels.teamAccessDescription, { name: currentUser.name }),
           icon: "users",
-          metric: "1 user",
+          metric: labels.oneUser,
         },
         {
-          title: "Notifications",
-          description: "Future notification preferences will support buyer requests and evidence expiry.",
+          title: labels.notifications,
+          description: labels.notificationsDescription,
           icon: "bell-ring",
-          metric: "Planned",
+          metric: labels.planned,
         },
       ]}
     />
   );
+}
+
+export default function SettingsPage() {
+  redirect("/en/dashboard/settings");
 }

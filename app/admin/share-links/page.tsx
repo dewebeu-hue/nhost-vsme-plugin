@@ -1,10 +1,8 @@
-import { AdminPlaceholder } from "@/components/admin/admin-placeholder";
+import { redirect } from "next/navigation";
+
+export const dynamic = "force-dynamic";
+
 
 export default function AdminShareLinksPage() {
-  return (
-    <AdminPlaceholder
-      title="Share Links"
-      subtitle="Monitor buyer access links, expiry windows, and permission settings."
-    />
-  );
+  redirect("/en/admin/share-links");
 }

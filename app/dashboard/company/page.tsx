@@ -1,7 +1,11 @@
+import { redirect } from "next/navigation";
 import { DashboardPlaceholder } from "@/components/dashboard/dashboard-placeholder";
 import { currentOrganization } from "@/lib/mock-data";
 
-export default function CompanyProfilePage() {
+export const dynamic = "force-dynamic";
+
+
+export function CompanyProfilePageContent() {
   return (
     <DashboardPlaceholder
       title="Company Profile"
@@ -29,4 +33,8 @@ export default function CompanyProfilePage() {
       ]}
     />
   );
+}
+
+export default function CompanyProfilePage() {
+  redirect("/en/dashboard/company");
 }

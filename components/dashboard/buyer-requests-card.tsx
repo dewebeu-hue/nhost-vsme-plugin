@@ -1,9 +1,11 @@
 import { SectionCard } from "@/components/shared/section-card";
 import { DashboardStatusPill } from "@/components/dashboard/dashboard-status-pill";
+import { defaultDashboardOverviewLabels, type DashboardOverviewLabels } from "@/lib/dashboard-labels";
 import type { DashboardBuyerRequest } from "@/lib/mock-data";
 
 type BuyerRequestsCardProps = {
   requests: DashboardBuyerRequest[];
+  labels?: DashboardOverviewLabels;
 };
 
 const statusTone: Record<DashboardBuyerRequest["status"], "blue" | "amber" | "slate"> = {
@@ -12,11 +14,14 @@ const statusTone: Record<DashboardBuyerRequest["status"], "blue" | "amber" | "sl
   "Not started": "slate",
 };
 
-export function BuyerRequestsCard({ requests }: BuyerRequestsCardProps) {
+export function BuyerRequestsCard({
+  requests,
+  labels = defaultDashboardOverviewLabels,
+}: BuyerRequestsCardProps) {
   return (
     <SectionCard
-      title="Recent buyer requests"
-      description="Latest buyer requests and deadlines."
+      title={labels.recentBuyerRequests}
+      description={labels.buyerRequestsDescription}
       className="h-full"
     >
       <div className="flex flex-col divide-y divide-slate-100">
@@ -28,9 +33,11 @@ export function BuyerRequestsCard({ requests }: BuyerRequestsCardProps) {
             </div>
             <div className="flex flex-wrap items-center gap-2 sm:justify-end">
               <DashboardStatusPill tone={statusTone[request.status]}>
-                {request.status}
+                {labels.statuses[request.status] ?? request.status}
               </DashboardStatusPill>
-              <span className="text-sm font-medium text-slate-500">Due {request.dueDate}</span>
+              <span className="text-sm font-medium text-slate-500">
+                {labels.due} {request.dueDate}
+              </span>
             </div>
           </div>
         ))}

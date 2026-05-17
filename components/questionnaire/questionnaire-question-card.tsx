@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import { CalendarDays } from "lucide-react";
+import { CalendarDays, FileCheck2, Link2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { DocumentStatusBadge } from "@/components/documents/document-status-badge";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -16,22 +16,30 @@ import { Textarea } from "@/components/ui/textarea";
 import { AnswerStatusPill } from "@/components/questionnaire/answer-status-pill";
 import type { QuestionnaireEnergyQuestion } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
+import {
+  defaultQuestionnaireLabels,
+  type QuestionnaireLabels,
+} from "@/lib/workspace-labels";
 
 type QuestionnaireQuestionCardProps = {
   question: QuestionnaireEnergyQuestion;
   index: number;
+  onValueChange?: (questionId: string, value: string | string[] | boolean) => void;
+  onAttachEvidence?: (question: QuestionnaireEnergyQuestion) => void;
+  labels?: QuestionnaireLabels;
 };
 
 export function QuestionnaireQuestionCard({
   question,
   index,
+  onValueChange,
+  onAttachEvidence,
+  labels = defaultQuestionnaireLabels,
 }: QuestionnaireQuestionCardProps) {
-  const [yesNoValue, setYesNoValue] = useState(
-    question.type === "yes-no" ? question.value : "Yes",
-  );
-  const [selectedChips, setSelectedChips] = useState(
-    question.type === "chips" ? question.values : [],
-  );
+  const requiresEvidence =
+    question.evidenceRequired ||
+    question.status === "Needs evidence" ||
+    Boolean(question.linkedDocuments?.length);
 
   return (
     <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
@@ -41,29 +49,104 @@ export function QuestionnaireQuestionCard({
             {index + 1}
           </span>
           <h3 className="text-base font-semibold leading-7 text-slate-950">
-            {question.prompt}
+            {labels.questionPrompts[question.id] ?? question.prompt}
           </h3>
         </div>
-        <AnswerStatusPill status={question.status} />
+        <AnswerStatusPill
+          status={question.status}
+          label={labels.statuses[question.status] ?? question.status}
+        />
       </div>
 
-      <div className="mt-5 pl-0 sm:pl-11">{renderAnswerControl(question, yesNoValue, setYesNoValue, selectedChips, setSelectedChips)}</div>
+      <div className="mt-5 pl-0 sm:pl-11">
+        {renderAnswerControl(
+          question,
+          labels,
+          question.type === "yes-no" ? question.value : "Yes",
+          (value) => {
+            onValueChange?.(question.id, value === "Yes");
+          },
+          question.type === "chips" ? question.values : [],
+          (value) => {
+            onValueChange?.(question.id, value);
+          },
+          onValueChange,
+        )}
+        {requiresEvidence ? (
+          <div className="mt-5 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+            <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
+              <div>
+                <p className="text-sm font-semibold text-slate-950">{labels.evidence}</p>
+                <p className="mt-1 text-xs font-medium text-slate-500">
+                  {labels.evidenceSupportText}
+                </p>
+              </div>
+              <Button
+                variant="outline"
+                className="bg-white"
+                onClick={() => onAttachEvidence?.(question)}
+              >
+                <Link2 data-icon="inline-start" />
+                {labels.attachEvidence}
+              </Button>
+            </div>
+            <div className="mt-3 flex flex-col gap-2">
+              {question.linkedDocuments?.length ? (
+                question.linkedDocuments.map((document) => (
+                  <div
+                    key={document.id}
+                    className="flex flex-col justify-between gap-2 rounded-xl border border-slate-200 bg-white p-3 shadow-sm sm:flex-row sm:items-center"
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className="flex size-9 items-center justify-center rounded-xl bg-blue-50 text-blue-700">
+                        <FileCheck2 aria-hidden="true" className="size-4" />
+                      </span>
+                      <div>
+                        <p className="text-sm font-semibold text-slate-950">
+                          {document.fileName}
+                        </p>
+                        <p className="text-xs font-medium text-slate-500">
+                          {labels.documentTypes[
+                            document.documentType as keyof typeof labels.documentTypes
+                          ] ?? document.documentType}
+                        </p>
+                      </div>
+                    </div>
+                    <DocumentStatusBadge
+                      status={document.status}
+                      label={labels.documentStatuses[document.status] ?? document.status}
+                    />
+                  </div>
+                ))
+              ) : (
+                <div className="rounded-xl border border-dashed border-amber-200 bg-amber-50/70 p-3 text-sm font-medium text-amber-800">
+                  {labels.evidenceRequired}
+                </div>
+              )}
+            </div>
+          </div>
+        ) : null}
+      </div>
     </article>
   );
 }
 
 function renderAnswerControl(
   question: QuestionnaireEnergyQuestion,
+  labels: QuestionnaireLabels,
   yesNoValue: string,
   setYesNoValue: (value: "Yes" | "No") => void,
   selectedChips: string[],
   setSelectedChips: (value: string[]) => void,
+  onValueChange?: (questionId: string, value: string | string[] | boolean) => void,
 ) {
   if (question.type === "input") {
     return (
       <div className="flex max-w-md overflow-hidden rounded-xl border border-slate-200 bg-slate-50 shadow-sm">
         <Input
-          defaultValue={question.value}
+          value={question.value}
+          onChange={(event) => onValueChange?.(question.id, event.target.value)}
+          readOnly={!onValueChange}
           className="h-12 border-0 bg-transparent px-4 text-base font-semibold shadow-none"
         />
         <div className="flex min-w-28 items-center justify-center border-l border-slate-200 px-4 text-sm font-semibold text-slate-500">
@@ -75,7 +158,14 @@ function renderAnswerControl(
 
   if (question.type === "select") {
     return (
-      <Select defaultValue={question.value}>
+      <Select
+        value={question.value}
+        onValueChange={(value) => {
+          if (typeof value === "string") {
+            onValueChange?.(question.id, value);
+          }
+        }}
+      >
         <SelectTrigger className="h-12 w-full max-w-md rounded-xl bg-slate-50 px-4">
           <SelectValue />
         </SelectTrigger>
@@ -83,7 +173,7 @@ function renderAnswerControl(
           <SelectGroup>
             {question.options.map((option) => (
               <SelectItem key={option} value={option}>
-                {option}
+                {labels.questionOptions[option] ?? option}
               </SelectItem>
             ))}
           </SelectGroup>
@@ -103,7 +193,7 @@ function renderAnswerControl(
             className={cn("h-10 flex-1", yesNoValue === option && "shadow-md shadow-blue-600/15")}
             onClick={() => setYesNoValue(option)}
           >
-            {option}
+            {labels.questionOptions[option] ?? option}
           </Button>
         ))}
       </div>
@@ -114,7 +204,13 @@ function renderAnswerControl(
     return (
       <div className="flex max-w-md items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700 shadow-sm">
         <CalendarDays aria-hidden="true" className="size-4 text-blue-600" />
-        {question.value}
+        <Input
+          type="text"
+          value={question.value}
+          onChange={(event) => onValueChange?.(question.id, event.target.value)}
+          readOnly={!onValueChange}
+          className="h-auto border-0 bg-transparent p-0 text-sm font-semibold shadow-none"
+        />
       </div>
     );
   }
@@ -143,7 +239,7 @@ function renderAnswerControl(
                 )
               }
             >
-              {option}
+              {labels.questionOptions[option] ?? option}
             </button>
           );
         })}
@@ -153,7 +249,9 @@ function renderAnswerControl(
 
   return (
     <Textarea
-      defaultValue={question.value}
+      value={question.value}
+      onChange={(event) => onValueChange?.(question.id, event.target.value)}
+      readOnly={!onValueChange}
       className="min-h-28 resize-none rounded-xl bg-slate-50 px-4 py-3 text-sm leading-6"
     />
   );

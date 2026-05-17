@@ -1,10 +1,8 @@
-import { AdminPlaceholder } from "@/components/admin/admin-placeholder";
+import { redirect } from "next/navigation";
+
+export const dynamic = "force-dynamic";
+
 
 export default function AdminSettingsPage() {
-  return (
-    <AdminPlaceholder
-      title="Settings"
-      subtitle="Prepare admin workspace preferences, saved views, and team controls."
-    />
-  );
+  redirect("/en/admin/settings");
 }

@@ -1,16 +1,21 @@
 import { Activity } from "lucide-react";
 import { SectionCard } from "@/components/shared/section-card";
+import { defaultDashboardOverviewLabels, type DashboardOverviewLabels } from "@/lib/dashboard-labels";
 import type { DashboardActivity } from "@/lib/mock-data";
 
 type RecentActivityCardProps = {
   activity: DashboardActivity[];
+  labels?: DashboardOverviewLabels;
 };
 
-export function RecentActivityCard({ activity }: RecentActivityCardProps) {
+export function RecentActivityCard({
+  activity,
+  labels = defaultDashboardOverviewLabels,
+}: RecentActivityCardProps) {
   return (
     <SectionCard
-      title="Recent activity"
-      description="A concise audit trail of the latest workspace events."
+      title={labels.recentActivity}
+      description={labels.recentActivityDescription}
       className="h-full"
     >
       <div className="flex flex-col gap-3">

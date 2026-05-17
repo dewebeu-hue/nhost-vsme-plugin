@@ -1,11 +1,18 @@
-import { Bell, ChevronDown, Menu } from "lucide-react";
+import { Bell, Menu } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Logo } from "@/components/brand/logo";
+import { DashboardOrganizationSelector } from "@/components/layout/dashboard-organization-selector";
+import { LanguageSwitcher } from "@/components/shared/language-switcher";
+import { type DashboardShellLabels } from "@/lib/dashboard-labels";
 import { currentOrganization, currentUser } from "@/lib/mock-data";
 
-export function DashboardTopbar() {
+type DashboardTopbarProps = {
+  labels: DashboardShellLabels;
+};
+
+export function DashboardTopbar({ labels }: DashboardTopbarProps) {
   const initials = currentUser.name
     .split(" ")
     .map((part) => part[0])
@@ -18,25 +25,21 @@ export function DashboardTopbar() {
           <div className="lg:hidden">
             <Logo />
           </div>
-          <Button variant="ghost" size="icon" className="lg:hidden" aria-label="Open navigation">
+          <Button variant="ghost" size="icon" className="lg:hidden" aria-label={labels.openNavigation}>
             <Menu />
           </Button>
-          <button className="hidden min-w-0 items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-2 text-left shadow-sm transition-colors hover:bg-slate-50 sm:flex">
-            <span className="min-w-0 truncate text-sm font-semibold text-slate-950">
-              {currentOrganization.name}
-            </span>
-            <ChevronDown aria-hidden="true" className="size-4 shrink-0 text-slate-400" />
-          </button>
+          <DashboardOrganizationSelector fallbackName={currentOrganization.name} />
         </div>
 
         <div className="flex items-center gap-3">
+          <LanguageSwitcher className="hidden xl:inline-flex" />
           <Badge
             variant="outline"
             className="hidden rounded-full border-emerald-200 bg-emerald-50 text-emerald-700 md:inline-flex"
           >
-            Verified supplier
+            {labels.verifiedSupplier}
           </Badge>
-          <Button variant="outline" size="icon" aria-label="Notifications">
+          <Button variant="outline" size="icon" aria-label={labels.notifications}>
             <Bell />
           </Button>
           <Avatar className="size-10 border border-slate-200">

@@ -1,12 +1,17 @@
 import Link from "next/link";
+import { useLocale, useTranslations } from "next-intl";
 import { ArrowRight, CheckCircle2, ShieldCheck } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { ProductPreview } from "@/components/landing/product-preview";
-import { landingPageCopy } from "@/lib/copy";
 import { cn } from "@/lib/utils";
 
 export function HeroSection() {
+  const locale = useLocale();
+  const t = useTranslations("landing.hero");
+  const common = useTranslations("common.cta");
+  const trustChips = t.raw("trustChips") as string[];
+
   return (
     <section
       id="product"
@@ -22,16 +27,16 @@ export function HeroSection() {
             className="rounded-full border-blue-200 bg-white px-4 py-2 text-blue-700 shadow-sm"
           >
             <ShieldCheck aria-hidden="true" className="size-4" />
-            EU-aligned supplier evidence workspace
+            {t("badge")}
           </Badge>
 
           <div className="flex max-w-3xl flex-col gap-6">
             <h1 className="text-5xl font-semibold tracking-tight text-slate-950 sm:text-6xl lg:text-7xl">
-              {landingPageCopy.heroTitlePrefix}{" "}
-              <span className="text-teal-500">{landingPageCopy.heroTitleEmphasis}</span>
+              {t("titlePrefix")}{" "}
+              <span className="text-teal-500">{t("titleEmphasis")}</span>
             </h1>
             <p className="max-w-2xl text-lg leading-8 text-slate-600 sm:text-xl sm:leading-9">
-              {landingPageCopy.heroDescription}
+              {t("description")}
             </p>
           </div>
 
@@ -43,19 +48,19 @@ export function HeroSection() {
                 "h-12 px-5 shadow-xl shadow-blue-600/20",
               )}
             >
-              {landingPageCopy.primaryCta}
+              {common("startPassport")}
               <ArrowRight data-icon="inline-end" />
             </Link>
             <Link
-              href="/share/acme-manufacturing"
+              href={`/${locale}/share/acme-manufacturing`}
               className={cn(buttonVariants({ variant: "outline", size: "lg" }), "h-12 px-5")}
             >
-              {landingPageCopy.secondaryCta}
+              {common("seeSamplePassport")}
             </Link>
           </div>
 
           <div className="flex flex-wrap gap-3">
-            {landingPageCopy.trustChips.map((chip) => (
+            {trustChips.map((chip) => (
               <div
                 key={chip}
                 className="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-600 shadow-sm"

@@ -1,17 +1,22 @@
 import { FileText } from "lucide-react";
 import { SectionCard } from "@/components/shared/section-card";
 import { DashboardStatusPill } from "@/components/dashboard/dashboard-status-pill";
+import { defaultDashboardOverviewLabels, type DashboardOverviewLabels } from "@/lib/dashboard-labels";
 import type { DashboardUpload } from "@/lib/mock-data";
 
 type RecentUploadsCardProps = {
   uploads: DashboardUpload[];
+  labels?: DashboardOverviewLabels;
 };
 
-export function RecentUploadsCard({ uploads }: RecentUploadsCardProps) {
+export function RecentUploadsCard({
+  uploads,
+  labels = defaultDashboardOverviewLabels,
+}: RecentUploadsCardProps) {
   return (
     <SectionCard
-      title="Recent uploads"
-      description="Evidence files added to the data room."
+      title={labels.recentUploads}
+      description={labels.recentUploadsDescription}
       className="h-full"
     >
       <div className="flex flex-col gap-3">
@@ -25,7 +30,7 @@ export function RecentUploadsCard({ uploads }: RecentUploadsCardProps) {
               <p className="mt-1 text-xs font-medium text-slate-500">{upload.uploadedAt}</p>
             </div>
             <DashboardStatusPill tone={upload.category === "Social" ? "teal" : upload.category === "Governance" ? "green" : "blue"}>
-              {upload.category}
+              {labels.modules[upload.category] ?? upload.category}
             </DashboardStatusPill>
           </div>
         ))}

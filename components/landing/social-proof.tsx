@@ -1,12 +1,15 @@
+import { useTranslations } from "next-intl";
 import { Quote } from "lucide-react";
-import { socialProofCopy } from "@/lib/copy";
 
 export function SocialProof() {
+  const t = useTranslations("landing.socialProof");
+  const logos = t.raw("logos") as string[];
+
   return (
     <section id="resources" className="px-6 py-16 lg:px-8">
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-8">
         <div className="grid gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:grid-cols-2 lg:grid-cols-5">
-          {socialProofCopy.logos.map((logo) => (
+          {logos.map((logo) => (
             <div
               key={logo}
               className="flex min-h-20 items-center justify-center rounded-xl bg-slate-50 px-4 text-center text-sm font-semibold text-slate-500"
@@ -22,10 +25,10 @@ export function SocialProof() {
           </div>
           <div>
             <blockquote className="text-2xl font-semibold leading-10 tracking-tight text-slate-950">
-              “{socialProofCopy.quote}”
+              &ldquo;{t("quote")}&rdquo;
             </blockquote>
             <figcaption className="mt-6 text-sm font-medium text-slate-600">
-              {socialProofCopy.person}, {socialProofCopy.role}
+              {t("person")}, {t("role")}
             </figcaption>
           </div>
         </figure>

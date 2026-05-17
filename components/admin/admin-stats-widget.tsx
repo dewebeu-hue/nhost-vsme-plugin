@@ -1,9 +1,11 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { AdminStatsWidgetData } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
+import { defaultAdminLabels, type AdminLabels } from "@/lib/operational-labels";
 
 type AdminStatsWidgetProps = {
   widget: AdminStatsWidgetData;
+  labels?: AdminLabels;
 };
 
 const toneStyles: Record<AdminStatsWidgetData["items"][number]["tone"], string> = {
@@ -14,12 +16,12 @@ const toneStyles: Record<AdminStatsWidgetData["items"][number]["tone"], string> 
   slate: "bg-slate-100 text-slate-700",
 };
 
-export function AdminStatsWidget({ widget }: AdminStatsWidgetProps) {
+export function AdminStatsWidget({ widget, labels = defaultAdminLabels }: AdminStatsWidgetProps) {
   return (
     <Card className="supplier-surface rounded-2xl border-0">
       <CardHeader className="pb-3">
         <CardTitle className="text-base font-semibold tracking-tight text-slate-950">
-          {widget.title}
+          {labels.stats[widget.title] ?? widget.title}
         </CardTitle>
         <p className="text-3xl font-semibold tracking-tight text-slate-950">{widget.total}</p>
       </CardHeader>
@@ -29,7 +31,9 @@ export function AdminStatsWidget({ widget }: AdminStatsWidgetProps) {
             key={item.label}
             className="flex items-center justify-between rounded-xl bg-slate-50 px-3 py-2.5"
           >
-            <span className="text-sm font-medium text-slate-600">{item.label}</span>
+            <span className="text-sm font-medium text-slate-600">
+              {labels.stats[item.label] ?? item.label}
+            </span>
             <span
               className={cn(
                 "rounded-full px-2.5 py-1 text-sm font-semibold",

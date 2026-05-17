@@ -1,7 +1,11 @@
+import { redirect } from "next/navigation";
 import { DashboardPlaceholder } from "@/components/dashboard/dashboard-placeholder";
 import { missingDataSummary } from "@/lib/mock-data";
 
-export default function MissingDataPage() {
+export const dynamic = "force-dynamic";
+
+
+export function MissingDataPageContent() {
   const totalMissing = missingDataSummary.reduce((total, item) => total + item.count, 0);
 
   return (
@@ -34,4 +38,8 @@ export default function MissingDataPage() {
       ]}
     />
   );
+}
+
+export default function MissingDataPage() {
+  redirect("/en/dashboard/missing-data");
 }

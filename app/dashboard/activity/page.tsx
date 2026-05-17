@@ -1,7 +1,11 @@
+import { redirect } from "next/navigation";
 import { DashboardPlaceholder } from "@/components/dashboard/dashboard-placeholder";
 import { recentActivity } from "@/lib/mock-data";
 
-export default function ActivityPage() {
+export const dynamic = "force-dynamic";
+
+
+export function ActivityPageContent() {
   return (
     <DashboardPlaceholder
       title="Activity"
@@ -30,4 +34,8 @@ export default function ActivityPage() {
       ]}
     />
   );
+}
+
+export default function ActivityPage() {
+  redirect("/en/dashboard/activity");
 }

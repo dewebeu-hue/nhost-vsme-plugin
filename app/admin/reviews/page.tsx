@@ -1,10 +1,8 @@
-import { AdminPlaceholder } from "@/components/admin/admin-placeholder";
+import { redirect } from "next/navigation";
+
+export const dynamic = "force-dynamic";
+
 
 export default function AdminReviewsPage() {
-  return (
-    <AdminPlaceholder
-      title="Reviews"
-      subtitle="Triage VSME answers, evidence issues, and concierge review queues."
-    />
-  );
+  redirect("/en/admin/reviews");
 }

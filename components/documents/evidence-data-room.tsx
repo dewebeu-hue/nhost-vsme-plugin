@@ -3,7 +3,9 @@
 import { useMemo, useState } from "react";
 import { DocumentPreviewPanel } from "@/components/documents/document-preview-panel";
 import { DocumentsTable } from "@/components/documents/documents-table";
+import { StateCard } from "@/components/shared/state-card";
 import type { EvidenceRoomDocument, EvidenceRoomLinkedQuestion } from "@/lib/mock-data";
+import { defaultDocumentsLabels, type DocumentsLabels } from "@/lib/workspace-labels";
 
 type EvidenceDataRoomProps = {
   documents: EvidenceRoomDocument[];
@@ -14,6 +16,9 @@ type EvidenceDataRoomProps = {
     reviewedBy: string;
     reviewedOn: string;
   };
+  linkedQuestionsByDocument?: Record<string, EvidenceRoomLinkedQuestion[]>;
+  onLinkToAnswer?: (document: EvidenceRoomDocument) => void;
+  labels?: DocumentsLabels;
 };
 
 export function EvidenceDataRoom({
@@ -21,6 +26,9 @@ export function EvidenceDataRoom({
   initialSelectedDocumentId,
   linkedQuestions,
   review,
+  linkedQuestionsByDocument,
+  onLinkToAnswer,
+  labels = defaultDocumentsLabels,
 }: EvidenceDataRoomProps) {
   const [selectedDocumentId, setSelectedDocumentId] = useState(initialSelectedDocumentId);
 
@@ -30,7 +38,12 @@ export function EvidenceDataRoom({
   );
 
   if (!selectedDocument) {
-    return null;
+    return (
+      <StateCard
+        title={labels.noDocumentsTitle}
+        description={labels.noDocumentsText}
+      />
+    );
   }
 
   return (
@@ -39,11 +52,14 @@ export function EvidenceDataRoom({
         documents={documents}
         selectedDocumentId={selectedDocument.id}
         onSelectDocument={(document) => setSelectedDocumentId(document.id)}
+        labels={labels}
       />
       <DocumentPreviewPanel
         document={selectedDocument}
-        linkedQuestions={linkedQuestions}
+        linkedQuestions={linkedQuestionsByDocument?.[selectedDocument.id] ?? linkedQuestions}
         review={review}
+        onLinkToAnswer={onLinkToAnswer}
+        labels={labels}
       />
     </div>
   );

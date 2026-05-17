@@ -1,5 +1,6 @@
 import { CheckCheck, FilePlus2, Mail, NotebookPen } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { defaultAdminLabels, type AdminLabels } from "@/lib/operational-labels";
 
 const actions = [
   { label: "Mark reviewed", icon: CheckCheck },
@@ -8,7 +9,14 @@ const actions = [
   { label: "Email client", icon: Mail },
 ];
 
-export function AdminQuickActions() {
+export function AdminQuickActions({ labels = defaultAdminLabels }: { labels?: AdminLabels }) {
+  const labelMap: Record<string, string> = {
+    "Mark reviewed": labels.markReviewed,
+    "Add note": labels.addNote,
+    "Generate passport": labels.generatePassport,
+    "Email client": labels.emailClient,
+  };
+
   return (
     <div className="grid gap-2 sm:grid-cols-2">
       {actions.map((action) => {
@@ -21,7 +29,7 @@ export function AdminQuickActions() {
             className="h-10 justify-start rounded-xl"
           >
             <Icon data-icon="inline-start" />
-            {action.label}
+            {labelMap[action.label] ?? action.label}
           </Button>
         );
       })}

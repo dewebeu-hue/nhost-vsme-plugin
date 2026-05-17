@@ -810,7 +810,21 @@ export type QuestionnaireAnswerStatus =
   | "Reviewed"
   | "Not started";
 
-export type QuestionnaireEnergyQuestion =
+export type QuestionnaireLinkedDocument = {
+  id: string;
+  fileName: string;
+  documentType: string;
+  status: EvidenceRoomStatus;
+};
+
+type QuestionnaireQuestionEvidence = {
+  answerId?: string;
+  evidenceRequired?: boolean;
+  linkedDocuments?: QuestionnaireLinkedDocument[];
+};
+
+export type QuestionnaireEnergyQuestion = QuestionnaireQuestionEvidence &
+  (
   | {
       id: string;
       prompt: string;
@@ -855,7 +869,8 @@ export type QuestionnaireEnergyQuestion =
       status: QuestionnaireAnswerStatus;
       type: "textarea";
       value: string;
-    };
+    }
+  );
 
 export const questionnaireOverviewMock = {
   title: "VSME Readiness Questionnaire",
@@ -991,12 +1006,23 @@ export type EvidenceRoomDocument = {
   title: string;
   fileName: string;
   fileSize: string;
-  type: "Certificate" | "Utility Bill" | "Policy" | "Report" | "Training";
+  type:
+    | "Certificate"
+    | "Utility Bill"
+    | "Policy"
+    | "Report"
+    | "Training"
+    | "Safety"
+    | "Questionnaire"
+    | "Other";
   linkedTo: string[];
   linkedExtra?: string;
   uploaded: string;
   uploadedBy: string;
   status: EvidenceRoomStatus;
+  previewUrl?: string;
+  mimeType?: string;
+  expiresAt?: string | null;
 };
 
 export type EvidenceRoomLinkedQuestion = {
@@ -1298,6 +1324,8 @@ export type PublicShareDocument = {
   category: string;
   fileType: "PDF";
   uploaded: string;
+  accessUrl?: string;
+  downloadUrl?: string;
 };
 
 export type PublicShareDetail = {
@@ -1305,7 +1333,23 @@ export type PublicShareDetail = {
   value: string;
 };
 
-export const publicSharePassport = {
+export type PublicSharePassport = {
+  token: string;
+  company: PassportCompanyProfile;
+  readinessScore: number;
+  lastUpdated: string;
+  sharedWith: string;
+  sharedOn: string;
+  expiresOn: string;
+  statusChips: string[];
+  heroText: string;
+  sections: PublicShareSection[];
+  documents: PublicShareDocument[];
+  details: PublicShareDetail[];
+  footerDisclaimer: string;
+};
+
+export const publicSharePassport: PublicSharePassport = {
   token: "acme-manufacturing",
   company: passportCompanyProfile,
   readinessScore: 72,
@@ -1406,7 +1450,7 @@ export const publicSharePassport = {
   ] satisfies PublicShareDetail[],
   footerDisclaimer:
     "This passport contains supplier-provided information and supporting evidence. It is not a certification, assurance report, or legal compliance opinion.",
-} as const;
+};
 
 export type AdminOrganizationRow = {
   id: string;

@@ -1,17 +1,19 @@
 import { CheckCircle2, Circle } from "lucide-react";
 import { SectionCard } from "@/components/shared/section-card";
 import { DashboardStatusPill } from "@/components/dashboard/dashboard-status-pill";
+import { defaultDashboardOverviewLabels, type DashboardOverviewLabels } from "@/lib/dashboard-labels";
 import type { DashboardTask } from "@/lib/mock-data";
 
 type TasksCardProps = {
   tasks: DashboardTask[];
+  labels?: DashboardOverviewLabels;
 };
 
-export function TasksCard({ tasks }: TasksCardProps) {
+export function TasksCard({ tasks, labels = defaultDashboardOverviewLabels }: TasksCardProps) {
   return (
     <SectionCard
-      title="Your tasks"
-      description="Priority items assigned to your workspace."
+      title={labels.yourTasks}
+      description={labels.tasksDescription}
       className="h-full"
     >
       <div className="flex flex-col gap-3">
@@ -24,7 +26,9 @@ export function TasksCard({ tasks }: TasksCardProps) {
             )}
             <div className="min-w-0 flex-1">
               <p className="text-sm font-semibold text-slate-950">{task.title}</p>
-              <p className="mt-1 text-xs font-medium text-slate-500">{task.category}</p>
+              <p className="mt-1 text-xs font-medium text-slate-500">
+                {labels.modules[task.category] ?? task.category}
+              </p>
             </div>
             <DashboardStatusPill tone={task.completed ? "green" : "amber"}>
               {task.due}

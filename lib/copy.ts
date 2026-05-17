@@ -68,52 +68,6 @@ export const socialProofCopy = {
   role: "Sustainability Manager",
 } as const;
 
-export const pricingPlans = [
-  {
-    name: "Starter",
-    price: "€0",
-    cadence: "month",
-    description: "For suppliers starting their first buyer-ready VSME profile.",
-    features: [
-      "Up to 1 user",
-      "VSME Basic module",
-      "Up to 100 evidence files",
-      "1 buyer share link",
-      "Email support",
-    ],
-    cta: "Start Passport Sprint",
-  },
-  {
-    name: "Supplier",
-    price: "€49",
-    cadence: "month",
-    description: "For active supplier teams managing recurring ESG requests.",
-    badge: "Most popular",
-    features: [
-      "Up to 5 users",
-      "VSME Basic + Comprehensive",
-      "Unlimited evidence files",
-      "Multiple share links",
-      "Priority email support",
-    ],
-    cta: "Start Supplier",
-  },
-  {
-    name: "Partner",
-    price: "€149",
-    cadence: "month",
-    description: "For consultants and supplier groups managing multiple entities.",
-    features: [
-      "Up to 20 users",
-      "Multi-entity management",
-      "Advanced analytics",
-      "API access",
-      "Dedicated support",
-    ],
-    cta: "Book a Demo",
-  },
-] as const;
-
 export const ctaLabels = {
   startPassport: "Start Passport Sprint",
   seeSamplePassport: "See Sample Passport",

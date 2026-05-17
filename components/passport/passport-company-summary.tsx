@@ -2,23 +2,28 @@ import { BadgeCheck, Building2, Factory, Globe2, MapPin, Users } from "lucide-re
 import { Badge } from "@/components/ui/badge";
 import { SectionCard } from "@/components/shared/section-card";
 import type { PassportCompanyProfile } from "@/lib/mock-data";
+import { defaultPassportLabels, type PassportLabels } from "@/lib/passport-labels";
 
 type PassportCompanySummaryProps = {
   profile: PassportCompanyProfile;
+  labels?: PassportLabels;
 };
 
-export function PassportCompanySummary({ profile }: PassportCompanySummaryProps) {
+export function PassportCompanySummary({
+  profile,
+  labels = defaultPassportLabels,
+}: PassportCompanySummaryProps) {
   const facts = [
-    { label: "Industries", value: profile.industries.join(", "), icon: Factory },
-    { label: "Countries served", value: profile.countriesServed, icon: Globe2 },
-    { label: "Employee count", value: profile.employeeCount, icon: Users },
-    { label: "Headquarters", value: profile.headquarters, icon: MapPin },
+    { label: labels.industries, value: profile.industries.join(", "), icon: Factory },
+    { label: labels.countriesServed, value: profile.countriesServed, icon: Globe2 },
+    { label: labels.employeeCount, value: profile.employeeCount, icon: Users },
+    { label: labels.headquarters, value: profile.headquarters, icon: MapPin },
   ];
 
   return (
     <SectionCard
-      title="Company summary"
-      description="The organization profile buyers will see in the passport."
+      title={labels.companySummary}
+      description={labels.companySummaryDescription}
     >
       <div className="flex flex-col gap-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
@@ -34,12 +39,12 @@ export function PassportCompanySummary({ profile }: PassportCompanySummaryProps)
                 {profile.verified ? (
                   <Badge className="rounded-full border-teal-200 bg-teal-50 text-teal-700">
                     <BadgeCheck aria-hidden="true" />
-                    Verified
+                    {labels.verified}
                   </Badge>
                 ) : null}
               </div>
               <p className="mt-1 text-sm font-medium text-slate-500">
-                Buyer-facing supplier identity and operating footprint
+                {labels.supplierIdentity}
               </p>
             </div>
           </div>
@@ -65,7 +70,7 @@ export function PassportCompanySummary({ profile }: PassportCompanySummaryProps)
         </div>
 
         <div>
-          <p className="mb-3 text-sm font-semibold text-slate-950">Key certifications</p>
+          <p className="mb-3 text-sm font-semibold text-slate-950">{labels.keyCertifications}</p>
           <div className="flex flex-wrap gap-2">
             {profile.certifications.map((certification) => (
               <Badge

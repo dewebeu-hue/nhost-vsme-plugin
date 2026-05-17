@@ -10,25 +10,30 @@ import {
 } from "@/components/ui/table";
 import { SectionCard } from "@/components/shared/section-card";
 import type { PassportApprovedDocument } from "@/lib/mock-data";
+import { defaultPassportLabels, type PassportLabels } from "@/lib/passport-labels";
 
 type ApprovedDocumentsTableProps = {
   documents: PassportApprovedDocument[];
+  labels?: PassportLabels;
 };
 
-export function ApprovedDocumentsTable({ documents }: ApprovedDocumentsTableProps) {
+export function ApprovedDocumentsTable({
+  documents,
+  labels = defaultPassportLabels,
+}: ApprovedDocumentsTableProps) {
   return (
     <SectionCard
-      title="Approved documents"
-      description="Evidence files approved for the buyer-facing passport."
+      title={labels.approvedDocuments}
+      description={labels.approvedDocumentsDescription}
       contentClassName="overflow-hidden px-0 pb-0"
     >
       <Table>
         <TableHeader>
           <TableRow className="bg-slate-50/80">
-            <TableHead className="pl-6">Document</TableHead>
-            <TableHead>Category</TableHead>
-            <TableHead>Linked sections</TableHead>
-            <TableHead className="pr-6 text-right">Status</TableHead>
+            <TableHead className="pl-6">{labels.document}</TableHead>
+            <TableHead>{labels.category}</TableHead>
+            <TableHead>{labels.linkedSections}</TableHead>
+            <TableHead className="pr-6 text-right">{labels.status}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -42,16 +47,18 @@ export function ApprovedDocumentsTable({ documents }: ApprovedDocumentsTableProp
                   <span className="font-semibold text-slate-950">{document.name}</span>
                 </div>
               </TableCell>
-              <TableCell className="font-medium text-slate-600">{document.category}</TableCell>
+              <TableCell className="font-medium text-slate-600">
+                {labels.documentCategories[document.category] ?? document.category}
+              </TableCell>
               <TableCell className="max-w-80 text-slate-600">
-                {document.linkedSections.join(", ")}
+                {document.linkedSections.map((section) => labels.modules[section] ?? section).join(", ")}
               </TableCell>
               <TableCell className="pr-6 text-right">
                 <Badge
                   variant="outline"
                   className="rounded-full border-teal-200 bg-teal-50 px-2.5 py-1 font-medium text-teal-700"
                 >
-                  {document.status}
+                  {labels.approved}
                 </Badge>
               </TableCell>
             </TableRow>

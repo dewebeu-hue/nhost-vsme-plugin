@@ -13,17 +13,20 @@ import { DocumentStatusBadge } from "@/components/documents/document-status-badg
 import { FileTypeIcon } from "@/components/documents/file-type-icon";
 import type { EvidenceRoomDocument } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
+import { defaultDocumentsLabels, formatLabel, type DocumentsLabels } from "@/lib/workspace-labels";
 
 type DocumentsTableProps = {
   documents: EvidenceRoomDocument[];
   selectedDocumentId: string;
   onSelectDocument: (document: EvidenceRoomDocument) => void;
+  labels?: DocumentsLabels;
 };
 
 export function DocumentsTable({
   documents,
   selectedDocumentId,
   onSelectDocument,
+  labels = defaultDocumentsLabels,
 }: DocumentsTableProps) {
   return (
     <section className="supplier-surface overflow-hidden rounded-2xl border-0">
@@ -31,14 +34,14 @@ export function DocumentsTable({
         <TableHeader>
           <TableRow className="bg-slate-50/80">
             <TableHead className="w-10 px-4">
-              <Checkbox aria-label="Select all documents" />
+              <Checkbox aria-label={labels.selectAllDocuments} />
             </TableHead>
-            <TableHead>Document</TableHead>
-            <TableHead>Type</TableHead>
-            <TableHead>Linked to</TableHead>
-            <TableHead>Uploaded</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead className="text-right">Actions</TableHead>
+            <TableHead>{labels.columnDocument}</TableHead>
+            <TableHead>{labels.columnType}</TableHead>
+            <TableHead>{labels.columnLinkedTo}</TableHead>
+            <TableHead>{labels.columnUploaded}</TableHead>
+            <TableHead>{labels.columnStatus}</TableHead>
+            <TableHead className="text-right">{labels.columnActions}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -57,7 +60,7 @@ export function DocumentsTable({
               >
                 <TableCell className="px-4" onClick={(event) => event.stopPropagation()}>
                   <Checkbox
-                    aria-label={`Select ${document.title}`}
+                    aria-label={formatLabel(labels.selectDocument, { title: document.title })}
                     checked={selected}
                     onCheckedChange={() => onSelectDocument(document)}
                   />
@@ -68,12 +71,14 @@ export function DocumentsTable({
                     <div>
                       <p className="font-semibold text-slate-950">{document.title}</p>
                       <p className="mt-1 text-xs font-medium text-slate-500">
-                        {document.fileName} · {document.fileSize}
+                        {document.fileName} - {document.fileSize}
                       </p>
                     </div>
                   </div>
                 </TableCell>
-                <TableCell className="text-slate-600">{document.type}</TableCell>
+                <TableCell className="text-slate-600">
+                  {labels.documentTypes[document.type] ?? document.type}
+                </TableCell>
                 <TableCell className="min-w-48 text-slate-600">
                   {document.linkedTo.join(", ")}
                   {document.linkedExtra ? (
@@ -84,13 +89,22 @@ export function DocumentsTable({
                 </TableCell>
                 <TableCell className="min-w-48 text-slate-600">
                   <div>{document.uploaded}</div>
-                  <div className="text-xs text-slate-500">by {document.uploadedBy}</div>
+                  <div className="text-xs text-slate-500">
+                    {formatLabel(labels.uploadedBy, { name: document.uploadedBy })}
+                  </div>
                 </TableCell>
                 <TableCell>
-                  <DocumentStatusBadge status={document.status} />
+                  <DocumentStatusBadge
+                    status={document.status}
+                    label={labels.statuses[document.status] ?? document.status}
+                  />
                 </TableCell>
                 <TableCell className="text-right" onClick={(event) => event.stopPropagation()}>
-                  <Button variant="ghost" size="icon" aria-label={`Actions for ${document.title}`}>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    aria-label={formatLabel(labels.actionsFor, { title: document.title })}
+                  >
                     <MoreHorizontal />
                   </Button>
                 </TableCell>

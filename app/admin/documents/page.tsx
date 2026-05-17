@@ -1,10 +1,8 @@
-import { AdminPlaceholder } from "@/components/admin/admin-placeholder";
+import { redirect } from "next/navigation";
+
+export const dynamic = "force-dynamic";
+
 
 export default function AdminDocumentsPage() {
-  return (
-    <AdminPlaceholder
-      title="Documents"
-      subtitle="Validate client evidence documents, expiry risks, and missing metadata."
-    />
-  );
+  redirect("/en/admin/documents");
 }
