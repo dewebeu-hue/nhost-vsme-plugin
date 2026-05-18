@@ -1,17 +1,22 @@
 import { NextResponse } from "next/server";
 import {
   AuthenticationRequiredError,
-  getAuthTokenForGraphQL,
   isRequestBearerTokenExpired,
   requireCurrentUser,
 } from "@/lib/auth/session";
 import {
-  getPrimaryOrganizationForUser,
+  getPrimaryOrganizationForUserWithAdmin,
+  isWorkspaceBackendConfigured,
 } from "@/lib/data/organizations";
 import { logSafeDiagnostic } from "@/lib/diagnostics/server-env";
 import { isHasuraGraphqlConfigured } from "@/lib/graphql/client";
 
 export async function POST(request: Request) {
+  logSafeDiagnostic("current_org_start");
+  logSafeDiagnostic("token_present", {
+    tokenPresent: Boolean(request.headers.get("authorization")),
+  });
+
   if (!isHasuraGraphqlConfigured()) {
     return NextResponse.json({
       configured: false,
@@ -20,28 +25,32 @@ export async function POST(request: Request) {
     });
   }
 
+  if (!isWorkspaceBackendConfigured()) {
+    logSafeDiagnostic("current_org_failed", {
+      category: "env_missing",
+    });
+
+    return NextResponse.json(
+      { error: "Server organization lookup is not configured.", category: "env_missing" },
+      { status: 500 },
+    );
+  }
+
   try {
     logCurrentOrgInfo("request started");
     logCurrentOrgInfo("auth token present", Boolean(request.headers.get("authorization")));
 
     const user = await requireCurrentUser(request);
     logCurrentOrgInfo("user resolved", Boolean(user.id));
+    logSafeDiagnostic("user_resolved", {
+      userResolved: Boolean(user.id),
+    });
 
-    const accessToken = await getAuthTokenForGraphQL(request);
-
-    if (!accessToken) {
-      logSafeDiagnostic("current_organization_unauthenticated", {
-        category: "unauthenticated",
-      });
-
-      return NextResponse.json(
-        { error: "A valid authenticated user is required.", category: "unauthenticated" },
-        { status: 401 },
-      );
-    }
-
-    const organization = await getPrimaryOrganizationForUser(user.id, accessToken);
+    const organization = await getPrimaryOrganizationForUserWithAdmin(user.id);
     logCurrentOrgInfo("organizations found count", organization ? 1 : 0);
+    logSafeDiagnostic("memberships_found", {
+      count: organization ? 1 : 0,
+    });
 
     if (!organization) {
       logSafeDiagnostic("current_organization_missing", {
@@ -72,7 +81,7 @@ export async function POST(request: Request) {
 
     const category = classifyOrganizationError(error);
 
-    logSafeDiagnostic("current_organization_error", {
+    logSafeDiagnostic("current_org_failed", {
       category,
       message: error instanceof Error ? error.message : "unknown",
     });

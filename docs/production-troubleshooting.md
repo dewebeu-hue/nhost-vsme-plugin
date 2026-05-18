@@ -128,6 +128,12 @@ Fix:
 - Confirm Hasura permissions allow the `user` role to select `organizations` through the `organization_members` relationship.
 - If Nhost is configured and the user is authenticated, treat Acme/demo data as a signal that current organization lookup failed.
 
+MVP note:
+
+- `/api/organizations/current` validates the Nhost bearer token first, then uses the server-side Hasura admin secret to look up the current user's organization membership.
+- This avoids fragile client-side relationship permission issues for the dashboard bootstrap call.
+- The route returns only safe organization fields and never returns the admin secret, JWT, membership list, or other organizations.
+
 Useful SQL checks:
 
 ```sql

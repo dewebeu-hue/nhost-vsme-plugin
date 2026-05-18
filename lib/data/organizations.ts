@@ -8,6 +8,15 @@ export type OrganizationBasics = {
   name: string;
   slug: string;
   is_verified: boolean;
+  vat_id?: string | null;
+  industry?: string | null;
+  employee_count_range?: string | null;
+  headquarters_city?: string | null;
+  headquarters_country?: string | null;
+  countries_served?: string[] | null;
+  plan_key?: string;
+  billing_interval?: string;
+  subscription_status?: string;
 };
 
 export type CreateOrganizationWithOwnerInput = {
@@ -40,6 +49,12 @@ type CreateWorkspaceResponse = {
 
 type CurrentOrganizationResponse = {
   organizations: OrganizationBasics[];
+};
+
+type CurrentOrganizationMembershipResponse = {
+  organization_members: Array<{
+    organization: OrganizationBasics | null;
+  }>;
 };
 
 type OrganizationBySlugResponse = {
@@ -94,6 +109,32 @@ const primaryOrganizationQuery = `
       name
       slug
       is_verified
+    }
+  }
+`;
+
+const primaryOrganizationByMembershipAdminQuery = `
+  query PrimaryOrganizationByMembership($userId: uuid!) {
+    organization_members(
+      where: { user_id: { _eq: $userId } }
+      order_by: { created_at: asc }
+      limit: 1
+    ) {
+      organization {
+        id
+        name
+        slug
+        vat_id
+        industry
+        employee_count_range
+        headquarters_city
+        headquarters_country
+        countries_served
+        is_verified
+        plan_key
+        billing_interval
+        subscription_status
+      }
     }
   }
 `;
@@ -194,6 +235,15 @@ export async function getPrimaryOrganizationForUser(userId: string, accessToken?
   );
 
   return data.organizations[0] ?? null;
+}
+
+export async function getPrimaryOrganizationForUserWithAdmin(userId: string) {
+  const data = await executeAdminGraphql<CurrentOrganizationMembershipResponse>(
+    primaryOrganizationByMembershipAdminQuery,
+    { userId },
+  );
+
+  return data.organization_members[0]?.organization ?? null;
 }
 
 export async function getCurrentOrganizationForUser(userId: string, accessToken?: string) {
