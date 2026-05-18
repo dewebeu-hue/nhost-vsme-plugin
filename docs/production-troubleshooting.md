@@ -91,6 +91,24 @@ Fix:
   - `env_missing`
   - `graphql_error`
 
+## `/api/organizations/current` Returns 401
+
+Likely causes:
+
+- The Nhost access token expired.
+- The client reused a stale session object.
+- The current browser session is not loaded yet.
+- The `Authorization` header is missing.
+- The Nhost refresh token/session is unavailable.
+
+Fix:
+
+- Sign out and sign in again if the session cannot refresh.
+- Confirm protected dashboard requests use a freshly refreshed Nhost session before sending `Authorization`.
+- Confirm the app retries once after a 401 with a forced session refresh.
+- If the retry also returns 401, redirect the user to the localized login page.
+- In DevTools, confirm the retry request is sent without logging or copying token values.
+
 ## Dashboard Shows Acme/Demo Organization After Onboarding
 
 Likely causes:

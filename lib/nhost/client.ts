@@ -31,6 +31,44 @@ export function getBrowserNhostClient() {
   return browserClient;
 }
 
+export async function getFreshBrowserNhostSession(marginSeconds = 120) {
+  const nhost = getBrowserNhostClient();
+
+  if (!nhost) {
+    logAuthInfo("access token present", false);
+    return null;
+  }
+
+  const currentSession = nhost.getUserSession();
+
+  if (!currentSession?.accessToken) {
+    logAuthInfo("access token present", false);
+    return null;
+  }
+
+  logAuthInfo("access token present", true);
+
+  try {
+    return (await nhost.refreshSession(marginSeconds)) ?? nhost.getUserSession();
+  } catch {
+    return nhost.getUserSession();
+  }
+}
+
+export async function forceRefreshBrowserNhostSession() {
+  const nhost = getBrowserNhostClient();
+
+  if (!nhost) {
+    return null;
+  }
+
+  try {
+    return (await nhost.refreshSession(0)) ?? nhost.getUserSession();
+  } catch {
+    return null;
+  }
+}
+
 function logBrowserNhostConfig(config: NonNullable<ReturnType<typeof getNhostPublicConfig>>) {
   if (process.env.NODE_ENV === "production") {
     return;
@@ -61,4 +99,13 @@ function logBrowserNhostConfig(config: NonNullable<ReturnType<typeof getNhostPub
   if (storageUrl?.includes(".auth.")) {
     console.warn("Nhost storage URL appears to point to auth endpoint.");
   }
+}
+
+export function logAuthInfo(message: string, value?: boolean | string) {
+  if (process.env.NODE_ENV === "production") {
+    return;
+  }
+
+  const details = value === undefined ? "" : ` ${value}`;
+  console.info(`[auth] ${message}${details}`);
 }

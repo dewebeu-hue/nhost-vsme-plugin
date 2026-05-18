@@ -62,6 +62,16 @@ export async function getAuthTokenForGraphQL(request?: Request) {
   return getServerNhostClient()?.getUserSession()?.accessToken ?? null;
 }
 
+export function isRequestBearerTokenExpired(request?: Request) {
+  const bearerToken = getBearerToken(request);
+
+  if (!bearerToken) {
+    return false;
+  }
+
+  return isJwtExpired(bearerToken);
+}
+
 function getBearerToken(request?: Request) {
   const header = request?.headers.get("authorization");
 
@@ -70,6 +80,34 @@ function getBearerToken(request?: Request) {
   }
 
   return header.slice("bearer ".length).trim() || null;
+}
+
+function isJwtExpired(token: string) {
+  const payloadPart = token.split(".")[1];
+
+  if (!payloadPart) {
+    return false;
+  }
+
+  try {
+    const payload = JSON.parse(decodeBase64Url(payloadPart)) as { exp?: unknown };
+    const expiresAt = typeof payload.exp === "number" ? payload.exp : null;
+
+    if (!expiresAt) {
+      return false;
+    }
+
+    return expiresAt * 1000 <= Date.now();
+  } catch {
+    return false;
+  }
+}
+
+function decodeBase64Url(value: string) {
+  const base64 = value.replace(/-/g, "+").replace(/_/g, "/");
+  const padded = base64.padEnd(base64.length + ((4 - (base64.length % 4)) % 4), "=");
+
+  return Buffer.from(padded, "base64").toString("utf8");
 }
 
 async function verifyNhostAccessToken(token: string) {

@@ -826,7 +826,15 @@
       "previewMode": "Nhost is not configured. You are viewing the app in mock mode.",
       "success": "Signed in. Redirecting to your dashboard...",
       "needsStep": "Please sign in to continue.",
-      "error": "We could not sign you in. Please check your email and password."
+      "error": "We could not sign you in. Please check your email and password.",
+      "requiredFields": "Enter your email and password.",
+      "loginFailed": "We could not sign you in. Please check your email and password.",
+      "invalidEmailOrPassword": "Invalid email or password.",
+      "emailNotVerified": "Email is not verified.",
+      "authNetworkError": "Unable to connect to Nhost Auth.",
+      "unknownAuthError": "An unknown error occurred.",
+      "nhostNotConfigured": "Nhost Auth is not configured.",
+      "sessionExpired": "Your session has expired. Please sign in again."
     },
     "signup": {
       "eyebrow": "Company workspace",
@@ -876,6 +884,9 @@
     "goToLogin": "Sign in",
     "mockModeNotice": "Nhost is not configured. You are viewing the app in mock mode.",
     "loginError": "We could not sign you in. Please check your email and password.",
+    "loginFailed": "We could not sign you in. Please check your email and password.",
+    "invalidEmailOrPassword": "Invalid email or password.",
+    "emailNotVerified": "Email is not verified.",
     "signupError": "We could not create your account. Please try again.",
     "signupFailed": "We could not create your account. Please try again.",
     "emailAlreadyExists": "This email already exists.",
@@ -886,6 +897,7 @@
     "unknownAuthError": "An unknown error occurred.",
     "nhostNotConfigured": "Nhost Auth is not configured.",
     "authRequired": "Please sign in to continue.",
+    "sessionExpired": "Your session has expired. Please sign in again.",
     "continueWithDemo": "Continue with demo data"
   },
   "share": {

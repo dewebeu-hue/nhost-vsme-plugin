@@ -826,7 +826,15 @@
       "previewMode": "Nhost ist nicht konfiguriert. Sie sehen die App im Demo-Modus.",
       "success": "Angemeldet. Weiterleitung zum Dashboard...",
       "needsStep": "Bitte melden Sie sich an, um fortzufahren.",
-      "error": "Wir konnten Sie nicht anmelden. Bitte prüfen Sie E-Mail und Passwort."
+      "error": "Wir konnten Sie nicht anmelden. Bitte prüfen Sie E-Mail und Passwort.",
+      "requiredFields": "Geben Sie E-Mail und Passwort ein.",
+      "loginFailed": "Wir konnten Sie nicht anmelden. Bitte prüfen Sie E-Mail und Passwort.",
+      "invalidEmailOrPassword": "Ungültige E-Mail-Adresse oder ungültiges Passwort.",
+      "emailNotVerified": "Die E-Mail-Adresse ist nicht verifiziert.",
+      "authNetworkError": "Verbindung zu Nhost Auth nicht möglich.",
+      "unknownAuthError": "Ein unbekannter Fehler ist aufgetreten.",
+      "nhostNotConfigured": "Nhost Auth ist nicht konfiguriert.",
+      "sessionExpired": "Ihre Sitzung ist abgelaufen. Bitte melden Sie sich erneut an."
     },
     "signup": {
       "eyebrow": "Supplier Workspace",
@@ -876,6 +884,9 @@
     "goToLogin": "Anmelden",
     "mockModeNotice": "Nhost ist nicht konfiguriert. Sie sehen die App im Demo-Modus.",
     "loginError": "Wir konnten Sie nicht anmelden. Bitte prüfen Sie E-Mail und Passwort.",
+    "loginFailed": "Wir konnten Sie nicht anmelden. Bitte prüfen Sie E-Mail und Passwort.",
+    "invalidEmailOrPassword": "Ungültige E-Mail-Adresse oder ungültiges Passwort.",
+    "emailNotVerified": "Die E-Mail-Adresse ist nicht verifiziert.",
     "signupError": "Wir konnten Ihr Konto nicht erstellen. Bitte versuchen Sie es erneut.",
     "signupFailed": "Wir konnten Ihr Konto nicht erstellen. Bitte versuchen Sie es erneut.",
     "emailAlreadyExists": "Diese E-Mail-Adresse existiert bereits.",
@@ -886,6 +897,7 @@
     "unknownAuthError": "Ein unbekannter Fehler ist aufgetreten.",
     "nhostNotConfigured": "Nhost Auth ist nicht konfiguriert.",
     "authRequired": "Bitte melden Sie sich an, um fortzufahren.",
+    "sessionExpired": "Ihre Sitzung ist abgelaufen. Bitte melden Sie sich erneut an.",
     "continueWithDemo": "Mit Demo-Daten fortfahren"
   },
   "share": {

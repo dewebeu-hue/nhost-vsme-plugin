@@ -38,27 +38,39 @@ export function LoginForm() {
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
+    logLoginInfo("submit started");
+
     const nhost = getBrowserNhostClient();
+    logLoginInfo("nhost configured", Boolean(nhost));
 
     if (!nhost) {
       setMessage({
         tone: "info",
-        text: t("previewMode"),
+        text: t("nhostNotConfigured"),
       });
       return;
     }
 
     const formData = new FormData(event.currentTarget);
-    const email = String(formData.get("email") ?? "");
+    const email = String(formData.get("email") ?? "").trim();
     const password = String(formData.get("password") ?? "");
+
+    if (!email || !password) {
+      setMessage({ tone: "error", text: t("requiredFields") });
+      return;
+    }
 
     setIsSubmitting(true);
     setMessage(null);
 
     try {
+      logLoginInfo("validation passed");
+      logLoginInfo("request sent");
+
       const response = await nhost.auth.signInEmailPassword({ email, password });
 
       if (response.body.session) {
+        logLoginInfo("success");
         const destination = await getPostLoginDestination(locale, response.body.session);
 
         if (destination.error) {
@@ -74,21 +86,23 @@ export function LoginForm() {
 
       setMessage({
         tone: "error",
-        text: t("needsStep"),
+        text: t("emailNotVerified"),
       });
     } catch (error) {
+      const safeError = readSafeAuthError(error);
+      logLoginWarn("failed", safeError.code ?? safeError.message);
       console.error("Login failed", {
         diagnostics: getPublicDiagnostics(),
-        authError: readSafeAuthError(error),
+        authError: safeError,
       });
-      setMessage({ tone: "error", text: t("error") });
+      setMessage({ tone: "error", text: t(getLoginErrorKey(safeError)) });
     } finally {
       setIsSubmitting(false);
     }
   }
 
   return (
-    <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
+    <form className="flex flex-col gap-5" noValidate onSubmit={handleSubmit}>
       {message ? <AuthStatusMessage tone={message.tone} message={message.text} /> : null}
 
       <label className="flex flex-col gap-2 text-sm font-semibold text-slate-700">
@@ -113,7 +127,11 @@ export function LoginForm() {
         />
       </label>
 
-      <Button disabled={isSubmitting} className="h-12 rounded-xl bg-blue-600 hover:bg-blue-700">
+      <Button
+        type="submit"
+        disabled={isSubmitting}
+        className="h-12 rounded-xl bg-blue-600 hover:bg-blue-700"
+      >
         {isSubmitting ? t("submitting") : t("submit")}
         <ArrowRight data-icon="inline-end" />
       </Button>
@@ -198,7 +216,10 @@ function readSafeAuthError(error: unknown) {
     status?: unknown;
     statusCode?: unknown;
     error?: unknown;
+    body?: unknown;
   };
+  const body =
+    value.body && typeof value.body === "object" ? (value.body as Record<string, unknown>) : null;
 
   return {
     message: typeof value.message === "string" ? value.message : "unknown",
@@ -208,6 +229,53 @@ function readSafeAuthError(error: unknown) {
         : typeof value.statusCode === "number"
           ? value.statusCode
           : undefined,
-    code: typeof value.error === "string" ? value.error : undefined,
+    code:
+      typeof value.error === "string"
+        ? value.error
+        : typeof body?.error === "string"
+          ? body.error
+          : undefined,
   };
+}
+
+type SafeAuthError = ReturnType<typeof readSafeAuthError>;
+
+function getLoginErrorKey(error: SafeAuthError) {
+  const code = error.code?.toLowerCase() ?? "";
+  const message = error.message.toLowerCase();
+
+  if (code.includes("invalid-email-password") || message.includes("invalid email")) {
+    return "invalidEmailOrPassword";
+  }
+
+  if (code.includes("unverified-user") || message.includes("unverified")) {
+    return "emailNotVerified";
+  }
+
+  if (
+    message.includes("failed to fetch") ||
+    message.includes("network") ||
+    message.includes("cors")
+  ) {
+    return "authNetworkError";
+  }
+
+  return "unknownAuthError";
+}
+
+function logLoginInfo(message: string, value?: boolean | string) {
+  if (process.env.NODE_ENV === "production") {
+    return;
+  }
+
+  const details = value === undefined ? "" : ` ${value}`;
+  console.info(`[login] ${message}${details}`);
+}
+
+function logLoginWarn(message: string, value: string) {
+  if (process.env.NODE_ENV === "production") {
+    return;
+  }
+
+  console.warn(`[login] ${message}: ${value}`);
 }

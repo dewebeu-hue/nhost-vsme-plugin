@@ -826,7 +826,15 @@
       "previewMode": "Nhost nije konfiguriran. Aplikaciju trenutno pregledavate u demo načinu.",
       "success": "Prijavljeni ste. Preusmjeravanje na dashboard...",
       "needsStep": "Prijavite se za nastavak.",
-      "error": "Nismo vas mogli prijaviti. Provjerite email i lozinku."
+      "error": "Nismo vas mogli prijaviti. Provjerite email i lozinku.",
+      "requiredFields": "Unesite email i lozinku.",
+      "loginFailed": "Nismo vas mogli prijaviti. Provjerite email i lozinku.",
+      "invalidEmailOrPassword": "Neispravan email ili lozinka.",
+      "emailNotVerified": "Email nije potvrđen.",
+      "authNetworkError": "Nije moguće spojiti se na Nhost Auth.",
+      "unknownAuthError": "Došlo je do nepoznate greške.",
+      "nhostNotConfigured": "Nhost Auth nije konfiguriran.",
+      "sessionExpired": "Vaša sesija je istekla. Prijavite se ponovno."
     },
     "signup": {
       "eyebrow": "Supplier workspace",
@@ -876,6 +884,9 @@
     "goToLogin": "Prijava",
     "mockModeNotice": "Nhost nije konfiguriran. Aplikaciju trenutno pregledavate u demo načinu.",
     "loginError": "Nismo vas mogli prijaviti. Provjerite email i lozinku.",
+    "loginFailed": "Nismo vas mogli prijaviti. Provjerite email i lozinku.",
+    "invalidEmailOrPassword": "Neispravan email ili lozinka.",
+    "emailNotVerified": "Email nije potvrđen.",
     "signupError": "Nismo mogli kreirati račun. Pokušajte ponovno.",
     "signupFailed": "Nismo mogli kreirati račun. Pokušajte ponovno.",
     "emailAlreadyExists": "Ovaj email već postoji.",
@@ -886,6 +897,7 @@
     "unknownAuthError": "Došlo je do nepoznate greške.",
     "nhostNotConfigured": "Nhost Auth nije konfiguriran.",
     "authRequired": "Prijavite se za nastavak.",
+    "sessionExpired": "Vaša sesija je istekla. Prijavite se ponovno.",
     "continueWithDemo": "Nastavi s demo podacima"
   },
   "share": {

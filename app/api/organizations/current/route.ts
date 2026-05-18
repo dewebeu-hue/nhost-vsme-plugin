@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import {
   AuthenticationRequiredError,
   getAuthTokenForGraphQL,
+  isRequestBearerTokenExpired,
   requireCurrentUser,
 } from "@/lib/auth/session";
 import {
@@ -57,12 +58,14 @@ export async function POST(request: Request) {
     return NextResponse.json({ configured: true, organization });
   } catch (error) {
     if (error instanceof AuthenticationRequiredError) {
+      const category = isRequestBearerTokenExpired(request) ? "token_expired" : "unauthenticated";
+
       logSafeDiagnostic("current_organization_auth_required", {
-        category: "unauthenticated",
+        category,
       });
 
       return NextResponse.json(
-        { error: "A valid authenticated user is required.", category: "unauthenticated" },
+        { error: "A valid authenticated user is required.", category },
         { status: 401 },
       );
     }

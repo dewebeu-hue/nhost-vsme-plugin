@@ -2,8 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { ChevronDown } from "lucide-react";
-import { getBrowserNhostClient } from "@/lib/nhost/client";
+import {
+  forceRefreshBrowserNhostSession,
+  getBrowserNhostClient,
+  getFreshBrowserNhostSession,
+  logAuthInfo,
+} from "@/lib/nhost/client";
 
 type DashboardOrganizationSelectorProps = {
   fallbackName: string;
@@ -26,6 +32,7 @@ export function DashboardOrganizationSelector({
 }: DashboardOrganizationSelectorProps) {
   const router = useRouter();
   const pathname = usePathname();
+  const t = useTranslations("auth");
   const [organizationName, setOrganizationName] = useState(fallbackName);
 
   useEffect(() => {
@@ -33,7 +40,7 @@ export function DashboardOrganizationSelector({
 
     async function loadOrganization() {
       const nhost = getBrowserNhostClient();
-      const session = nhost?.getUserSession();
+      const session = await getFreshBrowserNhostSession();
 
       if (!nhost || !session?.user?.id) {
         return;
@@ -42,18 +49,40 @@ export function DashboardOrganizationSelector({
       try {
         setOrganizationName(session.user.id ? "Loading workspace..." : fallbackName);
 
-        const response = await fetch("/api/organizations/current", {
-          method: "POST",
-          headers: {
-            "content-type": "application/json",
-            authorization: `Bearer ${session.accessToken}`,
-          },
-          body: JSON.stringify({}),
-        });
+        const response = await fetchCurrentOrganization(session.accessToken);
 
         const payload = (await response.json()) as OrganizationResponse;
 
         if (cancelled || payload.configured === false) {
+          return;
+        }
+
+        if (response.status === 401) {
+          logAuthInfo("current org request unauthorized");
+          logAuthInfo("retrying after refresh");
+
+          const refreshedSession = await forceRefreshBrowserNhostSession();
+
+          if (refreshedSession?.accessToken) {
+            const retryResponse = await fetchCurrentOrganization(refreshedSession.accessToken);
+            const retryPayload = (await retryResponse.json()) as OrganizationResponse;
+
+            if (retryResponse.ok && retryPayload.organization?.name) {
+              setOrganizationName(retryPayload.organization.name);
+              return;
+            }
+
+            if (retryResponse.status !== 401) {
+              setOrganizationName(
+                getOrganizationErrorLabel(retryPayload.category, retryResponse.status),
+              );
+              return;
+            }
+          }
+
+          logAuthInfo("session expired");
+          setOrganizationName(t("sessionExpired"));
+          router.push(`/${getLocaleFromPath(pathname)}/login`);
           return;
         }
 
@@ -82,7 +111,7 @@ export function DashboardOrganizationSelector({
     return () => {
       cancelled = true;
     };
-  }, [fallbackName, pathname, router]);
+  }, [fallbackName, pathname, router, t]);
 
   return (
     <button
@@ -95,6 +124,17 @@ export function DashboardOrganizationSelector({
       <ChevronDown aria-hidden="true" className="shrink-0 text-slate-400" />
     </button>
   );
+}
+
+function fetchCurrentOrganization(accessToken: string) {
+  return fetch("/api/organizations/current", {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+      authorization: `Bearer ${accessToken}`,
+    },
+    body: JSON.stringify({}),
+  });
 }
 
 function getOrganizationErrorLabel(category: string | undefined, status: number) {
