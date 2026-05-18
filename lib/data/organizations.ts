@@ -41,6 +41,13 @@ type GraphqlResponse<T> = {
   errors?: Array<{ message: string }>;
 };
 
+type AdminGraphqlInput = {
+  query: string;
+  variables: Record<string, unknown>;
+  operationName: string;
+  errorCategory?: string;
+};
+
 type CreateWorkspaceResponse = {
   insert_organizations_one: OrganizationBasics | null;
   insert_organization_members_one: { id: string } | null;
@@ -53,8 +60,9 @@ type CurrentOrganizationResponse = {
 
 type CurrentOrganizationMembershipResponse = {
   organization_members: Array<{
+    id: string;
     organization_id: string;
-    organization: OrganizationBasics | null;
+    role: string;
   }>;
 };
 
@@ -114,31 +122,16 @@ const primaryOrganizationQuery = `
   }
 `;
 
-const primaryOrganizationByMembershipAdminQuery = `
-  query PrimaryOrganizationByMembership($userId: uuid!) {
+const currentUserMembershipAdminQuery = `
+  query GetMembership($userId: uuid!) {
     organization_members(
       where: { user_id: { _eq: $userId } }
-      order_by: { created_at: asc }
       limit: 1
+      order_by: { created_at: asc }
     ) {
+      id
       organization_id
-      organization {
-        id
-        name
-        slug
-        vat_id
-        industry
-        employee_count_range
-        headquarters_city
-        headquarters_country
-        countries_served
-        is_verified
-        plan_key
-        billing_interval
-        subscription_status
-        created_at
-        updated_at
-      }
+      role
     }
   }
 `;
@@ -148,7 +141,7 @@ type OrganizationByIdResponse = {
 };
 
 const organizationByIdAdminQuery = `
-  query OrganizationById($organizationId: uuid!) {
+  query GetOrganization($organizationId: uuid!) {
     organizations_by_pk(id: $organizationId) {
       id
       name
@@ -219,10 +212,14 @@ export async function createOrganizationWithOwner(input: CreateOrganizationWithO
     countries_served: input.headquartersCountry ? [input.headquartersCountry] : [],
   };
 
-  const data = await executeAdminGraphql<CreateWorkspaceResponse>(createWorkspaceMutation, {
-    organization,
-    member,
-    profile,
+  const data = await executeAdminGraphql<CreateWorkspaceResponse>({
+    operationName: "CreateSupplierWorkspace",
+    query: createWorkspaceMutation,
+    variables: {
+      organization,
+      member,
+      profile,
+    },
   });
 
   if (!data.insert_organizations_one) {
@@ -268,10 +265,12 @@ export async function getPrimaryOrganizationForUser(userId: string, accessToken?
 }
 
 export async function getPrimaryOrganizationForUserWithAdmin(userId: string) {
-  const data = await executeAdminGraphql<CurrentOrganizationMembershipResponse>(
-    primaryOrganizationByMembershipAdminQuery,
-    { userId },
-  );
+  const data = await executeAdminGraphql<CurrentOrganizationMembershipResponse>({
+    operationName: "GetMembership",
+    query: currentUserMembershipAdminQuery,
+    variables: { userId },
+    errorCategory: "membership_lookup_graphql_error",
+  });
 
   const membership = data.organization_members[0];
 
@@ -279,14 +278,12 @@ export async function getPrimaryOrganizationForUserWithAdmin(userId: string) {
     return null;
   }
 
-  if (membership.organization) {
-    return membership.organization;
-  }
-
-  const organizationData = await executeAdminGraphql<OrganizationByIdResponse>(
-    organizationByIdAdminQuery,
-    { organizationId: membership.organization_id },
-  );
+  const organizationData = await executeAdminGraphql<OrganizationByIdResponse>({
+    operationName: "GetOrganization",
+    query: organizationByIdAdminQuery,
+    variables: { organizationId: membership.organization_id },
+    errorCategory: "organization_lookup_graphql_error",
+  });
 
   if (!organizationData.organizations_by_pk) {
     throw new Error("organization_not_found");
@@ -308,13 +305,19 @@ async function executeOrganizationGraphql<TData>(
     return executeHasuraGraphql<TData>(query, variables, { accessToken });
   }
 
-  return executeAdminGraphql<TData>(query, variables);
+  return executeAdminGraphql<TData>({
+    operationName: "OrganizationData",
+    query,
+    variables,
+  });
 }
 
-async function executeAdminGraphql<TData>(
-  query: string,
-  variables: Record<string, unknown>,
-): Promise<TData> {
+async function executeAdminGraphql<TData>({
+  query,
+  variables,
+  operationName,
+  errorCategory = "admin_lookup_graphql_error",
+}: AdminGraphqlInput): Promise<TData> {
   const graphqlUrl = getNhostGraphqlUrl();
   const adminSecret = getNhostAdminSecret();
 
@@ -333,17 +336,25 @@ async function executeAdminGraphql<TData>(
   });
 
   if (!response.ok) {
-    throw new Error("Nhost GraphQL request failed.");
+    console.error("Admin GraphQL request failed", {
+      operationName,
+      status: response.status,
+    });
+    throw new Error(`${errorCategory}: request failed`);
   }
 
   const payload = (await response.json()) as GraphqlResponse<TData>;
 
   if (payload.errors?.length) {
-    throw new Error(payload.errors[0]?.message ?? "Nhost GraphQL returned an error.");
+    console.error("Admin GraphQL returned errors", {
+      operationName,
+      message: payload.errors[0]?.message ?? "unknown",
+    });
+    throw new Error(`${errorCategory}: ${payload.errors[0]?.message ?? "GraphQL error"}`);
   }
 
   if (!payload.data) {
-    throw new Error("Nhost GraphQL returned no data.");
+    throw new Error(`${errorCategory}: no data`);
   }
 
   return payload.data;
@@ -360,8 +371,12 @@ async function createUniqueSlug(value: string) {
 }
 
 async function slugExists(slug: string) {
-  const data = await executeAdminGraphql<OrganizationBySlugResponse>(organizationBySlugQuery, {
-    slug,
+  const data = await executeAdminGraphql<OrganizationBySlugResponse>({
+    operationName: "OrganizationBySlug",
+    query: organizationBySlugQuery,
+    variables: {
+      slug,
+    },
   });
 
   return data.organizations.length > 0;

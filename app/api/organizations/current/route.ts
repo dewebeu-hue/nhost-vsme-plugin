@@ -1,15 +1,78 @@
 import { NextResponse } from "next/server";
-import {
-  getPrimaryOrganizationForUserWithAdmin,
-  isWorkspaceBackendConfigured,
-} from "@/lib/data/organizations";
 import { logSafeDiagnostic } from "@/lib/diagnostics/server-env";
-import { isHasuraGraphqlConfigured } from "@/lib/graphql/client";
-import { getNhostAuthUrl } from "@/lib/nhost/config";
+import { getNhostAuthUrl, getNhostGraphqlUrl } from "@/lib/nhost/config";
+
+type Organization = {
+  id: string;
+  name: string;
+  slug: string;
+  vat_id: string | null;
+  industry: string | null;
+  employee_count_range: string | null;
+  headquarters_city: string | null;
+  headquarters_country: string | null;
+  countries_served: string[] | null;
+  is_verified: boolean;
+  plan_key: string;
+  billing_interval: string;
+  subscription_status: string;
+  created_at: string;
+  updated_at: string;
+};
+
+type Membership = {
+  id: string;
+  user_id: string;
+  organization_id: string;
+  role: string;
+};
+
+type GraphqlResponse<T> = {
+  data?: T;
+  errors?: Array<{ message?: string }>;
+};
+
+type AdminGraphqlResult<T> =
+  | { ok: true; data: T }
+  | { ok: false; safeGraphqlMessage: string };
+
+const getMembershipQuery = `
+  query GetMembership($userId: uuid!) {
+    organization_members(
+      where: { user_id: { _eq: $userId } }
+      limit: 1
+    ) {
+      id
+      user_id
+      organization_id
+      role
+    }
+  }
+`;
+
+const getOrganizationQuery = `
+  query GetOrganization($organizationId: uuid!) {
+    organizations_by_pk(id: $organizationId) {
+      id
+      name
+      slug
+      vat_id
+      industry
+      employee_count_range
+      headquarters_city
+      headquarters_country
+      countries_served
+      is_verified
+      plan_key
+      billing_interval
+      subscription_status
+      created_at
+      updated_at
+    }
+  }
+`;
 
 export async function POST(request: Request) {
-  let userIdResolved = false;
-
   logSafeDiagnostic("current_org_start");
   logSafeDiagnostic("token_present", {
     tokenPresent: Boolean(request.headers.get("authorization")),
@@ -21,7 +84,7 @@ export async function POST(request: Request) {
     logSafeDiagnostic("current_org_failed", {
       category: tokenResult.category,
       stage: "token_decode",
-      hasAdminSecret: isWorkspaceBackendConfigured(),
+      hasAdminSecret: hasHasuraAdminSecret(),
       hasUserId: false,
       membershipCount: 0,
     });
@@ -31,7 +94,7 @@ export async function POST(request: Request) {
         error: "A valid authenticated user is required.",
         category: tokenResult.category,
         stage: "token_decode",
-        hasAdminSecret: isWorkspaceBackendConfigured(),
+        hasAdminSecret: hasHasuraAdminSecret(),
         hasUserId: false,
         membershipCount: 0,
       },
@@ -50,7 +113,7 @@ export async function POST(request: Request) {
       logSafeDiagnostic("current_org_failed", {
         category: userResult.category,
         stage: "auth_user_lookup",
-        hasAdminSecret: isWorkspaceBackendConfigured(),
+        hasAdminSecret: hasHasuraAdminSecret(),
         hasUserId: false,
         membershipCount: 0,
       });
@@ -60,7 +123,7 @@ export async function POST(request: Request) {
           error: "A valid authenticated user is required.",
           category: userResult.category,
           stage: "auth_user_lookup",
-          hasAdminSecret: isWorkspaceBackendConfigured(),
+          hasAdminSecret: hasHasuraAdminSecret(),
           hasUserId: false,
           membershipCount: 0,
         },
@@ -68,7 +131,7 @@ export async function POST(request: Request) {
       );
     }
 
-    if (!isHasuraGraphqlConfigured() || !isWorkspaceBackendConfigured()) {
+    if (!getNhostGraphqlUrl() || !hasHasuraAdminSecret()) {
       logSafeDiagnostic("current_org_failed", {
         category: "hasura_admin_secret_missing",
         stage: "admin_lookup",
@@ -90,7 +153,6 @@ export async function POST(request: Request) {
       );
     }
 
-    userIdResolved = true;
     logCurrentOrgInfo("user resolved", true);
     logSafeDiagnostic("auth_user_lookup_success", {
       success: true,
@@ -103,13 +165,50 @@ export async function POST(request: Request) {
     });
     logSafeDiagnostic("admin_lookup_started");
 
-    const organization = await getPrimaryOrganizationForUserWithAdmin(userResult.userId);
-    logCurrentOrgInfo("organizations found count", organization ? 1 : 0);
-    logSafeDiagnostic("memberships_found", {
-      count: organization ? 1 : 0,
+    logSafeDiagnostic("membership_lookup_started");
+    const membershipResult = await executeCurrentOrgAdminGraphql<{
+      organization_members: Membership[];
+    }>({
+      operationName: "GetMembership",
+      query: getMembershipQuery,
+      variables: { userId: userResult.userId },
     });
 
-    if (!organization) {
+    if (!membershipResult.ok) {
+      logSafeDiagnostic("current_org_failed", {
+        category: "membership_lookup_graphql_error",
+        stage: "membership_lookup",
+        message: membershipResult.safeGraphqlMessage,
+      });
+
+      return NextResponse.json(
+        {
+          error: "We could not load your workspace right now.",
+          category: "membership_lookup_graphql_error",
+          stage: "membership_lookup",
+          hasAdminSecret: true,
+          hasUserId: true,
+          membershipCount: 0,
+          safeGraphqlMessage: membershipResult.safeGraphqlMessage,
+        },
+        { status: 502 },
+      );
+    }
+
+    const membership = membershipResult.data.organization_members[0];
+    const membershipCount = membershipResult.data.organization_members.length;
+
+    logSafeDiagnostic("membership_lookup_success", {
+      success: true,
+    });
+    logSafeDiagnostic("membership_count", {
+      count: membershipCount,
+    });
+    logSafeDiagnostic("memberships_found", {
+      count: membershipCount,
+    });
+
+    if (!membership) {
       logSafeDiagnostic("current_organization_missing", {
         category: "membership_not_found",
         userIdPresent: true,
@@ -129,6 +228,60 @@ export async function POST(request: Request) {
       );
     }
 
+    logSafeDiagnostic("organization_id_present", {
+      organizationIdPresent: Boolean(membership.organization_id),
+    });
+    logSafeDiagnostic("organization_lookup_started");
+
+    const organizationResult = await executeCurrentOrgAdminGraphql<{
+      organizations_by_pk: Organization | null;
+    }>({
+      operationName: "GetOrganization",
+      query: getOrganizationQuery,
+      variables: { organizationId: membership.organization_id },
+    });
+
+    if (!organizationResult.ok) {
+      logSafeDiagnostic("current_org_failed", {
+        category: "organization_lookup_graphql_error",
+        stage: "organization_lookup",
+        message: organizationResult.safeGraphqlMessage,
+      });
+
+      return NextResponse.json(
+        {
+          error: "We could not load your workspace right now.",
+          category: "organization_lookup_graphql_error",
+          stage: "organization_lookup",
+          hasAdminSecret: true,
+          hasUserId: true,
+          membershipCount: 1,
+          safeGraphqlMessage: organizationResult.safeGraphqlMessage,
+        },
+        { status: 502 },
+      );
+    }
+
+    const organization = organizationResult.data.organizations_by_pk;
+
+    logSafeDiagnostic("organization_lookup_success", {
+      success: Boolean(organization),
+    });
+
+    if (!organization) {
+      return NextResponse.json(
+        {
+          error: "We could not load your workspace right now.",
+          category: "organization_not_found",
+          stage: "organization_lookup",
+          hasAdminSecret: true,
+          hasUserId: true,
+          membershipCount: 1,
+        },
+        { status: 404 },
+      );
+    }
+
     return NextResponse.json({
       configured: true,
       organization,
@@ -139,23 +292,21 @@ export async function POST(request: Request) {
       membershipCount: 1,
     });
   } catch (error) {
-    const category = classifyOrganizationError(error);
-
     logSafeDiagnostic("current_org_failed", {
-      category,
+      category: "admin_lookup_graphql_error",
       message: error instanceof Error ? error.message : "unknown",
     });
 
     return NextResponse.json(
       {
         error: "We could not load your workspace right now.",
-        category,
+        category: "admin_lookup_graphql_error",
         stage: "admin_lookup",
-        hasAdminSecret: isWorkspaceBackendConfigured(),
-        hasUserId: userIdResolved,
+        hasAdminSecret: hasHasuraAdminSecret(),
+        hasUserId: true,
         membershipCount: 0,
       },
-      { status: statusForCurrentOrganizationCategory(category) },
+      { status: 502 },
     );
   }
 }
@@ -256,48 +407,60 @@ function decodeBase64Url(value: string) {
   return Buffer.from(padded, "base64").toString("utf8");
 }
 
-function classifyOrganizationError(error: unknown) {
-  const message = error instanceof Error ? error.message.toLowerCase() : "";
+async function executeCurrentOrgAdminGraphql<TData>({
+  operationName,
+  query,
+  variables,
+}: {
+  operationName: string;
+  query: string;
+  variables: Record<string, unknown>;
+}): Promise<AdminGraphqlResult<TData>> {
+  const graphqlUrl = getNhostGraphqlUrl();
+  const adminSecret = process.env.HASURA_GRAPHQL_ADMIN_SECRET;
 
-  if (message.includes("not configured")) {
-    return "hasura_admin_secret_missing";
+  if (!graphqlUrl || !adminSecret) {
+    return { ok: false, safeGraphqlMessage: "Hasura admin lookup is not configured." };
   }
 
-  if (message.includes("organization_not_found")) {
-    return "organization_not_found";
+  const response = await fetch(graphqlUrl, {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+      "x-hasura-admin-secret": adminSecret,
+    },
+    body: JSON.stringify({ query, variables }),
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    console.error("Current organization admin GraphQL request failed", {
+      operationName,
+      status: response.status,
+    });
+    return { ok: false, safeGraphqlMessage: `HTTP ${response.status}` };
   }
 
-  if (
-    message.includes("permission") ||
-    message.includes("access-denied") ||
-    message.includes("not authorized") ||
-    message.includes("not found in type") ||
-    (message.includes("field") && message.includes("not found"))
-  ) {
-    return "admin_lookup_graphql_error";
+  const payload = (await response.json()) as GraphqlResponse<TData>;
+  const firstError = payload.errors?.[0]?.message;
+
+  if (firstError) {
+    console.error("Current organization admin GraphQL returned errors", {
+      operationName,
+      message: firstError,
+    });
+    return { ok: false, safeGraphqlMessage: firstError };
   }
 
-  if (message.includes("graphql")) {
-    return "admin_lookup_graphql_error";
+  if (!payload.data) {
+    return { ok: false, safeGraphqlMessage: "GraphQL response did not include data." };
   }
 
-  return "admin_lookup_graphql_error";
+  return { ok: true, data: payload.data };
 }
 
-function statusForCurrentOrganizationCategory(category: string) {
-  if (category === "hasura_admin_secret_missing") {
-    return 500;
-  }
-
-  if (category === "organization_not_found") {
-    return 404;
-  }
-
-  if (category === "admin_lookup_graphql_error") {
-    return 502;
-  }
-
-  return 500;
+function hasHasuraAdminSecret() {
+  return Boolean(process.env.HASURA_GRAPHQL_ADMIN_SECRET);
 }
 
 function logCurrentOrgInfo(message: string, value?: boolean | number) {

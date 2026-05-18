@@ -126,6 +126,24 @@ Fix:
 - The route must not query Hasura until `user.id` is resolved.
 - If user resolution fails, expect a 401 category such as `auth_user_lookup_failed`, `token_expired`, or `user_id_missing`.
 
+## `admin_lookup_graphql_error` With `hasUserId=true`
+
+Likely causes:
+
+- `organization_members` table is not tracked in Hasura.
+- `organizations` table is not tracked in Hasura.
+- A relationship-based query was used while the relationship was missing or named differently.
+- The GraphQL field name differs from the expected table field.
+
+Fix:
+
+- Use the two-step admin lookup: first `GetMembership`, then `GetOrganization`.
+- Confirm `organization_members` and `organizations` are tracked in Hasura.
+- Confirm `organization_members` exposes `organization_id`.
+- Confirm `organizations_by_pk(id: ...)` exists in Hasura GraphiQL.
+- If the response category is `membership_lookup_graphql_error`, inspect the `organization_members` table tracking/field names.
+- If the response category is `organization_lookup_graphql_error`, inspect the `organizations` table tracking/field names.
+
 ## Dashboard Shows Acme/Demo Organization After Onboarding
 
 Likely causes:
