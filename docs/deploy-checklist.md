@@ -33,6 +33,7 @@ NEXT_PUBLIC_NHOST_STORAGE_URL=https://<subdomain>.storage.<region>.nhost.run/v1
 ```
 
 Use the exact endpoint values from the Nhost dashboard if the project uses a different GraphQL host. `SHARE_LINK_COOKIE_SECRET` must be a long random server-only value in production.
+Do not swap service URLs: `NEXT_PUBLIC_NHOST_AUTH_URL` must look like `https://<subdomain>.auth.<region>.nhost.run/v1`, `NEXT_PUBLIC_NHOST_STORAGE_URL` must look like `https://<subdomain>.storage.<region>.nhost.run/v1`, and `NEXT_PUBLIC_NHOST_GRAPHQL_URL` must look like `https://<subdomain>.hasura.<region>.nhost.run/v1/graphql`.
 
 ## Vercel Project Setup
 
@@ -182,6 +183,9 @@ Safe diagnostics:
   - `graphqlUrlConfigured: true` if explicit GraphQL URL is set
   - `authUrlConfigured: true` if explicit Auth URL is set
   - `storageUrlConfigured: true` if explicit Storage URL is set
+  - `authUrlLooksLikeAuthEndpoint: true` when explicit Auth URL is set
+  - `storageUrlLooksLikeStorageEndpoint: true` when explicit Storage URL is set
+  - `graphqlUrlLooksLikeHasuraEndpoint: true` when explicit GraphQL URL is set
   - `hasuraAdminSecretConfiguredServerSide: true` if onboarding/server-side public share lookup is used
   - `shareCookieSecretConfiguredServerSide: true`
 
@@ -192,7 +196,9 @@ If login fails:
 - Confirm Vercel domain is listed in Nhost allowed origins.
 - Confirm Nhost auth redirect URLs include the deployed locale routes and `/auth/callback`.
 - Confirm `NEXT_PUBLIC_NHOST_SUBDOMAIN` and `NEXT_PUBLIC_NHOST_REGION` are set.
-- Confirm explicit `NEXT_PUBLIC_NHOST_AUTH_URL` matches the Nhost dashboard if used.
+- Confirm explicit `NEXT_PUBLIC_NHOST_AUTH_URL` matches the Nhost Auth URL and contains `.auth.`, not `.storage.`.
+- Confirm explicit `NEXT_PUBLIC_NHOST_STORAGE_URL` matches the Nhost Storage URL and contains `.storage.`, not `.auth.`.
+- Confirm explicit `NEXT_PUBLIC_NHOST_GRAPHQL_URL` matches the Hasura URL, contains `.hasura.`, and ends with `/v1/graphql`.
 - Check browser console for safe auth diagnostics only; do not paste secrets into logs or screenshots.
 
 If login succeeds but dashboard stays on mock/demo data:

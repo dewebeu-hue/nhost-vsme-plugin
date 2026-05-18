@@ -1,4 +1,11 @@
-import { getNhostPublicConfig } from "@/lib/nhost/public-config";
+import {
+  getNhostPublicAuthUrl,
+  getNhostPublicConfig,
+  getNhostPublicGraphqlUrl,
+  getNhostPublicStorageUrl,
+  isAuthEndpointUrl,
+  isStorageEndpointUrl,
+} from "@/lib/nhost/public-config";
 
 export { getNhostPublicConfig, isNhostConfigured } from "@/lib/nhost/public-config";
 
@@ -19,10 +26,6 @@ export function getShareLinkCookieSecret() {
 }
 
 export function getNhostGraphqlUrl() {
-  if (process.env.NEXT_PUBLIC_NHOST_GRAPHQL_URL) {
-    return process.env.NEXT_PUBLIC_NHOST_GRAPHQL_URL;
-  }
-
   const config = getNhostPublicConfig();
 
   if (!config) {
@@ -33,14 +36,10 @@ export function getNhostGraphqlUrl() {
     return "http://localhost:8080/v1/graphql";
   }
 
-  return `https://${config.subdomain}.graphql.${config.region}.nhost.run/v1/graphql`;
+  return getNhostPublicGraphqlUrl(config.subdomain, config.region);
 }
 
 export function getNhostAuthUrl() {
-  if (process.env.NEXT_PUBLIC_NHOST_AUTH_URL) {
-    return process.env.NEXT_PUBLIC_NHOST_AUTH_URL;
-  }
-
   const config = getNhostPublicConfig();
 
   if (!config) {
@@ -51,14 +50,10 @@ export function getNhostAuthUrl() {
     return "http://localhost:4000/v1";
   }
 
-  return `https://${config.subdomain}.auth.${config.region}.nhost.run/v1`;
+  return getNhostPublicAuthUrl(config.subdomain, config.region);
 }
 
 export function getNhostStorageUrl() {
-  if (process.env.NEXT_PUBLIC_NHOST_STORAGE_URL) {
-    return process.env.NEXT_PUBLIC_NHOST_STORAGE_URL;
-  }
-
   const config = getNhostPublicConfig();
 
   if (!config) {
@@ -69,5 +64,15 @@ export function getNhostStorageUrl() {
     return "http://localhost:5000/v1";
   }
 
-  return `https://${config.subdomain}.storage.${config.region}.nhost.run/v1`;
+  return getNhostPublicStorageUrl(config.subdomain, config.region);
+}
+
+export function authUrlLooksLikeAuthEndpoint() {
+  const authUrl = process.env.NEXT_PUBLIC_NHOST_AUTH_URL;
+  return Boolean(authUrl && isAuthEndpointUrl(authUrl));
+}
+
+export function storageUrlLooksLikeStorageEndpoint() {
+  const storageUrl = process.env.NEXT_PUBLIC_NHOST_STORAGE_URL;
+  return Boolean(storageUrl && isStorageEndpointUrl(storageUrl));
 }

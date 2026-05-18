@@ -269,6 +269,7 @@ SHARE_LINK_COOKIE_SECRET=
 ```
 
 Use the exact GraphQL/Auth/Storage URLs shown in the Nhost dashboard if they differ from the examples above.
+The endpoint types must not be swapped: `NEXT_PUBLIC_NHOST_AUTH_URL` is only for signup/login/session flows and must contain `.auth.`, `NEXT_PUBLIC_NHOST_STORAGE_URL` is only for file access and must contain `.storage.`, and `NEXT_PUBLIC_NHOST_GRAPHQL_URL` is only for Hasura GraphQL, must contain `.hasura.`, and should end with `/v1/graphql`.
 
 ## Before Pilot: Required Hasura Permission Validation
 
