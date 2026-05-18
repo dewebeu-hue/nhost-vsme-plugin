@@ -12,11 +12,20 @@ import { isHasuraGraphqlConfigured } from "@/lib/graphql/client";
 
 export async function POST(request: Request) {
   if (!isHasuraGraphqlConfigured()) {
-    return NextResponse.json({ configured: false, organization: null });
+    return NextResponse.json({
+      configured: false,
+      organization: null,
+      category: "env_missing",
+    });
   }
 
   try {
+    logCurrentOrgInfo("request started");
+    logCurrentOrgInfo("auth token present", Boolean(request.headers.get("authorization")));
+
     const user = await requireCurrentUser(request);
+    logCurrentOrgInfo("user resolved", Boolean(user.id));
+
     const accessToken = await getAuthTokenForGraphQL(request);
 
     if (!accessToken) {
@@ -31,6 +40,7 @@ export async function POST(request: Request) {
     }
 
     const organization = await getPrimaryOrganizationForUser(user.id, accessToken);
+    logCurrentOrgInfo("organizations found count", organization ? 1 : 0);
 
     if (!organization) {
       logSafeDiagnostic("current_organization_missing", {
@@ -66,7 +76,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json(
       { error: "We could not load your workspace right now.", category },
-      { status: 500 },
+      { status: statusForCurrentOrganizationCategory(category) },
     );
   }
 }
@@ -78,9 +88,44 @@ function classifyOrganizationError(error: unknown) {
     return "env_missing";
   }
 
-  if (message.includes("permission") || message.includes("access-denied") || message.includes("not authorized")) {
+  if (
+    message.includes("permission") ||
+    message.includes("access-denied") ||
+    message.includes("not authorized") ||
+    message.includes("not found in type") ||
+    (message.includes("field") && message.includes("not found"))
+  ) {
     return "permission_denied";
   }
 
-  return "graphql_error";
+  if (message.includes("graphql")) {
+    return "graphql_error";
+  }
+
+  return "unknown_current_org_error";
+}
+
+function statusForCurrentOrganizationCategory(category: string) {
+  if (category === "permission_denied") {
+    return 403;
+  }
+
+  if (category === "env_missing") {
+    return 503;
+  }
+
+  if (category === "graphql_error") {
+    return 502;
+  }
+
+  return 500;
+}
+
+function logCurrentOrgInfo(message: string, value?: boolean | number) {
+  if (process.env.NODE_ENV === "production") {
+    return;
+  }
+
+  const details = value === undefined ? "" : ` ${value}`;
+  console.info(`[current-org] ${message}${details}`);
 }

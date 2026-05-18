@@ -18,6 +18,7 @@ type OrganizationResponse = {
     is_verified: boolean;
   } | null;
   error?: string;
+  category?: string;
 };
 
 export function DashboardOrganizationSelector({
@@ -39,6 +40,8 @@ export function DashboardOrganizationSelector({
       }
 
       try {
+        setOrganizationName(session.user.id ? "Loading workspace..." : fallbackName);
+
         const response = await fetch("/api/organizations/current", {
           method: "POST",
           headers: {
@@ -62,9 +65,15 @@ export function DashboardOrganizationSelector({
 
         if (response.ok && payload.organization?.name) {
           setOrganizationName(payload.organization.name);
+          return;
+        }
+
+        if (!response.ok) {
+          setOrganizationName(getOrganizationErrorLabel(payload.category, response.status));
         }
       } catch (error) {
         console.error("Unable to load dashboard organization", error);
+        setOrganizationName("Workspace unavailable");
       }
     }
 
@@ -86,6 +95,18 @@ export function DashboardOrganizationSelector({
       <ChevronDown aria-hidden="true" className="shrink-0 text-slate-400" />
     </button>
   );
+}
+
+function getOrganizationErrorLabel(category: string | undefined, status: number) {
+  if (category === "permission_denied" || status === 403) {
+    return "Workspace permission issue";
+  }
+
+  if (category === "env_missing" || status === 503) {
+    return "Workspace not configured";
+  }
+
+  return "Workspace unavailable";
 }
 
 function getLocaleFromPath(pathname: string) {

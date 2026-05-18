@@ -39,9 +39,7 @@ type CreateWorkspaceResponse = {
 };
 
 type CurrentOrganizationResponse = {
-  organization_members: Array<{
-    organization: OrganizationBasics;
-  }>;
+  organizations: OrganizationBasics[];
 };
 
 type OrganizationBySlugResponse = {
@@ -73,33 +71,29 @@ const createWorkspaceMutation = `
 
 const currentOrganizationsQuery = `
   query CurrentOrganizations($userId: uuid!) {
-    organization_members(
-      where: { user_id: { _eq: $userId } }
+    organizations(
+      where: { organization_members: { user_id: { _eq: $userId } } }
       order_by: { created_at: asc }
     ) {
-      organization {
-        id
-        name
-        slug
-        is_verified
-      }
+      id
+      name
+      slug
+      is_verified
     }
   }
 `;
 
 const primaryOrganizationQuery = `
   query PrimaryOrganization($userId: uuid!) {
-    organization_members(
-      where: { user_id: { _eq: $userId } }
+    organizations(
+      where: { organization_members: { user_id: { _eq: $userId } } }
       order_by: { created_at: asc }
       limit: 1
     ) {
-      organization {
-        id
-        name
-        slug
-        is_verified
-      }
+      id
+      name
+      slug
+      is_verified
     }
   }
 `;
@@ -189,7 +183,7 @@ export async function getCurrentUserOrganizations(userId: string, accessToken?: 
     accessToken,
   );
 
-  return data.organization_members.map((member) => member.organization);
+  return data.organizations;
 }
 
 export async function getPrimaryOrganizationForUser(userId: string, accessToken?: string) {
@@ -199,7 +193,7 @@ export async function getPrimaryOrganizationForUser(userId: string, accessToken?
     accessToken,
   );
 
-  return data.organization_members[0]?.organization ?? null;
+  return data.organizations[0] ?? null;
 }
 
 export async function getCurrentOrganizationForUser(userId: string, accessToken?: string) {

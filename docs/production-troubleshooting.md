@@ -91,6 +91,34 @@ Fix:
   - `env_missing`
   - `graphql_error`
 
+## Dashboard Shows Acme/Demo Organization After Onboarding
+
+Likely causes:
+
+- `/api/organizations/current` failed.
+- The dashboard could not send the Nhost access token to `/api/organizations/current`.
+- `organization_members.user_id` does not match the Nhost Auth user UUID.
+- Hasura `organizations` select permission is missing or the `organizations.organization_members` relationship is not tracked.
+- The dashboard fell back to mock data because Nhost configuration is missing.
+
+Fix:
+
+- Open DevTools Network and inspect `POST /api/organizations/current`.
+- Confirm the request includes an `Authorization: Bearer ...` header.
+- Confirm the response category is not `permission_denied`, `env_missing`, `graphql_error`, or `no_organization`.
+- Confirm the Nhost Auth user UUID exactly matches `organization_members.user_id`.
+- Confirm Hasura permissions allow the `user` role to select `organizations` through the `organization_members` relationship.
+- If Nhost is configured and the user is authenticated, treat Acme/demo data as a signal that current organization lookup failed.
+
+Useful SQL checks:
+
+```sql
+select id, email from auth.users order by created_at desc;
+select * from organizations order by created_at desc;
+select * from organization_members order by created_at desc;
+select * from company_profiles order by created_at desc;
+```
+
 ## GraphQL Permission Denied
 
 Likely causes:
