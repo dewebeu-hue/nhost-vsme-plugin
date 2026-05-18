@@ -224,9 +224,19 @@ The real Nhost workflow for pilot validation is:
 - Demo QA checklist: `docs/demo-qa-checklist.md`
 - Deploy checklist: `docs/deploy-checklist.md`
 - Vercel deployment runbook: `docs/vercel-runbook.md`
+- Production smoke test: `docs/production-smoke-test.md`
+- Production troubleshooting: `docs/production-troubleshooting.md`
 - Security checklist: `docs/security-checklist.md`
 - Hasura permissions: `docs/hasura-permissions.md`
 - Storage checklist: `docs/nhost-storage.md`
+
+After Vercel deploy, run the production smoke test before sharing the app with pilot users.
+
+Production diagnostics:
+
+- `/api/diagnostics/env` returns safe boolean configuration status for Nhost/Vercel debugging.
+- It never returns secret values, user data, password hashes, file ids, or storage paths.
+- Use it together with `docs/production-troubleshooting.md`.
 
 ## Deploying To Vercel
 

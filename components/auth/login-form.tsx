@@ -7,6 +7,7 @@ import { ArrowRight } from "lucide-react";
 import { AuthStatusMessage } from "@/components/auth/auth-status-message";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { getPublicDiagnostics } from "@/lib/diagnostics/public-env";
 import { getBrowserNhostClient } from "@/lib/nhost/client";
 
 type MessageState = {
@@ -58,8 +59,16 @@ export function LoginForm() {
       const response = await nhost.auth.signInEmailPassword({ email, password });
 
       if (response.body.session) {
+        const destination = await getPostLoginDestination(locale, response.body.session);
+
+        if (destination.error) {
+          console.error("Post-login routing failed", destination.diagnostics);
+          setMessage({ tone: "error", text: t("error") });
+          return;
+        }
+
         setMessage({ tone: "success", text: t("success") });
-        window.location.assign(await getPostLoginDestination(locale, response.body.session));
+        window.location.assign(destination.href);
         return;
       }
 
@@ -68,7 +77,10 @@ export function LoginForm() {
         text: t("needsStep"),
       });
     } catch (error) {
-      console.error("Login failed", error);
+      console.error("Login failed", {
+        diagnostics: getPublicDiagnostics(),
+        authError: readSafeAuthError(error),
+      });
       setMessage({ tone: "error", text: t("error") });
     } finally {
       setIsSubmitting(false);
@@ -116,9 +128,16 @@ export function LoginForm() {
   );
 }
 
-async function getPostLoginDestination(locale: string, session: AuthSession) {
+type PostLoginDestination =
+  | { href: string; error?: never; diagnostics?: never }
+  | { error: true; diagnostics: Record<string, unknown>; href?: never };
+
+async function getPostLoginDestination(
+  locale: string,
+  session: AuthSession,
+): Promise<PostLoginDestination> {
   if (!session.accessToken || !session.user?.id) {
-    return `/${locale}/onboarding`;
+    return { href: `/${locale}/onboarding` };
   }
 
   try {
@@ -132,7 +151,7 @@ async function getPostLoginDestination(locale: string, session: AuthSession) {
     });
 
     if (response.status === 404) {
-      return `/${locale}/onboarding`;
+      return { href: `/${locale}/onboarding` };
     }
 
     if (response.ok) {
@@ -142,14 +161,53 @@ async function getPostLoginDestination(locale: string, session: AuthSession) {
       };
 
       if (payload.configured === false) {
-        return `/${locale}/dashboard`;
+        return { href: `/${locale}/dashboard` };
       }
 
-      return payload.organization ? `/${locale}/dashboard` : `/${locale}/onboarding`;
+      return { href: payload.organization ? `/${locale}/dashboard` : `/${locale}/onboarding` };
     }
+
+    const payload = (await response.json().catch(() => ({}))) as { category?: string };
+
+    return {
+      error: true,
+      diagnostics: {
+        ...getPublicDiagnostics(),
+        status: response.status,
+        category: payload.category ?? "organization_lookup_failed",
+      },
+    };
   } catch (error) {
-    console.error("Unable to resolve post-login destination", error);
+    return {
+      error: true,
+      diagnostics: {
+        ...getPublicDiagnostics(),
+        authError: readSafeAuthError(error),
+      },
+    };
+  }
+}
+
+function readSafeAuthError(error: unknown) {
+  if (!error || typeof error !== "object") {
+    return { message: "unknown" };
   }
 
-  return `/${locale}/dashboard`;
+  const value = error as {
+    message?: unknown;
+    status?: unknown;
+    statusCode?: unknown;
+    error?: unknown;
+  };
+
+  return {
+    message: typeof value.message === "string" ? value.message : "unknown",
+    status:
+      typeof value.status === "number"
+        ? value.status
+        : typeof value.statusCode === "number"
+          ? value.statusCode
+          : undefined,
+    code: typeof value.error === "string" ? value.error : undefined,
+  };
 }

@@ -164,6 +164,14 @@ export async function createOrganizationWithOwner(input: CreateOrganizationWithO
     throw new Error("Workspace could not be created.");
   }
 
+  if (!data.insert_organization_members_one) {
+    throw new Error("Organization member owner record could not be created.");
+  }
+
+  if (!data.insert_company_profiles_one) {
+    throw new Error("Company profile could not be created.");
+  }
+
   return data.insert_organizations_one;
 }
 

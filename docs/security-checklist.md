@@ -15,6 +15,7 @@ This checklist covers demo and pilot readiness for the Nhost + Hasura MVP.
 - Vercel build logs do not print secrets.
 - Nhost allowed origins include the deployed Vercel/custom domain.
 - Nhost auth redirect URLs include the deployed callback and locale dashboard routes used by the app.
+- `/api/diagnostics/env` returns only boolean configuration status and never secret values, user data, password hashes, file ids, or storage paths.
 
 ## Tenant Isolation
 

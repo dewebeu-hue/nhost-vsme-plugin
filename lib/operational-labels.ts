@@ -14,6 +14,13 @@ export type OnboardingLabels = {
   creatingWorkspace: string;
   workspaceCreated: string;
   onboardingError: string;
+  serverConfigMissing: string;
+  organizationCreateFailed: string;
+  membershipCreateFailed: string;
+  profileCreateFailed: string;
+  duplicateWorkspaceSlug: string;
+  networkError: string;
+  unknownOnboardingError: string;
   mockModeNotice: string;
   authRequired: string;
 };
@@ -98,6 +105,13 @@ export const defaultOnboardingLabels: OnboardingLabels = {
   creatingWorkspace: "Creating workspace...",
   workspaceCreated: "Workspace created successfully.",
   onboardingError: "We could not create your workspace. Please try again.",
+  serverConfigMissing: "Server onboarding configuration is missing.",
+  organizationCreateFailed: "We could not create the organization. Please try again.",
+  membershipCreateFailed: "We could not assign you as workspace owner. Please contact support.",
+  profileCreateFailed: "We could not create the company profile. Please try again.",
+  duplicateWorkspaceSlug: "A workspace with this name already exists. Please adjust the company name.",
+  networkError: "We could not reach the workspace service. Check your connection and try again.",
+  unknownOnboardingError: "An unknown onboarding error occurred. Please try again.",
   mockModeNotice:
     "Nhost is not configured yet. You can review this form, and mock dashboards will keep working.",
   authRequired: "Sign in with Nhost before creating a real workspace. Mock mode remains available.",

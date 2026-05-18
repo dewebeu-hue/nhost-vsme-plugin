@@ -10,6 +10,7 @@ import {
   getLatestPassport,
   isPassportsBackendConfigured,
 } from "@/lib/data/passports";
+import { logSafeDiagnostic } from "@/lib/diagnostics/server-env";
 
 type PassportRequest = {
   action?: unknown;
@@ -47,13 +48,37 @@ export async function POST(request: Request) {
     return NextResponse.json({ configured: true, organization, passport });
   } catch (error) {
     if (error instanceof AuthenticationRequiredError) {
+      logSafeDiagnostic("passport_auth_required", {
+        category: "unauthenticated",
+      });
+
       return NextResponse.json({ error: "Please sign in to manage Supplier Passports." }, { status: 401 });
     }
 
-    console.error("Unable to manage Supplier Passport", error);
+    const category = classifyPassportError(error);
+
+    logSafeDiagnostic("passport_error", {
+      category,
+      message: error instanceof Error ? error.message : "unknown",
+    });
+
     return NextResponse.json(
-      { error: "We could not update the Supplier Passport right now." },
+      { error: "We could not update the Supplier Passport right now.", category },
       { status: 500 },
     );
   }
+}
+
+function classifyPassportError(error: unknown) {
+  const message = error instanceof Error ? error.message.toLowerCase() : "";
+
+  if (message.includes("not configured")) {
+    return "env_missing";
+  }
+
+  if (message.includes("permission") || message.includes("access-denied") || message.includes("not authorized")) {
+    return "permission_denied";
+  }
+
+  return "graphql_error";
 }

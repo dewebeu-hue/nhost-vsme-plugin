@@ -169,3 +169,69 @@ Use the exact endpoint values from the Nhost dashboard if the project uses a dif
 - Open an approved document through View/Download.
 - Confirm public share page hides internal notes, admin notes, raw file ids, storage paths, organization members, billing fields, and unapproved documents.
 - Confirm browser console has no major errors on public, auth, dashboard, and share routes.
+
+## Production Auth/Data Troubleshooting
+
+Safe diagnostics:
+
+- Open `/api/diagnostics/env` on the deployed app.
+- Confirm it returns only boolean configuration status, never secret values.
+- Expected production checks:
+  - `nhostSubdomainConfigured: true`
+  - `nhostRegionConfigured: true`
+  - `graphqlUrlConfigured: true` if explicit GraphQL URL is set
+  - `authUrlConfigured: true` if explicit Auth URL is set
+  - `storageUrlConfigured: true` if explicit Storage URL is set
+  - `hasuraAdminSecretConfiguredServerSide: true` if onboarding/server-side public share lookup is used
+  - `shareCookieSecretConfiguredServerSide: true`
+
+If login fails:
+
+- Confirm Nhost Auth is enabled.
+- Confirm email/password login is enabled.
+- Confirm Vercel domain is listed in Nhost allowed origins.
+- Confirm Nhost auth redirect URLs include the deployed locale routes and `/auth/callback`.
+- Confirm `NEXT_PUBLIC_NHOST_SUBDOMAIN` and `NEXT_PUBLIC_NHOST_REGION` are set.
+- Confirm explicit `NEXT_PUBLIC_NHOST_AUTH_URL` matches the Nhost dashboard if used.
+- Check browser console for safe auth diagnostics only; do not paste secrets into logs or screenshots.
+
+If login succeeds but dashboard stays on mock/demo data:
+
+- Confirm `/api/diagnostics/env` reports Nhost public config as configured.
+- Confirm the signed-in Nhost user has an `organization_members` row.
+- Confirm `organization_members.user_id` exactly matches the Nhost Auth user UUID.
+- Confirm `/api/organizations/current` returns an organization instead of `category: no_organization`, `env_missing`, `unauthenticated`, or `permission_denied`.
+
+If dashboard or Passport page is empty:
+
+- Confirm the user belongs to an organization.
+- Confirm Hasura `organizations` select permission works through `organization_members`.
+- Confirm `supplier_passports` row exists after clicking Generate Passport.
+- If no passport exists, the UI correctly shows: "Generate a Supplier Passport before creating a buyer share link."
+
+If GraphQL returns permission denied:
+
+- Confirm Hasura `user` role exists.
+- Confirm Nhost JWT includes `X-Hasura-User-Id`.
+- Confirm organization-scoped permissions from `docs/hasura-permissions.md` are applied.
+- Confirm `question_sections` and `question_items` select permissions are enabled.
+- Confirm `question_answers`, `documents`, `document_links`, `supplier_passports`, and `share_links` permissions use the expected relationships.
+
+If onboarding fails:
+
+- Confirm `HASURA_GRAPHQL_ADMIN_SECRET` or `NHOST_ADMIN_SECRET` is configured server-side in Vercel.
+- Confirm tables are tracked in Hasura.
+- Confirm insert permissions are not required for the server-side onboarding route, but schema constraints still allow the inserted rows.
+
+If share link is empty or unavailable:
+
+- Generate a Supplier Passport first.
+- Confirm `supplier_passports` and `share_links` rows exist.
+- Confirm the share link is active and not expired.
+- Confirm protected links have `password_hash` and `SHARE_LINK_COOKIE_SECRET` is configured.
+
+If public file access is blocked:
+
+- Confirm the document status is `reviewed` for `approved_only` links.
+- Confirm linked/reviewed documents have `document_links` rows for `all_linked_documents`.
+- Confirm production Nhost Storage accepts the controlled server-side file read path.
