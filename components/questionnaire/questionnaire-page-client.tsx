@@ -28,7 +28,11 @@ import {
   type EvidenceRoomDocument,
   type EvidenceRoomStatus,
 } from "@/lib/mock-data";
-import { getBrowserNhostClient } from "@/lib/nhost/client";
+import {
+  forceRefreshBrowserNhostSession,
+  getBrowserNhostClient,
+  getFreshBrowserNhostSession,
+} from "@/lib/nhost/client";
 import type { QuestionAnswerStatus } from "@/lib/types";
 import {
   defaultQuestionnaireLabels,
@@ -107,7 +111,9 @@ type QuestionnairePayload = {
   configured?: boolean;
   organization?: { id: string; name: string } | null;
   activeSectionCode?: string;
+  category?: string;
   sections?: QuestionSectionRecord[];
+  items?: QuestionItemRecord[];
   questions?: QuestionItemRecord[];
   answers?: QuestionAnswerRecord[];
   documents?: LiveDocument[];
@@ -227,28 +233,41 @@ export function QuestionnairePageClient({
 
     async function loadQuestionnaire() {
       const nhost = getBrowserNhostClient();
-      const session = nhost?.getUserSession();
+      const session = await getFreshBrowserNhostSession();
 
       if (!nhost || !session?.user?.id) {
+        if (nhost) {
+          setQuestions([]);
+          setSections([]);
+        }
         setIsLoading(false);
         setMessage({
-          tone: "info",
-          text: labels.mockModeMessage,
+          tone: nhost ? "error" : "info",
+          text: nhost ? labels.saveSignInError : labels.mockModeMessage,
         });
         return;
       }
 
       try {
-        const response = await fetch("/api/questionnaire", {
-          method: "POST",
+        let response = await fetch(`/api/questionnaire?sectionCode=${activeSectionCode}`, {
+          method: "GET",
           headers: {
-            "content-type": "application/json",
             authorization: `Bearer ${session.accessToken}`,
           },
-          body: JSON.stringify({
-            sectionCode: activeSectionCode,
-          }),
         });
+
+        if (response.status === 401) {
+          const refreshedSession = await forceRefreshBrowserNhostSession();
+
+          if (refreshedSession?.accessToken) {
+            response = await fetch(`/api/questionnaire?sectionCode=${activeSectionCode}`, {
+              method: "GET",
+              headers: {
+                authorization: `Bearer ${refreshedSession.accessToken}`,
+              },
+            });
+          }
+        }
 
         const payload = (await response.json()) as QuestionnairePayload;
 
@@ -257,31 +276,45 @@ export function QuestionnairePageClient({
         }
 
         if (!response.ok || payload.configured === false || !payload.organization) {
-          if (response.status === 404) {
+          if (response.status === 404 || payload.category === "membership_not_found") {
             router.push(`/${locale}/onboarding`);
             return;
           }
 
+          if (response.status === 401 || payload.category === "token_expired") {
+            setMessage({
+              tone: "error",
+              text: labels.saveSignInError,
+            });
+            router.push(`/${locale}/login`);
+            return;
+          }
+
           setMessage({
-            tone: payload.configured === false ? "info" : "error",
-            text:
-              payload.error ??
-              labels.loadFallbackError,
+            tone: "error",
+            text: payload.error ?? labels.loadFallbackError,
           });
+          setQuestions([]);
+          setSections([]);
           return;
         }
 
-        const nextValues = valuesFromAnswers(payload.questions ?? [], payload.answers ?? []);
+        const liveItems = payload.questions ?? payload.items ?? [];
+        const nextValues = valuesFromAnswers(liveItems, payload.answers ?? []);
         const nextDocumentLinks = payload.documentLinks ?? [];
         const nextDocuments = (payload.documents ?? []).map(mapLiveDocument);
         const nextQuestions = mapLiveQuestions(
-          payload.questions ?? [],
+          liveItems,
           payload.answers ?? [],
           nextValues,
           nextDocumentLinks,
           labels,
         );
-        const nextSections = mapLiveSections(payload.sections ?? [], payload.answers ?? []);
+        const nextSections = mapLiveSections(
+          payload.sections ?? [],
+          liveItems,
+          payload.answers ?? [],
+        );
         const currentSection = payload.sections?.find(
           (section) => section.code === activeSectionCode,
         );
@@ -301,7 +334,7 @@ export function QuestionnairePageClient({
         setLiveMode(true);
         setSections(nextSections);
         setQuestions(nextQuestions);
-        setLiveQuestions(payload.questions ?? []);
+        setLiveQuestions(liveItems);
         setOrganizationDocuments(nextDocuments);
         setDocumentLinks(nextDocumentLinks);
         setAnswerValues(nextValues);
@@ -319,8 +352,12 @@ export function QuestionnairePageClient({
         });
         setMessage(null);
       } catch (error) {
-        console.error("Questionnaire GraphQL load failed", error);
+        if (process.env.NODE_ENV !== "production") {
+          console.error("Questionnaire live load failed", error);
+        }
         if (!cancelled) {
+          setQuestions([]);
+          setSections([]);
           setMessage({
             tone: "error",
             text: labels.loadFallbackError,
@@ -380,8 +417,7 @@ export function QuestionnairePageClient({
       return;
     }
 
-    const nhost = getBrowserNhostClient();
-    const session = nhost?.getUserSession();
+    const session = await getFreshBrowserNhostSession();
 
     if (!session?.user?.id) {
       setMessage({
@@ -395,14 +431,13 @@ export function QuestionnairePageClient({
     setMessage(null);
 
     try {
-      const response = await fetch("/api/questionnaire/save", {
+      let response = await fetch("/api/questionnaire", {
         method: "POST",
         headers: {
           "content-type": "application/json",
           authorization: `Bearer ${session.accessToken}`,
         },
         body: JSON.stringify({
-          organizationId,
           answers: liveQuestions.map((question) => {
             const value = answerValues[question.id] ?? "";
             const displayQuestion = questions.find((item) => item.id === question.id);
@@ -419,6 +454,36 @@ export function QuestionnairePageClient({
           }),
         }),
       });
+
+      if (response.status === 401) {
+        const refreshedSession = await forceRefreshBrowserNhostSession();
+
+        if (refreshedSession?.accessToken) {
+          response = await fetch("/api/questionnaire", {
+            method: "POST",
+            headers: {
+              "content-type": "application/json",
+              authorization: `Bearer ${refreshedSession.accessToken}`,
+            },
+            body: JSON.stringify({
+              answers: liveQuestions.map((question) => {
+                const value = answerValues[question.id] ?? "";
+                const displayQuestion = questions.find((item) => item.id === question.id);
+
+                return {
+                  questionItemId: question.id,
+                  value: serializeAnswerValue(question, value),
+                  status: inferGraphqlStatus(
+                    question,
+                    value,
+                    displayQuestion?.linkedDocuments?.length ?? 0,
+                  ),
+                };
+              }),
+            }),
+          });
+        }
+      }
 
       const payload = (await response.json()) as { error?: string };
 
@@ -844,13 +909,16 @@ function mapLiveQuestions(
 
 function mapLiveSections(
   sectionRecords: QuestionSectionRecord[],
+  questionItems: QuestionItemRecord[],
   answers: QuestionAnswerRecord[],
 ): QuestionnaireSectionProgress[] {
+  const itemsById = new Map(questionItems.map((item) => [item.id, item]));
+
   return sectionRecords.map((section) => {
-    const total = section.question_items_aggregate?.aggregate?.count ?? 0;
+    const sectionItems = questionItems.filter((item) => item.section_id === section.id);
     const completed = answers.filter(
       (answer) =>
-        answer.question_item?.section_id === section.id &&
+        itemsById.get(answer.question_item_id)?.section_id === section.id &&
         completedStatuses.includes(answer.status),
     ).length;
 
@@ -858,7 +926,7 @@ function mapLiveSections(
       id: section.code,
       name: section.title,
       completed,
-      total,
+      total: sectionItems.length,
       isActive: section.code === activeSectionCode,
     };
   });

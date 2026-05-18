@@ -201,17 +201,45 @@ Fix:
 
 Likely causes:
 
-- `question_answers` insert/update permissions are missing.
-- `organization_members.role` is `viewer`.
+- The browser request to `POST /api/questionnaire` is missing `Authorization`.
+- The Nhost access token expired and could not be refreshed.
 - User has no organization membership.
-- Allowed columns do not include `organization_id`, `question_item_id`, `value`, `status`, or `internal_note`.
+- The server-side Hasura admin lookup cannot query `question_answers`.
+- The unique constraint `question_answers_organization_id_question_item_id_key` is missing or named differently.
 
 Fix:
 
-- Confirm the user role is `owner`, `editor`, or `admin`.
+- Confirm the request goes to `POST /api/questionnaire`.
+- Confirm the request includes `Authorization: Bearer ...`.
 - Confirm the user has an organization membership.
-- Confirm `question_answers` insert/update permissions.
-- Confirm `question_sections` and `question_items` select permissions.
+- Confirm `HASURA_GRAPHQL_ADMIN_SECRET` is configured in Vercel.
+- Confirm `question_answers` is tracked in Hasura.
+- Confirm the upsert constraint exists.
+
+## Questionnaire Falls Back To Mock After F5
+
+Likely causes:
+
+- Live questionnaire loading still uses client-side Hasura user-role permissions.
+- The access token is not sent after refresh.
+- The current organization is not resolved before loading questionnaire data.
+- `question_sections` or `question_items` are not tracked in Hasura.
+- `question_answers` query is blocked or missing fields.
+- The server-side questionnaire API route is missing or not deployed.
+
+Fix:
+
+- Use `GET /api/questionnaire?sectionCode=energy` for live questionnaire loading.
+- Validate the Nhost bearer token server-side through Nhost Auth.
+- Resolve the organization through `organization_members` using the server-side Hasura admin secret.
+- Query `question_sections`, `question_items`, and current-organization `question_answers` with `x-hasura-admin-secret`.
+- Do not silently fall back to mock data for authenticated production users.
+- In DevTools, confirm refresh sends `GET /api/questionnaire` and Save & Continue sends `POST /api/questionnaire`.
+- In Hasura, verify saved answers with:
+
+```sql
+select * from question_answers order by updated_at desc;
+```
 
 ## Documents Upload Fails
 
