@@ -53,6 +53,7 @@ type CurrentOrganizationResponse = {
 
 type CurrentOrganizationMembershipResponse = {
   organization_members: Array<{
+    organization_id: string;
     organization: OrganizationBasics | null;
   }>;
 };
@@ -120,6 +121,7 @@ const primaryOrganizationByMembershipAdminQuery = `
       order_by: { created_at: asc }
       limit: 1
     ) {
+      organization_id
       organization {
         id
         name
@@ -134,7 +136,35 @@ const primaryOrganizationByMembershipAdminQuery = `
         plan_key
         billing_interval
         subscription_status
+        created_at
+        updated_at
       }
+    }
+  }
+`;
+
+type OrganizationByIdResponse = {
+  organizations_by_pk: OrganizationBasics | null;
+};
+
+const organizationByIdAdminQuery = `
+  query OrganizationById($organizationId: uuid!) {
+    organizations_by_pk(id: $organizationId) {
+      id
+      name
+      slug
+      vat_id
+      industry
+      employee_count_range
+      headquarters_city
+      headquarters_country
+      countries_served
+      is_verified
+      plan_key
+      billing_interval
+      subscription_status
+      created_at
+      updated_at
     }
   }
 `;
@@ -243,7 +273,26 @@ export async function getPrimaryOrganizationForUserWithAdmin(userId: string) {
     { userId },
   );
 
-  return data.organization_members[0]?.organization ?? null;
+  const membership = data.organization_members[0];
+
+  if (!membership) {
+    return null;
+  }
+
+  if (membership.organization) {
+    return membership.organization;
+  }
+
+  const organizationData = await executeAdminGraphql<OrganizationByIdResponse>(
+    organizationByIdAdminQuery,
+    { organizationId: membership.organization_id },
+  );
+
+  if (!organizationData.organizations_by_pk) {
+    throw new Error("organization_not_found");
+  }
+
+  return organizationData.organizations_by_pk;
 }
 
 export async function getCurrentOrganizationForUser(userId: string, accessToken?: string) {

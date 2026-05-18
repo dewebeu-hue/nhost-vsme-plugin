@@ -133,6 +133,8 @@ MVP note:
 - `/api/organizations/current` validates the Nhost bearer token first, then uses the server-side Hasura admin secret to look up the current user's organization membership.
 - This avoids fragile client-side relationship permission issues for the dashboard bootstrap call.
 - The route returns only safe organization fields and never returns the admin secret, JWT, membership list, or other organizations.
+- If this route returns `permission_denied`, confirm the deployed server code is not accidentally sending the user's `Authorization` header to Hasura and that the admin lookup request includes only `content-type` and `x-hasura-admin-secret`.
+- Current safe response categories include `missing_authorization_header`, `malformed_authorization_header`, `token_decode_failed`, `token_expired`, `user_id_missing_from_token`, `hasura_admin_secret_missing`, `admin_lookup_graphql_error`, `membership_not_found`, and `organization_not_found`.
 
 Useful SQL checks:
 
