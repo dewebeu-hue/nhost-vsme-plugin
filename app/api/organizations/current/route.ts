@@ -5,49 +5,51 @@ import {
 } from "@/lib/data/organizations";
 import { logSafeDiagnostic } from "@/lib/diagnostics/server-env";
 import { isHasuraGraphqlConfigured } from "@/lib/graphql/client";
+import { getNhostAuthUrl } from "@/lib/nhost/config";
 
 export async function POST(request: Request) {
+  let userIdResolved = false;
+
   logSafeDiagnostic("current_org_start");
   logSafeDiagnostic("token_present", {
     tokenPresent: Boolean(request.headers.get("authorization")),
   });
 
-  if (!isHasuraGraphqlConfigured()) {
-    return NextResponse.json({
-      configured: false,
-      organization: null,
-      category: "env_missing",
-    });
-  }
+  const tokenResult = readBearerToken(request.headers.get("authorization"));
 
-  if (!isWorkspaceBackendConfigured()) {
+  if (!tokenResult.ok) {
     logSafeDiagnostic("current_org_failed", {
-      category: "hasura_admin_secret_missing",
+      category: tokenResult.category,
+      stage: "token_decode",
+      hasAdminSecret: isWorkspaceBackendConfigured(),
+      hasUserId: false,
+      membershipCount: 0,
     });
 
     return NextResponse.json(
       {
-        error: "Server organization lookup is not configured.",
-        category: "hasura_admin_secret_missing",
-        stage: "admin_lookup",
-        hasAdminSecret: false,
+        error: "A valid authenticated user is required.",
+        category: tokenResult.category,
+        stage: "token_decode",
+        hasAdminSecret: isWorkspaceBackendConfigured(),
         hasUserId: false,
         membershipCount: 0,
       },
-      { status: 500 },
+      { status: 401 },
     );
   }
 
   try {
     logCurrentOrgInfo("request started");
     logCurrentOrgInfo("auth token present", Boolean(request.headers.get("authorization")));
+    logSafeDiagnostic("auth_user_lookup_started");
 
-    const tokenResult = readUserIdFromAuthorizationHeader(request.headers.get("authorization"));
+    const userResult = await resolveUserIdFromNhostToken(tokenResult.token);
 
-    if (!tokenResult.ok) {
+    if (!userResult.ok) {
       logSafeDiagnostic("current_org_failed", {
-        category: tokenResult.category,
-        stage: tokenResult.stage,
+        category: userResult.category,
+        stage: "auth_user_lookup",
         hasAdminSecret: isWorkspaceBackendConfigured(),
         hasUserId: false,
         membershipCount: 0,
@@ -56,8 +58,8 @@ export async function POST(request: Request) {
       return NextResponse.json(
         {
           error: "A valid authenticated user is required.",
-          category: tokenResult.category,
-          stage: tokenResult.stage,
+          category: userResult.category,
+          stage: "auth_user_lookup",
           hasAdminSecret: isWorkspaceBackendConfigured(),
           hasUserId: false,
           membershipCount: 0,
@@ -66,12 +68,42 @@ export async function POST(request: Request) {
       );
     }
 
+    if (!isHasuraGraphqlConfigured() || !isWorkspaceBackendConfigured()) {
+      logSafeDiagnostic("current_org_failed", {
+        category: "hasura_admin_secret_missing",
+        stage: "admin_lookup",
+        hasAdminSecret: false,
+        hasUserId: true,
+        membershipCount: 0,
+      });
+
+      return NextResponse.json(
+        {
+          error: "Server organization lookup is not configured.",
+          category: "hasura_admin_secret_missing",
+          stage: "admin_lookup",
+          hasAdminSecret: false,
+          hasUserId: true,
+          membershipCount: 0,
+        },
+        { status: 500 },
+      );
+    }
+
+    userIdResolved = true;
     logCurrentOrgInfo("user resolved", true);
+    logSafeDiagnostic("auth_user_lookup_success", {
+      success: true,
+    });
     logSafeDiagnostic("user_resolved", {
       userResolved: true,
     });
+    logSafeDiagnostic("admin_secret_present", {
+      hasAdminSecret: true,
+    });
+    logSafeDiagnostic("admin_lookup_started");
 
-    const organization = await getPrimaryOrganizationForUserWithAdmin(tokenResult.userId);
+    const organization = await getPrimaryOrganizationForUserWithAdmin(userResult.userId);
     logCurrentOrgInfo("organizations found count", organization ? 1 : 0);
     logSafeDiagnostic("memberships_found", {
       count: organization ? 1 : 0,
@@ -120,7 +152,7 @@ export async function POST(request: Request) {
         category,
         stage: "admin_lookup",
         hasAdminSecret: isWorkspaceBackendConfigured(),
-        hasUserId: false,
+        hasUserId: userIdResolved,
         membershipCount: 0,
       },
       { status: statusForCurrentOrganizationCategory(category) },
@@ -128,62 +160,92 @@ export async function POST(request: Request) {
   }
 }
 
-type TokenReadResult =
-  | { ok: true; userId: string }
+type BearerTokenResult =
+  | { ok: true; token: string }
   | {
       ok: false;
-      category:
-        | "missing_authorization_header"
-        | "malformed_authorization_header"
-        | "token_decode_failed"
-        | "token_expired"
-        | "user_id_missing_from_token";
-      stage: "token_decode";
+      category: "missing_authorization_header" | "malformed_authorization_header";
     };
 
-function readUserIdFromAuthorizationHeader(header: string | null): TokenReadResult {
+function readBearerToken(header: string | null): BearerTokenResult {
   if (!header) {
-    return { ok: false, category: "missing_authorization_header", stage: "token_decode" };
+    return { ok: false, category: "missing_authorization_header" };
   }
 
   if (!header.toLowerCase().startsWith("bearer ")) {
-    return { ok: false, category: "malformed_authorization_header", stage: "token_decode" };
+    return { ok: false, category: "malformed_authorization_header" };
   }
 
   const token = header.slice("bearer ".length).trim();
+
+  if (!token) {
+    return { ok: false, category: "malformed_authorization_header" };
+  }
+
+  return { ok: true, token };
+}
+
+type UserIdResolutionResult =
+  | { ok: true; userId: string }
+  | {
+      ok: false;
+      category: "auth_user_lookup_failed" | "token_expired" | "user_id_missing";
+    };
+
+async function resolveUserIdFromNhostToken(token: string): Promise<UserIdResolutionResult> {
+  const authUrl = getNhostAuthUrl();
+
+  if (!authUrl) {
+    return { ok: false, category: "auth_user_lookup_failed" };
+  }
+
+  try {
+    const response = await fetch(`${authUrl}/user`, {
+      method: "GET",
+      headers: {
+        authorization: `Bearer ${token}`,
+      },
+      cache: "no-store",
+    });
+
+    if (response.status === 401 || response.status === 403) {
+      return {
+        ok: false,
+        category: isTokenExpired(token) ? "token_expired" : "auth_user_lookup_failed",
+      };
+    }
+
+    if (!response.ok) {
+      return { ok: false, category: "auth_user_lookup_failed" };
+    }
+
+    const user = (await response.json()) as { id?: unknown };
+
+    if (typeof user.id !== "string" || !user.id) {
+      return { ok: false, category: "user_id_missing" };
+    }
+
+    return { ok: true, userId: user.id };
+  } catch {
+    return { ok: false, category: "auth_user_lookup_failed" };
+  }
+}
+
+function isTokenExpired(token: string) {
   const payloadPart = token.split(".")[1];
 
   if (!payloadPart) {
-    return { ok: false, category: "token_decode_failed", stage: "token_decode" };
+    return false;
   }
 
   try {
     const payload = JSON.parse(decodeBase64Url(payloadPart)) as {
-      sub?: unknown;
       exp?: unknown;
-      "https://hasura.io/jwt/claims"?: {
-        "x-hasura-user-id"?: unknown;
-      };
     };
 
-    if (typeof payload.exp === "number" && payload.exp * 1000 <= Date.now()) {
-      return { ok: false, category: "token_expired", stage: "token_decode" };
-    }
-
-    const subject = typeof payload.sub === "string" ? payload.sub : "";
-    const hasuraUserId =
-      typeof payload["https://hasura.io/jwt/claims"]?.["x-hasura-user-id"] === "string"
-        ? payload["https://hasura.io/jwt/claims"]?.["x-hasura-user-id"]
-        : "";
-    const userId = subject || hasuraUserId;
-
-    if (!userId) {
-      return { ok: false, category: "user_id_missing_from_token", stage: "token_decode" };
-    }
-
-    return { ok: true, userId };
+    return typeof payload.exp === "number" && payload.exp * 1000 <= Date.now();
   } catch {
-    return { ok: false, category: "token_decode_failed", stage: "token_decode" };
+    return false;
   }
 }
 

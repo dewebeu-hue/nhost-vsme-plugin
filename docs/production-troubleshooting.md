@@ -109,6 +109,23 @@ Fix:
 - If the retry also returns 401, redirect the user to the localized login page.
 - In DevTools, confirm the retry request is sent without logging or copying token values.
 
+## `hasAdminSecret=true` But `hasUserId=false`
+
+Likely causes:
+
+- The route could not resolve the current user from the bearer token.
+- The bearer token is expired or invalid.
+- The Nhost Auth URL is wrong, so the server-side `/user` lookup fails.
+- The token is present but malformed.
+
+Fix:
+
+- Confirm `/api/diagnostics/env` reports the Auth URL as configured and shaped like an Auth endpoint.
+- Confirm `POST /api/organizations/current` includes an `Authorization: Bearer ...` header.
+- The route should validate the bearer token through `GET <Nhost Auth URL>/user` and use only the returned `user.id`.
+- The route must not query Hasura until `user.id` is resolved.
+- If user resolution fails, expect a 401 category such as `auth_user_lookup_failed`, `token_expired`, or `user_id_missing`.
+
 ## Dashboard Shows Acme/Demo Organization After Onboarding
 
 Likely causes:
@@ -134,7 +151,7 @@ MVP note:
 - This avoids fragile client-side relationship permission issues for the dashboard bootstrap call.
 - The route returns only safe organization fields and never returns the admin secret, JWT, membership list, or other organizations.
 - If this route returns `permission_denied`, confirm the deployed server code is not accidentally sending the user's `Authorization` header to Hasura and that the admin lookup request includes only `content-type` and `x-hasura-admin-secret`.
-- Current safe response categories include `missing_authorization_header`, `malformed_authorization_header`, `token_decode_failed`, `token_expired`, `user_id_missing_from_token`, `hasura_admin_secret_missing`, `admin_lookup_graphql_error`, `membership_not_found`, and `organization_not_found`.
+- Current safe response categories include `missing_authorization_header`, `malformed_authorization_header`, `auth_user_lookup_failed`, `token_expired`, `user_id_missing`, `hasura_admin_secret_missing`, `admin_lookup_graphql_error`, `membership_not_found`, and `organization_not_found`.
 
 Useful SQL checks:
 
