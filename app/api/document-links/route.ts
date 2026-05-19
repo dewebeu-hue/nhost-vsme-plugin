@@ -10,7 +10,7 @@ type DocumentLinksPayload = {
   organizationId?: unknown;
   documentId?: unknown;
   questionAnswerId?: unknown;
-  questionAnswerIds?: unknown;
+  questionItemIds?: unknown;
   currentDocumentStatus?: unknown;
 };
 
@@ -29,6 +29,11 @@ type DocumentScope = {
 type AnswerScope = {
   id: string;
   organization_id: string;
+  question_item_id: string;
+};
+
+type QuestionItemScope = {
+  id: string;
 };
 
 type DocumentLinkRecord = {
@@ -88,21 +93,43 @@ const verifyDocumentLinkScopeQuery = `
   query VerifyDocumentLinkScope(
     $organizationId: uuid!
     $documentId: uuid!
-    $questionAnswerIds: [uuid!]!
+    $questionItemIds: [uuid!]!
   ) {
     documents_by_pk(id: $documentId) {
       id
       organization_id
       status
     }
+    question_items(where: { id: { _in: $questionItemIds } }) {
+      id
+    }
     question_answers(
       where: {
-        id: { _in: $questionAnswerIds }
+        question_item_id: { _in: $questionItemIds }
         organization_id: { _eq: $organizationId }
       }
     ) {
       id
       organization_id
+      question_item_id
+    }
+  }
+`;
+
+const createMissingAnswersMutation = `
+  mutation CreateMissingQuestionAnswers($objects: [question_answers_insert_input!]!) {
+    insert_question_answers(
+      objects: $objects
+      on_conflict: {
+        constraint: question_answers_organization_id_question_item_id_key
+        update_columns: []
+      }
+    ) {
+      returning {
+        id
+        organization_id
+        question_item_id
+      }
     }
   }
 `;
@@ -180,16 +207,16 @@ export async function POST(request: Request) {
 
     if (action === "link") {
       const documentId = readString(payload.documentId);
-      const questionAnswerIds = readUuidArray(payload.questionAnswerIds);
+      const questionItemIds = readUuidArray(payload.questionItemIds);
 
-      if (!isUuid(documentId) || !questionAnswerIds.length) {
+      if (!isUuid(documentId) || !questionItemIds.length) {
         return documentLinksError("invalid_link_payload", "validation", 400);
       }
 
       const scopeResult = await verifyDocumentAndAnswersScope(
         organizationId,
         documentId,
-        questionAnswerIds,
+        questionItemIds,
       );
 
       if (!scopeResult.ok) {
@@ -200,6 +227,22 @@ export async function POST(request: Request) {
           scopeResult.safeGraphqlMessage,
         );
       }
+      const ensuredAnswerResult = await ensureQuestionAnswersForItems(
+        organizationId,
+        questionItemIds,
+        scopeResult.answers,
+      );
+
+      if (!ensuredAnswerResult.ok) {
+        return documentLinksError(
+          "question_answer_ensure_graphql_error",
+          "ensure_answer",
+          502,
+          ensuredAnswerResult.safeGraphqlMessage,
+        );
+      }
+
+      const questionAnswerIds = ensuredAnswerResult.questionAnswerIds;
 
       const linkResult = await executeDocumentLinksAdminGraphql<{
         insert_document_links: { returning: DocumentLinkRecord[] } | null;
@@ -240,8 +283,39 @@ export async function POST(request: Request) {
         return documentLinksError("invalid_unlink_payload", "validation", 400);
       }
 
+      const answerScopeResult = await executeDocumentLinksAdminGraphql<{
+        question_answers_by_pk: AnswerScope | null;
+      }>({
+        operationName: "GetAnswerForUnlink",
+        query: `
+          query GetAnswerForUnlink($questionAnswerId: uuid!) {
+            question_answers_by_pk(id: $questionAnswerId) {
+              id
+              organization_id
+              question_item_id
+            }
+          }
+        `,
+        variables: { questionAnswerId },
+      });
+
+      if (!answerScopeResult.ok) {
+        return documentLinksError(
+          "question_answer_lookup_graphql_error",
+          "scope_check",
+          502,
+          answerScopeResult.safeGraphqlMessage,
+        );
+      }
+
+      const questionItemId = answerScopeResult.data.question_answers_by_pk?.question_item_id;
+
+      if (!questionItemId) {
+        return documentLinksError("question_answer_not_found", "scope_check", 404);
+      }
+
       const scopeResult = await verifyDocumentAndAnswersScope(organizationId, documentId, [
-        questionAnswerId,
+        questionItemId,
       ]);
 
       if (!scopeResult.ok) {
@@ -351,18 +425,19 @@ async function resolveOrganizationForRequest(token: string): Promise<Organizatio
 async function verifyDocumentAndAnswersScope(
   organizationId: string,
   documentId: string,
-  questionAnswerIds: string[],
+  questionItemIds: string[],
 ): Promise<
-  | { ok: true; document: DocumentScope; answers: AnswerScope[] }
+  | { ok: true; document: DocumentScope; questionItems: QuestionItemScope[]; answers: AnswerScope[] }
   | { ok: false; category: string; stage: string; status: number; safeGraphqlMessage?: string }
 > {
   const scopeResult = await executeDocumentLinksAdminGraphql<{
     documents_by_pk: DocumentScope | null;
+    question_items: QuestionItemScope[];
     question_answers: AnswerScope[];
   }>({
     operationName: "VerifyDocumentLinkScope",
     query: verifyDocumentLinkScopeQuery,
-    variables: { organizationId, documentId, questionAnswerIds },
+    variables: { organizationId, documentId, questionItemIds },
   });
 
   if (!scopeResult.ok) {
@@ -381,11 +456,79 @@ async function verifyDocumentAndAnswersScope(
     return { ok: false, category: "document_not_found", stage: "scope_check", status: 404 };
   }
 
-  if (scopeResult.data.question_answers.length !== questionAnswerIds.length) {
-    return { ok: false, category: "question_answer_not_found", stage: "scope_check", status: 404 };
+  if (scopeResult.data.question_items.length !== questionItemIds.length) {
+    return { ok: false, category: "question_item_not_found", stage: "scope_check", status: 404 };
   }
 
-  return { ok: true, document, answers: scopeResult.data.question_answers };
+  return {
+    ok: true,
+    document,
+    questionItems: scopeResult.data.question_items,
+    answers: scopeResult.data.question_answers,
+  };
+}
+
+async function ensureQuestionAnswersForItems(
+  organizationId: string,
+  questionItemIds: string[],
+  existingAnswers: AnswerScope[],
+): Promise<
+  | { ok: true; questionAnswerIds: string[] }
+  | { ok: false; safeGraphqlMessage: string }
+> {
+  const answersByQuestionItem = new Map(
+    existingAnswers.map((answer) => [answer.question_item_id, answer]),
+  );
+  const missingQuestionItemIds = questionItemIds.filter(
+    (questionItemId) => !answersByQuestionItem.has(questionItemId),
+  );
+
+  if (!missingQuestionItemIds.length) {
+    return resolveEnsuredQuestionAnswerIds(questionItemIds, answersByQuestionItem);
+  }
+
+  const createResult = await executeDocumentLinksAdminGraphql<{
+    insert_question_answers: { returning: AnswerScope[] } | null;
+  }>({
+    operationName: "CreateMissingQuestionAnswers",
+    query: createMissingAnswersMutation,
+    variables: {
+      objects: missingQuestionItemIds.map((questionItemId) => ({
+        organization_id: organizationId,
+        question_item_id: questionItemId,
+        status: "not_started",
+        value: null,
+      })),
+    },
+  });
+
+  if (!createResult.ok) {
+    return { ok: false, safeGraphqlMessage: createResult.safeGraphqlMessage };
+  }
+
+  for (const answer of createResult.data.insert_question_answers?.returning ?? []) {
+    answersByQuestionItem.set(answer.question_item_id, answer);
+  }
+
+  return resolveEnsuredQuestionAnswerIds(questionItemIds, answersByQuestionItem);
+}
+
+function resolveEnsuredQuestionAnswerIds(
+  questionItemIds: string[],
+  answersByQuestionItem: Map<string, AnswerScope>,
+) {
+  const questionAnswerIds = questionItemIds
+    .map((questionItemId) => answersByQuestionItem.get(questionItemId)?.id)
+    .filter(isString);
+
+  if (questionAnswerIds.length !== questionItemIds.length) {
+    return {
+      ok: false,
+      safeGraphqlMessage: "Could not resolve questionnaire answer rows for all selected items.",
+    } as const;
+  }
+
+  return { ok: true, questionAnswerIds } as const;
 }
 
 async function resolveUserIdFromNhostToken(token: string): Promise<UserIdResolutionResult> {
@@ -542,6 +685,10 @@ function readBearerToken(header: string | null): BearerTokenResult {
 
 function isUploadedStatus(status: string) {
   return status.toLowerCase() === "uploaded";
+}
+
+function isString(value: unknown): value is string {
+  return typeof value === "string";
 }
 
 function isTokenExpired(token: string) {

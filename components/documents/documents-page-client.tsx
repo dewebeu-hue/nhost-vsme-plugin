@@ -76,6 +76,7 @@ type DocumentsPayload = {
   documents?: LiveDocument[];
   documentLinks?: DocumentLinkRecord[];
   answers?: QuestionAnswerRecord[];
+  questions?: QuestionItemRecord[];
   error?: string;
 };
 
@@ -99,6 +100,19 @@ type QuestionAnswerRecord = {
       code: string;
       title: string;
     } | null;
+  } | null;
+};
+
+type QuestionItemRecord = {
+  id: string;
+  code: string;
+  title: string;
+  evidence_required: boolean;
+  section_id: string;
+  question_section?: {
+    id: string;
+    code: string;
+    title: string;
   } | null;
 };
 
@@ -243,7 +257,7 @@ export function DocumentsPageClient({
           setDocuments([]);
           setSelectedDocumentId("");
           setDocumentLinks(payload.documentLinks ?? []);
-          setLinkableAnswers(mapLinkableAnswers(payload.answers ?? []));
+          setLinkableAnswers(mapLinkableAnswers(payload.questions ?? [], payload.answers ?? []));
           return;
         }
 
@@ -251,7 +265,7 @@ export function DocumentsPageClient({
         setLiveMode(true);
         setDocuments(nextDocuments);
         setDocumentLinks(payload.documentLinks ?? []);
-        setLinkableAnswers(mapLinkableAnswers(payload.answers ?? []));
+        setLinkableAnswers(mapLinkableAnswers(payload.questions ?? [], payload.answers ?? []));
         setSelectedDocumentId(nextDocuments[0]?.id ?? "");
         setMessage(null);
       } catch (error) {
@@ -383,23 +397,23 @@ export function DocumentsPageClient({
     }
   }
 
-  async function handleLinkAnswers(answerIds: string[]) {
-    if (!documentToLink || answerIds.length === 0) {
-      return;
+  async function handleLinkAnswers(questionItemIds: string[]) {
+    if (!documentToLink || questionItemIds.length === 0) {
+      return false;
     }
 
     if (!liveMode || !organizationId) {
       setDocumentLinks((currentLinks) => [
-        ...answerIds.map((answerId) => {
-          const answer = linkableAnswers.find((item) => item.id === answerId);
+        ...questionItemIds.map((questionItemId) => {
+          const answer = linkableAnswers.find((item) => item.id === questionItemId);
 
           return {
-            id: `mock-link-${documentToLink.id}-${answerId}`,
+            id: `mock-link-${documentToLink.id}-${questionItemId}`,
             document_id: documentToLink.id,
-            question_answer_id: answerId,
+            question_answer_id: answer?.answerId ?? questionItemId,
             question_answer: answer
               ? {
-                  id: answer.id,
+                  id: answer.answerId ?? answer.id,
                   organization_id: "mock-org",
                   question_item_id: answer.id,
                   status: toBackendStatus(answer.status),
@@ -429,15 +443,14 @@ export function DocumentsPageClient({
       );
       setIsLinkDialogOpen(false);
       setMessage({ tone: "success", text: labels.linkMockSuccess });
-      return;
+      return true;
     }
 
-    const nhost = getBrowserNhostClient();
-    const session = nhost?.getUserSession();
+    const session = await getFreshBrowserNhostSession();
 
     if (!session?.user?.id) {
       setMessage({ tone: "error", text: labels.linkSignInError });
-      return;
+      return false;
     }
 
     setIsLinking(true);
@@ -455,7 +468,7 @@ export function DocumentsPageClient({
           userId: session.user.id,
           organizationId,
           documentId: documentToLink.id,
-          questionAnswerIds: answerIds,
+          questionItemIds,
           currentDocumentStatus: documentToLink.status,
         }),
       });
@@ -464,9 +477,9 @@ export function DocumentsPageClient({
       if (!response.ok || !payload.links) {
         setMessage({
           tone: response.status === 503 ? "info" : "error",
-          text: payload.error ?? labels.linkError,
+          text: labels.linkError,
         });
-        return;
+        return false;
       }
 
       setDocumentLinks(payload.links);
@@ -479,6 +492,7 @@ export function DocumentsPageClient({
       );
       setIsLinkDialogOpen(false);
       setMessage({ tone: "success", text: labels.linkSuccess });
+      return true;
     } catch (error) {
       if (process.env.NODE_ENV !== "production") {
         console.error("Document link failed", error);
@@ -487,6 +501,7 @@ export function DocumentsPageClient({
         tone: "error",
         text: labels.linkError,
       });
+      return false;
     } finally {
       setIsLinking(false);
     }
@@ -563,7 +578,7 @@ export function DocumentsPageClient({
           documentToLink
             ? documentLinks
                 .filter((link) => link.document_id === documentToLink.id)
-                .map((link) => link.question_answer_id)
+                .map((link) => link.question_answer?.question_item?.id ?? link.question_answer_id)
             : []
         }
         isSaving={isLinking}
@@ -733,16 +748,24 @@ function formatDate(value: string, locale: string, labels: DocumentsLabels) {
   }).format(date);
 }
 
-function mapLinkableAnswers(answers: QuestionAnswerRecord[]): LinkableAnswer[] {
-  return answers
-    .filter((answer) => answer.question_item)
-    .map((answer) => ({
-      id: answer.id,
-      code: answer.question_item?.code ?? "Q",
-      title: answer.question_item?.title ?? "Untitled answer",
-      section: answer.question_item?.question_section?.title ?? "Questionnaire",
-      status: toDisplayStatus(answer.status),
-    }));
+function mapLinkableAnswers(
+  questions: QuestionItemRecord[],
+  answers: QuestionAnswerRecord[],
+): LinkableAnswer[] {
+  const answersByQuestionItem = new Map(answers.map((answer) => [answer.question_item_id, answer]));
+
+  return questions.map((question) => {
+    const answer = answersByQuestionItem.get(question.id);
+
+    return {
+      id: question.id,
+      answerId: answer?.id,
+      code: question.code,
+      title: question.title ?? "Untitled answer",
+      section: question.question_section?.title ?? "Questionnaire",
+      status: toDisplayStatus(answer?.status ?? "not_started"),
+    };
+  });
 }
 
 function createLinkedQuestionsByDocument(

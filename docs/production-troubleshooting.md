@@ -590,7 +590,7 @@ order by dl.created_at desc
 limit 20;
 ```
 
-The document-link API validates the Nhost user, resolves their organization membership server-side, and then uses `HASURA_GRAPHQL_ADMIN_SECRET` only on the server to verify that both the document and linked questionnaire answer belong to that same organization. Public Passport pages use these links only for high-level evidence readiness; they do not expose private file URLs or storage IDs.
+The document-link API validates the Nhost user, resolves their organization membership server-side, and then uses `HASURA_GRAPHQL_ADMIN_SECRET` only on the server to verify that the document and selected questionnaire items belong to the current organization flow. The UI sends selected `question_items.id` values; the API finds or creates a minimal `question_answers` row for the current organization with `status = 'not_started'` when the answer does not exist yet, then inserts `document_links(document_id, question_answer_id)` idempotently. Public Passport pages use these links only for high-level evidence readiness; they do not expose private file URLs or storage IDs.
 
 Certificate expiry verification:
 

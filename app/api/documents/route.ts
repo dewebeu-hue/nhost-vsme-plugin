@@ -281,6 +281,10 @@ async function loadDocuments(request: Request) {
     organization: { id: organizationResult.organizationId },
     documents: dataResult.data.documents,
     documentLinks,
+    questions: dataResult.data.question_items.map((item) => ({
+      ...item,
+      question_section: sectionMap.get(item.section_id) ?? null,
+    })),
     answers,
     isMock: false,
   });

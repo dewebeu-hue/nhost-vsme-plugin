@@ -28,6 +28,7 @@ import { defaultDocumentsLabels, type DocumentsLabels } from "@/lib/workspace-la
 
 export type LinkableAnswer = {
   id: string;
+  answerId?: string;
   code: string;
   title: string;
   section: string;
@@ -41,7 +42,7 @@ type LinkAnswerDialogProps = {
   isSaving: boolean;
   labels?: DocumentsLabels;
   onOpenChange: (open: boolean) => void;
-  onLink: (answerIds: string[]) => Promise<void>;
+  onLink: (questionItemIds: string[]) => Promise<boolean>;
 };
 
 export function LinkAnswerDialog({
@@ -77,10 +78,13 @@ export function LinkAnswerDialog({
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    await onLink(selectedIds);
-    setSelectedIds([]);
-    setQuery("");
-    setSection("all");
+    const linked = await onLink(selectedIds);
+
+    if (linked) {
+      setSelectedIds([]);
+      setQuery("");
+      setSection("all");
+    }
   }
 
   function toggleAnswer(answerId: string) {
