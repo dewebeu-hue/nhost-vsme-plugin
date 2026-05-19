@@ -592,6 +592,58 @@ limit 20;
 
 The document-link API validates the Nhost user, resolves their organization membership server-side, and then uses `HASURA_GRAPHQL_ADMIN_SECRET` only on the server to verify that the document and selected questionnaire items belong to the current organization flow. The UI sends selected `question_items.id` values; the API finds or creates a minimal `question_answers` row for the current organization with `status = 'not_started'` when the answer does not exist yet, then inserts `document_links(document_id, question_answer_id)` idempotently. Public Passport pages use these links only for high-level evidence readiness; they do not expose private file URLs or storage IDs.
 
+If `/api/document-links` returns `organization_scope_mismatch`, verify the production rows with:
+
+```sql
+select
+  d.id,
+  d.file_name as document_name,
+  d.organization_id,
+  d.created_at
+from documents d
+order by d.created_at desc
+limit 20;
+
+select
+  om.user_id,
+  om.organization_id,
+  o.name
+from organization_members om
+join organizations o on o.id = om.organization_id
+order by om.created_at desc
+limit 20;
+
+select
+  d.file_name as document_name,
+  d.organization_id as document_org_id,
+  qa.organization_id as answer_org_id,
+  qi.code as question_code,
+  dl.created_at
+from document_links dl
+join documents d on d.id = dl.document_id
+join question_answers qa on qa.id = dl.question_answer_id
+join question_items qi on qi.id = qa.question_item_id
+order by dl.created_at desc
+limit 50;
+
+select
+  d.id as document_id,
+  d.file_name as document_name,
+  d.organization_id as document_org_id,
+  qa.id as answer_id,
+  qa.organization_id as answer_org_id,
+  qi.code as question_code,
+  dl.created_at
+from document_links dl
+join documents d on d.id = dl.document_id
+join question_answers qa on qa.id = dl.question_answer_id
+join question_items qi on qi.id = qa.question_item_id
+where d.organization_id <> qa.organization_id
+order by dl.created_at desc;
+```
+
+Expected result: documents selected in the data room should have `organization_id` equal to the signed-in user's `organization_members.organization_id`, and the mismatch detector should return zero rows. If an old document row belongs to a different organization, do not relink it automatically; upload it again under the correct organization or reassign it manually only after confirming ownership.
+
 Certificate expiry verification:
 
 ```sql

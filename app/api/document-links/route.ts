@@ -52,6 +52,18 @@ type AdminGraphqlResult<T> =
   | { ok: true; data: T }
   | { ok: false; safeGraphqlMessage: string };
 
+type DocumentLinksErrorMetadata = {
+  hasUserId?: boolean;
+  hasCurrentOrganizationId?: boolean;
+  hasDocumentOrganizationId?: boolean;
+  hasMembership?: boolean;
+  documentBelongsToCurrentOrganization?: boolean;
+  selectedQuestionItemCount?: number;
+  foundQuestionItemCount?: number;
+  answerOrganizationMatches?: boolean;
+  safeGraphqlMessage?: string;
+};
+
 type BearerTokenResult =
   | { ok: true; token: string }
   | { ok: false; category: "missing_authorization_header" | "malformed_authorization_header" };
@@ -192,25 +204,31 @@ export async function POST(request: Request) {
       organizationResult.category,
       organizationResult.stage,
       organizationResult.status,
-      organizationResult.safeGraphqlMessage,
+      {
+        hasUserId: organizationResult.category !== "auth_user_lookup_failed",
+        hasCurrentOrganizationId: false,
+        hasMembership: false,
+        safeGraphqlMessage: organizationResult.safeGraphqlMessage,
+      },
     );
   }
 
   try {
     const payload = (await request.json()) as DocumentLinksPayload;
     const action = readString(payload.action) || "list";
-    const organizationId = readString(payload.organizationId);
-
-    if (!isUuid(organizationId) || organizationId !== organizationResult.organizationId) {
-      return documentLinksError("organization_scope_mismatch", "scope_check", 403);
-    }
+    const organizationId = organizationResult.organizationId;
 
     if (action === "link") {
       const documentId = readString(payload.documentId);
       const questionItemIds = readUuidArray(payload.questionItemIds);
 
       if (!isUuid(documentId) || !questionItemIds.length) {
-        return documentLinksError("invalid_link_payload", "validation", 400);
+        return documentLinksError("invalid_link_payload", "validation", 400, {
+          hasUserId: true,
+          hasCurrentOrganizationId: true,
+          hasMembership: true,
+          selectedQuestionItemCount: questionItemIds.length,
+        });
       }
 
       const scopeResult = await verifyDocumentAndAnswersScope(
@@ -224,7 +242,7 @@ export async function POST(request: Request) {
           scopeResult.category,
           scopeResult.stage,
           scopeResult.status,
-          scopeResult.safeGraphqlMessage,
+          scopeResult.metadata,
         );
       }
       const ensuredAnswerResult = await ensureQuestionAnswersForItems(
@@ -238,7 +256,13 @@ export async function POST(request: Request) {
           "question_answer_ensure_graphql_error",
           "ensure_answer",
           502,
-          ensuredAnswerResult.safeGraphqlMessage,
+          {
+            hasUserId: true,
+            hasCurrentOrganizationId: true,
+            hasMembership: true,
+            selectedQuestionItemCount: questionItemIds.length,
+            safeGraphqlMessage: ensuredAnswerResult.safeGraphqlMessage,
+          },
         );
       }
 
@@ -262,7 +286,13 @@ export async function POST(request: Request) {
           "document_link_graphql_error",
           "link_mutation",
           502,
-          linkResult.safeGraphqlMessage,
+          {
+            hasUserId: true,
+            hasCurrentOrganizationId: true,
+            hasMembership: true,
+            selectedQuestionItemCount: questionItemIds.length,
+            safeGraphqlMessage: linkResult.safeGraphqlMessage,
+          },
         );
       }
 
@@ -280,7 +310,11 @@ export async function POST(request: Request) {
       const questionAnswerId = readString(payload.questionAnswerId);
 
       if (!isUuid(documentId) || !isUuid(questionAnswerId)) {
-        return documentLinksError("invalid_unlink_payload", "validation", 400);
+        return documentLinksError("invalid_unlink_payload", "validation", 400, {
+          hasUserId: true,
+          hasCurrentOrganizationId: true,
+          hasMembership: true,
+        });
       }
 
       const answerScopeResult = await executeDocumentLinksAdminGraphql<{
@@ -304,14 +338,24 @@ export async function POST(request: Request) {
           "question_answer_lookup_graphql_error",
           "scope_check",
           502,
-          answerScopeResult.safeGraphqlMessage,
+          {
+            hasUserId: true,
+            hasCurrentOrganizationId: true,
+            hasMembership: true,
+            safeGraphqlMessage: answerScopeResult.safeGraphqlMessage,
+          },
         );
       }
 
       const questionItemId = answerScopeResult.data.question_answers_by_pk?.question_item_id;
 
       if (!questionItemId) {
-        return documentLinksError("question_answer_not_found", "scope_check", 404);
+        return documentLinksError("question_answer_not_found", "scope_check", 404, {
+          hasUserId: true,
+          hasCurrentOrganizationId: true,
+          hasMembership: true,
+          answerOrganizationMatches: false,
+        });
       }
 
       const scopeResult = await verifyDocumentAndAnswersScope(organizationId, documentId, [
@@ -323,7 +367,7 @@ export async function POST(request: Request) {
           scopeResult.category,
           scopeResult.stage,
           scopeResult.status,
-          scopeResult.safeGraphqlMessage,
+          scopeResult.metadata,
         );
       }
 
@@ -338,7 +382,12 @@ export async function POST(request: Request) {
           "document_unlink_graphql_error",
           "unlink_mutation",
           502,
-          unlinkResult.safeGraphqlMessage,
+          {
+            hasUserId: true,
+            hasCurrentOrganizationId: true,
+            hasMembership: true,
+            safeGraphqlMessage: unlinkResult.safeGraphqlMessage,
+          },
         );
       }
     }
@@ -354,7 +403,12 @@ export async function POST(request: Request) {
         "document_links_lookup_graphql_error",
         "links_lookup",
         502,
-        linksResult.safeGraphqlMessage,
+        {
+          hasUserId: true,
+          hasCurrentOrganizationId: true,
+          hasMembership: true,
+          safeGraphqlMessage: linksResult.safeGraphqlMessage,
+        },
       );
     }
 
@@ -428,7 +482,7 @@ async function verifyDocumentAndAnswersScope(
   questionItemIds: string[],
 ): Promise<
   | { ok: true; document: DocumentScope; questionItems: QuestionItemScope[]; answers: AnswerScope[] }
-  | { ok: false; category: string; stage: string; status: number; safeGraphqlMessage?: string }
+  | { ok: false; category: string; stage: string; status: number; metadata: DocumentLinksErrorMetadata }
 > {
   const scopeResult = await executeDocumentLinksAdminGraphql<{
     documents_by_pk: DocumentScope | null;
@@ -446,18 +500,81 @@ async function verifyDocumentAndAnswersScope(
       category: "document_link_scope_graphql_error",
       stage: "scope_check",
       status: 502,
-      safeGraphqlMessage: scopeResult.safeGraphqlMessage,
+      metadata: {
+        hasUserId: true,
+        hasCurrentOrganizationId: true,
+        hasMembership: true,
+        selectedQuestionItemCount: questionItemIds.length,
+        safeGraphqlMessage: scopeResult.safeGraphqlMessage,
+      },
     };
   }
 
   const document = scopeResult.data.documents_by_pk;
 
-  if (!document || document.organization_id !== organizationId) {
-    return { ok: false, category: "document_not_found", stage: "scope_check", status: 404 };
+  if (!document) {
+    return {
+      ok: false,
+      category: "document_not_found",
+      stage: "scope_check",
+      status: 404,
+      metadata: {
+        hasUserId: true,
+        hasCurrentOrganizationId: true,
+        hasDocumentOrganizationId: false,
+        hasMembership: true,
+        documentBelongsToCurrentOrganization: false,
+        selectedQuestionItemCount: questionItemIds.length,
+        foundQuestionItemCount: scopeResult.data.question_items.length,
+        answerOrganizationMatches: scopeResult.data.question_answers.every(
+          (answer) => answer.organization_id === organizationId,
+        ),
+      },
+    };
+  }
+
+  const documentBelongsToCurrentOrganization = document.organization_id === organizationId;
+
+  if (!documentBelongsToCurrentOrganization) {
+    return {
+      ok: false,
+      category: "organization_scope_mismatch",
+      stage: "scope_check",
+      status: 403,
+      metadata: {
+        hasUserId: true,
+        hasCurrentOrganizationId: true,
+        hasDocumentOrganizationId: Boolean(document.organization_id),
+        hasMembership: true,
+        documentBelongsToCurrentOrganization,
+        selectedQuestionItemCount: questionItemIds.length,
+        foundQuestionItemCount: scopeResult.data.question_items.length,
+        answerOrganizationMatches: scopeResult.data.question_answers.every(
+          (answer) => answer.organization_id === organizationId,
+        ),
+      },
+    };
   }
 
   if (scopeResult.data.question_items.length !== questionItemIds.length) {
-    return { ok: false, category: "question_item_not_found", stage: "scope_check", status: 404 };
+    return {
+      ok: false,
+      category: "question_item_not_found",
+      stage: "scope_check",
+      status: 404,
+      metadata: {
+        hasUserId: true,
+        hasCurrentOrganizationId: true,
+        hasDocumentOrganizationId: true,
+        hasMembership: true,
+        documentBelongsToCurrentOrganization,
+        selectedQuestionItemCount: questionItemIds.length,
+        foundQuestionItemCount: scopeResult.data.question_items.length,
+        answerOrganizationMatches: scopeResult.data.question_answers.every(
+          (answer) => answer.organization_id === organizationId,
+        ),
+      },
+    };
   }
 
   return {
@@ -626,13 +743,21 @@ function documentLinksError(
   category: string,
   stage: string,
   status: number,
-  safeGraphqlMessage?: string,
+  metadata: DocumentLinksErrorMetadata = {},
 ) {
   console.warn("document_links_failed", {
     category,
     stage,
     hasAdminSecret: Boolean(process.env.HASURA_GRAPHQL_ADMIN_SECRET),
-    message: safeGraphqlMessage,
+    hasUserId: metadata.hasUserId ?? false,
+    hasCurrentOrganizationId: metadata.hasCurrentOrganizationId ?? false,
+    hasDocumentOrganizationId: metadata.hasDocumentOrganizationId ?? false,
+    hasMembership: metadata.hasMembership ?? false,
+    documentBelongsToCurrentOrganization: metadata.documentBelongsToCurrentOrganization,
+    selectedQuestionItemCount: metadata.selectedQuestionItemCount,
+    foundQuestionItemCount: metadata.foundQuestionItemCount,
+    answerOrganizationMatches: metadata.answerOrganizationMatches,
+    message: metadata.safeGraphqlMessage,
   });
 
   return NextResponse.json(
@@ -641,7 +766,15 @@ function documentLinksError(
       category,
       stage,
       hasAdminSecret: Boolean(process.env.HASURA_GRAPHQL_ADMIN_SECRET),
-      safeGraphqlMessage,
+      hasUserId: metadata.hasUserId ?? false,
+      hasCurrentOrganizationId: metadata.hasCurrentOrganizationId ?? false,
+      hasDocumentOrganizationId: metadata.hasDocumentOrganizationId ?? false,
+      hasMembership: metadata.hasMembership ?? false,
+      documentBelongsToCurrentOrganization: metadata.documentBelongsToCurrentOrganization,
+      selectedQuestionItemCount: metadata.selectedQuestionItemCount,
+      foundQuestionItemCount: metadata.foundQuestionItemCount,
+      answerOrganizationMatches: metadata.answerOrganizationMatches,
+      safeGraphqlMessage: metadata.safeGraphqlMessage,
     },
     { status },
   );
