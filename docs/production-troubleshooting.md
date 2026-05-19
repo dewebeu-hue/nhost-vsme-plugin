@@ -540,6 +540,46 @@ Manual checks:
 5. Open `/en/passport/invalid-token-test` and confirm a safe unavailable/not-found state.
 6. Repeat a quick check for `/hr/passport/[token]` and `/de/passport/[token]`.
 
+## Share Link Lifecycle Management
+
+Use this when validating `/dashboard/share` after deploying share-link lifecycle controls.
+
+Expected behavior:
+
+- `GET /api/passport/share-link` loads the current active, non-expired link for the authenticated user's current organization.
+- `POST /api/passport/share-link` with no action, or with `{ "action": "create" }`, preserves the existing compatible behavior: return the active link if one exists, otherwise create one.
+- `POST /api/passport/share-link` with `{ "action": "deactivate" }` sets active links for the current organization to `is_active = false`.
+- `POST /api/passport/share-link` with `{ "action": "regenerate" }` deactivates active links for the current organization, creates a new token, and returns the new public URL.
+- The public `/passport/[token]` route must show the safe unavailable state for invalid, inactive, or expired tokens.
+- Public Passport pages must not expose private document URLs, Nhost Storage file IDs, user/member data, raw sensitive answers, secrets, or debug payloads.
+
+Safe verification SQL:
+
+```sql
+select
+  id,
+  organization_id,
+  is_active,
+  expires_at,
+  created_at,
+  updated_at
+from share_links
+order by created_at desc
+limit 20;
+```
+
+If `updated_at` is not available in the live schema, rerun the same query without that column.
+
+Manual checks:
+
+1. Open `/hr/dashboard/share` as a real supplier organization member.
+2. Confirm the active link, created date, and expiry state are visible.
+3. Copy the link and open it in incognito; the public Passport should load.
+4. Deactivate the link and confirm the old public URL shows the unavailable state.
+5. Regenerate the link and confirm the new URL loads in incognito.
+6. Reopen the old URL and confirm it remains unavailable.
+7. Confirm no private document URL, storage file ID, or private file download is visible.
+
 ## Faza 2.8 Final Supplier Passport QA
 
 Run this after deploying the final Faza 2.8 changes to Vercel.

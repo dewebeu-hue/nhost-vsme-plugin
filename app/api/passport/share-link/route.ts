@@ -181,15 +181,29 @@ const updatePassportMutation = `
   }
 `;
 
+const deactivateActiveShareLinksMutation = `
+  mutation DeactivatePassportShareLinks($organizationId: uuid!) {
+    update_share_links(
+      where: {
+        organization_id: { _eq: $organizationId }
+        is_active: { _eq: true }
+      }
+      _set: { is_active: false }
+    ) {
+      affected_rows
+    }
+  }
+`;
+
 export async function GET(request: Request) {
-  return handleShareLinkRequest(request, false);
+  return handleShareLinkRequest(request, "load");
 }
 
 export async function POST(request: Request) {
-  return handleShareLinkRequest(request, true);
+  return handleShareLinkRequest(request, await readShareLinkAction(request));
 }
 
-async function handleShareLinkRequest(request: Request, createIfMissing: boolean) {
+async function handleShareLinkRequest(request: Request, action: "load" | "create" | "deactivate" | "regenerate") {
   const organizationResult = await resolveOrganizationForRequest(request);
 
   if (!organizationResult.ok) {
@@ -207,11 +221,62 @@ async function handleShareLinkRequest(request: Request, createIfMissing: boolean
     return shareLinkError("share_link_lookup_graphql_error", "share_link_lookup", 502, existingLinkResult.safeGraphqlMessage);
   }
 
-  if (existingLinkResult.data.share_links[0]) {
+  const existingLink = existingLinkResult.data.share_links[0] ?? null;
+
+  if (action === "deactivate") {
+    if (!writableRoles.has(organizationResult.role)) {
+      return shareLinkError("permission_denied", "membership_lookup", 403);
+    }
+
+    const deactivateResult = await deactivateActiveShareLinks(organizationResult.organization.id);
+
+    if (!deactivateResult.ok) {
+      return shareLinkError("share_link_deactivate_graphql_error", "share_link_deactivate", 502, deactivateResult.safeGraphqlMessage);
+    }
+
+    return shareLinkResponse(request, null, organizationResult.organization);
+  }
+
+  if (action === "regenerate") {
+    if (!writableRoles.has(organizationResult.role)) {
+      return shareLinkError("permission_denied", "membership_lookup", 403);
+    }
+
+    const deactivateResult = await deactivateActiveShareLinks(organizationResult.organization.id);
+
+    if (!deactivateResult.ok) {
+      return shareLinkError("share_link_deactivate_graphql_error", "share_link_deactivate", 502, deactivateResult.safeGraphqlMessage);
+    }
+
+    const passportResult = await getOrCreatePassport({
+      organizationId: organizationResult.organization.id,
+      userId: organizationResult.userId,
+    });
+
+    if (!passportResult.ok) {
+      return shareLinkError(passportResult.category, passportResult.stage, passportResult.status, passportResult.safeGraphqlMessage);
+    }
+
+    const createdLinkResult = await createShareLink({
+      organizationId: organizationResult.organization.id,
+      passportId: passportResult.passport.id,
+      userId: organizationResult.userId,
+    });
+
+    if (!createdLinkResult.ok) {
+      return shareLinkError("share_link_insert_graphql_error", "share_link_insert", 502, createdLinkResult.safeGraphqlMessage);
+    }
+
+    await updatePassportStatus(passportResult.passport.id).catch(() => null);
+
+    return shareLinkResponse(request, createdLinkResult.data.insert_share_links_one, organizationResult.organization);
+  }
+
+  if (existingLink) {
     return shareLinkResponse(request, existingLinkResult.data.share_links[0], organizationResult.organization);
   }
 
-  if (!createIfMissing) {
+  if (action === "load") {
     return NextResponse.json({
       configured: true,
       organization: organizationResult.organization,
@@ -247,6 +312,26 @@ async function handleShareLinkRequest(request: Request, createIfMissing: boolean
   await updatePassportStatus(passportResult.passport.id).catch(() => null);
 
   return shareLinkResponse(request, createdLinkResult.data.insert_share_links_one, organizationResult.organization);
+}
+
+async function readShareLinkAction(request: Request): Promise<"create" | "deactivate" | "regenerate"> {
+  const contentType = request.headers.get("content-type") ?? "";
+
+  if (!contentType.includes("application/json")) {
+    return "create";
+  }
+
+  try {
+    const payload = (await request.json()) as { action?: unknown };
+
+    if (payload.action === "deactivate" || payload.action === "regenerate") {
+      return payload.action;
+    }
+  } catch {
+    return "create";
+  }
+
+  return "create";
 }
 
 async function resolveOrganizationForRequest(request: Request): Promise<OrganizationResolution> {
@@ -469,6 +554,14 @@ async function createShareLink(input: { organizationId: string; passportId: stri
         created_by: input.userId,
       },
     },
+  });
+}
+
+async function deactivateActiveShareLinks(organizationId: string) {
+  return executeAdminGraphql<{ update_share_links: { affected_rows: number } }>({
+    operationName: "DeactivatePassportShareLinks",
+    query: deactivateActiveShareLinksMutation,
+    variables: { organizationId },
   });
 }
 

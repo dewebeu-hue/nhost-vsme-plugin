@@ -1339,6 +1339,7 @@ export type PublicSharePassport = {
   token: string;
   company: PassportCompanyProfile;
   readinessScore: number;
+  certificateStatus?: "none" | "available" | "expires_soon" | "expired";
   lastUpdated: string;
   sharedWith: string;
   sharedOn: string;

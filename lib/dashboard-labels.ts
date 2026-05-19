@@ -37,7 +37,7 @@ export const defaultDashboardShellLabels: DashboardShellLabels = {
     settings: "Settings",
   },
   verified: "Verified",
-  verifiedSupplier: "Verified supplier",
+  verifiedSupplier: "Supplier profile",
   plan: "Plan",
   renewal: "Renewal",
   workspace: "Workspace",

@@ -556,6 +556,7 @@ function mapPublicShare(
       certifications: createCertificationList(answersByCode, profile?.certifications ?? []),
     },
     readinessScore,
+    certificateStatus: getPublicCertificateStatus(documents),
     lastUpdated: formatDate(passport.generated_at ?? passport.updated_at),
     sharedWith: shareLink.buyer_email || shareLink.buyer_name || "Buyer",
     sharedOn: formatDate(shareLink.created_at),
@@ -577,7 +578,9 @@ function mapPublicShare(
       actionLabel:
         section.title === "Evidence summary"
           ? "Evidence documents are available on request"
-          : "View details",
+          : section.linkedDocuments > 0
+            ? "Evidence available"
+            : "Evidence recommended",
     })),
     documents: [],
     details: [
@@ -695,6 +698,38 @@ function isPublicEvidenceAvailable(status: string) {
   return ["reviewed", "linked", "uploaded", "needs_review", "expiring_soon"].includes(status);
 }
 
+function getPublicCertificateStatus(documents: PublicDocumentRecord[]) {
+  const certificateDocuments = documents.filter((document) => document.document_type === "certificate");
+
+  if (!certificateDocuments.length) {
+    return "none" as const;
+  }
+
+  let hasExpiringSoon = false;
+
+  for (const document of certificateDocuments) {
+    if (!document.expires_at) {
+      continue;
+    }
+
+    const daysUntilExpiry = getDaysUntilDate(document.expires_at);
+
+    if (daysUntilExpiry === null) {
+      continue;
+    }
+
+    if (daysUntilExpiry < 0) {
+      return "expired" as const;
+    }
+
+    if (daysUntilExpiry <= 90) {
+      hasExpiringSoon = true;
+    }
+  }
+
+  return hasExpiringSoon ? "expires_soon" as const : "available" as const;
+}
+
 function calculatePublicPercent(answered: number, total: number) {
   if (total <= 0) {
     return 0;
@@ -768,10 +803,25 @@ function getPublicSectionDescription(title: string) {
     Environment: "VSME-aligned environmental and evidence readiness.",
     Social: "Workforce, health, safety, and training readiness.",
     Governance: "Governance, ethics, and supplier due-diligence readiness.",
-    "Evidence summary": "Documents reviewed and approved for sharing.",
+    "Evidence summary": "Buyer-safe evidence availability summary.",
   };
 
   return descriptions[title] ?? "Buyer-safe Supplier Passport summary.";
+}
+
+function getDaysUntilDate(value: string) {
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return null;
+  }
+
+  const startOfToday = new Date();
+  startOfToday.setHours(0, 0, 0, 0);
+  const startOfTarget = new Date(date);
+  startOfTarget.setHours(0, 0, 0, 0);
+
+  return Math.ceil((startOfTarget.getTime() - startOfToday.getTime()) / 86_400_000);
 }
 
 function isDocumentBuyerVisible(

@@ -51,10 +51,8 @@ export function PublicSharePage({ passport }: PublicSharePageProps) {
   const t = useTranslations("share");
   const evidenceSection = passport.sections.find((section) => section.title === "Evidence summary");
   const readinessSections = passport.sections.filter((section) => section.title !== "Evidence summary");
-  const certificateStatus =
-    passport.company.certifications.length > 0
-      ? t("certificateEvidenceAvailable")
-      : t("certificateEvidenceNotProvided");
+  const readinessLevel = getReadinessLevel(passport.readinessScore);
+  const certificateStatus = getCertificateStatusLabel(passport.certificateStatus, t);
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-950">
@@ -105,7 +103,7 @@ export function PublicSharePage({ passport }: PublicSharePageProps) {
                       className="rounded-full border-teal-200 bg-teal-50 px-3 py-1 text-teal-700"
                     >
                       <ShieldCheck aria-hidden="true" />
-                      {t("verified")}
+                      {t("supplierProfile")}
                     </Badge>
                   </div>
                   <h1 className="text-4xl font-semibold tracking-tight text-slate-950 md:text-5xl">
@@ -166,6 +164,10 @@ export function PublicSharePage({ passport }: PublicSharePageProps) {
               <ProgressRing value={passport.readinessScore} label={t("readinessScore")} size={156} />
               <div className="grid flex-1 gap-4 md:grid-cols-2">
                 <InfoBlock
+                  label={t("readinessStatus")}
+                  value={translateReadinessLevel(readinessLevel, t)}
+                />
+                <InfoBlock
                   label={t("industries")}
                   value={passport.company.industries.length ? passport.company.industries.join(", ") : t("notProvided")}
                 />
@@ -199,10 +201,10 @@ export function PublicSharePage({ passport }: PublicSharePageProps) {
               {t("readinessSummary")}
             </h2>
             <p className="mt-3 text-sm leading-7 text-slate-600">
-              {t("publicSummaryExplanation")}
+              {t("readinessScoreExplanation")}
             </p>
             <div className="mt-5 rounded-2xl bg-teal-50 p-4 text-sm font-semibold text-teal-800">
-              {t("secureTagline")}
+              {translateReadinessLevel(readinessLevel, t)}
             </div>
           </div>
         </section>
@@ -238,6 +240,9 @@ export function PublicSharePage({ passport }: PublicSharePageProps) {
                     {section.metricValue}
                   </p>
                 </div>
+                <Badge variant="outline" className="mt-4 rounded-full border-blue-100 bg-blue-50 text-blue-700">
+                  {translateSectionStatus(section, t)}
+                </Badge>
               </article>
             ))}
           </div>
@@ -304,6 +309,55 @@ function translateStatusChip(chip: string, t: ReturnType<typeof useTranslations<
   };
 
   return map[chip] ?? chip;
+}
+
+function getReadinessLevel(score: number) {
+  if (score >= 90) {
+    return "strong" as const;
+  }
+
+  if (score >= 70) {
+    return "buyerReadyDraft" as const;
+  }
+
+  if (score >= 40) {
+    return "inProgress" as const;
+  }
+
+  return "needsAttention" as const;
+}
+
+function translateReadinessLevel(
+  level: ReturnType<typeof getReadinessLevel>,
+  t: ReturnType<typeof useTranslations<"share">>,
+) {
+  const map = {
+    needsAttention: t("readinessNeedsAttention"),
+    inProgress: t("readinessInProgress"),
+    buyerReadyDraft: t("readinessBuyerReadyDraft"),
+    strong: t("readinessStrong"),
+  };
+
+  return map[level];
+}
+
+function getCertificateStatusLabel(
+  status: typeof publicSharePassport.certificateStatus,
+  t: ReturnType<typeof useTranslations<"share">>,
+) {
+  if (status === "expired") {
+    return t("certificateExpired");
+  }
+
+  if (status === "expires_soon") {
+    return t("certificateExpiresSoon");
+  }
+
+  if (status === "available") {
+    return t("certificateEvidenceAvailable");
+  }
+
+  return t("noExpiringCertificates");
 }
 
 function translateShareDetail(label: string, t: ReturnType<typeof useTranslations<"share">>) {
@@ -380,6 +434,31 @@ function translateShareMetricLabel(label: string, t: ReturnType<typeof useTransl
   };
 
   return map[label] ?? label;
+}
+
+function translateSectionStatus(
+  section: typeof publicSharePassport.sections[number],
+  t: ReturnType<typeof useTranslations<"share">>,
+) {
+  const completion = Number.parseInt(section.metricValue, 10);
+
+  if (!Number.isFinite(completion) || completion <= 0) {
+    return t("sectionNotStarted");
+  }
+
+  if (completion >= 100) {
+    return t("sectionCompleted");
+  }
+
+  if (section.actionLabel === "Evidence available") {
+    return t("sectionEvidenceAvailable");
+  }
+
+  if (section.actionLabel === "Evidence recommended") {
+    return t("sectionEvidenceRecommended");
+  }
+
+  return t("sectionInProgress");
 }
 
 function InfoBlock({ label, value }: { label: string; value: string }) {
