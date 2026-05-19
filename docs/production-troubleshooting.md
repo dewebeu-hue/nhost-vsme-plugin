@@ -1465,6 +1465,83 @@ Manual QA checklist:
 9. Confirm no private document URLs or storage IDs are shown.
 10. Repeat quick route checks on `/en` and `/de`.
 
+### Buyer request readiness mapping and response workspace
+
+The buyer request detail page is an authenticated supplier-side response workspace. It does not create buyer accounts, buyer login, email sending, or buyer-specific public links.
+
+Readiness logic:
+
+- Requested sections are read from `buyer_requests.requested_sections`.
+- If no sections are selected, the workspace summarizes all active questionnaire sections.
+- Section readiness uses `question_sections`, `question_items`, and `question_answers` for the current organization.
+- Evidence availability uses `documents` and `document_links` counts only.
+- Certificate expiry warnings use real certificate document expiry dates.
+- The response package panel shows whether an active public Supplier Passport link exists, PDF availability through the Passport page, current request status, and high-level evidence availability.
+
+Privacy rules:
+
+- Do not show private document URLs.
+- Do not show storage file IDs.
+- Do not show user/member data.
+- Do not log share tokens, JWTs, cookies, secrets, private URLs, or document contents.
+- Do not label a request as approved, certified, audited, or legally compliant.
+
+Manual QA checklist:
+
+1. Log in as a supplier organization member.
+2. Open `/hr/dashboard/buyer-requests`.
+3. Create a request with Energy and Certifications selected.
+4. Open the request detail page.
+5. Confirm request readiness, section completion, evidence status, and missing actions reflect real data.
+6. Confirm certificate expiry warning appears only from real certificate expiry data.
+7. Update status to `ready_to_share`, refresh, and confirm persistence.
+8. Click Review questionnaire, Upload/link evidence, Review Passport, Open share page, and Download PDF draft; confirm all navigate to real existing routes.
+9. Confirm no private document URLs, storage IDs, buyer portal, or email sending appears.
+10. Repeat quick route checks on `/en` and `/de`.
+
+### Buyer request response package preparation
+
+The buyer request detail page can prepare a manual response package without sending anything externally.
+
+Response package includes:
+
+- Active public Supplier Passport link status.
+- PDF draft availability through the authenticated Passport page.
+- Requested section count and readiness percentage.
+- Requested-section linked evidence count.
+- Evidence-on-request copy.
+- Missing action count.
+- Current buyer request status.
+
+Prepare response checklist:
+
+- Complete requested questionnaire sections: done when every requested section has all questions answered.
+- Link evidence documents: done when at least one evidence link exists for the requested sections.
+- Review Supplier Passport: shown as part of the manual preparation flow and considered done when the request has been marked ready/shared/closed.
+- Confirm public link is active: done only when an active, unexpired share link exists.
+- Download PDF draft: available through the Passport page.
+- Mark request as ready to share: done when status is `ready_to_share`, `shared`, or `closed`.
+
+Copy response note:
+
+- The copy action only writes text to the supplier's clipboard.
+- It does not send email and does not create buyer access.
+- The note includes the buyer name and current organization name when available.
+- If an active public Passport link exists, the note includes that public link.
+- If no active public link exists, the note omits the link and the UI directs the supplier to create the public link first.
+- The note never includes private document URLs, storage file IDs, raw answers, or admin/debug fields.
+
+Manual QA checklist:
+
+1. Open `/hr/dashboard/buyer-requests/[id]`.
+2. Confirm the response package panel shows public link status, PDF draft state, requested-section readiness, evidence count, missing action count, and current status.
+3. Confirm the prepare response checklist reflects real data.
+4. Copy the response note with an active public link and confirm it includes only the public Passport link.
+5. Deactivate/remove the active link or use an organization without one; confirm the note omits a fake link and shows create-link guidance.
+6. Confirm Mark as ready to share persists the status after refresh.
+7. Confirm no email is sent and no buyer portal/login appears.
+8. Repeat quick checks on `/en` and `/de`.
+
 ## Safe Logging Rules
 
 Allowed categories:

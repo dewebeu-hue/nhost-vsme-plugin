@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useLocale } from "next-intl";
-import { ArrowLeft, ExternalLink, Save } from "lucide-react";
+import { ArrowLeft, Copy, ExternalLink, Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -20,6 +20,7 @@ import {
   buyerRequestStatuses,
   type BuyerRequest,
   type BuyerRequestInput,
+  type BuyerRequestResponsePackage,
   type BuyerRequestSectionCode,
   type BuyerRequestSectionReadiness,
   type BuyerRequestStatus,
@@ -38,6 +39,7 @@ type BuyerRequestDetailPayload = {
   ok?: boolean;
   request?: BuyerRequest;
   sectionReadiness?: BuyerRequestSectionReadiness[];
+  responsePackage?: BuyerRequestResponsePackage;
 };
 
 type MessageState = {
@@ -57,12 +59,56 @@ export function BuyerRequestDetailClient({
   const locale = useLocale();
   const [request, setRequest] = useState<BuyerRequest | null>(null);
   const [sectionReadiness, setSectionReadiness] = useState<BuyerRequestSectionReadiness[]>([]);
+  const [responsePackage, setResponsePackage] = useState<BuyerRequestResponsePackage | null>(null);
   const [notes, setNotes] = useState("");
   const [status, setStatus] = useState<BuyerRequestStatus>("draft");
   const [selectedSections, setSelectedSections] = useState<BuyerRequestSectionCode[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [message, setMessage] = useState<MessageState | null>(null);
+  const currentStatus = status;
+  const readinessSummary = useMemo(
+    () => calculateReadinessSummary(sectionReadiness, currentStatus, labels),
+    [currentStatus, labels, sectionReadiness],
+  );
+  const missingActions = useMemo(
+    () => buildMissingActions(sectionReadiness, labels),
+    [labels, sectionReadiness],
+  );
+  const linkedEvidenceForRequestedSections = useMemo(
+    () => sectionReadiness.reduce((sum, section) => sum + section.evidenceLinked, 0),
+    [sectionReadiness],
+  );
+  const requestedSectionsComplete = useMemo(
+    () =>
+      sectionReadiness.length > 0 &&
+      sectionReadiness.every(
+        (section) => section.totalQuestions > 0 && section.answeredQuestions >= section.totalQuestions,
+      ),
+    [sectionReadiness],
+  );
+  const responseChecklist = useMemo(
+    () =>
+      buildResponseChecklist({
+        labels,
+        requestedSectionsComplete,
+        hasLinkedEvidence: linkedEvidenceForRequestedSections > 0,
+        hasActiveShareLink: Boolean(responsePackage?.hasActiveShareLink),
+        hasPdfDraft: true,
+        status,
+      }),
+    [
+      labels,
+      linkedEvidenceForRequestedSections,
+      requestedSectionsComplete,
+      responsePackage?.hasActiveShareLink,
+      status,
+    ],
+  );
+  const dueState = getDueState(request?.due_date ?? null);
+  const hasRemainingGaps = missingActions.length > 0 || !responsePackage?.hasActiveShareLink;
+  const requestLooksReady =
+    !hasRemainingGaps && linkedEvidenceForRequestedSections > 0 && readinessSummary.percent >= 80;
 
   useEffect(() => {
     let cancelled = false;
@@ -93,6 +139,7 @@ export function BuyerRequestDetailClient({
       setNotes(payload.request.notes ?? "");
       setSelectedSections(payload.request.requested_sections);
       setSectionReadiness(payload.sectionReadiness ?? []);
+      setResponsePackage(payload.responsePackage ?? null);
       setMessage(null);
       setIsLoading(false);
     }
@@ -105,12 +152,46 @@ export function BuyerRequestDetailClient({
   }, [labels.loadError, requestId]);
 
   async function handleSave() {
-    const input: BuyerRequestInput = {
+    await updateRequest({
       status,
       requestedSections: selectedSections,
       notes,
-    };
+    });
+  }
 
+  async function handleMarkReadyToShare() {
+    await updateRequest({
+      status: "ready_to_share",
+      requestedSections: selectedSections,
+      notes,
+    });
+  }
+
+  async function handleCopyResponseNote() {
+    if (!request) {
+      return;
+    }
+
+    const publicUrl =
+      responsePackage?.publicPassportPath && typeof window !== "undefined"
+        ? new URL(`/${locale}${responsePackage.publicPassportPath}`, window.location.origin).toString()
+        : null;
+    const note = buildResponseNote({
+      labels,
+      buyerName: request.buyer_name,
+      organizationName: responsePackage?.organizationName ?? labels.notProvidedYet,
+      publicUrl,
+    });
+
+    try {
+      await navigator.clipboard.writeText(note);
+      setMessage({ tone: "success", text: labels.responseNoteCopied });
+    } catch {
+      setMessage({ tone: "error", text: labels.updateError });
+    }
+  }
+
+  async function updateRequest(input: BuyerRequestInput) {
     setIsSaving(true);
     setMessage(null);
 
@@ -135,7 +216,9 @@ export function BuyerRequestDetailClient({
     }
 
     setRequest(payload.request);
+    setStatus(payload.request.status);
     setSectionReadiness(payload.sectionReadiness ?? sectionReadiness);
+    setResponsePackage(payload.responsePackage ?? responsePackage);
     setMessage({ tone: "success", text: labels.saveRequest });
   }
 
@@ -184,6 +267,39 @@ export function BuyerRequestDetailClient({
         </div>
       </header>
 
+      <section className="grid gap-4 md:grid-cols-4">
+        <SummaryCard
+          label={labels.requestReadiness}
+          value={`${readinessSummary.percent}%`}
+          detail={readinessSummary.label}
+        />
+        <SummaryCard
+          label={labels.missingActions}
+          value={String(missingActions.length)}
+          detail={missingActions.length ? labels.needsAttention : labels.noObviousGaps}
+        />
+        <SummaryCard
+          label={labels.evidenceLinked}
+          value={String(linkedEvidenceForRequestedSections)}
+          detail={labels.evidenceAvailableOnRequest}
+        />
+        <SummaryCard
+          label={labels.dueDate}
+          value={
+            dueState === "overdue"
+              ? labels.overdue
+              : dueState === "dueSoon"
+                ? labels.dueSoon
+                : request.due_date
+                  ? formatDate(request.due_date, locale)
+                  : labels.noDueDate
+          }
+          detail={formatBuyerRequestLabel(labels.lastUpdated, {
+            date: formatDate(request.updated_at.slice(0, 10), locale),
+          })}
+        />
+      </section>
+
       <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
         <main className="flex flex-col gap-6">
           <section className="supplier-surface rounded-2xl border-0 p-5">
@@ -227,6 +343,16 @@ export function BuyerRequestDetailClient({
                         linked: section.evidenceLinked,
                       })}
                     </p>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-600">
+                        {getEvidenceStatus(section, labels)}
+                      </span>
+                      {section.expiredCertificates || section.expiringSoonCertificates ? (
+                        <span className="rounded-full bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-700">
+                          {labels.certificateExpiryWarning}
+                        </span>
+                      ) : null}
+                    </div>
                   </article>
                 ))
               ) : (
@@ -235,6 +361,53 @@ export function BuyerRequestDetailClient({
                 </p>
               )}
             </div>
+          </section>
+
+          <section className="supplier-surface rounded-2xl border-0 p-5">
+            <h2 className="text-lg font-semibold tracking-tight text-slate-950">
+              {labels.missingActions}
+            </h2>
+            {missingActions.length ? (
+              <ul className="mt-4 grid gap-3">
+                {missingActions.map((action) => (
+                  <li
+                    key={action}
+                    className="rounded-xl border border-slate-200 bg-white p-3 text-sm leading-6 text-slate-600"
+                  >
+                    {action}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="mt-4 rounded-xl border border-dashed border-slate-200 bg-slate-50 p-4 text-sm text-slate-600">
+                {labels.noObviousGaps}
+              </p>
+            )}
+          </section>
+
+          <section className="supplier-surface rounded-2xl border-0 p-5">
+            <h2 className="text-lg font-semibold tracking-tight text-slate-950">
+              {labels.prepareResponse}
+            </h2>
+            <p className="mt-2 text-sm leading-6 text-slate-600">
+              {requestLooksReady
+                ? labels.requestLooksReady
+                : labels.completeRemainingActionsBeforeSharing}
+            </p>
+            <div className="mt-4 grid gap-3">
+              {responseChecklist.map((item) => (
+                <ChecklistItem key={item.label} label={item.label} done={item.done} labels={labels} />
+              ))}
+            </div>
+            <Button
+              type="button"
+              className="mt-5"
+              variant="outline"
+              disabled={isSaving || status === "ready_to_share" || status === "shared" || status === "closed"}
+              onClick={handleMarkReadyToShare}
+            >
+              {labels.markReadyToShare}
+            </Button>
           </section>
 
           <section className="supplier-surface rounded-2xl border-0 p-5">
@@ -305,18 +478,98 @@ export function BuyerRequestDetailClient({
 
           <section className="supplier-surface rounded-2xl border-0 p-5">
             <h2 className="text-lg font-semibold tracking-tight text-slate-950">
+              {labels.responsePackage}
+            </h2>
+            <div className="mt-4 grid gap-3 text-sm leading-6 text-slate-600">
+              <DetailItem
+                label={labels.requestedSections}
+                value={formatBuyerRequestLabel(labels.requestedSectionsSummary, {
+                  count: sectionReadiness.length,
+                  percent: readinessSummary.percent,
+                })}
+              />
+              <DetailItem
+                label={labels.evidenceAvailable}
+                value={formatBuyerRequestLabel(labels.evidenceSummary, {
+                  linked: linkedEvidenceForRequestedSections,
+                })}
+              />
+              <DetailItem
+                label={labels.missingActions}
+                value={formatBuyerRequestLabel(labels.missingActionsSummary, {
+                  count: missingActions.length,
+                })}
+              />
+              <p>
+                {responsePackage?.hasActiveShareLink
+                  ? labels.activeShareLinkAvailable
+                  : labels.noActiveShareLink}
+              </p>
+              {!responsePackage?.hasActiveShareLink ? (
+                <p className="font-semibold text-amber-700">{labels.createPublicLinkFirst}</p>
+              ) : null}
+              <p>{labels.pdfDraftAvailable}</p>
+              <p>{labels.evidenceAvailableOnRequest}</p>
+              <p>
+                {labels.currentRequestStatus}: {labels.statuses[status]}
+              </p>
+            </div>
+          </section>
+
+          <section className="supplier-surface rounded-2xl border-0 p-5">
+            <h2 className="text-lg font-semibold tracking-tight text-slate-950">
               {labels.actionsTitle}
             </h2>
             <div className="mt-4 grid gap-2">
               <ActionLink href={`/${locale}/dashboard/questionnaire`} label={labels.reviewQuestionnaire} />
-              <ActionLink href={`/${locale}/dashboard/documents`} label={labels.openEvidenceRoom} />
+              <ActionLink href={`/${locale}/dashboard/documents`} label={labels.uploadLinkEvidence} />
               <ActionLink href={`/${locale}/dashboard/passport`} label={labels.openPassport} />
               <ActionLink href={`/${locale}/dashboard/share`} label={labels.openSharePage} />
+              <ActionLink href={`/${locale}/dashboard/passport`} label={labels.downloadPdfDraft} />
             </div>
             <p className="mt-4 text-sm leading-6 text-slate-500">{labels.downloadPdfHint}</p>
+            <Button type="button" variant="outline" className="mt-4 w-full bg-white" onClick={handleCopyResponseNote}>
+              <Copy data-icon="inline-start" />
+              {labels.copyResponseNote}
+            </Button>
           </section>
         </aside>
       </div>
+    </div>
+  );
+}
+
+function ChecklistItem({
+  label,
+  done,
+  labels,
+}: {
+  label: string;
+  done: boolean;
+  labels: BuyerRequestLabels;
+}) {
+  return (
+    <div className="flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white p-3 text-sm">
+      <span className="font-medium text-slate-700">{label}</span>
+      <span
+        className={
+          done
+            ? "rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700"
+            : "rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-600"
+        }
+      >
+        {done ? labels.done : labels.incomplete}
+      </span>
+    </div>
+  );
+}
+
+function SummaryCard({ label, value, detail }: { label: string; value: string; detail: string }) {
+  return (
+    <div className="supplier-surface rounded-2xl border-0 p-4">
+      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">{label}</p>
+      <p className="mt-2 text-2xl font-semibold tracking-tight text-slate-950">{value}</p>
+      <p className="mt-1 text-sm leading-6 text-slate-600">{detail}</p>
     </div>
   );
 }
@@ -337,6 +590,142 @@ function ActionLink({ href, label }: { href: string; label: string }) {
       <ExternalLink data-icon="inline-end" />
     </Button>
   );
+}
+
+function calculateReadinessSummary(
+  sections: BuyerRequestSectionReadiness[],
+  status: BuyerRequest["status"],
+  labels: BuyerRequestLabels,
+) {
+  if (status === "shared" || status === "closed") {
+    return { percent: 100, label: labels.statuses[status] };
+  }
+
+  const percent = sections.length
+    ? Math.round(sections.reduce((sum, section) => sum + section.completion, 0) / sections.length)
+    : 0;
+
+  if (percent >= 80) {
+    return { percent, label: labels.readyToShare };
+  }
+
+  if (percent >= 40) {
+    return { percent, label: labels.statuses.in_progress };
+  }
+
+  return { percent, label: labels.needsAttention };
+}
+
+function buildMissingActions(
+  sections: BuyerRequestSectionReadiness[],
+  labels: BuyerRequestLabels,
+) {
+  const actions: string[] = [];
+
+  for (const section of sections) {
+    const sectionLabel = labels.sections[section.code] ?? section.title;
+
+    if (section.totalQuestions > section.answeredQuestions) {
+      actions.push(formatBuyerRequestLabel(labels.completeSectionQuestions, { section: sectionLabel }));
+    }
+
+    if (section.evidenceRequired > section.evidenceLinked) {
+      actions.push(formatBuyerRequestLabel(labels.uploadOrLinkEvidence, { section: sectionLabel }));
+    }
+
+    if (section.expiredCertificates || section.expiringSoonCertificates) {
+      actions.push(labels.reviewCertificateExpiry);
+    }
+  }
+
+  return [...new Set(actions)].slice(0, 8);
+}
+
+function getEvidenceStatus(section: BuyerRequestSectionReadiness, labels: BuyerRequestLabels) {
+  if (section.evidenceLinked > 0) {
+    return labels.evidenceAvailable;
+  }
+
+  if (section.evidenceRequired > 0) {
+    return labels.evidenceRecommended;
+  }
+
+  return labels.noEvidenceYet;
+}
+
+function buildResponseChecklist({
+  labels,
+  requestedSectionsComplete,
+  hasLinkedEvidence,
+  hasActiveShareLink,
+  hasPdfDraft,
+  status,
+}: {
+  labels: BuyerRequestLabels;
+  requestedSectionsComplete: boolean;
+  hasLinkedEvidence: boolean;
+  hasActiveShareLink: boolean;
+  hasPdfDraft: boolean;
+  status: BuyerRequestStatus;
+}) {
+  const readyStatus = status === "ready_to_share" || status === "shared" || status === "closed";
+
+  return [
+    { label: labels.checklistCompleteRequestedSections, done: requestedSectionsComplete },
+    { label: labels.checklistLinkEvidence, done: hasLinkedEvidence },
+    { label: labels.checklistReviewPassport, done: readyStatus },
+    { label: labels.checklistConfirmPublicLink, done: hasActiveShareLink },
+    { label: labels.checklistDownloadPdf, done: hasPdfDraft },
+    { label: labels.checklistMarkReady, done: readyStatus },
+  ];
+}
+
+function buildResponseNote({
+  labels,
+  buyerName,
+  organizationName,
+  publicUrl,
+}: {
+  labels: BuyerRequestLabels;
+  buyerName: string;
+  organizationName: string;
+  publicUrl: string | null;
+}) {
+  if (!publicUrl) {
+    return formatBuyerRequestLabel(labels.responseNoteWithoutLink, {
+      buyer: buyerName,
+      organization: organizationName,
+    });
+  }
+
+  return formatBuyerRequestLabel(labels.responseNoteWithLink, {
+    buyer: buyerName,
+    organization: organizationName,
+    link: publicUrl,
+  });
+}
+
+function getDueState(value: string | null) {
+  if (!value) {
+    return "none";
+  }
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const due = new Date(`${value}T00:00:00`);
+
+  if (Number.isNaN(due.getTime())) {
+    return "none";
+  }
+
+  if (due < today) {
+    return "overdue";
+  }
+
+  const sevenDaysFromNow = new Date(today);
+  sevenDaysFromNow.setDate(sevenDaysFromNow.getDate() + 7);
+
+  return due <= sevenDaysFromNow ? "dueSoon" : "ok";
 }
 
 function BuyerRequestMessage({ message }: { message: MessageState }) {

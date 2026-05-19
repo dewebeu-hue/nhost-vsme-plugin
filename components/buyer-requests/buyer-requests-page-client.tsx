@@ -191,7 +191,7 @@ export function BuyerRequestsPageClient({
                       </span>
                       <span className="inline-flex items-center gap-1 text-xs font-medium text-slate-500">
                         <CalendarDays aria-hidden="true" className="size-3.5" />
-                        {request.due_date ? formatDate(request.due_date, locale) : labels.noDueDate}
+                        {formatDueLabel(request.due_date, locale, labels)}
                       </span>
                     </div>
                     <h2 className="mt-2 text-lg font-semibold tracking-tight text-slate-950">
@@ -204,7 +204,13 @@ export function BuyerRequestsPageClient({
                     <p className="mt-2 text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">
                       {formatBuyerRequestLabel(labels.sectionCount, {
                         count: request.requested_sections.length,
+                      })}{" "}
+                      - {formatBuyerRequestLabel(labels.lastUpdated, {
+                        date: formatDate(request.updated_at.slice(0, 10), locale),
                       })}
+                    </p>
+                    <p className="mt-2 text-sm font-medium text-slate-600">
+                      {labels.requestReadiness}: {request.readiness?.readinessPercent ?? 0}%
                     </p>
                   </div>
                   <Button
@@ -373,4 +379,41 @@ function formatDate(value: string, locale: string) {
     month: "short",
     day: "numeric",
   }).format(new Date(`${value}T00:00:00`));
+}
+
+function formatDueLabel(value: string | null, locale: string, labels: BuyerRequestLabels) {
+  if (!value) {
+    return labels.noDueDate;
+  }
+
+  const dueState = getDueState(value);
+
+  if (dueState === "overdue") {
+    return `${labels.overdue} - ${formatDate(value, locale)}`;
+  }
+
+  if (dueState === "dueSoon") {
+    return `${labels.dueSoon} - ${formatDate(value, locale)}`;
+  }
+
+  return formatDate(value, locale);
+}
+
+function getDueState(value: string) {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const due = new Date(`${value}T00:00:00`);
+
+  if (Number.isNaN(due.getTime())) {
+    return "none";
+  }
+
+  if (due < today) {
+    return "overdue";
+  }
+
+  const sevenDaysFromNow = new Date(today);
+  sevenDaysFromNow.setDate(sevenDaysFromNow.getDate() + 7);
+
+  return due <= sevenDaysFromNow ? "dueSoon" : "ok";
 }

@@ -38,6 +38,7 @@ export type BuyerRequest = {
   created_by_user_id: string | null;
   created_at: string;
   updated_at: string;
+  readiness?: BuyerRequestListReadiness;
 };
 
 export type BuyerRequestSectionReadiness = {
@@ -48,6 +49,22 @@ export type BuyerRequestSectionReadiness = {
   completion: number;
   evidenceRequired: number;
   evidenceLinked: number;
+  expiredCertificates: number;
+  expiringSoonCertificates: number;
+};
+
+export type BuyerRequestResponsePackage = {
+  hasActiveShareLink: boolean;
+  publicPassportPath: string | null;
+  organizationName: string | null;
+  uploadedDocumentCount: number;
+  linkedEvidenceCount: number;
+  expiredCertificateCount: number;
+  expiringSoonCertificateCount: number;
+};
+
+export type BuyerRequestListReadiness = {
+  readinessPercent: number;
 };
 
 export type BuyerRequestInput = {

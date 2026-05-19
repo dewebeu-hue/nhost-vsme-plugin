@@ -28,16 +28,59 @@ export type BuyerRequestLabels = {
   noDueDate: string;
   backToList: string;
   requestDetails: string;
+  requestReadiness: string;
+  missingActions: string;
   readinessSummary: string;
   evidenceLinked: string;
   answeredQuestions: string;
   completion: string;
+  evidenceAvailable: string;
+  evidenceRecommended: string;
+  noEvidenceYet: string;
+  certificateExpiryWarning: string;
+  completeSectionQuestions: string;
+  uploadOrLinkEvidence: string;
+  reviewCertificateExpiry: string;
+  noObviousGaps: string;
   actionsTitle: string;
   reviewQuestionnaire: string;
-  openEvidenceRoom: string;
+  uploadLinkEvidence: string;
   openPassport: string;
   openSharePage: string;
+  downloadPdfDraft: string;
   downloadPdfHint: string;
+  responsePackage: string;
+  prepareResponse: string;
+  copyResponseNote: string;
+  responseNoteCopied: string;
+  createPublicLinkFirst: string;
+  requestLooksReady: string;
+  completeRemainingActionsBeforeSharing: string;
+  markReadyToShare: string;
+  checklistCompleteRequestedSections: string;
+  checklistLinkEvidence: string;
+  checklistReviewPassport: string;
+  checklistConfirmPublicLink: string;
+  checklistDownloadPdf: string;
+  checklistMarkReady: string;
+  done: string;
+  incomplete: string;
+  requestedSectionsSummary: string;
+  evidenceSummary: string;
+  missingActionsSummary: string;
+  responseNoteWithLink: string;
+  responseNoteWithoutLink: string;
+  activeShareLinkAvailable: string;
+  noActiveShareLink: string;
+  pdfDraftAvailable: string;
+  evidenceAvailableOnRequest: string;
+  currentRequestStatus: string;
+  dueSoon: string;
+  overdue: string;
+  lastUpdated: string;
+  needsAttention: string;
+  readyToShare: string;
+  shared: string;
   noRequestedSections: string;
   notProvidedYet: string;
   statuses: Record<BuyerRequestStatus, string>;
@@ -73,16 +116,61 @@ export const defaultBuyerRequestLabels: BuyerRequestLabels = {
   noDueDate: "No due date",
   backToList: "Back to buyer requests",
   requestDetails: "Request details",
+  requestReadiness: "Request readiness",
+  missingActions: "Missing or recommended actions",
   readinessSummary: "Requested section readiness",
   evidenceLinked: "{linked} linked evidence items",
   answeredQuestions: "{answered} of {total} answered",
   completion: "{percent}% complete",
+  evidenceAvailable: "Evidence available",
+  evidenceRecommended: "Evidence recommended",
+  noEvidenceYet: "No evidence yet",
+  certificateExpiryWarning: "Certificate expiry warning",
+  completeSectionQuestions: "Complete unanswered {section} questions.",
+  uploadOrLinkEvidence: "Upload or link evidence for {section}.",
+  reviewCertificateExpiry: "Review certificate expiry dates.",
+  noObviousGaps: "No obvious gaps for the selected sections.",
   actionsTitle: "Prepare response",
   reviewQuestionnaire: "Review questionnaire",
-  openEvidenceRoom: "Open Evidence Room",
+  uploadLinkEvidence: "Upload/link evidence",
   openPassport: "Open Passport",
   openSharePage: "Open Share page",
+  downloadPdfDraft: "Download PDF draft",
   downloadPdfHint: "Download the PDF draft from the Passport page.",
+  responsePackage: "Response package",
+  prepareResponse: "Prepare response",
+  copyResponseNote: "Copy response note",
+  responseNoteCopied: "Response note copied",
+  createPublicLinkFirst: "Create public link first",
+  requestLooksReady: "This request looks ready to share.",
+  completeRemainingActionsBeforeSharing: "Complete the remaining actions before sharing.",
+  markReadyToShare: "Mark as ready to share",
+  checklistCompleteRequestedSections: "Complete requested questionnaire sections",
+  checklistLinkEvidence: "Link evidence documents",
+  checklistReviewPassport: "Review Supplier Passport",
+  checklistConfirmPublicLink: "Confirm public link is active",
+  checklistDownloadPdf: "Download PDF draft",
+  checklistMarkReady: "Mark request as ready to share",
+  done: "Done",
+  incomplete: "Incomplete",
+  requestedSectionsSummary: "{count} requested sections, {percent}% readiness",
+  evidenceSummary: "{linked} linked evidence items. Evidence documents are available on request.",
+  missingActionsSummary: "{count} remaining gaps",
+  responseNoteWithLink:
+    "Hello {buyer}, {organization} has prepared a Supplier Passport summary for your request. You can view the public summary here: {link}. Supporting evidence documents are available on request.",
+  responseNoteWithoutLink:
+    "Hello {buyer}, {organization} has prepared a Supplier Passport summary for your request. Supporting evidence documents are available on request.",
+  activeShareLinkAvailable: "Active public Passport link available",
+  noActiveShareLink: "No active public Passport link yet",
+  pdfDraftAvailable: "PDF draft available from the Passport page",
+  evidenceAvailableOnRequest: "Evidence documents are available on request",
+  currentRequestStatus: "Current buyer request status",
+  dueSoon: "Due soon",
+  overdue: "Overdue",
+  lastUpdated: "Last updated {date}",
+  needsAttention: "Needs attention",
+  readyToShare: "Ready to share",
+  shared: "Shared",
   noRequestedSections: "No specific sections selected yet.",
   notProvidedYet: "Not provided yet",
   statuses: {

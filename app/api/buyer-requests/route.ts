@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import {
   type BuyerRequest,
   type BuyerRequestInput,
+  type BuyerRequestListReadiness,
   isBuyerRequestStatus,
   normalizeBuyerRequestRecord,
   normalizeRequestedSections,
@@ -37,6 +38,21 @@ type OrganizationResolution =
     };
 
 const writableRoles = new Set(["owner", "editor", "admin"]);
+
+type QuestionSectionRecord = {
+  id: string;
+  code: string;
+};
+
+type QuestionItemRecord = {
+  id: string;
+  section_id: string;
+};
+
+type QuestionAnswerRecord = {
+  question_item_id: string;
+  status: string;
+};
 
 const getMembershipQuery = `
   query GetBuyerRequestMembership($userId: uuid!) {
@@ -121,6 +137,23 @@ const insertBuyerRequestMutation = `
   }
 `;
 
+const listReadinessQuery = `
+  query GetBuyerRequestListReadiness($organizationId: uuid!) {
+    question_sections(order_by: { sort_order: asc }) {
+      id
+      code
+    }
+    question_items(order_by: { sort_order: asc }) {
+      id
+      section_id
+    }
+    question_answers(where: { organization_id: { _eq: $organizationId } }) {
+      question_item_id
+      status
+    }
+  }
+`;
+
 export async function GET(request: Request) {
   const organizationResult = await resolveOrganizationForRequest(request);
 
@@ -151,9 +184,18 @@ export async function GET(request: Request) {
     });
   }
 
+  const normalizedRequests = result.data.buyer_requests.map(normalizeBuyerRequestRecord);
+  const readinessByRequestId = await loadListReadiness(
+    organizationResult.organizationId,
+    normalizedRequests,
+  );
+
   return NextResponse.json({
     ok: true,
-    requests: result.data.buyer_requests.map(normalizeBuyerRequestRecord),
+    requests: normalizedRequests.map((buyerRequest) => ({
+      ...buyerRequest,
+      readiness: readinessByRequestId.get(buyerRequest.id),
+    })),
   });
 }
 
@@ -323,6 +365,83 @@ export function validateBuyerRequestInput(payload: BuyerRequestInput | null, mod
       notes: normalizeOptionalString(payload.notes),
     },
   };
+}
+
+async function loadListReadiness(
+  organizationId: string,
+  buyerRequests: BuyerRequest[],
+): Promise<Map<string, BuyerRequestListReadiness>> {
+  if (!buyerRequests.length) {
+    return new Map();
+  }
+
+  const result = await executeAdminGraphql<{
+    question_sections: QuestionSectionRecord[];
+    question_items: QuestionItemRecord[];
+    question_answers: QuestionAnswerRecord[];
+  }>({
+    operationName: "GetBuyerRequestListReadiness",
+    query: listReadinessQuery,
+    variables: { organizationId },
+  });
+
+  if (!result.ok) {
+    return new Map();
+  }
+
+  const answerByQuestionItem = new Map(
+    result.data.question_answers.map((answer) => [answer.question_item_id, answer]),
+  );
+  const sectionsByCode = new Map(result.data.question_sections.map((section) => [section.code, section]));
+  const itemsBySectionId = new Map<string, QuestionItemRecord[]>();
+
+  for (const item of result.data.question_items) {
+    const current = itemsBySectionId.get(item.section_id) ?? [];
+    current.push(item);
+    itemsBySectionId.set(item.section_id, current);
+  }
+
+  return new Map(
+    buyerRequests.map((buyerRequest) => [
+      buyerRequest.id,
+      {
+        readinessPercent: calculateRequestReadiness(
+          buyerRequest,
+          result.data.question_sections,
+          sectionsByCode,
+          itemsBySectionId,
+          answerByQuestionItem,
+        ),
+      },
+    ]),
+  );
+}
+
+function calculateRequestReadiness(
+  buyerRequest: BuyerRequest,
+  allSections: QuestionSectionRecord[],
+  sectionsByCode: Map<string, QuestionSectionRecord>,
+  itemsBySectionId: Map<string, QuestionItemRecord[]>,
+  answerByQuestionItem: Map<string, QuestionAnswerRecord>,
+) {
+  const sections = buyerRequest.requested_sections.length
+    ? buyerRequest.requested_sections
+        .map((code) => sectionsByCode.get(code))
+        .filter((section): section is QuestionSectionRecord => Boolean(section))
+    : allSections;
+
+  const items = sections.flatMap((section) => itemsBySectionId.get(section.id) ?? []);
+
+  if (!items.length) {
+    return 0;
+  }
+
+  const answered = items.filter((item) => {
+    const answer = answerByQuestionItem.get(item.id);
+    return answer && ["in_progress", "completed", "needs_evidence", "reviewed"].includes(answer.status);
+  }).length;
+
+  return Math.round((answered / items.length) * 100);
 }
 
 export async function executeAdminGraphql<TData>({
