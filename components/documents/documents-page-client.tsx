@@ -127,6 +127,11 @@ type DocumentsPageClientProps = {
   labels?: DocumentsLabels;
 };
 
+type EvidenceRoomDocumentWithAliases = EvidenceRoomDocument & {
+  documentId?: string | null;
+  document_id?: string | null;
+};
+
 const statusLabels: Record<LiveDocumentStatus, EvidenceRoomStatus> = {
   uploaded: "Uploaded",
   linked: "Linked",
@@ -402,14 +407,29 @@ export function DocumentsPageClient({
       return false;
     }
 
+    const documentId = resolveEvidenceDocumentId(documentToLink);
+
+    if (!documentId) {
+      if (process.env.NODE_ENV !== "production") {
+        console.warn("[documents] evidence link blocked before request", {
+          hasDocumentId: false,
+          selectedQuestionItemCount: questionItemIds.length,
+          firstSelectedQuestionItemIdPresent: Boolean(questionItemIds[0]),
+        });
+      }
+
+      setMessage({ tone: "error", text: labels.linkError });
+      return false;
+    }
+
     if (!liveMode || !organizationId) {
       setDocumentLinks((currentLinks) => [
         ...questionItemIds.map((questionItemId) => {
           const answer = linkableAnswers.find((item) => item.id === questionItemId);
 
           return {
-            id: `mock-link-${documentToLink.id}-${questionItemId}`,
-            document_id: documentToLink.id,
+            id: `mock-link-${documentId}-${questionItemId}`,
+            document_id: documentId,
             question_answer_id: answer?.answerId ?? questionItemId,
             question_answer: answer
               ? {
@@ -436,7 +456,7 @@ export function DocumentsPageClient({
       ]);
       setDocuments((currentDocuments) =>
         currentDocuments.map((document) =>
-          document.id === documentToLink.id && document.status === "Uploaded"
+          document.id === documentId && document.status === "Uploaded"
             ? { ...document, status: "Linked" }
             : document,
         ),
@@ -459,7 +479,7 @@ export function DocumentsPageClient({
     try {
       if (process.env.NODE_ENV !== "production") {
         console.info("[documents] evidence link request", {
-          hasDocumentId: Boolean(documentToLink.id),
+          hasDocumentId: Boolean(documentId),
           selectedQuestionItemCount: questionItemIds.length,
           firstSelectedQuestionItemIdPresent: Boolean(questionItemIds[0]),
         });
@@ -473,7 +493,7 @@ export function DocumentsPageClient({
         },
         body: JSON.stringify({
           action: "link",
-          documentId: documentToLink.id,
+          documentId,
           questionItemIds,
           selectedQuestionItemIds: questionItemIds,
           currentDocumentStatus: documentToLink.status,
@@ -492,7 +512,7 @@ export function DocumentsPageClient({
       setDocumentLinks(payload.links);
       setDocuments((currentDocuments) =>
         currentDocuments.map((document) =>
-          document.id === documentToLink.id && document.status === "Uploaded"
+          document.id === documentId && document.status === "Uploaded"
             ? { ...document, status: "Linked" }
             : document,
         ),
@@ -571,7 +591,20 @@ export function DocumentsPageClient({
           linkedQuestionsByDocument={linkedQuestionsByDocument}
           review={evidenceRoomReview}
           onLinkToAnswer={(document) => {
-            setDocumentToLink(document);
+            const documentId = resolveEvidenceDocumentId(document);
+
+            if (!documentId) {
+              if (process.env.NODE_ENV !== "production") {
+                console.warn("[documents] evidence link dialog blocked", {
+                  hasDocumentId: false,
+                });
+              }
+
+              setMessage({ tone: "error", text: labels.linkError });
+              return;
+            }
+
+            setDocumentToLink({ ...document, id: documentId });
             setIsLinkDialogOpen(true);
           }}
           labels={labels}
@@ -580,11 +613,12 @@ export function DocumentsPageClient({
 
       <LinkAnswerDialog
         open={isLinkDialogOpen}
+        documentId={resolveEvidenceDocumentId(documentToLink)}
         answers={linkableAnswers}
         linkedAnswerIds={
           documentToLink
             ? documentLinks
-                .filter((link) => link.document_id === documentToLink.id)
+                .filter((link) => link.document_id === resolveEvidenceDocumentId(documentToLink))
                 .map((link) => link.question_answer?.question_item?.id ?? link.question_answer_id)
             : []
         }
@@ -642,6 +676,31 @@ function mapLiveDocument(
     mimeType: document.mime_type ?? undefined,
     expiresAt: document.expires_at,
   };
+}
+
+function resolveEvidenceDocumentId(document: EvidenceRoomDocument | null) {
+  if (!document) {
+    return "";
+  }
+
+  const documentWithAliases = document as EvidenceRoomDocumentWithAliases;
+  const candidates = [
+    documentWithAliases.id,
+    documentWithAliases.documentId,
+    documentWithAliases.document_id,
+  ];
+  const documentId = candidates.find(
+    (candidate): candidate is string =>
+      typeof candidate === "string" && isUuid(candidate.trim()),
+  );
+
+  return documentId?.trim() ?? "";
+}
+
+function isUuid(value: string) {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{12}$/i.test(
+    value,
+  );
 }
 
 function createDocumentTitle(fileName: string) {

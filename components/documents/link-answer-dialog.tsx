@@ -37,6 +37,7 @@ export type LinkableAnswer = {
 
 type LinkAnswerDialogProps = {
   open: boolean;
+  documentId?: string;
   answers: LinkableAnswer[];
   linkedAnswerIds: string[];
   isSaving: boolean;
@@ -47,6 +48,7 @@ type LinkAnswerDialogProps = {
 
 export function LinkAnswerDialog({
   open,
+  documentId,
   answers,
   linkedAnswerIds,
   isSaving,
@@ -99,6 +101,7 @@ export function LinkAnswerDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl rounded-2xl border border-slate-200 bg-white p-0 shadow-2xl shadow-slate-950/10">
         <form onSubmit={handleSubmit}>
+          <input type="hidden" name="documentId" value={documentId ?? ""} />
           {selectedIds.map((selectedId) => (
             <input key={selectedId} type="hidden" name="questionItemIds" value={selectedId} />
           ))}

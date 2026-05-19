@@ -656,6 +656,22 @@ If `/api/document-links` returns `invalid_link_payload`, inspect the browser Net
 
 `selectedQuestionItemCount: 0` means the browser did not send selected questionnaire item IDs, or it sent them under an unexpected field. The modal should store `question_items.id` values in selection state and send them as `questionItemIds`; question codes such as `cert_iso_50001` are display labels only.
 
+`hasDocumentId: false` means the browser did not send the selected `documents.id` UUID, sent it under the wrong field name, or sent a storage/file identifier instead of the document metadata row ID. The evidence-link modal must receive the selected document row's `documents.id` value and the POST body must use the `documentId` field exactly. Do not send `file_id`, storage IDs, question codes, or UI labels as `documentId`.
+
+Successful response shape:
+
+```json
+{
+  "links": [
+    {
+      "id": "<document_links.id uuid>",
+      "document_id": "<documents.id uuid>",
+      "question_answer_id": "<question_answers.id uuid>"
+    }
+  ]
+}
+```
+
 Certificate expiry verification:
 
 ```sql
