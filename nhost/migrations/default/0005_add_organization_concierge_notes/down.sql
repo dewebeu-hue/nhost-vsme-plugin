@@ -1,0 +1,8 @@
+drop trigger if exists set_organization_concierge_notes_updated_at on public.organization_concierge_notes;
+
+drop index if exists public.organization_concierge_notes_next_follow_up_date_idx;
+drop index if exists public.organization_concierge_notes_priority_idx;
+drop index if exists public.organization_concierge_notes_status_idx;
+drop index if exists public.organization_concierge_notes_organization_id_idx;
+
+drop table if exists public.organization_concierge_notes;

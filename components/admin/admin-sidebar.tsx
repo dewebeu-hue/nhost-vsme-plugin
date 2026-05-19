@@ -1,4 +1,3 @@
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Logo } from "@/components/brand/logo";
 import { AdminNavItem } from "@/components/admin/admin-nav-item";
@@ -6,12 +5,7 @@ import { defaultAdminLabels, type AdminLabels } from "@/lib/operational-labels";
 
 const adminNavigation = [
   { href: "/admin/organizations", label: "Organizations", icon: "building" },
-  { href: "/admin/reviews", label: "Reviews", icon: "file-check" },
-  { href: "/admin/documents", label: "Documents", icon: "file-text" },
-  { href: "/admin/passports", label: "Passports", icon: "shield" },
-  { href: "/admin/share-links", label: "Share Links", icon: "link" },
-  { href: "/admin/notes", label: "Notes", icon: "notes" },
-  { href: "/admin/settings", label: "Settings", icon: "settings" },
+  { href: "/admin/risks", label: "Risks", icon: "alert" },
 ] as const;
 
 export function AdminSidebar({
@@ -45,18 +39,17 @@ export function AdminSidebar({
               />
             ))}
           </nav>
+          <a
+            href={`${localePrefix}/dashboard`}
+            className="mt-4 flex rounded-xl px-3 py-2.5 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-950"
+          >
+            {labels.backToDashboard}
+          </a>
         </div>
 
         <section className="mt-auto rounded-2xl border border-slate-200 bg-slate-50 p-4">
-          <div className="flex items-center gap-3">
-            <Avatar className="size-11">
-              <AvatarFallback className="bg-slate-950 text-white">AM</AvatarFallback>
-            </Avatar>
-            <div>
-              <p className="text-sm font-semibold text-slate-950">Anna Müller</p>
-              <p className="mt-1 text-xs font-medium text-slate-500">{labels.conciergeAdmin}</p>
-            </div>
-          </div>
+          <p className="text-sm font-semibold text-slate-950">{labels.conciergeDashboard}</p>
+          <p className="mt-1 text-xs font-medium text-slate-500">{labels.adminWorkspace}</p>
         </section>
       </div>
     </aside>

@@ -30,6 +30,16 @@ export type AdminLabels = {
   admin: string;
   title: string;
   subtitle: string;
+  adminWorkspace: string;
+  conciergeDashboard: string;
+  organizations: string;
+  risks: string;
+  backToDashboard: string;
+  unauthorizedTitle: string;
+  unauthorizedDescription: string;
+  loading: string;
+  loadError: string;
+  retry: string;
   searchPlaceholder: string;
   searchOrganizations: string;
   allStatus: string;
@@ -48,6 +58,77 @@ export type AdminLabels = {
   actionsForCompany: string;
   verified: string;
   docs: string;
+  linkedEvidence: string;
+  buyerRequests: string;
+  activePublicLink: string;
+  noActivePublicLink: string;
+  certificateExpiryWarnings: string;
+  missingSteps: string;
+  totalOrganizations: string;
+  lowReadiness: string;
+  noDocuments: string;
+  noLinkedEvidence: string;
+  expiredCertificates: string;
+  expiring30: string;
+  expiring90: string;
+  overdueBuyerRequests: string;
+  openDetail: string;
+  backToOrganizations: string;
+  sectionReadiness: string;
+  evidenceSummary: string;
+  buyerRequestSummary: string;
+  shareLinkStatus: string;
+  noMissingSteps: string;
+  notProvided: string;
+  triage: string;
+  triageNeedsAttention: string;
+  triageInProgress: string;
+  triageDemoReady: string;
+  triageAtRisk: string;
+  conciergeStatus: string;
+  priority: string;
+  internalNote: string;
+  nextFollowUp: string;
+  saveConciergeStatus: string;
+  conciergeSaved: string;
+  conciergeSaveError: string;
+  reviewedInternally: string;
+  internalReviewDisclaimer: string;
+  support: string;
+  supportChecklist: string;
+  reviewedAt: string;
+  notReviewedYet: string;
+  supportAcknowledgementDeferred: string;
+  riskDashboard: string;
+  riskDashboardSubtitle: string;
+  certificateRisks: string;
+  overdueRequests: string;
+  missingEvidence: string;
+  noActivePublicLinks: string;
+  riskType: string;
+  severity: string;
+  critical: string;
+  warning: string;
+  info: string;
+  viewRisks: string;
+  viewOrganizations: string;
+  statusNotStarted: string;
+  statusOnboarding: string;
+  statusWaitingOnSupplier: string;
+  statusReadyForReview: string;
+  statusDemoReady: string;
+  statusPaused: string;
+  priorityLow: string;
+  priorityNormal: string;
+  priorityHigh: string;
+  checklistQuestionnaireStarted: string;
+  checklistEvidenceUploaded: string;
+  checklistEvidenceLinked: string;
+  checklistPassportReviewed: string;
+  checklistPublicLinkActive: string;
+  checklistBuyerRequestsReviewed: string;
+  checklistCertificateExpiryChecked: string;
+  checklistPdfExportAvailable: string;
   clientSince: string;
   overview: string;
   activity: string;
@@ -137,6 +218,16 @@ export const defaultAdminLabels: AdminLabels = {
   admin: "ADMIN",
   title: "Organizations",
   subtitle: "Manage and support your client organizations.",
+  adminWorkspace: "Admin workspace",
+  conciergeDashboard: "Concierge dashboard",
+  organizations: "Organizations",
+  risks: "Risks",
+  backToDashboard: "Back to dashboard",
+  unauthorizedTitle: "You do not have access to this admin workspace.",
+  unauthorizedDescription: "Sign in with an allowlisted admin account to use the concierge workspace.",
+  loading: "Loading...",
+  loadError: "We could not load admin data right now.",
+  retry: "Retry",
   searchPlaceholder: "Search organizations, owners, or domains...",
   searchOrganizations: "Search organizations...",
   allStatus: "All status",
@@ -155,6 +246,78 @@ export const defaultAdminLabels: AdminLabels = {
   actionsForCompany: "Actions for {company}",
   verified: "Verified",
   docs: "docs",
+  linkedEvidence: "Linked evidence",
+  buyerRequests: "Buyer requests",
+  activePublicLink: "Active public link",
+  noActivePublicLink: "No active public link",
+  certificateExpiryWarnings: "Certificate expiry warnings",
+  missingSteps: "Missing steps",
+  totalOrganizations: "Total organizations",
+  lowReadiness: "Low readiness",
+  noDocuments: "No documents",
+  noLinkedEvidence: "No linked evidence",
+  expiredCertificates: "Expired certificates",
+  expiring30: "Expiring within 30 days",
+  expiring90: "Expiring within 90 days",
+  overdueBuyerRequests: "Overdue buyer requests",
+  openDetail: "Open detail",
+  backToOrganizations: "Back to organizations",
+  sectionReadiness: "Section readiness",
+  evidenceSummary: "Evidence summary",
+  buyerRequestSummary: "Buyer request summary",
+  shareLinkStatus: "Share link status",
+  noMissingSteps: "No obvious missing steps.",
+  notProvided: "Not provided yet",
+  triage: "Triage",
+  triageNeedsAttention: "Needs attention",
+  triageInProgress: "In progress",
+  triageDemoReady: "Demo-ready",
+  triageAtRisk: "At risk",
+  conciergeStatus: "Concierge status",
+  priority: "Priority",
+  internalNote: "Internal note",
+  nextFollowUp: "Next follow-up",
+  saveConciergeStatus: "Save concierge status",
+  conciergeSaved: "Concierge status saved.",
+  conciergeSaveError: "We could not save concierge status right now.",
+  reviewedInternally: "Reviewed internally",
+  internalReviewDisclaimer: "Internal review only. This is not a certification or approval.",
+  support: "Support",
+  supportChecklist: "Support checklist",
+  reviewedAt: "Reviewed at",
+  notReviewedYet: "Not reviewed yet",
+  supportAcknowledgementDeferred:
+    "Acknowledging individual missing actions is deferred; real risks remain visible until supplier data changes.",
+  riskDashboard: "Risk dashboard",
+  riskDashboardSubtitle: "Review urgent certificate, evidence, readiness and buyer request risks.",
+  certificateRisks: "Certificate warnings",
+  overdueRequests: "Overdue requests",
+  missingEvidence: "Missing evidence",
+  noActivePublicLinks: "No active public link",
+  riskType: "Risk type",
+  severity: "Severity",
+  critical: "Critical",
+  warning: "Warning",
+  info: "Info",
+  viewRisks: "View risks",
+  viewOrganizations: "View organizations",
+  statusNotStarted: "Not started",
+  statusOnboarding: "Onboarding",
+  statusWaitingOnSupplier: "Waiting on supplier",
+  statusReadyForReview: "Ready for review",
+  statusDemoReady: "Demo-ready",
+  statusPaused: "Paused",
+  priorityLow: "Low",
+  priorityNormal: "Normal",
+  priorityHigh: "High",
+  checklistQuestionnaireStarted: "Questionnaire started",
+  checklistEvidenceUploaded: "Evidence documents uploaded",
+  checklistEvidenceLinked: "Evidence linked",
+  checklistPassportReviewed: "Passport reviewed",
+  checklistPublicLinkActive: "Public link active",
+  checklistBuyerRequestsReviewed: "Buyer requests reviewed",
+  checklistCertificateExpiryChecked: "Certificate expiry checked",
+  checklistPdfExportAvailable: "PDF export available",
   clientSince: "Client since {date}",
   overview: "Overview",
   activity: "Activity",
@@ -183,6 +346,7 @@ export const defaultAdminLabels: AdminLabels = {
   },
   navigation: {
     Organizations: "Organizations",
+    Risks: "Risks",
     Reviews: "Reviews",
     Documents: "Documents",
     Passports: "Passports",

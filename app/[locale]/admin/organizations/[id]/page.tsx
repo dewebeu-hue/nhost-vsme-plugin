@@ -1,13 +1,13 @@
 import { getMessages, setRequestLocale } from "next-intl/server";
-import { AdminHomeClient } from "@/components/admin/admin-home-client";
+import { AdminOrganizationDetailClient } from "@/components/admin/admin-organization-detail-client";
 import { defaultAdminLabels, type AdminLabels } from "@/lib/operational-labels";
 
-type AdminPageProps = {
-  params: Promise<{ locale: string }>;
+type AdminOrganizationDetailPageProps = {
+  params: Promise<{ locale: string; id: string }>;
 };
 
-export default async function AdminPage({ params }: AdminPageProps) {
-  const { locale } = await params;
+export default async function AdminOrganizationDetailPage({ params }: AdminOrganizationDetailPageProps) {
+  const { locale, id } = await params;
   setRequestLocale(locale);
   const messages = (await getMessages()) as { admin?: Partial<AdminLabels> };
   const source = messages.admin ?? {};
@@ -20,5 +20,5 @@ export default async function AdminPage({ params }: AdminPageProps) {
     stats: { ...defaultAdminLabels.stats, ...source.stats },
   };
 
-  return <AdminHomeClient labels={labels} />;
+  return <AdminOrganizationDetailClient organizationId={id} labels={labels} />;
 }

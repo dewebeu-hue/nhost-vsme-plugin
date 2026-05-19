@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   Building2,
+  AlertTriangle,
   FileCheck2,
   FileText,
   Link2,
@@ -16,6 +17,7 @@ import { cn } from "@/lib/utils";
 
 export type AdminNavIcon =
   | "building"
+  | "alert"
   | "file-check"
   | "file-text"
   | "link"
@@ -25,6 +27,7 @@ export type AdminNavIcon =
 
 const iconMap: Record<AdminNavIcon, LucideIcon> = {
   building: Building2,
+  alert: AlertTriangle,
   "file-check": FileCheck2,
   "file-text": FileText,
   link: Link2,

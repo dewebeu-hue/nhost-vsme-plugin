@@ -1637,6 +1637,281 @@ Deferred items:
 
 - Buyer accounts, buyer login, buyer portal, email sending, request-specific public links, and full audit/event history are intentionally not included in Faza 3.2.
 
+## Faza 3.3 Admin / Concierge Workspace Foundation
+
+Routes:
+
+- `/en/admin`, `/hr/admin`, `/de/admin` redirect to the localized admin organizations workspace.
+- `/en/admin/organizations`, `/hr/admin/organizations`, `/de/admin/organizations` list supplier organizations with privacy-safe readiness summaries.
+- `/en/admin/organizations/[id]`, `/hr/admin/organizations/[id]`, `/de/admin/organizations/[id]` show a read-only organization overview.
+- APIs: `GET /api/admin/organizations` and `GET /api/admin/organizations/[id]`.
+
+Admin access model:
+
+- Configure `ADMIN_EMAIL_ALLOWLIST` in Vercel as a server-only environment variable.
+- Use a comma-separated list of admin emails, for example `admin@example.com,ops@example.com`.
+- Do not prefix the variable with `NEXT_PUBLIC_`.
+- Redeploy after changing the allowlist.
+- Admin APIs resolve the authenticated Nhost user and compare the server-side email against the allowlist.
+- Unauthenticated requests return `401`; authenticated non-admin requests return `403`.
+
+Admin summary includes:
+
+- Organization id, name, created/updated dates.
+- Readiness percentage and answered/total questionnaire count.
+- Uploaded document count.
+- Linked evidence count.
+- Buyer request count.
+- Active public share link boolean.
+- Certificate expiry warning counts.
+- Section readiness, missing action summary, and buyer request summary on detail.
+
+Admin summary intentionally excludes:
+
+- Private document URLs and Nhost Storage URLs.
+- Storage file IDs.
+- Raw questionnaire answer values.
+- User/member lists or personal data.
+- Share tokens, JWTs, cookies, secrets, and admin debug fields.
+- Impersonation, buyer portal, email sending, AI, Stripe, XBRL, plan limits, or Supabase.
+
+Useful admin QA checklist:
+
+1. Configure `ADMIN_EMAIL_ALLOWLIST` with the admin test account and redeploy.
+2. Log in as the allowlisted admin and open `/hr/admin/organizations`.
+3. Confirm live organizations appear with readiness, documents, linked evidence, buyer requests, certificate warnings, active public link status, and created date.
+4. Open an organization detail page and confirm section readiness, evidence summary, certificate warnings, buyer request summary, and missing actions are shown.
+5. Confirm no private document URLs, storage IDs, raw answers, user/member data, share tokens, or secrets are rendered.
+6. Log in as a normal supplier and confirm `/hr/admin/organizations` and `/api/admin/organizations` are forbidden.
+7. Repeat quick route checks on `/en/admin/organizations` and `/de/admin/organizations`.
+
+Useful SQL:
+
+```sql
+select
+  id,
+  name,
+  created_at,
+  updated_at
+from organizations
+order by created_at desc
+limit 20;
+```
+
+## Faza 3.3 Concierge Triage And Support Status
+
+Migration:
+
+- File: `nhost/migrations/default/0005_add_organization_concierge_notes/up.sql`
+- Production action: apply the migration in Nhost/Hasura and track `organization_concierge_notes` before using concierge status editing.
+
+Table purpose:
+
+- `organization_concierge_notes` stores admin-only support state for an organization.
+- Fields include concierge `status`, `priority`, `internal_note`, `next_follow_up_date`, and internal review timestamps.
+- This data is not shown on supplier dashboards, public Passport pages, share links, or PDF exports.
+
+Status values:
+
+- `not_started`
+- `onboarding`
+- `waiting_on_supplier`
+- `ready_for_review`
+- `demo_ready`
+- `paused`
+
+Priority values:
+
+- `low`
+- `normal`
+- `high`
+
+Triage logic:
+
+- `At risk`: expired certificate, overdue buyer request, or many missing actions.
+- `Needs attention`: low readiness, no documents, or no linked evidence.
+- `In progress`: supplier has partial progress but is not demo-ready yet.
+- `Demo-ready`: high readiness with linked evidence and an active public link.
+
+Missing actions are derived from real summary data:
+
+- Unanswered or low-completion sections.
+- Sections with answers but no linked evidence.
+- No uploaded evidence documents.
+- Expired or expiring certificate evidence.
+- Missing active public Supplier Passport link.
+- Overdue buyer requests.
+
+Useful concierge SQL:
+
+```sql
+select
+  organization_id,
+  status,
+  priority,
+  internal_note,
+  next_follow_up_date,
+  reviewed_at,
+  created_at,
+  updated_at
+from organization_concierge_notes
+order by updated_at desc
+limit 20;
+```
+
+Manual QA:
+
+1. Apply migration `0005_add_organization_concierge_notes`.
+2. Log in as an allowlisted admin and open `/hr/admin/organizations`.
+3. Confirm triage status, missing action count, concierge status, priority, and next follow-up data appear.
+4. Open an organization detail page.
+5. Update concierge status, priority, internal note, and follow-up date.
+6. Refresh and confirm the values persist.
+7. Confirm a normal supplier cannot access the admin API or concierge data.
+8. Confirm concierge notes do not appear in public Passport, public PDF, share links, or supplier dashboard surfaces.
+
+## Faza 3.3 Admin Risk Dashboard
+
+Routes:
+
+- `/en/admin/risks`, `/hr/admin/risks`, `/de/admin/risks`
+- API: `GET /api/admin/risks`
+
+Risk dashboard returns privacy-safe aggregate metrics:
+
+- Total organizations.
+- Low-readiness organizations.
+- Organizations with no documents.
+- Organizations with no linked evidence.
+- Expired certificates.
+- Certificates expiring within 30 days.
+- Certificates expiring within 90 days.
+- Overdue buyer requests.
+- Organizations without active public share links.
+
+Risk lists include only safe fields:
+
+- Organization id and name.
+- Risk type and severity.
+- Count metrics.
+- Readiness percentage where relevant.
+
+Risk lists intentionally exclude:
+
+- Private document URLs.
+- Storage file IDs.
+- Raw questionnaire answer values.
+- User/member data.
+- Share tokens, JWTs, cookies, secrets, and admin debug details.
+
+Severity logic:
+
+- `critical`: expired certificate, overdue buyer request, or very low readiness.
+- `warning`: certificate expiry warning, missing evidence, missing active share link, no documents, or no linked evidence.
+- `info`: incomplete but non-urgent follow-up.
+
+Manual QA:
+
+1. Log in as an allowlisted admin.
+2. Open `/hr/admin`.
+3. Confirm Organizations and Risks entry cards are visible.
+4. Open `/hr/admin/risks`.
+5. Confirm risk cards and risk list load with live data.
+6. Click a risk row and confirm it opens the organization detail page.
+7. Confirm no private document URLs, storage IDs, raw answers, user/member data, share tokens, or secrets are rendered.
+8. Confirm a normal supplier receives forbidden access for `/api/admin/risks`.
+
+## Faza 3.3 Admin Support Actions
+
+Internal support actions are admin-only:
+
+- Update concierge status, priority, internal note, and next follow-up date.
+- Mark organization as reviewed internally.
+- Review a derived support checklist for questionnaire, evidence, share link, buyer request, certificate, and PDF readiness.
+
+Internal review meaning:
+
+- `Reviewed internally` means the concierge/admin team looked at the organization overview.
+- It is not a certification, approval, verification, legal compliance finding, audit opinion, or assurance report.
+- It must not appear on supplier dashboards, public Passport pages, share links, or PDF exports as a public trust badge.
+
+Support checklist:
+
+- Questionnaire started: derived from answered question count.
+- Evidence documents uploaded: derived from document count.
+- Evidence linked: derived from linked evidence count.
+- Passport reviewed: derived from non-zero readiness.
+- Public link active: derived from active share link status.
+- Buyer requests reviewed: derived from no overdue buyer requests.
+- Certificate expiry checked: derived from no certificate warning count.
+- PDF export available: product capability, not supplier certification.
+
+Deferred support action:
+
+- Acknowledging or dismissing individual missing actions is deferred until there is a dedicated acknowledgement model. Missing actions remain visible until supplier data changes.
+
+Manual QA:
+
+1. Log in as an allowlisted admin and open an organization detail page.
+2. Update concierge status, priority, internal note, and next follow-up date.
+3. Click `Mark reviewed`.
+4. Refresh and confirm saved status and internal review state persist.
+5. Confirm the support checklist is based on real counts and does not mark supplier data as complete.
+6. Confirm no public/supplier page shows concierge notes or internal review status.
+
+## Faza 3.3 Final Admin QA
+
+Admin routes to verify:
+
+- `/en/admin`, `/hr/admin`, `/de/admin`
+- `/en/admin/organizations`, `/hr/admin/organizations`, `/de/admin/organizations`
+- `/en/admin/organizations/[id]`, `/hr/admin/organizations/[id]`, `/de/admin/organizations/[id]`
+- `/en/admin/risks`, `/hr/admin/risks`, `/de/admin/risks`
+
+Admin APIs to verify:
+
+- `GET /api/admin/organizations`
+- `GET /api/admin/organizations/[id]`
+- `GET /api/admin/risks`
+- `GET/PATCH /api/admin/organizations/[id]/concierge`
+
+Final access checklist:
+
+1. With no login, admin API calls return `401` and admin pages show a safe unauthorized/loading state without data.
+2. With a normal supplier account, admin API calls return `403` and admin pages show a safe unauthorized state.
+3. With an allowlisted admin account, admin pages and APIs load.
+4. Confirm `ADMIN_EMAIL_ALLOWLIST` is configured only server-side and is not prefixed with `NEXT_PUBLIC_`.
+5. Confirm no JWTs, cookies, share tokens, private file URLs, document contents, or secrets are logged.
+
+Final workspace checklist:
+
+1. Organizations list shows real organizations, readiness, document count, linked evidence count, buyer request count, certificate warning count, active link state, triage, concierge status, and priority.
+2. Organization detail shows overview, section readiness, missing actions, buyer request summary, support checklist, internal review state, and concierge fields.
+3. Risks dashboard shows aggregate risk cards and risk items for certificates, overdue buyer requests, missing evidence, low readiness, no active public link, no documents, and no linked evidence.
+4. Risk items and organization detail links navigate correctly.
+5. Search controls filter locally; no dead filter or action controls are shown.
+6. Internal note/status/follow-up/review actions persist after refresh.
+
+Final privacy checklist:
+
+- No private document URLs.
+- No storage file IDs.
+- No raw sensitive answer dump.
+- No user/member lists.
+- No impersonation.
+- No email sending.
+- No buyer portal/login.
+- No public certification, approval, verification, audit, or assurance claim.
+
+Faza 3.3 deferred items:
+
+- Full audit/event history.
+- Per-missing-action acknowledgement/dismissal.
+- Impersonation.
+- Buyer portal/login.
+- Email sending.
+- AI, Stripe, XBRL, plan limits, or Supabase.
+
 ## Safe Logging Rules
 
 Allowed categories:
