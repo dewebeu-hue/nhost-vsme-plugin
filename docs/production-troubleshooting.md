@@ -241,6 +241,50 @@ Fix:
 select * from question_answers order by updated_at desc;
 ```
 
+## Questionnaire Sections Show 0/0
+
+Likely causes:
+
+- The production database still has only the initial Energy seed.
+- `nhost/migrations/default/0003_expand_questionnaire_taxonomy/up.sql` has not been applied to the live Nhost project.
+- `nhost/seeds/0002_expand_questionnaire_taxonomy.sql` or `nhost/seeds/default/0002_expand_questionnaire_taxonomy.sql` has not been run against production.
+- `question_items` is tracked, but only Energy rows exist.
+- The deployed app is correct, but Hasura is reading old seed data.
+
+Fix:
+
+- Apply the expanded taxonomy migration/seed to the live Nhost/Hasura database.
+- The expanded taxonomy is data-only and uses `on conflict (code) do update`, so it can be rerun without deleting saved answers.
+- Confirm every active section has question rows:
+
+```sql
+select
+  qs.code,
+  qs.title,
+  count(qi.id) as question_count
+from question_sections qs
+left join question_items qi on qi.section_id = qs.id
+group by qs.code, qs.title, qs.sort_order
+order by qs.sort_order;
+```
+
+Expected production counts after the expanded seed:
+
+| Section code | Expected questions |
+| --- | ---: |
+| `company_basics` | 12 |
+| `employees` | 10 |
+| `energy` | 15 |
+| `fuel` | 8 |
+| `waste` | 9 |
+| `environmental_policies` | 10 |
+| `health_safety` | 9 |
+| `certifications` | 9 |
+| `governance` | 9 |
+| `supplier_information` | 9 |
+
+If these counts are present but the UI still shows `0/0`, confirm `GET /api/questionnaire` returns `items` and that the latest Vercel deployment is active.
+
 ## Documents Upload Fails
 
 Likely causes:
