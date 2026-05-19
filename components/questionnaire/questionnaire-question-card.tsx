@@ -82,6 +82,7 @@ export function QuestionnaireQuestionCard({
                 </p>
               </div>
               <Button
+                type="button"
                 variant="outline"
                 className="bg-white"
                 onClick={() => onAttachEvidence?.(question)}

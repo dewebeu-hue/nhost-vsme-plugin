@@ -19,6 +19,7 @@ type DocumentsTableProps = {
   documents: EvidenceRoomDocument[];
   selectedDocumentId: string;
   onSelectDocument: (document: EvidenceRoomDocument) => void;
+  onLinkToAnswer?: (document: EvidenceRoomDocument) => void;
   labels?: DocumentsLabels;
 };
 
@@ -26,6 +27,7 @@ export function DocumentsTable({
   documents,
   selectedDocumentId,
   onSelectDocument,
+  onLinkToAnswer,
   labels = defaultDocumentsLabels,
 }: DocumentsTableProps) {
   return (
@@ -101,9 +103,12 @@ export function DocumentsTable({
                 </TableCell>
                 <TableCell className="text-right" onClick={(event) => event.stopPropagation()}>
                   <Button
+                    type="button"
                     variant="ghost"
                     size="icon"
-                    aria-label={formatLabel(labels.actionsFor, { title: document.title })}
+                    aria-label={labels.linkToAnswer}
+                    title={labels.linkToAnswer}
+                    onClick={() => onLinkToAnswer?.(document)}
                   >
                     <MoreHorizontal />
                   </Button>

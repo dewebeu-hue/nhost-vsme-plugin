@@ -52,6 +52,7 @@ export function EvidenceDataRoom({
         documents={documents}
         selectedDocumentId={selectedDocument.id}
         onSelectDocument={(document) => setSelectedDocumentId(document.id)}
+        onLinkToAnswer={onLinkToAnswer}
         labels={labels}
       />
       <DocumentPreviewPanel

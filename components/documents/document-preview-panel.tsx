@@ -125,6 +125,7 @@ export function DocumentPreviewPanel({
           {labels.linkedToQuestionnaire}
         </h3>
         <Button
+          type="button"
           variant="outline"
           className="mt-3 w-full bg-white"
           onClick={() => onLinkToAnswer?.(document)}

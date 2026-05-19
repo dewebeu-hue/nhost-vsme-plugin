@@ -600,6 +600,7 @@ export function DocumentsPageClient({
             }
 
             setDocumentToLink({ ...document, id: documentId });
+            setSelectedDocumentId(documentId);
             setIsLinkDialogOpen(true);
           }}
           labels={labels}

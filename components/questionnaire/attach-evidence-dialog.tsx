@@ -117,6 +117,8 @@ export function AttachEvidenceDialog({
                   className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-400"
                 />
                 <Input
+                  id="evidence-document-search"
+                  name="evidenceDocumentSearch"
                   aria-label={labels.searchEvidenceDocuments}
                   value={query}
                   onChange={(event) => setQuery(event.target.value)}
@@ -158,6 +160,7 @@ export function AttachEvidenceDialog({
                         onClick={() => toggleDocument(document.id)}
                       >
                         <Checkbox
+                          name="evidenceDocumentIds"
                           checked={selected}
                           aria-label={`Select ${document.title}`}
                           className="mt-1"

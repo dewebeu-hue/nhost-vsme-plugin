@@ -17,6 +17,7 @@ type QuestionnaireHelperPanelProps = {
     name: string;
     type: string;
   }[];
+  onUploadEvidence?: () => void;
 };
 
 export function QuestionnaireHelperPanel({
@@ -31,6 +32,7 @@ export function QuestionnaireHelperPanel({
   contactSupportLabel,
   evidenceRecommendations,
   relatedDocuments,
+  onUploadEvidence,
 }: QuestionnaireHelperPanelProps) {
   return (
     <aside className="flex flex-col gap-5 lg:sticky lg:top-28">
@@ -52,6 +54,7 @@ export function QuestionnaireHelperPanel({
         recommendations={evidenceRecommendations}
         title={evidenceRecommendationsTitle}
         uploadLabel={uploadEvidenceLabel}
+        onUploadEvidence={onUploadEvidence}
       />
 
       <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">

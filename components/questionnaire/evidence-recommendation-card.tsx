@@ -5,12 +5,14 @@ type EvidenceRecommendationCardProps = {
   recommendations: readonly string[];
   title: string;
   uploadLabel: string;
+  onUploadEvidence?: () => void;
 };
 
 export function EvidenceRecommendationCard({
   recommendations,
   title,
   uploadLabel,
+  onUploadEvidence,
 }: EvidenceRecommendationCardProps) {
   return (
     <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
@@ -25,7 +27,11 @@ export function EvidenceRecommendationCard({
           </li>
         ))}
       </ul>
-      <Button className="mt-5 w-full shadow-lg shadow-blue-600/15">
+      <Button
+        type="button"
+        className="mt-5 w-full shadow-lg shadow-blue-600/15"
+        onClick={onUploadEvidence}
+      >
         <Upload data-icon="inline-start" />
         {uploadLabel}
       </Button>

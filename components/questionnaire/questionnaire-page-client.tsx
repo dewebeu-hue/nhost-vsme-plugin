@@ -584,6 +584,7 @@ export function QuestionnairePageClient({
 
   async function handleAttachEvidence(documentIds: string[]) {
     if (!questionToAttach || documentIds.length === 0) {
+      setMessage({ tone: "error", text: labels.attachSelectDocumentFirst });
       return false;
     }
 
@@ -833,6 +834,27 @@ export function QuestionnairePageClient({
                   index={index}
                   onValueChange={handleValueChange}
                   onAttachEvidence={(selectedQuestion) => {
+                    const hasQuestionItemId =
+                      normalizeQuestionItemIds([selectedQuestion.id]).length === 1;
+
+                    if (!hasQuestionItemId) {
+                      if (process.env.NODE_ENV !== "production") {
+                        console.warn("[questionnaire] attach evidence blocked", {
+                          flow: "questionnaire_page",
+                          action: "question_card_attach",
+                          hasQuestionItemId: false,
+                        });
+                      }
+
+                      setMessage({ tone: "error", text: labels.attachError });
+                      return;
+                    }
+
+                    if (liveMode && organizationDocuments.length === 0) {
+                      setMessage({ tone: "info", text: labels.attachSelectDocumentFirst });
+                      return;
+                    }
+
                     setQuestionToAttach(selectedQuestion);
                     setIsAttachDialogOpen(true);
                   }}
@@ -870,6 +892,17 @@ export function QuestionnairePageClient({
           contactSupportLabel={labels.contactSupport}
           evidenceRecommendations={labels.evidenceRecommendations}
           relatedDocuments={labels.relatedDocuments}
+          onUploadEvidence={() => {
+            if (process.env.NODE_ENV !== "production") {
+              console.warn("[questionnaire] attach evidence helper action", {
+                flow: "questionnaire_page",
+                action: "helper_upload_evidence",
+                hasQuestionItemId: false,
+              });
+            }
+
+            setMessage({ tone: "info", text: labels.attachSelectDocumentFirst });
+          }}
         />
       </div>
 

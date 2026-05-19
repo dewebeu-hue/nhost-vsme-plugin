@@ -122,6 +122,8 @@ export function LinkAnswerDialog({
                   className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-400"
                 />
                 <Input
+                  id="questionnaire-answer-search"
+                  name="questionnaireAnswerSearch"
                   aria-label={labels.searchAnswers}
                   value={query}
                   onChange={(event) => setQuery(event.target.value)}
@@ -191,6 +193,7 @@ export function LinkAnswerDialog({
                         }}
                       >
                         <Checkbox
+                          name="questionItemIds"
                           checked={selected}
                           disabled={alreadyLinked}
                           aria-label={`Select ${answer.code}`}
