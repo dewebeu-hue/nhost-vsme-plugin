@@ -80,6 +80,7 @@ type QuestionnairePayload = {
   items?: QuestionItemRecord[];
   answers?: QuestionAnswerRecord[];
   documents?: EvidenceDocumentRecord[];
+  documentLinks?: DocumentLinkRecord[];
 };
 
 type QuestionSectionRecord = {
@@ -109,6 +110,13 @@ type EvidenceDocumentRecord = {
   file_name: string;
   document_type: string;
   status: string;
+  linked_question_answer_ids?: string[];
+};
+
+type DocumentLinkRecord = {
+  id: string;
+  document_id: string;
+  question_answer_id: string;
 };
 
 type ShareLinkPayload = {
@@ -201,7 +209,10 @@ export function PassportPageClient({
           const questionSections = questionnairePayload.sections ?? [];
           const questionItems = questionnairePayload.items ?? [];
           const questionAnswers = questionnairePayload.answers ?? [];
-          const documents = questionnairePayload.documents ?? [];
+          const documents = attachQuestionLinksToDocuments(
+            questionnairePayload.documents ?? [],
+            questionnairePayload.documentLinks ?? [],
+          );
 
           setOrganizationId(organization.id);
           setCompanyProfile(createCompanyProfile(organization, questionnairePayload, labels));
@@ -478,6 +489,25 @@ function createApprovedDocuments(documents: EvidenceDocumentRecord[]): PassportA
       status: "Approved",
       linkedSections: [],
     }));
+}
+
+function attachQuestionLinksToDocuments(
+  documents: EvidenceDocumentRecord[],
+  documentLinks: DocumentLinkRecord[],
+): EvidenceDocumentRecord[] {
+  const answerIdsByDocument = documentLinks.reduce<Record<string, string[]>>((accumulator, link) => {
+    accumulator[link.document_id] = [
+      ...(accumulator[link.document_id] ?? []),
+      link.question_answer_id,
+    ];
+
+    return accumulator;
+  }, {});
+
+  return documents.map((document) => ({
+    ...document,
+    linked_question_answer_ids: answerIdsByDocument[document.id] ?? [],
+  }));
 }
 
 function createShareSettings(): PassportShareSetting[] {

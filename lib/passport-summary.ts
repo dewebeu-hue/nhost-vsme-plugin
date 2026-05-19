@@ -13,6 +13,7 @@ export type PassportSummaryQuestion = {
 };
 
 export type PassportSummaryAnswer = {
+  id?: string;
   question_item_id: string;
   value: unknown;
   status?: string | null;
@@ -21,6 +22,7 @@ export type PassportSummaryAnswer = {
 export type PassportSummaryDocument = {
   status: string;
   document_type?: string | null;
+  linked_question_answer_ids?: string[];
 };
 
 export type PassportReadinessModuleSummary = {
@@ -103,7 +105,13 @@ export function createPassportSectionSummaries(
     ...passportModuleGroups.map((group) => {
       const scopedQuestions = getQuestionsForSectionCodes(group.sectionCodes, sections, questions);
       const answeredCount = countAnsweredQuestions(scopedQuestions, answers);
-      const linkedDocuments = countEvidenceDocumentsForSectionCodes(group.sectionCodes, documents);
+      const linkedDocuments = countEvidenceDocumentsForSectionCodes(
+        group.sectionCodes,
+        sections,
+        questions,
+        answers,
+        documents,
+      );
 
       return {
         title: group.title,
@@ -163,7 +171,10 @@ export function createMissingEvidenceItems(
         isQuestionAnswered(answersByQuestion.get(question.id)),
       );
 
-      return hasAnsweredQuestion && countEvidenceDocumentsForSectionCodes([section.code], documents) === 0;
+      return (
+        hasAnsweredQuestion &&
+        countEvidenceDocumentsForSectionCodes([section.code], sections, questions, answers, documents) === 0
+      );
     })
     .slice(0, limit)
     .map((section) => ({
@@ -186,22 +197,46 @@ function getQuestionsForSectionCodes(
 
 function countEvidenceDocumentsForSectionCodes(
   sectionCodes: readonly string[],
+  sections: PassportSummarySection[],
+  questions: PassportSummaryQuestion[],
+  answers: PassportSummaryAnswer[],
   documents: PassportSummaryDocument[],
 ) {
   const matchingTypes = new Set(
     sectionCodes.flatMap((sectionCode) => passportEvidenceTypesBySectionCode[sectionCode] ?? []),
   );
+  const matchingSectionIds = new Set(
+    sections.filter((section) => sectionCodes.includes(section.code)).map((section) => section.id),
+  );
+  const questionById = new Map(questions.map((question) => [question.id, question]));
+  const answerById = new Map(
+    answers.flatMap((answer) => (answer.id ? [[answer.id, answer] as const] : [])),
+  );
 
   return documents.filter(
     (document) =>
       isEvidenceDocumentAvailable(document) &&
-      Boolean(document.document_type) &&
-      matchingTypes.has(String(document.document_type)),
+      (hasLinkedEvidenceForSections(document, matchingSectionIds, questionById, answerById) ||
+        (Boolean(document.document_type) && matchingTypes.has(String(document.document_type)))),
   ).length;
 }
 
 function isEvidenceDocumentAvailable(document: PassportSummaryDocument) {
   return ["reviewed", "linked", "uploaded", "needs_review", "expiring_soon"].includes(document.status);
+}
+
+function hasLinkedEvidenceForSections(
+  document: PassportSummaryDocument,
+  matchingSectionIds: Set<string>,
+  questionById: Map<string, PassportSummaryQuestion>,
+  answerById: Map<string, PassportSummaryAnswer>,
+) {
+  return (document.linked_question_answer_ids ?? []).some((answerId) => {
+    const answer = answerById.get(answerId);
+    const question = answer ? questionById.get(answer.question_item_id) : undefined;
+
+    return Boolean(question && matchingSectionIds.has(question.section_id));
+  });
 }
 
 function countAnsweredQuestions(

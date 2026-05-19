@@ -195,9 +195,9 @@ export const GET_PUBLIC_SHARE_DOCUMENTS = `
       created_at
       document_links(
         where: { question_answer: { organization_id: { _eq: $organizationId } } }
-        limit: 1
       ) {
         id
+        question_answer_id
       }
     }
   }
@@ -221,6 +221,7 @@ export const GET_PUBLIC_SHARE_QUESTIONNAIRE = `
       where: { organization_id: { _eq: $organizationId } }
       order_by: { updated_at: desc }
     ) {
+      id
       question_item_id
       value
       status
@@ -245,6 +246,7 @@ export const GET_PUBLIC_SHARE_DOCUMENT_ACCESS = `
         limit: 1
       ) {
         id
+        question_answer_id
       }
     }
   }

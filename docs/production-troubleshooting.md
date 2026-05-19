@@ -571,6 +571,27 @@ Production test checklist:
 
 No extra production database action is required for document evidence categories if the `documents.document_type` column already exists. The app uses that existing field for evidence readiness.
 
+Document-to-answer evidence links:
+
+```sql
+select
+  d.file_name,
+  d.document_type,
+  d.status,
+  qs.code as section_code,
+  qi.code as question_code,
+  dl.created_at as linked_at
+from document_links dl
+join documents d on d.id = dl.document_id
+join question_answers qa on qa.id = dl.question_answer_id
+join question_items qi on qi.id = qa.question_item_id
+join question_sections qs on qs.id = qi.section_id
+order by dl.created_at desc
+limit 20;
+```
+
+The document-link API validates the Nhost user, resolves their organization membership server-side, and then uses `HASURA_GRAPHQL_ADMIN_SECRET` only on the server to verify that both the document and linked questionnaire answer belong to that same organization. Public Passport pages use these links only for high-level evidence readiness; they do not expose private file URLs or storage IDs.
+
 ## Safe Logging Rules
 
 Allowed categories:

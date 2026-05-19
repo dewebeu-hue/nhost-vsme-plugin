@@ -122,13 +122,13 @@ type PublicDocumentRecord = {
   status: string;
   expires_at: string | null;
   created_at: string;
-  document_links?: Array<{ id: string }>;
+  document_links?: Array<{ id: string; question_answer_id: string }>;
 };
 
 type PublicDocumentAccessRecord = PublicDocumentRecord & {
   organization_id: string;
   file_id: string | null;
-  document_links: Array<{ id: string }>;
+  document_links: Array<{ id: string; question_answer_id: string }>;
 };
 
 type PublicDocumentAccessResponse = {
@@ -494,7 +494,7 @@ function mapPublicShare(
     questionnaire.question_sections,
     questionnaire.question_items,
     questionnaire.question_answers,
-    documents,
+    mapPublicDocumentsForSummary(documents),
   );
 
   return {
@@ -546,6 +546,15 @@ function mapPublicShare(
     ],
     footerDisclaimer: publicSharePassport.footerDisclaimer,
   } as typeof publicSharePassport;
+}
+
+function mapPublicDocumentsForSummary(documents: PublicDocumentRecord[]) {
+  return documents.map((document) => ({
+    ...document,
+    linked_question_answer_ids: (document.document_links ?? []).map(
+      (link) => link.question_answer_id,
+    ),
+  }));
 }
 
 function mapAnswersByQuestionCode(questionnaire: PublicQuestionnaireResponse) {
