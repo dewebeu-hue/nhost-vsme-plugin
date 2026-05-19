@@ -405,7 +405,7 @@ async function loadListReadiness(
     buyerRequests.map((buyerRequest) => [
       buyerRequest.id,
       {
-        readinessPercent: calculateRequestReadiness(
+        ...calculateRequestReadiness(
           buyerRequest,
           result.data.question_sections,
           sectionsByCode,
@@ -433,7 +433,7 @@ function calculateRequestReadiness(
   const items = sections.flatMap((section) => itemsBySectionId.get(section.id) ?? []);
 
   if (!items.length) {
-    return 0;
+    return { readinessPercent: 0, missingActionsCount: sections.length ? sections.length : 0 };
   }
 
   const answered = items.filter((item) => {
@@ -441,7 +441,22 @@ function calculateRequestReadiness(
     return answer && ["in_progress", "completed", "needs_evidence", "reviewed"].includes(answer.status);
   }).length;
 
-  return Math.round((answered / items.length) * 100);
+  const incompleteSections = sections.filter((section) => {
+    const sectionItems = itemsBySectionId.get(section.id) ?? [];
+    if (!sectionItems.length) {
+      return true;
+    }
+
+    return sectionItems.some((item) => {
+      const answer = answerByQuestionItem.get(item.id);
+      return !answer || !["in_progress", "completed", "needs_evidence", "reviewed"].includes(answer.status);
+    });
+  }).length;
+
+  return {
+    readinessPercent: Math.round((answered / items.length) * 100),
+    missingActionsCount: incompleteSections,
+  };
 }
 
 export async function executeAdminGraphql<TData>({

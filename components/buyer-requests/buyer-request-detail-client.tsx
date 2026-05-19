@@ -105,7 +105,9 @@ export function BuyerRequestDetailClient({
       status,
     ],
   );
-  const dueState = getDueState(request?.due_date ?? null);
+  const dueLabel = request?.due_date
+    ? formatDueLabel(request.due_date, status, locale, labels)
+    : labels.noDueDate;
   const hasRemainingGaps = missingActions.length > 0 || !responsePackage?.hasActiveShareLink;
   const requestLooksReady =
     !hasRemainingGaps && linkedEvidenceForRequestedSections > 0 && readinessSummary.percent >= 80;
@@ -159,6 +161,10 @@ export function BuyerRequestDetailClient({
     });
   }
 
+  async function handleSaveNotes() {
+    await updateRequest({ notes }, labels.notesSaved);
+  }
+
   async function handleMarkReadyToShare() {
     await updateRequest({
       status: "ready_to_share",
@@ -191,7 +197,7 @@ export function BuyerRequestDetailClient({
     }
   }
 
-  async function updateRequest(input: BuyerRequestInput) {
+  async function updateRequest(input: BuyerRequestInput, successMessage = labels.saveRequest) {
     setIsSaving(true);
     setMessage(null);
 
@@ -219,7 +225,7 @@ export function BuyerRequestDetailClient({
     setStatus(payload.request.status);
     setSectionReadiness(payload.sectionReadiness ?? sectionReadiness);
     setResponsePackage(payload.responsePackage ?? responsePackage);
-    setMessage({ tone: "success", text: labels.saveRequest });
+    setMessage({ tone: "success", text: successMessage });
   }
 
   if (isLoading) {
@@ -262,7 +268,7 @@ export function BuyerRequestDetailClient({
             </p>
           </div>
           <span className="w-fit rounded-full bg-blue-50 px-3 py-1.5 text-sm font-semibold text-blue-700">
-            {labels.statuses[request.status]}
+            {labels.statuses[status]}
           </span>
         </div>
       </header>
@@ -285,15 +291,7 @@ export function BuyerRequestDetailClient({
         />
         <SummaryCard
           label={labels.dueDate}
-          value={
-            dueState === "overdue"
-              ? labels.overdue
-              : dueState === "dueSoon"
-                ? labels.dueSoon
-                : request.due_date
-                  ? formatDate(request.due_date, locale)
-                  : labels.noDueDate
-          }
+          value={dueLabel}
           detail={formatBuyerRequestLabel(labels.lastUpdated, {
             date: formatDate(request.updated_at.slice(0, 10), locale),
           })}
@@ -308,7 +306,7 @@ export function BuyerRequestDetailClient({
             </h2>
             <dl className="mt-4 grid gap-4 sm:grid-cols-2">
               <DetailItem label={labels.buyerContactEmail} value={request.buyer_contact_email ?? labels.notProvidedYet} />
-              <DetailItem label={labels.dueDate} value={request.due_date ? formatDate(request.due_date, locale) : labels.noDueDate} />
+              <DetailItem label={labels.dueDate} value={dueLabel} />
               <DetailItem label={labels.requestDescription} value={request.request_description ?? labels.notProvidedYet} />
               <DetailItem label={labels.requestedSections} value={request.requested_sections.length ? request.requested_sections.map((code) => labels.sections[code]).join(", ") : labels.noRequestedSections} />
             </dl>
@@ -412,14 +410,22 @@ export function BuyerRequestDetailClient({
 
           <section className="supplier-surface rounded-2xl border-0 p-5">
             <h2 className="text-lg font-semibold tracking-tight text-slate-950">
-              {labels.notes}
+              {labels.internalNotes}
             </h2>
+            <p className="mt-2 text-sm leading-6 text-slate-600">
+              {labels.internalNotesDescription}
+            </p>
             <Textarea
               name="notes"
               value={notes}
               onChange={(event) => setNotes(event.target.value)}
+              maxLength={2000}
               className="mt-4 min-h-32 bg-white"
             />
+            <Button type="button" className="mt-4" disabled={isSaving} onClick={handleSaveNotes}>
+              <Save data-icon="inline-start" />
+              {isSaving ? labels.saving : labels.saveNotes}
+            </Button>
           </section>
         </main>
 
@@ -449,6 +455,9 @@ export function BuyerRequestDetailClient({
                 </SelectGroup>
               </SelectContent>
             </Select>
+            <p className="mt-3 rounded-xl bg-slate-50 p-3 text-sm leading-6 text-slate-600">
+              {labels.statusDescriptions[status]}
+            </p>
             <div className="mt-5">
               <p className="mb-3 text-sm font-semibold text-slate-700">
                 {labels.requestedSections}
@@ -474,6 +483,20 @@ export function BuyerRequestDetailClient({
               <Save data-icon="inline-start" />
               {isSaving ? labels.saving : labels.saveRequest}
             </Button>
+          </section>
+
+          <section className="supplier-surface rounded-2xl border-0 p-5">
+            <h2 className="text-lg font-semibold tracking-tight text-slate-950">
+              {labels.requestActivity}
+            </h2>
+            <dl className="mt-4 grid gap-3">
+              <DetailItem label={labels.created} value={formatDate(request.created_at.slice(0, 10), locale)} />
+              <DetailItem label={stripDatePlaceholder(labels.lastUpdated)} value={formatDate(request.updated_at.slice(0, 10), locale)} />
+              <DetailItem label={labels.currentStatus} value={labels.statuses[status]} />
+              <DetailItem label={labels.evidenceLinkedLabel} value={String(linkedEvidenceForRequestedSections)} />
+              <DetailItem label={labels.missingSteps} value={String(missingActions.length)} />
+              <DetailItem label={labels.dueDate} value={dueLabel} />
+            </dl>
           </section>
 
           <section className="supplier-surface rounded-2xl border-0 p-5">
@@ -705,9 +728,32 @@ function buildResponseNote({
   });
 }
 
-function getDueState(value: string | null) {
+function formatDueLabel(
+  value: string,
+  status: BuyerRequestStatus,
+  locale: string,
+  labels: BuyerRequestLabels,
+) {
+  const dueState = getDueState(value, status);
+
+  if (dueState.state === "overdue") {
+    return formatBuyerRequestLabel(labels.overdueByDays, { count: dueState.days });
+  }
+
+  if (dueState.state === "today") {
+    return labels.dueToday;
+  }
+
+  if (dueState.state === "dueSoon") {
+    return formatBuyerRequestLabel(labels.dueInDays, { count: dueState.days });
+  }
+
+  return formatDate(value, locale);
+}
+
+function getDueState(value: string | null, status: BuyerRequestStatus) {
   if (!value) {
-    return "none";
+    return { state: "none", days: 0 };
   }
 
   const today = new Date();
@@ -715,17 +761,30 @@ function getDueState(value: string | null) {
   const due = new Date(`${value}T00:00:00`);
 
   if (Number.isNaN(due.getTime())) {
-    return "none";
+    return { state: "none", days: 0 };
+  }
+
+  if (status === "closed") {
+    return { state: "ok", days: 0 };
+  }
+
+  const dayDifference = Math.round((due.getTime() - today.getTime()) / 86_400_000);
+
+  if (dayDifference === 0) {
+    return { state: "today", days: 0 };
   }
 
   if (due < today) {
-    return "overdue";
+    return { state: "overdue", days: Math.abs(dayDifference) };
   }
 
-  const sevenDaysFromNow = new Date(today);
-  sevenDaysFromNow.setDate(sevenDaysFromNow.getDate() + 7);
+  return dayDifference <= 7
+    ? { state: "dueSoon", days: dayDifference }
+    : { state: "ok", days: dayDifference };
+}
 
-  return due <= sevenDaysFromNow ? "dueSoon" : "ok";
+function stripDatePlaceholder(template: string) {
+  return template.replace("{date}", "").trim();
 }
 
 function BuyerRequestMessage({ message }: { message: MessageState }) {

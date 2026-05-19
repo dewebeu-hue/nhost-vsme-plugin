@@ -19,7 +19,7 @@ const defaultActivityLabels: ActivityPageLabels = {
   subtitle: "Track uploads, evidence links, share events and buyer requests when activity tracking is available.",
   unavailableTitle: "Activity log is not available yet.",
   unavailableDescription:
-    "Future activity tracking will show uploads, evidence links, share events and buyer requests.",
+    "Global activity log is not available yet. Buyer request activity is summarized inside each request.",
   uploadsTitle: "Uploads and evidence links",
   uploadsDescription: "Document uploads and answer links will appear here after activity tracking is enabled.",
   sharingTitle: "Sharing events",

@@ -1542,6 +1542,42 @@ Manual QA checklist:
 7. Confirm no email is sent and no buyer portal/login appears.
 8. Repeat quick checks on `/en` and `/de`.
 
+### Buyer request internal notes and activity summary
+
+Internal notes:
+
+- Stored in `buyer_requests.notes`.
+- Editable on the authenticated buyer request detail page.
+- Saved through `PATCH /api/buyer-requests/[id]`.
+- Organization membership is checked before notes can be read or written.
+- Notes are not included in public Passport pages, public PDFs, share links, or buyer-facing output.
+
+Activity summary:
+
+- No separate audit table is required for this step.
+- The request detail page derives a lightweight activity summary from `created_at`, `updated_at`, current status, linked evidence count, missing action count, and due date.
+- The global Activity page remains a neutral placeholder and explains that buyer request activity is summarized inside each request.
+
+Due-date logic:
+
+- Closed requests do not show overdue/due-soon urgency.
+- A request due today shows a due-today label.
+- A request due within seven days shows a due-in-days label.
+- A request with a past due date shows an overdue-by-days label.
+- Requests without a due date show a neutral no-due-date label.
+
+Manual QA checklist:
+
+1. Open `/hr/dashboard/buyer-requests/[id]`.
+2. Edit internal notes and save them.
+3. Refresh and confirm the notes persist.
+4. Change status and confirm the status explanation updates.
+5. Check created, last updated, current status, linked evidence, missing actions, and due date in the activity summary.
+6. Set due dates for today, within seven days, and past dates to confirm labels.
+7. Confirm notes are not visible on public Passport, public PDF, share pages, or copied response text.
+8. Open `/hr/dashboard/activity` and confirm it remains neutral with no fake events.
+9. Repeat quick checks on `/en` and `/de`.
+
 ## Safe Logging Rules
 
 Allowed categories:

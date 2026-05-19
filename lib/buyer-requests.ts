@@ -65,6 +65,7 @@ export type BuyerRequestResponsePackage = {
 
 export type BuyerRequestListReadiness = {
   readinessPercent: number;
+  missingActionsCount: number;
 };
 
 export type BuyerRequestInput = {

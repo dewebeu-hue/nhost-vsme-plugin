@@ -15,6 +15,16 @@ export type BuyerRequestLabels = {
   dueDate: string;
   requestedSections: string;
   notes: string;
+  internalNotes: string;
+  internalNotesDescription: string;
+  saveNotes: string;
+  notesSaved: string;
+  requestActivity: string;
+  created: string;
+  currentStatus: string;
+  evidenceLinkedLabel: string;
+  missingSteps: string;
+  statusDescriptions: Record<BuyerRequestStatus, string>;
   status: string;
   openRequest: string;
   emptyTitle: string;
@@ -77,6 +87,9 @@ export type BuyerRequestLabels = {
   currentRequestStatus: string;
   dueSoon: string;
   overdue: string;
+  dueInDays: string;
+  dueToday: string;
+  overdueByDays: string;
   lastUpdated: string;
   needsAttention: string;
   readyToShare: string;
@@ -102,6 +115,22 @@ export const defaultBuyerRequestLabels: BuyerRequestLabels = {
   dueDate: "Due date",
   requestedSections: "Requested sections",
   notes: "Notes",
+  internalNotes: "Internal notes",
+  internalNotesDescription: "Add notes for your team. These notes are not shown to buyers.",
+  saveNotes: "Save notes",
+  notesSaved: "Notes saved",
+  requestActivity: "Request activity",
+  created: "Created",
+  currentStatus: "Current status",
+  evidenceLinkedLabel: "Evidence linked",
+  missingSteps: "Missing actions",
+  statusDescriptions: {
+    draft: "Request is being prepared.",
+    in_progress: "Work on questionnaire and evidence is in progress.",
+    ready_to_share: "Response package appears ready to share.",
+    shared: "Supplier marked this request as shared.",
+    closed: "Request is closed.",
+  },
   status: "Status",
   openRequest: "Open request",
   emptyTitle: "No buyer requests yet.",
@@ -167,6 +196,9 @@ export const defaultBuyerRequestLabels: BuyerRequestLabels = {
   currentRequestStatus: "Current buyer request status",
   dueSoon: "Due soon",
   overdue: "Overdue",
+  dueInDays: "Due in {count} days",
+  dueToday: "Due today",
+  overdueByDays: "Overdue by {count} days",
   lastUpdated: "Last updated {date}",
   needsAttention: "Needs attention",
   readyToShare: "Ready to share",

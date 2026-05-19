@@ -191,7 +191,7 @@ export function BuyerRequestsPageClient({
                       </span>
                       <span className="inline-flex items-center gap-1 text-xs font-medium text-slate-500">
                         <CalendarDays aria-hidden="true" className="size-3.5" />
-                        {formatDueLabel(request.due_date, locale, labels)}
+                        {formatDueLabel(request.due_date, request.status, locale, labels)}
                       </span>
                     </div>
                     <h2 className="mt-2 text-lg font-semibold tracking-tight text-slate-950">
@@ -211,6 +211,10 @@ export function BuyerRequestsPageClient({
                     </p>
                     <p className="mt-2 text-sm font-medium text-slate-600">
                       {labels.requestReadiness}: {request.readiness?.readinessPercent ?? 0}%
+                      {" - "}
+                      {formatBuyerRequestLabel(labels.missingActionsSummary, {
+                        count: request.readiness?.missingActionsCount ?? 0,
+                      })}
                     </p>
                   </div>
                   <Button
@@ -381,39 +385,57 @@ function formatDate(value: string, locale: string) {
   }).format(new Date(`${value}T00:00:00`));
 }
 
-function formatDueLabel(value: string | null, locale: string, labels: BuyerRequestLabels) {
+function formatDueLabel(
+  value: string | null,
+  status: BuyerRequest["status"],
+  locale: string,
+  labels: BuyerRequestLabels,
+) {
   if (!value) {
     return labels.noDueDate;
   }
 
-  const dueState = getDueState(value);
+  const dueState = getDueState(value, status);
 
-  if (dueState === "overdue") {
-    return `${labels.overdue} - ${formatDate(value, locale)}`;
+  if (dueState.state === "overdue") {
+    return `${formatBuyerRequestLabel(labels.overdueByDays, { count: dueState.days })} - ${formatDate(value, locale)}`;
   }
 
-  if (dueState === "dueSoon") {
-    return `${labels.dueSoon} - ${formatDate(value, locale)}`;
+  if (dueState.state === "today") {
+    return `${labels.dueToday} - ${formatDate(value, locale)}`;
+  }
+
+  if (dueState.state === "dueSoon") {
+    return `${formatBuyerRequestLabel(labels.dueInDays, { count: dueState.days })} - ${formatDate(value, locale)}`;
   }
 
   return formatDate(value, locale);
 }
 
-function getDueState(value: string) {
+function getDueState(value: string, status: BuyerRequest["status"]) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const due = new Date(`${value}T00:00:00`);
 
   if (Number.isNaN(due.getTime())) {
-    return "none";
+    return { state: "none", days: 0 };
+  }
+
+  if (status === "closed") {
+    return { state: "ok", days: 0 };
+  }
+
+  const dayDifference = Math.round((due.getTime() - today.getTime()) / 86_400_000);
+
+  if (dayDifference === 0) {
+    return { state: "today", days: 0 };
   }
 
   if (due < today) {
-    return "overdue";
+    return { state: "overdue", days: Math.abs(dayDifference) };
   }
 
-  const sevenDaysFromNow = new Date(today);
-  sevenDaysFromNow.setDate(sevenDaysFromNow.getDate() + 7);
-
-  return due <= sevenDaysFromNow ? "dueSoon" : "ok";
+  return dayDifference <= 7
+    ? { state: "dueSoon", days: dayDifference }
+    : { state: "ok", days: dayDifference };
 }
