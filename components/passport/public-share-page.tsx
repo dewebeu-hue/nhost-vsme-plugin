@@ -12,10 +12,13 @@ import { ProgressRing } from "@/components/shared/progress-ring";
 import { StateCard } from "@/components/shared/state-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { PublicPdfDownloadButton } from "@/components/passport/public-pdf-download-button";
 import type { publicSharePassport } from "@/lib/mock-data";
 
 type PublicSharePageProps = {
+  locale: string;
   passport: typeof publicSharePassport;
+  token: string;
 };
 
 export function PublicShareAccessState({
@@ -47,7 +50,7 @@ export function PublicShareAccessState({
   );
 }
 
-export function PublicSharePage({ passport }: PublicSharePageProps) {
+export function PublicSharePage({ locale, passport, token }: PublicSharePageProps) {
   const t = useTranslations("share");
   const evidenceSection = passport.sections.find((section) => section.title === "Evidence summary");
   const readinessSections = passport.sections.filter((section) => section.title !== "Evidence summary");
@@ -126,6 +129,7 @@ export function PublicSharePage({ passport }: PublicSharePageProps) {
                   <Mail data-icon="inline-start" />
                   {t("requestAdditionalInformation")}
                 </Button>
+                <PublicPdfDownloadButton locale={locale} token={token} />
               </div>
             </div>
 

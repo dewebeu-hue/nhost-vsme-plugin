@@ -43,7 +43,9 @@
     "createFolder": "Ordner erstellen",
     "generatePassport": "Passport generieren",
     "createShareLink": "Share Link erstellen",
-    "exportPdf": "PDF exportieren",
+    "exportPdf": "PDF herunterladen",
+    "exportPdfGenerating": "PDF wird erstellt...",
+    "exportPdfError": "Das PDF konnte gerade nicht erstellt werden.",
     "viewDetails": "Details ansehen",
     "viewAll": "Alle ansehen",
     "goToMissingData": "Zu fehlenden Daten",
@@ -57,6 +59,18 @@
     "open": "Oeffnen",
     "download": "Herunterladen",
     "copyLink": "Link kopieren"
+  },
+  "passportPdf": {
+    "title": "Supplier-Passport-Entwurf",
+    "readinessSummary": "Bereitschaftszusammenfassung",
+    "sectionSummary": "Abschnittszusammenfassung",
+    "evidenceSummary": "Nachweise",
+    "certificateSummary": "Zusammenfassung der Zertifikatslaufzeiten",
+    "missingData": "Fehlende Angaben",
+    "notProvided": "Noch nicht angegeben",
+    "noEvidenceSummary": "Noch keine Nachweiszusammenfassung verfügbar",
+    "noCertificateWarnings": "Keine Warnungen zu Zertifikatsabläufen",
+    "disclaimer": "Der Supplier Passport ist eine VSME-orientierte Zusammenfassung der Lieferantenbereitschaft auf Basis von Lieferantenangaben und Nachweis-Metadaten. Er ist kein Prüfungsurteil, keine rechtliche Zertifizierung und kein Assurance-Bericht."
   },
   "statuses": {
     "notStarted": "Nicht gestartet",
@@ -545,7 +559,7 @@
       "trustChips": [
         "EU-aligned & VSME-ready",
         "Secure & permissioned",
-        "Audit-ready evidence"
+        "Nachweiszusammenfassung"
       ]
     },
     "features": {
@@ -1067,6 +1081,9 @@
     "sharedSupplierPassport": "Geteilter Supplier Passport",
     "sharedIntro": "{companyName} hat sein VSME-/ESG-Profil mit Ihnen geteilt. Diese Informationen werden sicher und schreibgeschützt bereitgestellt.",
     "requestAdditionalInformation": "Zusätzliche Informationen anfordern",
+    "downloadPublicPdf": "Öffentliches PDF herunterladen",
+    "publicPdfGenerating": "Öffentliches PDF wird erstellt...",
+    "publicPdfError": "Das öffentliche PDF konnte gerade nicht erstellt werden.",
     "companyOverview": "Unternehmensübersicht",
     "vsmeAligned": "VSME-orientiert",
     "publicSummaryExplanation": "Diese öffentliche Zusammenfassung basiert auf dem ausgefüllten Fragebogen des Lieferanten und dem Nachweisstatus.",
@@ -1198,7 +1215,9 @@
     "subtitle": "Prüfen Sie Ihr VSME-Bereitschaftsprofil, Nachweis-Metadaten und den käuferseitigen Passport vor der Weitergabe.",
     "generatePassport": "Passport generieren",
     "createShareLink": "Freigabelink erstellen",
-    "exportPdf": "PDF exportieren",
+    "exportPdf": "PDF herunterladen",
+    "exportPdfGenerating": "PDF wird erstellt...",
+    "exportPdfError": "Das PDF konnte gerade nicht erstellt werden.",
     "draftStateTitle": "Passport-Vorschau nutzt Entwurfsdaten",
     "draftStateText": "Generieren Sie einen Passport, sobald Organisationsprofil, Fragebogenantworten und Nachweis-Metadaten bereit sind. Bis dahin zeigt diese Seite die käufersichere Vorschau.",
     "companySummary": "Unternehmensübersicht",
@@ -1326,6 +1345,7 @@
     "description": "Teilen Sie Ihren öffentlichen Supplier Passport mit Käufern.",
     "warning": "Jeder mit diesem Link kann Ihre öffentliche Supplier-Passport-Zusammenfassung ansehen.",
     "privateFilesWarning": "Private Nachweisdateien können über diese Seite nicht öffentlich heruntergeladen werden.",
+    "publicPdfWarning": "Käufer können auf der öffentlichen Supplier-Passport-Seite auch eine käufersichere öffentliche PDF-Zusammenfassung herunterladen.",
     "copyLink": "Link kopieren",
     "linkCopied": "Link kopiert",
     "loadError": "Ihr Freigabelink konnte gerade nicht geladen werden.",

@@ -57,5 +57,5 @@ export default async function PassportTokenPage({ params }: PassportTokenPagePro
     return <SharePasswordForm token={token} />;
   }
 
-  return <PublicSharePage passport={result.share} />;
+  return <PublicSharePage locale={locale} passport={result.share} token={token} />;
 }

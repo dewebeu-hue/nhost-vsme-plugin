@@ -970,6 +970,221 @@ limit 20;
 
 Expected result: the public Passport page may summarize evidence availability and certificate expiry status, but it must not render `file_id`, storage paths, private URLs, internal notes, user/member data, or raw document content.
 
+## Faza 3.0 Supplier Passport PDF Export
+
+Authenticated suppliers can download a server-generated Supplier Passport draft from `/[locale]/dashboard/passport`.
+
+Export route:
+
+- `GET /api/passport/export/pdf?locale=en`
+- Requires a valid Nhost bearer token.
+- Resolves the current organization from `organization_members` server-side.
+- Uses the Hasura admin secret only on the server.
+- Returns `application/pdf` with a safe filename such as `supplier-passport-nokia-2026-05-19.pdf`.
+
+The PDF includes:
+
+- Supplier Passport draft cover/header with organization name, generated date, reporting year if available, and VSME-aligned label.
+- A compact readiness header with overall percentage, readiness label, answered questions, uploaded documents, linked evidence, and certificate warning count.
+- Disclaimer and limitations stating the PDF is not an audit opinion, legal certification, or assurance report.
+- Company summary from safe organization fields and selected Company Basics questionnaire fields only.
+- All 10 questionnaire sections with answered/total counts, completion percentage, readiness status, evidence status, and VSME/Supplier Passport mapping. Long labels are wrapped rather than truncated.
+- Evidence category counts and a statement that private evidence files are not embedded or downloadable from the PDF.
+- Certificate expiry summary based on real `documents.expires_at` values.
+- Top missing/recommended data and evidence gaps based on unanswered questionnaire items and answered sections without matching evidence.
+- Page footers with localized Supplier Passport draft label and page count.
+- Final footer with generated date and short disclaimer.
+
+Layout notes:
+
+- The PDF renderer is server-side and dependency-light.
+- It uses fixed margins, wrapped text, simple hierarchy, section rules, muted note text, and per-page footers.
+- It is designed to tolerate long organization names, long Croatian/German labels, zero documents, zero answers, and missing supplier passport timestamps.
+- It intentionally prioritizes stable generation and buyer-safe content over charts or remote assets.
+
+PDF section mapping:
+
+| Section code | PDF mapping label |
+| --- | --- |
+| `company_basics` | VSME B1 / Supplier identity |
+| `employees` | VSME B8-B10 |
+| `energy` | VSME B3 |
+| `fuel` | VSME B3 / transport energy detail |
+| `waste` | VSME B7 |
+| `environmental_policies` | VSME B2, B4-B6 |
+| `health_safety` | VSME B9 |
+| `certifications` | Supplier Passport evidence |
+| `governance` | VSME B11 / governance readiness |
+| `supplier_information` | Supplier Passport value-chain readiness |
+
+The PDF intentionally excludes:
+
+- Private document URLs.
+- Nhost Storage file IDs.
+- Raw sensitive questionnaire answer values.
+- Full raw questionnaire answer dumps.
+- User/member data.
+- Internal IDs and share tokens.
+- Share tokens, cookies, JWTs, passwords, and secrets.
+- Audit/certification/legal compliance claims.
+
+Troubleshooting:
+
+- `401`: user is not signed in or the bearer token is invalid/expired.
+- `404`: signed-in user has no organization membership.
+- `503`: Nhost/Hasura export backend is not configured.
+- `500` with `pdf_export_error`: check server logs for safe GraphQL/PDF generation category only; do not log tokens or document contents.
+
+Verification SQL:
+
+```sql
+select
+  qs.code,
+  count(qi.id) as total_questions
+from question_sections qs
+left join question_items qi on qi.section_id = qs.id
+group by qs.code, qs.sort_order
+order by qs.sort_order;
+
+select
+  document_type,
+  status,
+  count(*) as document_count
+from documents
+group by document_type, status
+order by document_type, status;
+
+select
+  document_type,
+  expires_at,
+  count(*) as certificate_count
+from documents
+where document_type = 'certificate'
+group by document_type, expires_at
+order by expires_at;
+```
+
+## Faza 3.0 Public Supplier Passport PDF Export
+
+The public Passport page includes a buyer-safe public PDF download for valid live share tokens.
+
+Public export route:
+
+- `GET /api/passport/public/pdf?token=<share-token>&locale=en`
+- Does not require login.
+- Requires a valid, active, non-expired share token.
+- Password-protected links require the existing share verification cookie.
+- Returns `application/pdf` with a safe filename such as `supplier-passport-public-nokia.pdf`.
+- Invalid, inactive, expired, mock, or unavailable tokens return a safe JSON error and do not generate a PDF.
+
+The public PDF includes only:
+
+- Organization name.
+- Generated date and last-updated date.
+- VSME-aligned public summary label.
+- Readiness percentage and readiness status.
+- Section-level completion/status summaries.
+- High-level evidence availability.
+- Certificate status summary.
+- Disclaimer that this is not an audit opinion, legal certification, or assurance report.
+- Copy stating evidence documents are available on request and private files are not downloadable from the public PDF.
+
+The public PDF intentionally excludes:
+
+- Private document URLs.
+- Nhost Storage file IDs.
+- Downloadable evidence files.
+- User/member data.
+- Raw sensitive questionnaire answers.
+- Internal IDs.
+- Share token text inside the PDF.
+- Admin/debug fields.
+- Mock Passport fallback.
+
+Manual checks:
+
+1. Open a valid `/hr/passport/[token]` link in incognito.
+2. Click **Preuzmi javni PDF**.
+3. Confirm the PDF downloads without login.
+4. Confirm it contains only a buyer-safe summary.
+5. Confirm no private file URL, storage ID, raw answer dump, user/member data, or share token appears in the PDF.
+6. Open `/api/passport/public/pdf?token=invalid-token-test&locale=hr` and confirm it returns a safe error, not a server crash or mock PDF.
+7. Repeat a quick check for `/en` and `/de`.
+
+## Faza 3.0 Final PDF Export QA
+
+Use this checklist to close the Supplier Passport PDF phase in production.
+
+Authenticated PDF checklist:
+
+1. Sign in as a real supplier organization member.
+2. Open `/hr/dashboard/passport`, `/en/dashboard/passport`, and `/de/dashboard/passport`.
+3. Confirm the PDF button is visible and localized.
+4. Download the authenticated PDF draft from each locale.
+5. Confirm the PDF opens and the filename is safe, for example `supplier-passport-nokia-2026-05-19.pdf`.
+6. Confirm the PDF includes the real organization name, generated date, disclaimer, readiness summary, all questionnaire sections, VSME/Supplier Passport mapping labels, evidence summary, certificate expiry summary, and missing/recommended data or a neutral fallback.
+7. Confirm the PDF does not include private document URLs, storage file IDs, user/member data, share tokens, admin/debug fields, raw sensitive answer dumps, or mock company data.
+
+Public PDF checklist:
+
+1. Open a valid `/hr/passport/[token]` link in incognito.
+2. Download the public PDF.
+3. Confirm no login is required.
+4. Confirm the PDF contains only the buyer-safe public summary: organization name, readiness, section status, high-level evidence availability, certificate status, and disclaimer.
+5. Confirm private evidence files are described as available on request and are not downloadable from the PDF.
+6. Open `/api/passport/public/pdf?token=invalid-token-test&locale=hr`.
+7. Confirm invalid, inactive, expired, mock, or unavailable tokens do not generate a PDF and do not fall back to mock Passport content.
+
+Included data:
+
+- Organization display name.
+- Generated and last-updated dates where available.
+- Readiness percentage and status label.
+- Section-level answered/total counts and completion status.
+- VSME/Supplier Passport section mapping labels.
+- High-level evidence category/count summaries.
+- Linked evidence count.
+- Certificate expiry warning counts based on real `documents.expires_at` values.
+- Missing/recommended sections or neutral empty states.
+- Disclaimer and limitations.
+
+Excluded data:
+
+- Private Nhost Storage URLs.
+- Storage file IDs.
+- Private document download links.
+- Raw sensitive questionnaire answer dumps.
+- User/member records.
+- Internal IDs.
+- Full share token text.
+- JWTs, cookies, passwords, and secrets.
+- Audit, certification, approval, legal compliance, or assurance claims.
+
+Common PDF errors:
+
+- `401`: the authenticated PDF request is missing a valid session.
+- `404`: the authenticated user has no organization membership, or the public share token is invalid/unavailable.
+- `503`: the Nhost/Hasura backend configuration is missing on the server.
+- `500` / `pdf_export_error`: server-side PDF generation failed; inspect only safe stage/category logs.
+- Public PDF safe error: invalid, inactive, expired, password-protected without verification, mock, or unavailable token.
+
+No-private-URL checklist:
+
+```sql
+select
+  id,
+  organization_id,
+  document_type,
+  status,
+  expires_at,
+  created_at
+from documents
+order by created_at desc
+limit 50;
+```
+
+Use this SQL only to verify metadata in Nhost/Hasura. Do not copy private file URLs, storage paths, storage IDs, or document contents into logs, screenshots, or public PDFs.
+
 ## Safe Logging Rules
 
 Allowed categories:

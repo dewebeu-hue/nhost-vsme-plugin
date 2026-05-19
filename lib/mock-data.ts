@@ -1170,7 +1170,7 @@ export type PassportApprovedDocument = {
   id: string;
   name: string;
   category: string;
-  status: "Approved";
+  status: "Available";
   linkedSections: string[];
 };
 
@@ -1247,49 +1247,49 @@ export const passportApprovedDocuments: PassportApprovedDocument[] = [
     id: "passport-doc-iso-14001",
     name: "ISO 14001 Certificate",
     category: "Environment",
-    status: "Approved",
+    status: "Available",
     linkedSections: ["Environment", "Evidence summary"],
   },
   {
     id: "passport-doc-iso-9001",
     name: "ISO 9001 Certificate",
     category: "Quality",
-    status: "Approved",
+    status: "Available",
     linkedSections: ["Company overview", "Evidence summary"],
   },
   {
     id: "passport-doc-iso-45001",
     name: "ISO 45001 Certificate",
     category: "Social",
-    status: "Approved",
+    status: "Available",
     linkedSections: ["Social", "Evidence summary"],
   },
   {
     id: "passport-doc-iatf-16949",
     name: "IATF 16949 Certificate",
     category: "Quality",
-    status: "Approved",
+    status: "Available",
     linkedSections: ["Company overview", "Governance"],
   },
   {
     id: "passport-doc-code-conduct",
     name: "Code of Conduct",
     category: "Governance",
-    status: "Approved",
+    status: "Available",
     linkedSections: ["Governance", "Evidence summary"],
   },
   {
     id: "passport-doc-sustainability-policy",
     name: "Sustainability Policy",
     category: "Governance",
-    status: "Approved",
+    status: "Available",
     linkedSections: ["Environment", "Governance"],
   },
   {
     id: "passport-doc-esg-summary-2024",
     name: "ESG Data Summary 2024",
     category: "ESG summary",
-    status: "Approved",
+    status: "Available",
     linkedSections: ["Environment", "Social", "Governance"],
   },
 ];
@@ -1305,7 +1305,7 @@ export const passportShareSettings: PassportShareSetting[] = [
   { label: "Access", value: "Read-only" },
   { label: "Security", value: "Password protected" },
   { label: "Expiry", value: "14 days" },
-  { label: "Documents", value: "Approved only" },
+  { label: "Documents", value: "Summary only" },
   { label: "Internal notes", value: "Hidden" },
 ];
 

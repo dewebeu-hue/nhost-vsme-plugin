@@ -163,6 +163,7 @@ export function PassportPageClient({
   const [missingDataChecklist, setMissingDataChecklist] = useState<PassportChecklistItem[]>([]);
   const [message, setMessage] = useState<MessageState | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isExportingPdf, setIsExportingPdf] = useState(false);
   const [isShareOpen, setIsShareOpen] = useState(false);
   const [isCreatingShare, setIsCreatingShare] = useState(false);
   const [shareUrl, setShareUrl] = useState("");
@@ -341,6 +342,48 @@ export function PassportPageClient({
     }
   }
 
+  async function handleExportPdf() {
+    const session = await getFreshBrowserNhostSession();
+
+    if (!session?.accessToken) {
+      setMessage({ tone: "error", text: labels.exportPdfError });
+      return;
+    }
+
+    setIsExportingPdf(true);
+    setMessage(null);
+
+    try {
+      const response = await fetch(`/api/passport/export/pdf?locale=${encodeURIComponent(locale)}`, {
+        method: "GET",
+        headers: {
+          authorization: `Bearer ${session.accessToken}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(labels.exportPdfError);
+      }
+
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const disposition = response.headers.get("content-disposition") ?? "";
+      const filename = readFilenameFromContentDisposition(disposition) || "supplier-passport.pdf";
+      const link = document.createElement("a");
+
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+    } catch {
+      setMessage({ tone: "error", text: labels.exportPdfError });
+    } finally {
+      setIsExportingPdf(false);
+    }
+  }
+
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col justify-between gap-4 xl:flex-row xl:items-end">
@@ -376,9 +419,14 @@ export function PassportPageClient({
             <Link2 data-icon="inline-start" />
             {labels.createShareLink}
           </Button>
-          <Button variant="outline" className="h-11 rounded-xl bg-white px-5">
+          <Button
+            variant="outline"
+            className="h-11 rounded-xl bg-white px-5"
+            disabled={isExportingPdf}
+            onClick={handleExportPdf}
+          >
             <Download data-icon="inline-start" />
-            {labels.exportPdf}
+            {isExportingPdf ? labels.exportPdfGenerating : labels.exportPdf}
           </Button>
         </div>
       </div>
@@ -493,7 +541,7 @@ function createApprovedDocuments(documents: EvidenceDocumentRecord[]): PassportA
       id: document.id,
       name: document.file_name,
       category: document.document_type,
-      status: "Approved",
+      status: "Available",
       linkedSections: [],
     }));
 }
@@ -522,7 +570,7 @@ function createShareSettings(): PassportShareSetting[] {
     { label: "Access", value: "Read-only" },
     { label: "Security", value: "Password protected" },
     { label: "Expiry", value: "14 days" },
-    { label: "Documents", value: "Approved only" },
+    { label: "Documents", value: "Summary only" },
     { label: "Internal notes", value: "Hidden" },
   ];
 }
@@ -708,4 +756,10 @@ function formatDate(value: string) {
     day: "numeric",
     year: "numeric",
   }).format(new Date(value));
+}
+
+function readFilenameFromContentDisposition(value: string) {
+  const match = /filename="([^"]+)"/.exec(value);
+
+  return match?.[1] ?? null;
 }

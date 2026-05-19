@@ -81,5 +81,5 @@ export default async function SharePage({ params }: SharePageProps) {
     return <SharePasswordForm token={token} />;
   }
 
-  return <PublicSharePage passport={result.share} />;
+  return <PublicSharePage locale={locale} passport={result.share} token={token} />;
 }

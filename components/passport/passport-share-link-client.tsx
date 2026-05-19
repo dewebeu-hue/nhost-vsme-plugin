@@ -13,6 +13,7 @@ export type PassportShareLabels = {
   description: string;
   warning: string;
   privateFilesWarning: string;
+  publicPdfWarning: string;
   copyLink: string;
   linkCopied: string;
   loadError: string;
@@ -44,6 +45,7 @@ export const defaultPassportShareLabels: PassportShareLabels = {
   description: "Share your public Supplier Passport with buyers.",
   warning: "Anyone with this link can view your public Supplier Passport summary.",
   privateFilesWarning: "Private evidence files are not publicly downloadable from this page.",
+  publicPdfWarning: "Buyers can also download a buyer-safe public PDF summary from the public Passport page.",
   copyLink: "Copy link",
   linkCopied: "Link copied",
   loadError: "We could not load your share link right now.",
@@ -212,6 +214,11 @@ export function PassportShareLinkClient({
             {publicUrl ? (
               <p className="mt-1 text-sm leading-6 text-slate-600">
                 {labels.privateFilesWarning}
+              </p>
+            ) : null}
+            {publicUrl ? (
+              <p className="mt-1 text-sm leading-6 text-slate-600">
+                {labels.publicPdfWarning}
               </p>
             ) : null}
           </div>

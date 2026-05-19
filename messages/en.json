@@ -43,7 +43,9 @@
     "createFolder": "Create folder",
     "generatePassport": "Generate Passport",
     "createShareLink": "Create Share Link",
-    "exportPdf": "Export PDF",
+    "exportPdf": "Download PDF",
+    "exportPdfGenerating": "Generating PDF...",
+    "exportPdfError": "We could not generate the PDF right now.",
     "viewDetails": "View details",
     "viewAll": "View all",
     "goToMissingData": "Go to missing data",
@@ -57,6 +59,18 @@
     "open": "Open",
     "download": "Download",
     "copyLink": "Copy link"
+  },
+  "passportPdf": {
+    "title": "Supplier Passport draft",
+    "readinessSummary": "Readiness summary",
+    "sectionSummary": "Section summary",
+    "evidenceSummary": "Evidence summary",
+    "certificateSummary": "Certificate expiry summary",
+    "missingData": "Missing or recommended data",
+    "notProvided": "Not provided yet",
+    "noEvidenceSummary": "No evidence summary available yet",
+    "noCertificateWarnings": "No certificate expiry warnings",
+    "disclaimer": "Supplier Passport is a VSME-aligned supplier readiness summary based on supplier-provided information and evidence metadata. It is not an audit opinion, legal certification, or assurance report."
   },
   "statuses": {
     "notStarted": "Not started",
@@ -545,7 +559,7 @@
       "trustChips": [
         "EU-aligned & VSME-ready",
         "Secure & permissioned",
-        "Audit-ready evidence"
+        "Evidence summary"
       ]
     },
     "features": {
@@ -1073,6 +1087,9 @@
     "sectionReadiness": "Section readiness",
     "sectionReadinessDescription": "Section-level completion based on the supplier's questionnaire responses.",
     "requestAdditionalInformation": "Request additional information",
+    "downloadPublicPdf": "Download public PDF",
+    "publicPdfGenerating": "Generating public PDF...",
+    "publicPdfError": "We could not generate the public PDF right now.",
     "companyOverview": "Company overview",
     "companyBasics": "Company basics",
     "employees": "Employees",
@@ -1175,7 +1192,9 @@
     "subtitle": "Review your VSME readiness profile, evidence metadata, and buyer-facing passport before sharing.",
     "generatePassport": "Generate Passport",
     "createShareLink": "Create Share Link",
-    "exportPdf": "Export PDF",
+    "exportPdf": "Download PDF",
+    "exportPdfGenerating": "Generating PDF...",
+    "exportPdfError": "We could not generate the PDF right now.",
     "draftStateTitle": "Passport preview is using draft data",
     "draftStateText": "Generate a passport when the organization profile, questionnaire answers, and evidence metadata are ready. Until then, this page shows the buyer-safe preview structure for demo review.",
     "companySummary": "Company summary",
@@ -1303,6 +1322,7 @@
     "description": "Share your public Supplier Passport with buyers.",
     "warning": "Anyone with this link can view your public Supplier Passport summary.",
     "privateFilesWarning": "Private evidence files are not publicly downloadable from this page.",
+    "publicPdfWarning": "Buyers can also download a buyer-safe public PDF summary from the public Passport page.",
     "copyLink": "Copy link",
     "linkCopied": "Link copied",
     "loadError": "We could not load your share link right now.",

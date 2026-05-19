@@ -4,6 +4,8 @@ export type PassportLabels = {
   generatePassport: string;
   createShareLink: string;
   exportPdf: string;
+  exportPdfGenerating: string;
+  exportPdfError: string;
   draftStateTitle: string;
   draftStateText: string;
   companySummary: string;
@@ -90,7 +92,9 @@ export const defaultPassportLabels: PassportLabels = {
     "Review your VSME readiness profile, evidence metadata, and buyer-facing passport before sharing.",
   generatePassport: "Generate Passport",
   createShareLink: "Create Share Link",
-  exportPdf: "Export PDF",
+  exportPdf: "Download PDF",
+  exportPdfGenerating: "Generating PDF...",
+  exportPdfError: "We could not generate the PDF right now.",
   draftStateTitle: "Passport preview is using draft data",
   draftStateText:
     "Generate a passport when the organization profile, questionnaire answers, and evidence metadata are ready. Until then, this page shows the buyer-safe preview structure for demo review.",
