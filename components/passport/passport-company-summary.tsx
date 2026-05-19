@@ -14,7 +14,11 @@ export function PassportCompanySummary({
   labels = defaultPassportLabels,
 }: PassportCompanySummaryProps) {
   const facts = [
-    { label: labels.industries, value: profile.industries.join(", "), icon: Factory },
+    {
+      label: labels.industries,
+      value: profile.industries.length ? profile.industries.join(", ") : labels.notProvided,
+      icon: Factory,
+    },
     { label: labels.countriesServed, value: profile.countriesServed, icon: Globe2 },
     { label: labels.employeeCount, value: profile.employeeCount, icon: Users },
     { label: labels.headquarters, value: profile.headquarters, icon: MapPin },
@@ -72,15 +76,19 @@ export function PassportCompanySummary({
         <div>
           <p className="mb-3 text-sm font-semibold text-slate-950">{labels.keyCertifications}</p>
           <div className="flex flex-wrap gap-2">
-            {profile.certifications.map((certification) => (
-              <Badge
-                key={certification}
-                variant="outline"
-                className="rounded-full border-slate-200 bg-white px-3 py-1 text-slate-700"
-              >
-                {certification}
-              </Badge>
-            ))}
+            {profile.certifications.length ? (
+              profile.certifications.map((certification) => (
+                <Badge
+                  key={certification}
+                  variant="outline"
+                  className="rounded-full border-slate-200 bg-white px-3 py-1 text-slate-700"
+                >
+                  {certification}
+                </Badge>
+              ))
+            ) : (
+              <p className="text-sm font-medium text-slate-500">{labels.noCertifications}</p>
+            )}
           </div>
         </div>
       </div>

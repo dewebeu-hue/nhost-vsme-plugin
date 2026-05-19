@@ -10,6 +10,8 @@ export type PassportLabels = {
   companySummaryDescription: string;
   verified: string;
   supplierIdentity: string;
+  notProvided: string;
+  noCertifications: string;
   industries: string;
   countriesServed: string;
   employeeCount: string;
@@ -22,6 +24,7 @@ export type PassportLabels = {
   passportSectionsDescription: string;
   approvedDocuments: string;
   approvedDocumentsDescription: string;
+  noApprovedDocuments: string;
   document: string;
   category: string;
   linkedSections: string;
@@ -29,6 +32,7 @@ export type PassportLabels = {
   approved: string;
   missingDataChecklist: string;
   missingDataChecklistDescription: string;
+  missingDataNeutral: string;
   shareSettingsPreview: string;
   shareSettingsPreviewDescription: string;
   buyerReadOnlyNotice: string;
@@ -90,6 +94,8 @@ export const defaultPassportLabels: PassportLabels = {
   companySummaryDescription: "The organization profile buyers will see in the passport.",
   verified: "Verified",
   supplierIdentity: "Buyer-facing supplier identity and operating footprint",
+  notProvided: "Not provided yet",
+  noCertifications: "No certifications provided yet.",
   industries: "Industries",
   countriesServed: "Countries served",
   employeeCount: "Employee count",
@@ -102,6 +108,7 @@ export const defaultPassportLabels: PassportLabels = {
   passportSectionsDescription: "Control what buyers can review in the generated passport.",
   approvedDocuments: "Approved documents",
   approvedDocumentsDescription: "Evidence files approved for the buyer-facing passport.",
+  noApprovedDocuments: "No approved documents yet.",
   document: "Document",
   category: "Category",
   linkedSections: "Linked sections",
@@ -109,6 +116,8 @@ export const defaultPassportLabels: PassportLabels = {
   approved: "Approved",
   missingDataChecklist: "Missing data checklist",
   missingDataChecklistDescription: "Open items before this passport is shared externally.",
+  missingDataNeutral:
+    "Missing-data checks will appear here once your questionnaire and documents are reviewed.",
   shareSettingsPreview: "Share settings preview",
   shareSettingsPreviewDescription: "Default controls for a new buyer link.",
   buyerReadOnlyNotice:

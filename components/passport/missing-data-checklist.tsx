@@ -41,7 +41,7 @@ export function MissingDataChecklist({
       description={labels.missingDataChecklistDescription}
     >
       <div className="flex flex-col gap-3">
-        {items.map((item) => {
+        {items.length ? items.map((item) => {
           const style = checklistStyles[item.status];
           const Icon = style.icon;
 
@@ -63,7 +63,11 @@ export function MissingDataChecklist({
               </span>
             </div>
           );
-        })}
+        }) : (
+          <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50/70 p-4 text-sm font-medium leading-6 text-slate-600">
+            {labels.missingDataNeutral}
+          </div>
+        )}
       </div>
     </SectionCard>
   );

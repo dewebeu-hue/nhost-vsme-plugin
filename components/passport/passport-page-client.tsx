@@ -30,15 +30,18 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  passportApprovedDocuments,
-  passportCompanyProfile,
-  passportMissingDataChecklist,
-  passportReadinessSummary,
-  passportSections,
-  passportShareSettings,
+import type {
+  PassportApprovedDocument,
+  PassportChecklistItem,
+  PassportCompanyProfile,
+  PassportReadinessModule,
+  PassportSection,
+  PassportShareSetting,
 } from "@/lib/mock-data";
-import { getBrowserNhostClient } from "@/lib/nhost/client";
+import {
+  getBrowserNhostClient,
+  getFreshBrowserNhostSession,
+} from "@/lib/nhost/client";
 import { defaultPassportLabels, type PassportLabels } from "@/lib/passport-labels";
 
 type SupplierPassportPayload = {
@@ -46,6 +49,59 @@ type SupplierPassportPayload = {
   organization?: { id: string; name: string } | null;
   passport?: SupplierPassportRecord | null;
   error?: string;
+};
+
+type CurrentOrganizationPayload = {
+  organization?: OrganizationRecord | null;
+  error?: string;
+};
+
+type OrganizationRecord = {
+  id: string;
+  name: string;
+  vat_id: string | null;
+  industry: string | null;
+  employee_count_range: string | null;
+  headquarters_city: string | null;
+  headquarters_country: string | null;
+  countries_served: string[] | null;
+  is_verified: boolean;
+};
+
+type QuestionnairePayload = {
+  sections?: QuestionSectionRecord[];
+  items?: QuestionItemRecord[];
+  answers?: QuestionAnswerRecord[];
+  documents?: EvidenceDocumentRecord[];
+};
+
+type QuestionSectionRecord = {
+  id: string;
+  code: string;
+  title: string;
+};
+
+type QuestionItemRecord = {
+  id: string;
+  section_id: string;
+  code: string;
+  title: string;
+  answer_type: string;
+  evidence_required: boolean;
+};
+
+type QuestionAnswerRecord = {
+  id: string;
+  question_item_id: string;
+  value: unknown;
+  status: "not_started" | "in_progress" | "completed" | "needs_evidence" | "reviewed";
+};
+
+type EvidenceDocumentRecord = {
+  id: string;
+  file_name: string;
+  document_type: string;
+  status: string;
 };
 
 type ShareLinkPayload = {
@@ -79,6 +135,15 @@ export function PassportPageClient({
   const locale = useLocale();
   const [passport, setPassport] = useState<SupplierPassportRecord | null>(null);
   const [organizationId, setOrganizationId] = useState<string | null>(null);
+  const [companyProfile, setCompanyProfile] = useState<PassportCompanyProfile>(() =>
+    createEmptyCompanyProfile(labels),
+  );
+  const [readiness, setReadiness] = useState<{ score: number; modules: PassportReadinessModule[] }>(
+    () => createEmptyReadiness(),
+  );
+  const [sections, setSections] = useState<PassportSection[]>([]);
+  const [approvedDocuments, setApprovedDocuments] = useState<PassportApprovedDocument[]>([]);
+  const [missingDataChecklist] = useState<PassportChecklistItem[]>([]);
   const [message, setMessage] = useState<MessageState | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [isShareOpen, setIsShareOpen] = useState(false);
@@ -89,29 +154,52 @@ export function PassportPageClient({
     let cancelled = false;
 
     async function loadLatestPassport() {
-      const session = getBrowserNhostClient()?.getUserSession();
+      const session = await getFreshBrowserNhostSession();
 
       if (!session?.accessToken) {
         return;
       }
 
       try {
-        const response = await fetch("/api/passports", {
-          method: "POST",
-          headers: {
-            "content-type": "application/json",
-            authorization: `Bearer ${session.accessToken}`,
-          },
-          body: JSON.stringify({ action: "latest" }),
-        });
-        const payload = (await response.json()) as SupplierPassportPayload;
+        const [organizationResponse, questionnaireResponse, passportResponse] = await Promise.all([
+          fetch("/api/organizations/current", {
+            method: "POST",
+            headers: { authorization: `Bearer ${session.accessToken}` },
+          }),
+          fetch("/api/questionnaire", {
+            method: "GET",
+            headers: { authorization: `Bearer ${session.accessToken}` },
+          }),
+          fetch("/api/passports", {
+            method: "POST",
+            headers: {
+              "content-type": "application/json",
+              authorization: `Bearer ${session.accessToken}`,
+            },
+            body: JSON.stringify({ action: "latest" }),
+          }),
+        ]);
+        const organizationPayload =
+          (await organizationResponse.json()) as CurrentOrganizationPayload;
+        const questionnairePayload =
+          (await questionnaireResponse.json()) as QuestionnairePayload;
+        const payload = (await passportResponse.json()) as SupplierPassportPayload;
 
         if (cancelled) {
           return;
         }
 
-        if (response.ok && payload.configured !== false && payload.organization) {
-          setOrganizationId(payload.organization.id);
+        if (organizationResponse.ok && organizationPayload.organization) {
+          const organization = organizationPayload.organization;
+
+          setOrganizationId(organization.id);
+          setCompanyProfile(createCompanyProfile(organization, questionnairePayload, labels));
+          setReadiness(createReadiness(questionnairePayload));
+          setSections(createPassportSections(questionnairePayload));
+          setApprovedDocuments(createApprovedDocuments(questionnairePayload.documents ?? []));
+        }
+
+        if (passportResponse.ok && payload.configured !== false && payload.organization) {
           setPassport(payload.passport ?? null);
         }
       } catch {
@@ -126,19 +214,14 @@ export function PassportPageClient({
     return () => {
       cancelled = true;
     };
-  }, [labels.draftStateText]);
+  }, [labels]);
 
-  const readiness = useMemo(
+  const readinessView = useMemo(
     () => ({
-      ...passportReadinessSummary,
-      score: passport?.readiness_score ?? passportReadinessSummary.score,
-      modules: passportReadinessSummary.modules.map((module) =>
-        module.label === "Environment" && passport
-          ? { ...module, value: passport.readiness_score }
-          : module,
-      ),
+      ...readiness,
+      score: passport?.readiness_score ?? readiness.score,
     }),
-    [passport],
+    [passport, readiness],
   );
 
   async function handleGeneratePassport() {
@@ -273,24 +356,28 @@ export function PassportPageClient({
 
       <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
         <main className="flex min-w-0 flex-col gap-6">
-          <PassportCompanySummary profile={passportCompanyProfile} labels={labels} />
-          <PassportReadinessSummary score={readiness.score} modules={readiness.modules} labels={labels} />
+          <PassportCompanySummary profile={companyProfile} labels={labels} />
+          <PassportReadinessSummary
+            score={readinessView.score}
+            modules={readinessView.modules}
+            labels={labels}
+          />
           <SectionCard
             title={labels.passportSections}
             description={labels.passportSectionsDescription}
           >
             <div className="grid gap-4 lg:grid-cols-2">
-              {passportSections.map((section) => (
+              {sections.map((section) => (
                 <PassportSectionCard key={section.title} section={section} labels={labels} />
               ))}
             </div>
           </SectionCard>
-          <ApprovedDocumentsTable documents={passportApprovedDocuments} labels={labels} />
+          <ApprovedDocumentsTable documents={approvedDocuments} labels={labels} />
         </main>
 
         <aside className="flex flex-col gap-6 xl:sticky xl:top-28 xl:self-start">
-          <MissingDataChecklist items={passportMissingDataChecklist} labels={labels} />
-          <ShareSettingsPreview settings={passportShareSettings} labels={labels} />
+          <MissingDataChecklist items={missingDataChecklist} labels={labels} />
+          <ShareSettingsPreview settings={createShareSettings()} labels={labels} />
           <PassportDisclaimer title={labels.notCertificationTitle} text={labels.notCertificationText} />
         </aside>
       </div>
@@ -305,6 +392,277 @@ export function PassportPageClient({
       />
     </div>
   );
+}
+
+function createEmptyCompanyProfile(labels: PassportLabels): PassportCompanyProfile {
+  return {
+    name: labels.notProvided,
+    verified: false,
+    industries: [],
+    countriesServed: labels.notProvided,
+    employeeCount: labels.notProvided,
+    headquarters: labels.notProvided,
+    certifications: [],
+  };
+}
+
+function createEmptyReadiness() {
+  return {
+    score: 0,
+    modules: [
+      { label: "Basic Information", value: 0 },
+      { label: "Environment", value: 0 },
+      { label: "Social", value: 0 },
+      { label: "Governance", value: 0 },
+    ],
+  };
+}
+
+function createCompanyProfile(
+  organization: OrganizationRecord,
+  questionnaire: QuestionnairePayload,
+  labels: PassportLabels,
+): PassportCompanyProfile {
+  const answersByCode = mapAnswersByQuestionCode(questionnaire);
+  const industry = readAnswerText(answersByCode.get("company_main_activity")) || organization.industry;
+  const employeeCount =
+    readAnswerText(answersByCode.get("employees_total_headcount")) ||
+    organization.employee_count_range;
+  const city = readAnswerText(answersByCode.get("company_city")) || organization.headquarters_city;
+  const country =
+    readAnswerText(answersByCode.get("company_country")) || organization.headquarters_country;
+  const countries = organization.countries_served?.filter(Boolean) ?? [];
+  const certifications = createCertificationList(answersByCode);
+
+  return {
+    name: organization.name || labels.notProvided,
+    verified: organization.is_verified,
+    industries: industry ? [industry] : [],
+    countriesServed: countries.length ? countries.join(", ") : labels.notProvided,
+    employeeCount: employeeCount ? String(employeeCount) : labels.notProvided,
+    headquarters: [city, country].filter(Boolean).join(", ") || labels.notProvided,
+    certifications,
+  };
+}
+
+function createReadiness(questionnaire: QuestionnairePayload) {
+  const sections = questionnaire.sections ?? [];
+  const items = questionnaire.items ?? [];
+  const answers = questionnaire.answers ?? [];
+  const modules = [
+    createModule("Basic Information", ["company_basics"], sections, items, answers),
+    createModule(
+      "Environment",
+      ["energy", "fuel", "waste", "environmental_policies", "certifications"],
+      sections,
+      items,
+      answers,
+    ),
+    createModule("Social", ["employees", "health_safety"], sections, items, answers),
+    createModule(
+      "Governance",
+      ["governance", "supplier_information"],
+      sections,
+      items,
+      answers,
+    ),
+  ];
+  const answeredCount = countAnsweredQuestions(items, answers);
+
+  return {
+    score: calculatePercent(answeredCount, items.length),
+    modules,
+  };
+}
+
+function createPassportSections(questionnaire: QuestionnairePayload): PassportSection[] {
+  const sections = questionnaire.sections ?? [];
+  const items = questionnaire.items ?? [];
+  const answers = questionnaire.answers ?? [];
+
+  return [
+    createPassportSection("Company overview", ["company_basics"], sections, items, answers),
+    createPassportSection(
+      "Environment",
+      ["energy", "fuel", "waste", "environmental_policies", "certifications"],
+      sections,
+      items,
+      answers,
+    ),
+    createPassportSection("Social", ["employees", "health_safety"], sections, items, answers),
+    createPassportSection(
+      "Governance",
+      ["governance", "supplier_information"],
+      sections,
+      items,
+      answers,
+    ),
+    {
+      title: "Evidence summary",
+      completion: calculatePercent(
+        (questionnaire.documents ?? []).filter((document) => document.status === "reviewed").length,
+        (questionnaire.documents ?? []).length,
+      ),
+      approvedAnswers: 0,
+      linkedDocuments: (questionnaire.documents ?? []).filter(
+        (document) => document.status === "reviewed",
+      ).length,
+      visibility: "Shared",
+    },
+  ];
+}
+
+function createPassportSection(
+  title: string,
+  sectionCodes: string[],
+  sections: QuestionSectionRecord[],
+  items: QuestionItemRecord[],
+  answers: QuestionAnswerRecord[],
+): PassportSection {
+  const scopedItems = getItemsForSectionCodes(sectionCodes, sections, items);
+  const answered = countAnsweredQuestions(scopedItems, answers);
+
+  return {
+    title,
+    completion: calculatePercent(answered, scopedItems.length),
+    approvedAnswers: answered,
+    linkedDocuments: 0,
+    visibility: "Shared",
+  };
+}
+
+function createModule(
+  label: string,
+  sectionCodes: string[],
+  sections: QuestionSectionRecord[],
+  items: QuestionItemRecord[],
+  answers: QuestionAnswerRecord[],
+): PassportReadinessModule {
+  const scopedItems = getItemsForSectionCodes(sectionCodes, sections, items);
+
+  return {
+    label,
+    value: calculatePercent(countAnsweredQuestions(scopedItems, answers), scopedItems.length),
+  };
+}
+
+function createApprovedDocuments(documents: EvidenceDocumentRecord[]): PassportApprovedDocument[] {
+  return documents
+    .filter((document) => document.status === "reviewed")
+    .map((document) => ({
+      id: document.id,
+      name: document.file_name,
+      category: document.document_type,
+      status: "Approved",
+      linkedSections: [],
+    }));
+}
+
+function createShareSettings(): PassportShareSetting[] {
+  return [
+    { label: "Access", value: "Read-only" },
+    { label: "Security", value: "Password protected" },
+    { label: "Expiry", value: "14 days" },
+    { label: "Documents", value: "Approved only" },
+    { label: "Internal notes", value: "Hidden" },
+  ];
+}
+
+function mapAnswersByQuestionCode(questionnaire: QuestionnairePayload) {
+  const itemsById = new Map((questionnaire.items ?? []).map((item) => [item.id, item]));
+  const answersByCode = new Map<string, QuestionAnswerRecord>();
+
+  for (const answer of questionnaire.answers ?? []) {
+    const item = itemsById.get(answer.question_item_id);
+
+    if (item) {
+      answersByCode.set(item.code, answer);
+    }
+  }
+
+  return answersByCode;
+}
+
+function createCertificationList(answersByCode: Map<string, QuestionAnswerRecord>) {
+  const certificationCodes = [
+    ["cert_iso_9001", "ISO 9001"],
+    ["cert_iso_14001", "ISO 14001"],
+    ["cert_iso_45001", "ISO 45001"],
+    ["cert_iso_50001", "ISO 50001"],
+  ] as const;
+  const certifications = certificationCodes
+    .filter(([code]) => answersByCode.get(code)?.value === true)
+    .map(([, label]) => label);
+  const otherRating = readAnswerText(answersByCode.get("cert_esg_rating"));
+  const industrySpecific = readAnswerText(answersByCode.get("cert_industry_specific"));
+
+  return [...certifications, otherRating, industrySpecific].filter(
+    (value): value is string => Boolean(value),
+  );
+}
+
+function getItemsForSectionCodes(
+  sectionCodes: string[],
+  sections: QuestionSectionRecord[],
+  items: QuestionItemRecord[],
+) {
+  const sectionIds = new Set(
+    sections.filter((section) => sectionCodes.includes(section.code)).map((section) => section.id),
+  );
+
+  return items.filter((item) => sectionIds.has(item.section_id));
+}
+
+function countAnsweredQuestions(items: QuestionItemRecord[], answers: QuestionAnswerRecord[]) {
+  const answersByQuestion = new Map(answers.map((answer) => [answer.question_item_id, answer]));
+
+  return items.filter((item) => isAnswerComplete(answersByQuestion.get(item.id))).length;
+}
+
+function isAnswerComplete(answer: QuestionAnswerRecord | undefined) {
+  if (!answer || answer.status === "not_started") {
+    return false;
+  }
+
+  return hasAnswerValue(answer.value) || answer.status === "completed" || answer.status === "reviewed";
+}
+
+function hasAnswerValue(value: unknown) {
+  if (value === null || value === undefined) {
+    return false;
+  }
+
+  if (Array.isArray(value)) {
+    return value.length > 0;
+  }
+
+  if (typeof value === "string") {
+    return value.trim().length > 0;
+  }
+
+  return true;
+}
+
+function readAnswerText(answer: QuestionAnswerRecord | undefined) {
+  const value = answer?.value;
+
+  if (typeof value === "string") {
+    return value.trim();
+  }
+
+  if (typeof value === "number") {
+    return String(value);
+  }
+
+  return "";
+}
+
+function calculatePercent(answered: number, total: number) {
+  if (total <= 0) {
+    return 0;
+  }
+
+  return Math.round((answered / total) * 100);
 }
 
 type ShareLinkFormValues = {
