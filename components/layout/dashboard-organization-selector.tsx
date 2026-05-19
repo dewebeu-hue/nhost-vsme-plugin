@@ -101,7 +101,9 @@ export function DashboardOrganizationSelector({
           setOrganizationName(getOrganizationErrorLabel(payload.category, response.status));
         }
       } catch (error) {
-        console.error("Unable to load dashboard organization", error);
+        if (process.env.NODE_ENV !== "production") {
+          console.error("Unable to load dashboard organization", error);
+        }
         setOrganizationName("Workspace unavailable");
       }
     }

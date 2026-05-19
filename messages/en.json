@@ -25,6 +25,7 @@
     "questionnaire": "Questionnaire",
     "evidenceRoom": "Evidence Room",
     "passport": "Passport",
+    "share": "Share",
     "shareLinks": "Share Links",
     "activity": "Activity",
     "settings": "Settings",
@@ -80,6 +81,8 @@
     "shell": {
       "plan": "Plan",
       "renewal": "Renewal",
+      "workspace": "Workspace",
+      "account": "Account",
       "verifiedSupplier": "Verified supplier",
       "needHelp": "Need help?",
       "helpCenter": "Visit our Help Center",
@@ -359,7 +362,7 @@
       "Other": "Other"
     },
     "uploadedBy": "uploaded by {name}",
-    "liveUnavailableMessage": "Live documents are not available yet. Showing mock data.",
+    "liveUnavailableMessage": "We could not load your documents right now.",
     "emptyLiveMessage": "No live evidence documents yet. Upload your first document to start building the evidence room.",
     "uploadMockMessage": "Connect Nhost and sign in to upload real evidence documents. Mock data remains available.",
     "uploadError": "We could not upload this document right now. Please try again.",
@@ -1092,6 +1095,20 @@
       "Quality Management": "Quality Management",
       "ESG Overview": "ESG Overview"
     }
+  },
+  "passportShare": {
+    "title": "Supplier Passport sharing",
+    "description": "Share your Supplier Passport with buyers using this public link.",
+    "warning": "Anyone with this link can view your public Supplier Passport summary.",
+    "copyLink": "Copy link",
+    "linkCopied": "Link copied",
+    "loadError": "We could not load your share link right now.",
+    "generateLink": "Generate share link",
+    "generatingLink": "Generating...",
+    "openPublicLink": "Open public link",
+    "noLinkTitle": "No share link yet",
+    "noLinkText": "Generate a secure public link when you are ready to share your Supplier Passport summary.",
+    "signInRequired": "Please sign in to manage your Supplier Passport share link."
   },
   "onboarding": {
     "eyebrow": "Supplier setup",

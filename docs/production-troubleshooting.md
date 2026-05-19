@@ -247,16 +247,40 @@ Likely causes:
 
 - Nhost Storage is not enabled.
 - Storage permissions are missing.
-- `documents` insert permission is missing.
-- Metadata insert fails after file upload.
+- `HASURA_GRAPHQL_ADMIN_SECRET` is missing in Vercel.
+- Server-side metadata insert into `documents` fails after file upload.
 - `NEXT_PUBLIC_NHOST_STORAGE_URL` is wrong.
+- The logged-in user has no `organization_members` row.
+- The user role is `viewer`, which cannot upload in the MVP flow.
 
 Fix:
 
 - Confirm Nhost Storage is enabled.
 - Confirm Storage URL matches the Nhost dashboard.
-- Confirm `documents` insert permission for owner/editor/admin.
-- Confirm allowed insert columns include `file_id`, `file_name`, `file_size_bytes`, `mime_type`, `document_type`, `status`, and `expires_at`.
+- Confirm `HASURA_GRAPHQL_ADMIN_SECRET` is configured as a server-only Vercel env var.
+- Confirm `GET /api/documents` returns the real organization documents after login.
+- Confirm `POST /api/documents/upload` returns a `document` object after upload.
+- Confirm the uploaded file appears in Nhost Storage.
+- Confirm the inserted row in `documents` includes `organization_id`, `uploaded_by`, `file_id`, `file_name`, `file_size_bytes`, `mime_type`, `document_type`, `status`, and `expires_at`.
+- Press F5 on `/en/dashboard/documents` and confirm the document remains visible.
+
+## Documents Page Shows Mock Data After Refresh
+
+Likely causes:
+
+- The documents page is still using client-side Hasura user-role permissions.
+- The access token is missing or expired after refresh.
+- The current organization cannot be resolved from `organization_members`.
+- `documents` table is not tracked in Hasura.
+- The server-side `/api/documents` route is missing or deployed from an old commit.
+
+Fix:
+
+- Use `GET /api/documents` for live document loading.
+- Validate the Nhost bearer token server-side through Nhost Auth.
+- Resolve organization membership with server-side `x-hasura-admin-secret`.
+- Return an empty real state when the organization has no documents.
+- Do not silently show mock documents for authenticated production users when live loading fails.
 
 ## Passport Page Says Generate Passport First
 

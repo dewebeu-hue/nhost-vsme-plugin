@@ -29,7 +29,11 @@ import {
   type EvidenceRoomStatus,
   type QuestionnaireAnswerStatus,
 } from "@/lib/mock-data";
-import { getBrowserNhostClient } from "@/lib/nhost/client";
+import {
+  forceRefreshBrowserNhostSession,
+  getBrowserNhostClient,
+  getFreshBrowserNhostSession,
+} from "@/lib/nhost/client";
 import { defaultDocumentsLabels, type DocumentsLabels } from "@/lib/workspace-labels";
 
 type LiveDocumentStatus =
@@ -68,6 +72,7 @@ type LiveDocument = {
 type DocumentsPayload = {
   configured?: boolean;
   organization?: { id: string; name: string } | null;
+  category?: string;
   documents?: LiveDocument[];
   documentLinks?: DocumentLinkRecord[];
   answers?: QuestionAnswerRecord[];
@@ -154,26 +159,42 @@ export function DocumentsPageClient({
 
     async function loadDocuments() {
       const nhost = getBrowserNhostClient();
-      const session = nhost?.getUserSession();
+      const session = await getFreshBrowserNhostSession();
 
       if (!nhost || !session?.user?.id) {
         setIsLoading(false);
         setMessage({
-          tone: "info",
-          text: labels.mockModeMessage,
+          tone: nhost ? "error" : "info",
+          text: nhost ? labels.linkSignInError : labels.mockModeMessage,
         });
+        if (nhost) {
+          setLiveMode(true);
+          setDocuments([]);
+          setSelectedDocumentId("");
+        }
         return;
       }
 
       try {
-        const response = await fetch("/api/documents", {
-          method: "POST",
+        let response = await fetch("/api/documents", {
+          method: "GET",
           headers: {
-            "content-type": "application/json",
             authorization: `Bearer ${session.accessToken}`,
           },
-          body: JSON.stringify({}),
         });
+
+        if (response.status === 401) {
+          const refreshedSession = await forceRefreshBrowserNhostSession();
+
+          if (refreshedSession?.accessToken) {
+            response = await fetch("/api/documents", {
+              method: "GET",
+              headers: {
+                authorization: `Bearer ${refreshedSession.accessToken}`,
+              },
+            });
+          }
+        }
         const payload = (await response.json()) as DocumentsPayload;
 
         if (cancelled) {
@@ -181,15 +202,30 @@ export function DocumentsPageClient({
         }
 
         if (!response.ok || payload.configured === false || !payload.organization) {
-          if (response.status === 404) {
+          if (response.status === 404 || payload.category === "membership_not_found") {
             router.push(`/${locale}/onboarding`);
             return;
           }
 
+          if (response.status === 401 || payload.category === "token_expired") {
+            setMessage({
+              tone: "error",
+              text: labels.linkSignInError,
+            });
+            setDocuments([]);
+            setSelectedDocumentId("");
+            setLiveMode(true);
+            router.push(`/${locale}/login`);
+            return;
+          }
+
           setMessage({
-            tone: payload.configured === false ? "info" : "error",
-            text: payload.configured === false ? labels.mockModeMessage : labels.liveUnavailableMessage,
+            tone: "error",
+            text: payload.error ?? labels.liveUnavailableMessage,
           });
+          setDocuments([]);
+          setSelectedDocumentId("");
+          setLiveMode(true);
           return;
         }
 
@@ -211,16 +247,21 @@ export function DocumentsPageClient({
           return;
         }
 
-      setOrganizationId(payload.organization.id);
-      setLiveMode(true);
-      setDocuments(nextDocuments);
-      setDocumentLinks(payload.documentLinks ?? []);
-      setLinkableAnswers(mapLinkableAnswers(payload.answers ?? []));
-      setSelectedDocumentId(nextDocuments[0]?.id ?? evidenceRoomSelectedDocumentId);
-      setMessage(null);
+        setOrganizationId(payload.organization.id);
+        setLiveMode(true);
+        setDocuments(nextDocuments);
+        setDocumentLinks(payload.documentLinks ?? []);
+        setLinkableAnswers(mapLinkableAnswers(payload.answers ?? []));
+        setSelectedDocumentId(nextDocuments[0]?.id ?? "");
+        setMessage(null);
       } catch (error) {
-        console.error("Documents load failed", error);
+        if (process.env.NODE_ENV !== "production") {
+          console.error("Documents load failed", error);
+        }
         if (!cancelled) {
+          setDocuments([]);
+          setSelectedDocumentId("");
+          setLiveMode(true);
           setMessage({
             tone: "error",
             text: labels.liveUnavailableMessage,
@@ -250,13 +291,12 @@ export function DocumentsPageClient({
   );
 
   async function handleUpload(values: UploadDocumentValues) {
-    const nhost = getBrowserNhostClient();
-    const session = nhost?.getUserSession();
+    const session = await getFreshBrowserNhostSession();
 
     if (!liveMode || !organizationId || !session?.user?.id) {
       setMessage({
-        tone: "info",
-        text: labels.uploadMockMessage,
+        tone: liveMode ? "error" : "info",
+        text: liveMode ? labels.linkSignInError : labels.uploadMockMessage,
       });
       setIsUploadOpen(false);
       return;
@@ -279,19 +319,33 @@ export function DocumentsPageClient({
         formData.set("note", values.note);
       }
 
-      const response = await fetch("/api/documents/upload", {
+      let response = await fetch("/api/documents/upload", {
         method: "POST",
         headers: {
           authorization: `Bearer ${session.accessToken}`,
         },
         body: formData,
       });
+
+      if (response.status === 401) {
+        const refreshedSession = await forceRefreshBrowserNhostSession();
+
+        if (refreshedSession?.accessToken) {
+          response = await fetch("/api/documents/upload", {
+            method: "POST",
+            headers: {
+              authorization: `Bearer ${refreshedSession.accessToken}`,
+            },
+            body: formData,
+          });
+        }
+      }
       const payload = (await response.json()) as { document?: LiveDocument; error?: string };
 
       if (!response.ok || !payload.document) {
         setMessage({
-          tone: response.status === 503 ? "info" : "error",
-          text: response.status === 503 ? labels.uploadMockMessage : labels.uploadError,
+          tone: "error",
+          text: payload.error ?? labels.uploadError,
         });
         return;
       }
@@ -303,7 +357,9 @@ export function DocumentsPageClient({
       setIsUploadOpen(false);
       setMessage({ tone: "success", text: labels.uploadSuccess });
     } catch (error) {
-      console.error("Document upload failed", error);
+      if (process.env.NODE_ENV !== "production") {
+        console.error("Document upload failed", error);
+      }
       setMessage({
         tone: "error",
         text: labels.uploadError,
@@ -410,7 +466,9 @@ export function DocumentsPageClient({
       setIsLinkDialogOpen(false);
       setMessage({ tone: "success", text: labels.linkSuccess });
     } catch (error) {
-      console.error("Document link failed", error);
+      if (process.env.NODE_ENV !== "production") {
+        console.error("Document link failed", error);
+      }
       setMessage({
         tone: "error",
         text: labels.linkError,

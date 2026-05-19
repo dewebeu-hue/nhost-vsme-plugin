@@ -25,6 +25,7 @@
     "questionnaire": "Fragebogen",
     "evidenceRoom": "Evidence Data Room",
     "passport": "Passport",
+    "share": "Teilen",
     "shareLinks": "Share Links",
     "activity": "Aktivitaet",
     "settings": "Einstellungen",
@@ -80,6 +81,8 @@
     "shell": {
       "plan": "Plan",
       "renewal": "Verlaengerung",
+      "workspace": "Workspace",
+      "account": "Konto",
       "verifiedSupplier": "Verifizierter Lieferant",
       "needHelp": "Brauchen Sie Hilfe?",
       "helpCenter": "Help Center besuchen",
@@ -350,10 +353,10 @@
     "noDocumentsTitle": "Noch keine Dokumente",
     "noDocumentsText": "Laden Sie Ihr erstes Nachweisdokument hoch, um Ihren Supplier Passport aufzubauen.",
     "mockModeMessage": "Der Dokumenten-Datenraum läuft im Mock-Modus, bis Nhost konfiguriert ist und Sie angemeldet sind.",
-    "liveUnavailableMessage": "Live-Dokumente sind noch nicht verfügbar. Es werden Mock-Daten angezeigt.",
+    "liveUnavailableMessage": "Ihre Dokumente konnten gerade nicht geladen werden.",
     "emptyLiveMessage": "Es gibt noch keine Live-Nachweisdokumente. Laden Sie Ihr erstes Dokument hoch, um den Datenraum aufzubauen.",
     "uploadMockMessage": "Verbinden Sie Nhost und melden Sie sich an, um echte Nachweisdokumente hochzuladen. Mock-Daten bleiben verfügbar.",
-    "uploadError": "Dieses Dokument konnte gerade nicht hochgeladen werden. Bitte versuchen Sie es erneut.",
+    "uploadError": "Ihr Dokument konnte gerade nicht hochgeladen werden.",
     "uploadSuccess": "Nachweisdokument sicher hochgeladen.",
     "workspaceUser": "Workspace-Benutzer",
     "linkMockSuccess": "Nachweis lokal im Mock-Modus verknüpft.",
@@ -1115,6 +1118,20 @@
       "Quality Management": "Qualit?tsmanagement",
       "ESG Overview": "ESG-übersicht"
     }
+  },
+  "passportShare": {
+    "title": "Supplier Passport teilen",
+    "description": "Teilen Sie Ihren Supplier Passport über diesen öffentlichen Link mit Käufern.",
+    "warning": "Jeder mit diesem Link kann die öffentliche Zusammenfassung Ihres Supplier Passports sehen.",
+    "copyLink": "Link kopieren",
+    "linkCopied": "Link kopiert",
+    "loadError": "Ihr Freigabelink konnte gerade nicht geladen werden.",
+    "generateLink": "Freigabelink generieren",
+    "generatingLink": "Wird generiert...",
+    "openPublicLink": "Öffentlichen Link öffnen",
+    "noLinkTitle": "Noch kein Freigabelink",
+    "noLinkText": "Generieren Sie einen sicheren öffentlichen Link, sobald Sie Ihre Supplier-Passport-Zusammenfassung teilen möchten.",
+    "signInRequired": "Bitte melden Sie sich an, um Ihren Supplier-Passport-Freigabelink zu verwalten."
   },
   "onboarding": {
     "eyebrow": "Supplier Setup",

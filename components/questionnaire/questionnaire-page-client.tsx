@@ -33,6 +33,7 @@ import {
   getBrowserNhostClient,
   getFreshBrowserNhostSession,
 } from "@/lib/nhost/client";
+import { calculateSectionCompletion } from "@/lib/questionnaire-completion";
 import type { QuestionAnswerStatus } from "@/lib/types";
 import {
   defaultQuestionnaireLabels,
@@ -176,7 +177,6 @@ type QuestionnairePageClientProps = {
 };
 
 const activeSectionCode = "energy";
-const completedStatuses: QuestionAnswerStatus[] = ["completed", "reviewed"];
 const documentStatusLabels: Record<LiveDocumentStatus, EvidenceRoomStatus> = {
   uploaded: "Uploaded",
   linked: "Linked",
@@ -206,6 +206,7 @@ export function QuestionnairePageClient({
   const [sections, setSections] = useState<QuestionnaireSectionProgress[]>(
     questionnaireSectionProgress,
   );
+  const [liveSections, setLiveSections] = useState<QuestionSectionRecord[]>([]);
   const [activeSection, setActiveSection] = useState<ActiveSectionState>({
     name: labels.sectionEnergyTitle,
     subtitle: labels.sectionEnergyDescription,
@@ -217,6 +218,7 @@ export function QuestionnairePageClient({
     questionnaireEnergyQuestions,
   );
   const [liveQuestions, setLiveQuestions] = useState<QuestionItemRecord[]>([]);
+  const [liveAnswers, setLiveAnswers] = useState<QuestionAnswerRecord[]>([]);
   const [organizationDocuments, setOrganizationDocuments] = useState<EvidenceRoomDocument[]>([]);
   const [documentLinks, setDocumentLinks] = useState<DocumentLinkRecord[]>([]);
   const [questionToAttach, setQuestionToAttach] =
@@ -332,9 +334,11 @@ export function QuestionnairePageClient({
 
         setOrganizationId(payload.organization.id);
         setLiveMode(true);
+        setLiveSections(payload.sections ?? []);
         setSections(nextSections);
         setQuestions(nextQuestions);
         setLiveQuestions(liveItems);
+        setLiveAnswers(payload.answers ?? []);
         setOrganizationDocuments(nextDocuments);
         setDocumentLinks(nextDocumentLinks);
         setAnswerValues(nextValues);
@@ -485,7 +489,10 @@ export function QuestionnairePageClient({
         }
       }
 
-      const payload = (await response.json()) as { error?: string };
+      const payload = (await response.json()) as {
+        saved?: QuestionAnswerRecord[];
+        error?: string;
+      };
 
       if (!response.ok) {
         setMessage({
@@ -493,6 +500,45 @@ export function QuestionnairePageClient({
           text: payload.error ?? labels.saveError,
         });
         return;
+      }
+
+      if (payload.saved?.length) {
+        const nextAnswers = mergeAnswers(liveAnswers, payload.saved);
+        const nextSections = mapLiveSections(liveSections, liveQuestions, nextAnswers);
+        const currentProgress = nextSections.find((section) => section.id === activeSectionCode);
+        const nextQuestions = mapLiveQuestions(
+          liveQuestions,
+          nextAnswers,
+          answerValues,
+          documentLinks,
+          labels,
+        );
+
+        if (process.env.NODE_ENV !== "production") {
+          console.info("[questionnaire-completion]", {
+            completion_total_questions: liveQuestions.length,
+            completion_answered_questions: nextSections.reduce(
+              (sum, section) => sum + section.completed,
+              0,
+            ),
+            section_code: activeSectionCode,
+            section_total: currentProgress?.total ?? 0,
+            section_answered: currentProgress?.completed ?? 0,
+          });
+        }
+
+        setLiveAnswers(nextAnswers);
+        setSections(nextSections);
+        setQuestions(nextQuestions);
+        setActiveSection((current) => ({
+          ...current,
+          completion: calculatePercent(
+            currentProgress?.completed ?? 0,
+            currentProgress?.total ?? liveQuestions.length,
+          ),
+          completedQuestions: currentProgress?.completed ?? 0,
+          totalQuestions: currentProgress?.total ?? liveQuestions.length,
+        }));
       }
 
       setMessage({ tone: "success", text: labels.saveSuccess });
@@ -912,21 +958,22 @@ function mapLiveSections(
   questionItems: QuestionItemRecord[],
   answers: QuestionAnswerRecord[],
 ): QuestionnaireSectionProgress[] {
-  const itemsById = new Map(questionItems.map((item) => [item.id, item]));
-
   return sectionRecords.map((section) => {
-    const sectionItems = questionItems.filter((item) => item.section_id === section.id);
-    const completed = answers.filter(
-      (answer) =>
-        itemsById.get(answer.question_item_id)?.section_id === section.id &&
-        completedStatuses.includes(answer.status),
-    ).length;
+    const completion = calculateSectionCompletion(section, questionItems, answers);
+
+    if (process.env.NODE_ENV !== "production") {
+      console.info("[questionnaire-completion]", {
+        section_code: section.code,
+        section_total: completion.totalCount,
+        section_answered: completion.answeredCount,
+      });
+    }
 
     return {
       id: section.code,
       name: section.title,
-      completed,
-      total: sectionItems.length,
+      completed: completion.answeredCount,
+      total: completion.totalCount,
       isActive: section.code === activeSectionCode,
     };
   });
@@ -944,6 +991,21 @@ function valuesFromAnswers(
       return [question.id, normalizeAnswerValue(question, answerValue)];
     }),
   );
+}
+
+function mergeAnswers(
+  currentAnswers: QuestionAnswerRecord[],
+  savedAnswers: QuestionAnswerRecord[],
+) {
+  const answersByQuestion = new Map(
+    currentAnswers.map((answer) => [answer.question_item_id, answer]),
+  );
+
+  for (const answer of savedAnswers) {
+    answersByQuestion.set(answer.question_item_id, answer);
+  }
+
+  return Array.from(answersByQuestion.values());
 }
 
 function valuesFromMockQuestions(

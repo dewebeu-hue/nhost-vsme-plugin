@@ -187,6 +187,19 @@ Required high-level rules:
 - The current dashboard upload flow sends the signed-in user's Nhost access token to server routes, uploads to Nhost Storage, then inserts metadata into `documents` through Hasura GraphQL.
 - Secure preview/download remains controlled and conservative until storage access rules or a signed/server-proxied download strategy is configured.
 
+## Faza 2.6 Documents QA
+
+Before sharing a production build with pilot users:
+
+- Log in as a real production user.
+- Open `/en/dashboard/documents` and confirm the current organization loads.
+- Upload a small PDF or image and confirm the document appears immediately.
+- Press F5 and confirm the document remains visible.
+- Open `/hr/dashboard/documents` and `/de/dashboard/documents` to confirm the same document flow works on localized routes.
+- Confirm a real organization with zero documents shows the empty state, not mock documents.
+- Confirm live-data errors show a clear message and do not silently show mock documents.
+- Confirm browser network calls do not include any Hasura admin secret or server-only secret.
+
 ## MVP Feature List
 
 - Localized English, Croatian, and German public/auth/dashboard/share surfaces.

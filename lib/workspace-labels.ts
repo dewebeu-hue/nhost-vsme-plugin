@@ -392,7 +392,7 @@ export const defaultDocumentsLabels: DocumentsLabels = {
   noDocumentsText: "Upload your first evidence document to start building your Supplier Passport.",
   mockModeMessage:
     "Evidence room is running in mock mode until Nhost is configured and you are signed in.",
-  liveUnavailableMessage: "Live documents are not available yet. Showing mock data.",
+  liveUnavailableMessage: "We could not load your documents right now.",
   emptyLiveMessage:
     "No live evidence documents yet. Upload your first document to start building the evidence room.",
   uploadMockMessage:

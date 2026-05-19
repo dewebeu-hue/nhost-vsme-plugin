@@ -1,10 +1,9 @@
 import {
   HelpCircle,
 } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import { Logo } from "@/components/brand/logo";
 import { DashboardNavItem } from "@/components/layout/dashboard-nav-item";
-import { currentOrganization } from "@/lib/mock-data";
+import { DashboardSidebarWorkspaceCard } from "@/components/layout/dashboard-sidebar-workspace-card";
 import { type DashboardShellLabels } from "@/lib/dashboard-labels";
 
 const navigation = [
@@ -13,6 +12,7 @@ const navigation = [
   { href: "/dashboard/questionnaire", labelKey: "questionnaire", icon: "clipboard-check" },
   { href: "/dashboard/documents", labelKey: "evidenceRoom", icon: "file-text" },
   { href: "/dashboard/passport", labelKey: "passport", icon: "shield" },
+  { href: "/dashboard/share", labelKey: "share", icon: "link" },
   { href: "/dashboard/share-links", labelKey: "shareLinks", icon: "link" },
   { href: "/dashboard/activity", labelKey: "activity", icon: "activity" },
   { href: "/dashboard/settings", labelKey: "settings", icon: "settings" },
@@ -43,27 +43,7 @@ export function DashboardSidebar({ labels, localePrefix = "" }: DashboardSidebar
         </nav>
 
         <div className="mt-auto flex flex-col gap-4">
-          <section className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-            <div className="mb-3 flex items-start justify-between gap-3">
-              <div>
-                <p className="text-sm font-semibold leading-5 text-slate-950">
-                  {currentOrganization.name}
-                </p>
-                <p className="mt-1 text-xs text-slate-500">
-                  {labels.plan}: {currentOrganization.plan}
-                </p>
-              </div>
-              <Badge
-                variant="outline"
-                className="border-emerald-200 bg-emerald-50 text-emerald-700"
-              >
-                {labels.verified}
-              </Badge>
-            </div>
-            <p className="text-xs font-medium text-slate-500">
-              {labels.renewal}: May 12, 2025
-            </p>
-          </section>
+          <DashboardSidebarWorkspaceCard labels={labels} />
 
           <section className="rounded-2xl border border-blue-100 bg-blue-50/70 p-4">
             <div className="mb-3 flex size-9 items-center justify-center rounded-xl bg-white text-blue-700 shadow-sm">

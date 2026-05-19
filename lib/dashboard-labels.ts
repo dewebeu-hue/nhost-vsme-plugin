@@ -4,6 +4,7 @@ export type DashboardNavKey =
   | "questionnaire"
   | "evidenceRoom"
   | "passport"
+  | "share"
   | "shareLinks"
   | "activity"
   | "settings";
@@ -14,6 +15,8 @@ export type DashboardShellLabels = {
   verifiedSupplier: string;
   plan: string;
   renewal: string;
+  workspace: string;
+  account: string;
   needHelp: string;
   helpCenter: string;
   openNavigation: string;
@@ -27,6 +30,7 @@ export const defaultDashboardShellLabels: DashboardShellLabels = {
     questionnaire: "Questionnaire",
     evidenceRoom: "Evidence Room",
     passport: "Passport",
+    share: "Share",
     shareLinks: "Share Links",
     activity: "Activity",
     settings: "Settings",
@@ -35,6 +39,8 @@ export const defaultDashboardShellLabels: DashboardShellLabels = {
   verifiedSupplier: "Verified supplier",
   plan: "Plan",
   renewal: "Renewal",
+  workspace: "Workspace",
+  account: "Account",
   needHelp: "Need help?",
   helpCenter: "Visit our Help Center",
   openNavigation: "Open navigation",

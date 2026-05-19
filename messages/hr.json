@@ -25,6 +25,7 @@
     "questionnaire": "Upitnik",
     "evidenceRoom": "Dokumentacijski Data Room",
     "passport": "Passport",
+    "share": "Dijeljenje",
     "shareLinks": "Share linkovi",
     "activity": "Aktivnosti",
     "settings": "Postavke",
@@ -80,6 +81,8 @@
     "shell": {
       "plan": "Plan",
       "renewal": "Obnova",
+      "workspace": "Workspace",
+      "account": "Račun",
       "verifiedSupplier": "Verificirani dobavljač",
       "needHelp": "Trebate pomoć?",
       "helpCenter": "Posjetite Help Center",
@@ -350,10 +353,10 @@
     "noDocumentsTitle": "Još nema dokumenata",
     "noDocumentsText": "Učitajte prvi dokazni dokument kako biste počeli graditi Supplier Passport.",
     "mockModeMessage": "Dokumentacijski Data Room radi u mock modu dok Nhost nije konfiguriran i dok niste prijavljeni.",
-    "liveUnavailableMessage": "Live dokumenti još nisu dostupni. Prikazuju se mock podaci.",
+    "liveUnavailableMessage": "Trenutno ne možemo učitati vaše dokumente.",
     "emptyLiveMessage": "Još nema live dokaznih dokumenata. Učitajte prvi dokument kako biste počeli graditi data room.",
     "uploadMockMessage": "Povežite Nhost i prijavite se za učitavanje stvarnih dokaznih dokumenata. Mock podaci ostaju dostupni.",
-    "uploadError": "Trenutačno ne možemo učitati ovaj dokument. Pokušajte ponovno.",
+    "uploadError": "Trenutno ne možemo prenijeti vaš dokument.",
     "uploadSuccess": "Dokazni dokument je sigurno učitan.",
     "workspaceUser": "Korisnik workspacea",
     "linkMockSuccess": "Dokaz je lokalno povezan u mock modu.",
@@ -1092,6 +1095,20 @@
       "Quality Management": "Upravljanje kvalitetom",
       "ESG Overview": "ESG pregled"
     }
+  },
+  "passportShare": {
+    "title": "Dijeljenje Supplier Passporta",
+    "description": "Podijelite svoj Supplier Passport s kupcima putem ovog javnog linka.",
+    "warning": "Svatko tko ima ovaj link može vidjeti javni sažetak vašeg Supplier Passporta.",
+    "copyLink": "Kopiraj link",
+    "linkCopied": "Link je kopiran",
+    "loadError": "Trenutno ne možemo učitati link za dijeljenje.",
+    "generateLink": "Generiraj link za dijeljenje",
+    "generatingLink": "Generiranje...",
+    "openPublicLink": "Otvori javni link",
+    "noLinkTitle": "Još nema linka za dijeljenje",
+    "noLinkText": "Generirajte siguran javni link kada želite podijeliti sažetak Supplier Passporta.",
+    "signInRequired": "Prijavite se kako biste upravljali linkom za dijeljenje Supplier Passporta."
   },
   "onboarding": {
     "eyebrow": "Supplier setup",
