@@ -8,11 +8,6 @@ import { defaultDocumentsLabels, formatLabel, type DocumentsLabels } from "@/lib
 type DocumentPreviewPanelProps = {
   document: EvidenceRoomDocument;
   linkedQuestions: EvidenceRoomLinkedQuestion[];
-  review: {
-    status: "Reviewed";
-    reviewedBy: string;
-    reviewedOn: string;
-  };
   onLinkToAnswer?: (document: EvidenceRoomDocument) => void;
   labels?: DocumentsLabels;
 };
@@ -20,7 +15,6 @@ type DocumentPreviewPanelProps = {
 export function DocumentPreviewPanel({
   document,
   linkedQuestions,
-  review,
   onLinkToAnswer,
   labels = defaultDocumentsLabels,
 }: DocumentPreviewPanelProps) {
@@ -65,8 +59,8 @@ export function DocumentPreviewPanel({
                   : labels.privateWorkspaceDocument}
               </p>
               <div className="mx-auto my-6 h-px w-24 bg-slate-200" />
-              <p className="text-lg font-semibold text-slate-950">
-                {document.fileName}
+        <p className="text-lg font-semibold text-slate-950">
+                {document.title}
               </p>
             </div>
             {!document.previewUrl ? (
@@ -162,19 +156,13 @@ export function DocumentPreviewPanel({
         <p className="text-sm font-semibold text-slate-950">{labels.reviewStatus}</p>
         <div className="mt-3">
           <DocumentStatusBadge
-            status={review.status}
-            label={labels.statuses[review.status] ?? review.status}
+            status={document.status}
+            label={labels.statuses[document.status] ?? document.status}
           />
         </div>
         <p className="mt-3 text-sm leading-6 text-slate-600">
-          {formatLabel(labels.reviewedBy, {
-            name: review.reviewedBy,
-            date: review.reviewedOn,
-          })}
+          {labels.notReviewedYet}
         </p>
-        <Button variant="outline" className="mt-4 w-full bg-white">
-          {labels.changeStatus}
-        </Button>
       </section>
     </aside>
   );

@@ -1,4 +1,4 @@
-import { ExternalLink, FileText, LifeBuoy } from "lucide-react";
+import { LifeBuoy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { EvidenceRecommendationCard } from "@/components/questionnaire/evidence-recommendation-card";
 
@@ -9,6 +9,7 @@ type QuestionnaireHelperPanelProps = {
   evidenceRecommendationsTitle: string;
   uploadEvidenceLabel: string;
   relatedDocumentsTitle: string;
+  relatedDocumentsUnavailable: string;
   needHelpTitle: string;
   needHelpText: string;
   contactSupportLabel: string;
@@ -27,6 +28,7 @@ export function QuestionnaireHelperPanel({
   evidenceRecommendationsTitle,
   uploadEvidenceLabel,
   relatedDocumentsTitle,
+  relatedDocumentsUnavailable,
   needHelpTitle,
   needHelpText,
   contactSupportLabel,
@@ -41,13 +43,7 @@ export function QuestionnaireHelperPanel({
           {tipsTitle}
         </h3>
         <p className="mt-3 text-sm leading-6 text-slate-600">{guidance}</p>
-        <a
-          href="#"
-          className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-blue-700 hover:text-blue-800"
-        >
-          {learnMoreLabel}
-          <ExternalLink aria-hidden="true" className="size-4" />
-        </a>
+        <p className="mt-4 text-sm font-medium text-slate-500">{learnMoreLabel}</p>
       </section>
 
       <EvidenceRecommendationCard
@@ -61,24 +57,25 @@ export function QuestionnaireHelperPanel({
         <h3 className="text-base font-semibold tracking-tight text-slate-950">
           {relatedDocumentsTitle}
         </h3>
-        <div className="mt-4 flex flex-col gap-3">
-          {relatedDocuments.map((document) => (
-            <div
-              key={`${document.name}-${document.type}`}
-              className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3"
-            >
-              <div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-white text-blue-700 shadow-sm">
-                <FileText aria-hidden="true" className="size-4" />
-              </div>
-              <div className="min-w-0 flex-1">
+        {relatedDocuments.length ? (
+          <div className="mt-4 flex flex-col gap-3">
+            {relatedDocuments.map((document) => (
+              <div
+                key={`${document.name}-${document.type}`}
+                className="rounded-xl border border-slate-200 bg-slate-50 p-3"
+              >
                 <p className="truncate text-sm font-semibold text-slate-950">
                   {document.name}
                 </p>
                 <p className="text-xs font-medium text-slate-500">{document.type}</p>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <p className="mt-4 rounded-xl border border-dashed border-slate-200 bg-slate-50 p-4 text-sm leading-6 text-slate-600">
+            {relatedDocumentsUnavailable}
+          </p>
+        )}
       </section>
 
       <section className="rounded-2xl border border-blue-100 bg-blue-50/70 p-5">
@@ -89,7 +86,7 @@ export function QuestionnaireHelperPanel({
           {needHelpTitle}
         </h3>
         <p className="mt-2 text-sm leading-6 text-slate-600">{needHelpText}</p>
-        <Button variant="outline" className="mt-4 w-full bg-white">
+        <Button variant="outline" className="mt-4 w-full bg-white" disabled>
           {contactSupportLabel}
         </Button>
       </section>

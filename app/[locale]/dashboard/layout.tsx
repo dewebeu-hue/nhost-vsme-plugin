@@ -43,6 +43,7 @@ export default async function DashboardRouteLayout({
     helpCenter: shell("helpCenter"),
     openNavigation: shell("openNavigation"),
     notifications: shell("notifications"),
+    notificationsUnavailable: shell("notificationsUnavailable"),
   };
 
   return (

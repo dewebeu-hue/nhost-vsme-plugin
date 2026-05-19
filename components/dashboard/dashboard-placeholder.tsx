@@ -6,7 +6,6 @@ import {
   Bell,
   BellRing,
   Building2,
-  CheckCircle2,
   ClipboardCheck,
   ClipboardList,
   Eye,
@@ -108,19 +107,19 @@ export function DashboardPlaceholder({
   title,
   subtitle,
   cards,
-  primaryAction = "Open workspace",
+  primaryAction,
 }: DashboardPlaceholderProps) {
   return (
     <div className="mx-auto w-full max-w-7xl">
       <PageHeader
         title={title}
         subtitle={subtitle}
-        action={
+        action={primaryAction ? (
           <Button className="shadow-lg shadow-blue-600/15">
             {primaryAction}
             <ArrowRight data-icon="inline-end" />
           </Button>
-        }
+        ) : undefined}
       />
 
       <section className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
@@ -164,12 +163,7 @@ function DashboardPlaceholderCard({ card }: { card: PlaceholderCard }) {
                   </div>
                   <Progress value={card.progress} className="h-2" />
                 </div>
-              ) : (
-                <div className="mt-5 flex items-center gap-2 text-sm font-medium text-slate-500">
-                  <CheckCircle2 aria-hidden="true" className="size-4 text-emerald-500" />
-                  Ready for future workflow
-                </div>
-              )}
+              ) : null}
             </CardContent>
           </Card>
   );

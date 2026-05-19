@@ -1368,6 +1368,54 @@ Known manual production QA:
 - Confirm PDF downloads in each locale.
 - Confirm logout returns the user to the localized login/entry flow.
 
+## Faza 3.1.1 Company Profile And Settings Mock Cleanup QA
+
+Company Profile:
+
+- `/en/dashboard/company`, `/hr/dashboard/company`, and `/de/dashboard/company` must use the authenticated user's current organization, not `lib/mock-data`.
+- `/en/dashboard/company-profile`, `/hr/dashboard/company-profile`, and `/de/dashboard/company-profile` should render the same production-safe profile overview.
+- Show real organization fields where available: organization name, legal company name, location, industry, employee count range, and website.
+- Missing fields should show neutral copy: `Not provided yet` / `Još nije uneseno` / `Noch nicht angegeben`.
+- Do not show Acme, Munich, fake industry, fake employee count, Starter renewal dates, static Verified/Active/Starter badges, or fake plan details.
+
+Edit Profile behavior:
+
+- Full inline profile editing is deferred.
+- The primary action now routes to the questionnaire where company details are maintained.
+- The page shows clear copy that profile editing is not available yet and company details should be updated in the questionnaire.
+- The button must not be dead.
+
+Settings:
+
+- `/en/dashboard/settings`, `/hr/dashboard/settings`, and `/de/dashboard/settings` must not show fake owners such as Elena Markovic or mock workspace-owner text.
+- Settings should show a neutral overview for workspace settings, account/team access, and notifications.
+- No `Ready for future workflow`, `Planned`, fake `Starter`, or fake owner status should appear.
+- If a real account email is available, it may be shown only inside the authenticated dashboard.
+
+Security:
+
+- These pages are authenticated dashboard pages.
+- They must not render private document URLs, storage IDs, share tokens, JWTs, cookies, admin secrets, or public user/member lists.
+- Organization data must come from the current user membership resolver.
+
+## Faza 3.1.2 Dead Controls And Mock Action Cleanup QA
+
+- Questionnaire: Share progress routes to the real sharing page, unsupported more-menu actions are removed, evidence recommendations route to the Evidence Data Room, and sample related-document files are replaced with neutral guidance.
+- Topbar: notifications are explicitly disabled until notification support exists.
+- Evidence Data Room: search, type filter, and status filter are real client-side filters. Folder organization is clearly unavailable, row actions use an explicit Link to answer button, secure preview remains disabled with non-technical copy, and fake review metadata/status controls are removed.
+- Share Links: `/dashboard/share-links` redirects to the real `/dashboard/share` management page instead of rendering mock link cards.
+- Activity: the activity page is a neutral coming-later state without mock events or dead buttons.
+- Settings and Company Profile: no mock owner/company placeholders should be visible; unavailable settings/profile editing controls must be clearly routed, disabled, or absent.
+
+Manual QA checklist:
+
+1. Open `/en/dashboard/questionnaire`; verify Share progress opens sharing, Upload evidence opens documents, no dead ellipsis menu appears, and related documents show neutral guidance.
+2. Open `/en/dashboard/documents`; verify upload still works, search/type/status filters change the visible table, Create folder is disabled/unavailable, Link to answer opens the dialog, secure preview is clearly disabled, and no fake reviewer is shown.
+3. Open `/en/dashboard/share-links`; verify it redirects to `/en/dashboard/share`.
+4. Open `/en/dashboard/activity`; verify there are no mock events and no View activity log button.
+5. Open `/en/dashboard/settings` and `/en/dashboard/company-profile`; verify no Elena/Acme/Munich/future-workflow placeholders.
+6. Repeat quick checks for `/hr` and `/de` localized routes.
+
 ## Safe Logging Rules
 
 Allowed categories:

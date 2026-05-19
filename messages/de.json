@@ -40,7 +40,6 @@
     "saveContinue": "Speichern und fortfahren",
     "upload": "Hochladen",
     "uploadDocuments": "Dokumente hochladen",
-    "createFolder": "Ordner erstellen",
     "generatePassport": "Passport generieren",
     "createShareLink": "Share Link erstellen",
     "exportPdf": "PDF herunterladen",
@@ -103,7 +102,8 @@
       "needHelp": "Brauchen Sie Hilfe?",
       "helpCenter": "Help Center besuchen",
       "openNavigation": "Navigation oeffnen",
-      "notifications": "Benachrichtigungen"
+      "notifications": "Benachrichtigungen",
+      "notificationsUnavailable": "Benachrichtigungen sind noch nicht verfügbar."
     },
     "overview": {
       "welcome": "Willkommen zurueck, {name}",
@@ -223,7 +223,8 @@
     "needHelpText": "Unser Team unterstützt Sie beim Abschluss Ihres VSME-Profils.",
     "contactSupport": "Support kontaktieren",
     "uploadEvidence": "Nachweis hochladen",
-    "learnMoreEnergy": "Mehr über VSME-Energiekennzahlen erfahren",
+    "learnMoreEnergy": "VSME-Energiehinweise erscheinen hier, sobald verlinkte Hinweise konfiguriert sind.",
+    "relatedDocumentsUnavailable": "Vorlagen und Leitfäden erscheinen hier, sobald sie verfügbar sind.",
     "evidence": "Nachweise",
     "attachEvidence": "Nachweis anhängen",
     "evidenceRequired": "Für diese Antwort ist ein Nachweis erforderlich.",
@@ -428,20 +429,7 @@
       "Energieaudit- oder Bewertungsberichte",
       "Zertifikate für erneuerbare Energie, falls zutreffend"
     ],
-    "relatedDocuments": [
-      {
-        "name": "VSME-Leitfaden Energie",
-        "type": "PDF"
-      },
-      {
-        "name": "Vorlage für Energieberichterstattung",
-        "type": "XLSX"
-      },
-      {
-        "name": "Beispiel-Energierichtlinie",
-        "type": "PDF"
-      }
-    ],
+    "relatedDocuments": [],
     "statuses": {
       "Not started": "Nicht begonnen",
       "In progress": "In Bearbeitung",
@@ -474,7 +462,7 @@
     "breadcrumbRoot": "Dokumenten-Datenraum",
     "breadcrumbCurrent": "Dokumente",
     "uploadDocuments": "Dokumente hochladen",
-    "createFolder": "Ordner erstellen",
+    "createFolderUnavailable": "Ordnerorganisation ist noch nicht verfügbar.",
     "totalDocuments": "Dokumente gesamt",
     "linkedToAnswers": "Mit Antworten verknüpft",
     "needsReview": "Prüfung erforderlich",
@@ -503,16 +491,15 @@
     "versions": "Versionen",
     "linkedToQuestionnaire": "Mit Fragebogen verknüpft",
     "reviewStatus": "Prüfstatus",
-    "reviewedBy": "Geprüft von {name} am {date}",
-    "changeStatus": "Status ändern",
+    "notReviewedYet": "Noch nicht geprüft.",
     "openSecurePreview": "Sichere Vorschau öffnen",
     "secureEvidencePreview": "Sichere Nachweisvorschau",
     "environmentalManagementSystem": "Umweltmanagementsystem",
     "privateWorkspaceDocument": "Privates Workspace-Dokument",
-    "securePreviewUnavailable": "Die sichere Vorschau ist verfügbar, sobald die Storage-Zugriffsregeln konfiguriert sind.",
+    "securePreviewUnavailable": "Die sichere Vorschau ist noch nicht verfügbar.",
     "fileType": "Dateityp",
     "uploaded": "Hochgeladen",
-    "versionCurrent": "Version 1 ist das aktuelle geprüfte Dokument.",
+    "versionCurrent": "Version 1 ist das aktuelle Dokument.",
     "uploadDialogTitle": "Nachweisdokument hochladen",
     "uploadDialogDescription": "Fügen Sie ein Dokument hinzu und klassifizieren Sie es, bevor Sie es mit Ihrem VSME-Profil verknüpfen.",
     "chooseDocument": "PDF, Tabelle oder Richtliniendokument auswählen",
@@ -1622,9 +1609,19 @@
       "noNotesText": "Interne Notizen bleiben im Concierge/Admin-Workspace und werden niemals auf käuferseitigen Share-Seiten angezeigt."
     }
   },
+  "activity": {
+    "title": "Aktivität",
+    "subtitle": "Verfolgen Sie Uploads, Nachweisverknüpfungen, Freigaben und Käuferanfragen, sobald die Aktivitätsverfolgung verfügbar ist.",
+    "unavailableTitle": "Das Aktivitätsprotokoll ist noch nicht verfügbar.",
+    "unavailableDescription": "Künftige Aktivitätsverfolgung zeigt Uploads, Nachweisverknüpfungen, Freigaben und Käuferanfragen.",
+    "uploadsTitle": "Uploads und Nachweisverknüpfungen",
+    "uploadsDescription": "Dokument-Uploads und Antwortverknüpfungen erscheinen hier, sobald die Aktivitätsverfolgung aktiviert ist.",
+    "sharingTitle": "Freigabeereignisse",
+    "sharingDescription": "Öffentliche Linkaufrufe und Käuferanfragen erscheinen hier in einer späteren Version."
+  },
   "settings": {
     "title": "Einstellungen",
-    "subtitle": "Verwalten Sie Unternehmens-, Konto-, Benachrichtigungs- und Workspace-Einstellungen.",
+    "subtitle": "Pr?fen Sie Arbeitsbereichs-, Zugriffs- und Benachrichtigungseinstellungen.",
     "companySettings": "Unternehmenseinstellungen",
     "accountSettings": "Kontoeinstellungen",
     "notificationSettings": "Benachrichtigungseinstellungen",
@@ -1632,17 +1629,17 @@
     "languageSettings": "Spracheinstellungen",
     "billingSettings": "Abrechnungseinstellungen",
     "teamMembers": "Teammitglieder",
-    "comingSoon": "Demn?chst verfügbar",
-    "openSettings": "Einstellungen öffnen",
-    "workspaceSettings": "Workspace-Einstellungen",
-    "workspaceSettingsDescription": "Verwalten Sie Organisationspr?ferenzen und Standardwerte für käuferseitige Profile.",
-    "teamAccess": "Teamzugriff",
-    "teamAccessDescription": "{name} ist in dieser Phase der Mock-Workspace-Owner.",
+    "comingSoon": "Sp?ter verf?gbar",
+    "workspaceSettings": "Arbeitsbereichseinstellungen",
+    "workspaceSettingsDescription": "Arbeitsbereichseinstellungen werden hier verwaltet.",
+    "teamAccess": "Kontozugriff",
+    "teamAccessDescription": "Teamverwaltung ist noch nicht verf?gbar.",
     "notifications": "Benachrichtigungen",
-    "notificationsDescription": "K?nftige Benachrichtigungseinstellungen unterst?tzen Käuferanfragen und Nachweisabl?ufe.",
-    "planned": "Geplant",
+    "notificationsDescription": "Benachrichtigungseinstellungen werden in einer sp?teren Version verf?gbar sein.",
     "starter": "Starter",
-    "oneUser": "1 Benutzer"
+    "oneUser": "1 Benutzer",
+    "workspaceSettingsUnavailable": "Das Bearbeiten der Arbeitsbereichseinstellungen ist noch nicht verf?gbar.",
+    "comingLater": "Sp?ter verf?gbar"
   },
   "validation": {
     "required": "Dieses Feld ist erforderlich.",
@@ -1680,5 +1677,20 @@
     "description": "Nhost ist nicht konfiguriert. Supplier Passport nutzt Demo-Daten.",
     "nhostNotConfigured": "Nhost ist nicht konfiguriert.",
     "demoModeActive": "Demo-Modus ist aktiv."
+  },
+  "companyProfile": {
+    "title": "Unternehmensprofil",
+    "subtitle": "Pr?fen Sie die Unternehmensdaten, die in Ihrem Supplier-Passport-Arbeitsbereich verwendet werden.",
+    "updateInQuestionnaire": "Im Fragebogen aktualisieren",
+    "editUnavailable": "Die Profilbearbeitung ist noch nicht verf?gbar. Aktualisieren Sie Unternehmensdaten im Fragebogen.",
+    "supplierProfile": "Lieferantenprofil",
+    "organizationName": "Organisationsname",
+    "legalName": "Rechtlicher Unternehmensname",
+    "location": "Standort",
+    "industry": "Branche",
+    "employeeCount": "Mitarbeiterzahl",
+    "website": "Website",
+    "workspace": "Arbeitsbereich",
+    "notProvided": "Noch nicht angegeben"
   }
 }

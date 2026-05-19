@@ -1,4 +1,4 @@
-import { MoreHorizontal } from "lucide-react";
+import { Link2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -104,13 +104,13 @@ export function DocumentsTable({
                 <TableCell className="text-right" onClick={(event) => event.stopPropagation()}>
                   <Button
                     type="button"
-                    variant="ghost"
-                    size="icon"
-                    aria-label={labels.linkToAnswer}
-                    title={labels.linkToAnswer}
+                    variant="outline"
+                    size="sm"
+                    className="bg-white"
                     onClick={() => onLinkToAnswer?.(document)}
                   >
-                    <MoreHorizontal />
+                    <Link2 data-icon="inline-start" />
+                    {labels.linkToAnswer}
                   </Button>
                 </TableCell>
               </TableRow>

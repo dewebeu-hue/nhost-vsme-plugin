@@ -21,6 +21,7 @@ export type QuestionnaireLabels = {
   tipsTitle: string;
   evidenceRecommendationsTitle: string;
   relatedDocumentsTitle: string;
+  relatedDocumentsUnavailable: string;
   needHelpTitle: string;
   needHelpText: string;
   contactSupport: string;
@@ -84,7 +85,7 @@ export type DocumentsLabels = {
   breadcrumbRoot: string;
   breadcrumbCurrent: string;
   uploadDocuments: string;
-  createFolder: string;
+  createFolderUnavailable: string;
   totalDocuments: string;
   linkedToAnswers: string;
   needsReview: string;
@@ -124,8 +125,7 @@ export type DocumentsLabels = {
   answered: string;
   notLinkedYet: string;
   reviewStatus: string;
-  reviewedBy: string;
-  changeStatus: string;
+  notReviewedYet: string;
   uploadDialogTitle: string;
   uploadDialogDescription: string;
   chooseDocument: string;
@@ -202,7 +202,8 @@ export const defaultQuestionnaireLabels: QuestionnaireLabels = {
   needHelpText: "Our team is here to help you complete your VSME profile.",
   contactSupport: "Contact Support",
   uploadEvidence: "Upload evidence",
-  learnMoreEnergy: "Learn more about VSME Energy metrics",
+  learnMoreEnergy: "VSME Energy guidance will be available here when linked guidance is configured.",
+  relatedDocumentsUnavailable: "Templates and guidance documents will appear here when available.",
   evidence: "Evidence",
   attachEvidence: "Attach evidence",
   evidenceRequired: "Evidence is required for this answer.",
@@ -293,11 +294,7 @@ export const defaultQuestionnaireLabels: QuestionnaireLabels = {
     "Energy audit or assessment reports",
     "Renewable energy certificates, if applicable",
   ],
-  relatedDocuments: [
-    { name: "VSME User Guide - Energy", type: "PDF" },
-    { name: "Energy Reporting Template", type: "XLSX" },
-    { name: "Sample Energy Policy", type: "PDF" },
-  ],
+  relatedDocuments: [],
   statuses: {
     "Not started": "Not started",
     "In progress": "In progress",
@@ -332,7 +329,7 @@ export const defaultDocumentsLabels: DocumentsLabels = {
   breadcrumbRoot: "Evidence Data Room",
   breadcrumbCurrent: "Documents",
   uploadDocuments: "Upload documents",
-  createFolder: "Create folder",
+  createFolderUnavailable: "Folder organization is not available yet.",
   totalDocuments: "Total documents",
   linkedToAnswers: "Linked to answers",
   needsReview: "Needs review",
@@ -362,19 +359,17 @@ export const defaultDocumentsLabels: DocumentsLabels = {
   secureEvidencePreview: "Secure evidence preview",
   environmentalManagementSystem: "Environmental Management System",
   privateWorkspaceDocument: "Private workspace document",
-  securePreviewUnavailable:
-    "Secure preview will be available after storage access rules are configured.",
+  securePreviewUnavailable: "Secure preview is not available yet.",
   openSecurePreview: "Open secure preview",
   fileType: "File type",
   uploaded: "Uploaded",
-  versionCurrent: "Version 1 is the current reviewed document.",
+  versionCurrent: "Version 1 is the current document.",
   linkedToQuestionnaire: "Linked to questionnaire",
   linkToAnswer: "Link to answer",
   answered: "Answered",
   notLinkedYet: "This document is not linked to a questionnaire answer yet.",
   reviewStatus: "Review status",
-  reviewedBy: "Reviewed by {name} on {date}",
-  changeStatus: "Change status",
+  notReviewedYet: "Not reviewed yet.",
   uploadDialogTitle: "Upload evidence document",
   uploadDialogDescription:
     "Add a document and classify it before linking it to your VSME profile.",

@@ -78,16 +78,30 @@ export type AdminLabels = {
 export type SettingsLabels = {
   title: string;
   subtitle: string;
-  openSettings: string;
   workspaceSettings: string;
   workspaceSettingsDescription: string;
+  workspaceSettingsUnavailable: string;
   teamAccess: string;
   teamAccessDescription: string;
   notifications: string;
   notificationsDescription: string;
-  planned: string;
-  starter: string;
-  oneUser: string;
+  comingLater: string;
+};
+
+export type CompanyProfileLabels = {
+  title: string;
+  subtitle: string;
+  updateInQuestionnaire: string;
+  editUnavailable: string;
+  supplierProfile: string;
+  organizationName: string;
+  legalName: string;
+  location: string;
+  industry: string;
+  employeeCount: string;
+  website: string;
+  workspace: string;
+  notProvided: string;
 };
 
 export const defaultOnboardingLabels: OnboardingLabels = {
@@ -195,18 +209,30 @@ export const defaultAdminLabels: AdminLabels = {
 export const defaultSettingsLabels: SettingsLabels = {
   title: "Settings",
   subtitle: "Manage company, account, notification and workspace settings.",
-  openSettings: "Open settings",
   workspaceSettings: "Workspace settings",
-  workspaceSettingsDescription:
-    "Manage organization preferences and buyer-facing profile defaults.",
+  workspaceSettingsDescription: "Workspace preferences will be managed here.",
+  workspaceSettingsUnavailable: "Editing workspace settings is not available yet.",
   teamAccess: "Team access",
-  teamAccessDescription: "{name} is the mock workspace owner for this phase.",
+  teamAccessDescription: "Team management is not available yet.",
   notifications: "Notifications",
-  notificationsDescription:
-    "Future notification preferences will support buyer requests and evidence expiry.",
-  planned: "Planned",
-  starter: "Starter",
-  oneUser: "1 user",
+  notificationsDescription: "Notification preferences will be available in a later version.",
+  comingLater: "Coming later",
+};
+
+export const defaultCompanyProfileLabels: CompanyProfileLabels = {
+  title: "Company Profile",
+  subtitle: "Review the company details used across your Supplier Passport workspace.",
+  updateInQuestionnaire: "Update in questionnaire",
+  editUnavailable: "Profile editing is not available yet. Update company details in the questionnaire.",
+  supplierProfile: "Supplier profile",
+  organizationName: "Organization name",
+  legalName: "Legal company name",
+  location: "Location",
+  industry: "Industry",
+  employeeCount: "Employee count",
+  website: "Website",
+  workspace: "Workspace",
+  notProvided: "Not provided yet",
 };
 
 export function interpolate(template: string, values: Record<string, string | number>) {

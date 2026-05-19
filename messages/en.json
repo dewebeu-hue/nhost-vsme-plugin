@@ -40,7 +40,6 @@
     "saveContinue": "Save & Continue",
     "upload": "Upload",
     "uploadDocuments": "Upload documents",
-    "createFolder": "Create folder",
     "generatePassport": "Generate Passport",
     "createShareLink": "Create Share Link",
     "exportPdf": "Download PDF",
@@ -103,7 +102,8 @@
       "needHelp": "Need help?",
       "helpCenter": "Visit our Help Center",
       "openNavigation": "Open navigation",
-      "notifications": "Notifications"
+      "notifications": "Notifications",
+      "notificationsUnavailable": "Notifications are not available yet."
     },
     "overview": {
       "welcome": "Welcome back, {name}",
@@ -223,7 +223,8 @@
     "needHelpText": "Our team is here to help you complete your VSME profile.",
     "contactSupport": "Contact Support",
     "uploadEvidence": "Upload evidence",
-    "learnMoreEnergy": "Learn more about VSME Energy metrics",
+    "learnMoreEnergy": "VSME Energy guidance will be available here when linked guidance is configured.",
+    "relatedDocumentsUnavailable": "Templates and guidance documents will appear here when available.",
     "evidence": "Evidence",
     "attachEvidence": "Attach evidence",
     "evidenceRequired": "Evidence is required for this answer.",
@@ -428,20 +429,7 @@
       "Energy audit or assessment reports",
       "Renewable energy certificates, if applicable"
     ],
-    "relatedDocuments": [
-      {
-        "name": "VSME User Guide - Energy",
-        "type": "PDF"
-      },
-      {
-        "name": "Energy Reporting Template",
-        "type": "XLSX"
-      },
-      {
-        "name": "Sample Energy Policy",
-        "type": "PDF"
-      }
-    ],
+    "relatedDocuments": [],
     "statuses": {
       "Not started": "Not started",
       "In progress": "In progress",
@@ -474,7 +462,7 @@
     "breadcrumbRoot": "Evidence Data Room",
     "breadcrumbCurrent": "Documents",
     "uploadDocuments": "Upload documents",
-    "createFolder": "Create folder",
+    "createFolderUnavailable": "Folder organization is not available yet.",
     "totalDocuments": "Total documents",
     "linkedToAnswers": "Linked to answers",
     "needsReview": "Needs review",
@@ -502,16 +490,15 @@
     "versions": "Versions",
     "linkedToQuestionnaire": "Linked to questionnaire",
     "reviewStatus": "Review status",
-    "reviewedBy": "Reviewed by {name} on {date}",
-    "changeStatus": "Change status",
+    "notReviewedYet": "Not reviewed yet.",
     "openSecurePreview": "Open secure preview",
     "secureEvidencePreview": "Secure evidence preview",
     "environmentalManagementSystem": "Environmental Management System",
     "privateWorkspaceDocument": "Private workspace document",
-    "securePreviewUnavailable": "Secure preview will be available after storage access rules are configured.",
+    "securePreviewUnavailable": "Secure preview is not available yet.",
     "fileType": "File type",
     "uploaded": "Uploaded",
-    "versionCurrent": "Version 1 is the current reviewed document.",
+    "versionCurrent": "Version 1 is the current document.",
     "uploadDialogTitle": "Upload evidence document",
     "uploadDialogDescription": "Add a document and classify it before linking it to your VSME profile.",
     "chooseDocument": "Choose a PDF, spreadsheet, or policy document",
@@ -1599,9 +1586,19 @@
       "noNotesText": "Internal notes stay inside the concierge/admin workspace and are never shown on buyer-facing share pages."
     }
   },
+  "activity": {
+    "title": "Activity",
+    "subtitle": "Track uploads, evidence links, share events and buyer requests when activity tracking is available.",
+    "unavailableTitle": "Activity log is not available yet.",
+    "unavailableDescription": "Future activity tracking will show uploads, evidence links, share events and buyer requests.",
+    "uploadsTitle": "Uploads and evidence links",
+    "uploadsDescription": "Document uploads and answer links will appear here after activity tracking is enabled.",
+    "sharingTitle": "Sharing events",
+    "sharingDescription": "Public link views and buyer requests will appear here in a later version."
+  },
   "settings": {
     "title": "Settings",
-    "subtitle": "Manage company, account, notification and workspace settings.",
+    "subtitle": "Review workspace, access, and notification settings.",
     "companySettings": "Company settings",
     "accountSettings": "Account settings",
     "notificationSettings": "Notification settings",
@@ -1609,17 +1606,17 @@
     "languageSettings": "Language settings",
     "billingSettings": "Billing settings",
     "teamMembers": "Team members",
-    "comingSoon": "Coming soon",
-    "openSettings": "Open settings",
+    "comingSoon": "Coming later",
     "workspaceSettings": "Workspace settings",
-    "workspaceSettingsDescription": "Manage organization preferences and buyer-facing profile defaults.",
-    "teamAccess": "Team access",
-    "teamAccessDescription": "{name} is the mock workspace owner for this phase.",
+    "workspaceSettingsDescription": "Workspace preferences will be managed here.",
+    "teamAccess": "Account access",
+    "teamAccessDescription": "Team management is not available yet.",
     "notifications": "Notifications",
-    "notificationsDescription": "Future notification preferences will support buyer requests and evidence expiry.",
-    "planned": "Planned",
+    "notificationsDescription": "Notification preferences will be available in a later version.",
     "starter": "Starter",
-    "oneUser": "1 user"
+    "oneUser": "1 user",
+    "workspaceSettingsUnavailable": "Editing workspace settings is not available yet.",
+    "comingLater": "Coming later"
   },
   "validation": {
     "required": "This field is required.",
@@ -1657,5 +1654,20 @@
     "description": "Nhost is not configured. Supplier Passport is using demo-ready mock data.",
     "nhostNotConfigured": "Nhost is not configured.",
     "demoModeActive": "Demo mode is active."
+  },
+  "companyProfile": {
+    "title": "Company Profile",
+    "subtitle": "Review the company details used across your Supplier Passport workspace.",
+    "updateInQuestionnaire": "Update in questionnaire",
+    "editUnavailable": "Profile editing is not available yet. Update company details in the questionnaire.",
+    "supplierProfile": "Supplier profile",
+    "organizationName": "Organization name",
+    "legalName": "Legal company name",
+    "location": "Location",
+    "industry": "Industry",
+    "employeeCount": "Employee count",
+    "website": "Website",
+    "workspace": "Workspace",
+    "notProvided": "Not provided yet"
   }
 }

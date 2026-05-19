@@ -40,7 +40,6 @@
     "saveContinue": "Spremi i nastavi",
     "upload": "Učitaj",
     "uploadDocuments": "Učitaj dokumente",
-    "createFolder": "Kreiraj mapu",
     "generatePassport": "Generiraj Passport",
     "createShareLink": "Kreiraj share link",
     "exportPdf": "Preuzmi PDF",
@@ -103,7 +102,8 @@
       "needHelp": "Trebate pomoć?",
       "helpCenter": "Posjetite Help Center",
       "openNavigation": "Otvori navigaciju",
-      "notifications": "Obavijesti"
+      "notifications": "Obavijesti",
+      "notificationsUnavailable": "Obavijesti jos nisu dostupne."
     },
     "overview": {
       "welcome": "Dobrodošli natrag, {name}",
@@ -223,7 +223,8 @@
     "needHelpText": "Naš tim vam može pomoći dovršiti VSME profil.",
     "contactSupport": "Kontaktiraj podršku",
     "uploadEvidence": "Učitaj dokaz",
-    "learnMoreEnergy": "Saznajte više o VSME energetskim metrikama",
+    "learnMoreEnergy": "VSME smjernice za energiju bit ce dostupne ovdje kada povezane smjernice budu konfigurirane.",
+    "relatedDocumentsUnavailable": "Predlosci i smjernice pojavit ce se ovdje kada budu dostupni.",
     "evidence": "Dokazna dokumentacija",
     "attachEvidence": "Priloži dokaz",
     "evidenceRequired": "Za ovaj odgovor potreban je dokaz.",
@@ -428,20 +429,7 @@
       "Izvještaji o energetskom pregledu ili procjeni",
       "Certifikati za obnovljivu energiju, ako je primjenjivo"
     ],
-    "relatedDocuments": [
-      {
-        "name": "VSME vodič za energiju",
-        "type": "PDF"
-      },
-      {
-        "name": "Predložak za izvještavanje o energiji",
-        "type": "XLSX"
-      },
-      {
-        "name": "Primjer energetske politike",
-        "type": "PDF"
-      }
-    ],
+    "relatedDocuments": [],
     "statuses": {
       "Not started": "Nije započeto",
       "In progress": "U tijeku",
@@ -474,7 +462,7 @@
     "breadcrumbRoot": "Dokumentacijski Data Room",
     "breadcrumbCurrent": "Dokumenti",
     "uploadDocuments": "Učitaj dokumente",
-    "createFolder": "Kreiraj mapu",
+    "createFolderUnavailable": "Organizacija dokumenata po mapama jos nije dostupna.",
     "totalDocuments": "Ukupno dokumenata",
     "linkedToAnswers": "Povezano s odgovorima",
     "needsReview": "Treba pregled",
@@ -503,16 +491,15 @@
     "versions": "Verzije",
     "linkedToQuestionnaire": "Povezano s upitnikom",
     "reviewStatus": "Status pregleda",
-    "reviewedBy": "Pregledao/la {name} dana {date}",
-    "changeStatus": "Promijeni status",
+    "notReviewedYet": "Jos nije pregledano.",
     "openSecurePreview": "Otvori sigurni pregled",
     "secureEvidencePreview": "Sigurni pregled dokaza",
     "environmentalManagementSystem": "Sustav upravljanja okolišem",
     "privateWorkspaceDocument": "Privatni workspace dokument",
-    "securePreviewUnavailable": "Sigurni pregled bit će dostupan nakon konfiguracije storage pravila pristupa.",
+    "securePreviewUnavailable": "Sigurni pregled jos nije dostupan.",
     "fileType": "Vrsta datoteke",
     "uploaded": "Učitano",
-    "versionCurrent": "Verzija 1 je trenutačni pregledani dokument.",
+    "versionCurrent": "Verzija 1 je trenutačni dokument.",
     "uploadDialogTitle": "Učitaj dokazni dokument",
     "uploadDialogDescription": "Dodajte dokument i klasificirajte ga prije povezivanja s VSME profilom.",
     "chooseDocument": "Odaberite PDF, tablicu ili policy dokument",
@@ -1599,27 +1586,37 @@
       "noNotesText": "Interne bilješke ostaju unutar concierge/admin workspacea i nikada se ne prikazuju na buyer-facing share stranicama."
     }
   },
+  "activity": {
+    "title": "Aktivnost",
+    "subtitle": "Pratite ucitane dokumente, povezane dokaze, dijeljene linkove i zahtjeve kupaca kada dnevnik aktivnosti bude dostupan.",
+    "unavailableTitle": "Dnevnik aktivnosti jos nije dostupan.",
+    "unavailableDescription": "Buduće praćenje aktivnosti prikazivat će učitane dokumente, povezane dokaze, dijeljene linkove i zahtjeve kupaca.",
+    "uploadsTitle": "Ucitani dokumenti i povezani dokazi",
+    "uploadsDescription": "Ucitani dokumenti i povezani odgovori prikazivat ce se ovdje nakon ukljucivanja pracenja aktivnosti.",
+    "sharingTitle": "Dogadaji dijeljenja",
+    "sharingDescription": "Pregledi javnog linka i zahtjevi kupaca prikazivat ce se ovdje u kasnijoj verziji."
+  },
   "settings": {
     "title": "Postavke",
-    "subtitle": "Upravljajte postavkama tvrtke, računa, obavijesti i workspacea.",
+    "subtitle": "Pregledajte postavke radnog prostora, pristupa i obavijesti.",
     "companySettings": "Postavke tvrtke",
-    "accountSettings": "Postavke računa",
+    "accountSettings": "Postavke ra?una",
     "notificationSettings": "Postavke obavijesti",
     "securitySettings": "Sigurnosne postavke",
     "languageSettings": "Postavke jezika",
     "billingSettings": "Postavke naplate",
-    "teamMembers": "Članovi tima",
-    "comingSoon": "Uskoro dostupno",
-    "openSettings": "Otvori postavke",
-    "workspaceSettings": "Postavke workspacea",
-    "workspaceSettingsDescription": "Upravljajte preferencama organizacije i zadanim vrijednostima buyer-facing profila.",
-    "teamAccess": "Pristup tima",
-    "teamAccessDescription": "{name} je mock vlasnik workspacea u ovoj fazi.",
+    "teamMembers": "?lanovi tima",
+    "comingSoon": "Dostupno kasnije",
+    "workspaceSettings": "Postavke radnog prostora",
+    "workspaceSettingsDescription": "Postavke radnog prostora bit ?e dostupne ovdje.",
+    "teamAccess": "Pristup ra?unu",
+    "teamAccessDescription": "Upravljanje timom jo? nije dostupno.",
     "notifications": "Obavijesti",
-    "notificationsDescription": "Buduće postavke obavijesti podržavat će zahtjeve kupaca i isteke dokaza.",
-    "planned": "Planirano",
+    "notificationsDescription": "Postavke obavijesti bit ?e dostupne u kasnijoj verziji.",
     "starter": "Starter",
-    "oneUser": "1 korisnik"
+    "oneUser": "1 korisnik",
+    "workspaceSettingsUnavailable": "Ure?ivanje postavki radnog prostora jo? nije dostupno.",
+    "comingLater": "Dostupno kasnije"
   },
   "validation": {
     "required": "Ovo polje je obavezno.",
@@ -1657,5 +1654,20 @@
     "description": "Nhost nije konfiguriran. Supplier Passport koristi demo podatke.",
     "nhostNotConfigured": "Nhost nije konfiguriran.",
     "demoModeActive": "Demo način je aktivan."
+  },
+  "companyProfile": {
+    "title": "Profil tvrtke",
+    "subtitle": "Pregledajte podatke o tvrtki koji se koriste u Supplier Passport radnom prostoru.",
+    "updateInQuestionnaire": "A?uriraj u upitniku",
+    "editUnavailable": "Ure?ivanje profila jo? nije dostupno. Podatke o tvrtki a?urirajte u upitniku.",
+    "supplierProfile": "Profil dobavlja?a",
+    "organizationName": "Naziv organizacije",
+    "legalName": "Pravni naziv tvrtke",
+    "location": "Lokacija",
+    "industry": "Industrija",
+    "employeeCount": "Broj zaposlenih",
+    "website": "Web stranica",
+    "workspace": "Radni prostor",
+    "notProvided": "Jo? nije uneseno"
   }
 }

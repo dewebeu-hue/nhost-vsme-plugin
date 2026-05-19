@@ -11,11 +11,6 @@ type EvidenceDataRoomProps = {
   documents: EvidenceRoomDocument[];
   initialSelectedDocumentId: string;
   linkedQuestions: EvidenceRoomLinkedQuestion[];
-  review: {
-    status: "Reviewed";
-    reviewedBy: string;
-    reviewedOn: string;
-  };
   linkedQuestionsByDocument?: Record<string, EvidenceRoomLinkedQuestion[]>;
   onLinkToAnswer?: (document: EvidenceRoomDocument) => void;
   labels?: DocumentsLabels;
@@ -25,7 +20,6 @@ export function EvidenceDataRoom({
   documents,
   initialSelectedDocumentId,
   linkedQuestions,
-  review,
   linkedQuestionsByDocument,
   onLinkToAnswer,
   labels = defaultDocumentsLabels,
@@ -58,7 +52,6 @@ export function EvidenceDataRoom({
       <DocumentPreviewPanel
         document={selectedDocument}
         linkedQuestions={linkedQuestionsByDocument?.[selectedDocument.id] ?? linkedQuestions}
-        review={review}
         onLinkToAnswer={onLinkToAnswer}
         labels={labels}
       />

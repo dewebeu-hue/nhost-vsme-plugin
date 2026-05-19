@@ -1,38 +1,60 @@
 import { redirect } from "next/navigation";
-import { DashboardPlaceholder } from "@/components/dashboard/dashboard-placeholder";
-import { recentActivity } from "@/lib/mock-data";
+import { StateCard } from "@/components/shared/state-card";
 
 export const dynamic = "force-dynamic";
 
+export type ActivityPageLabels = {
+  title: string;
+  subtitle: string;
+  unavailableTitle: string;
+  unavailableDescription: string;
+  uploadsTitle: string;
+  uploadsDescription: string;
+  sharingTitle: string;
+  sharingDescription: string;
+};
 
-export function ActivityPageContent() {
+const defaultActivityLabels: ActivityPageLabels = {
+  title: "Activity",
+  subtitle: "Track uploads, evidence links, share events and buyer requests when activity tracking is available.",
+  unavailableTitle: "Activity log is not available yet.",
+  unavailableDescription:
+    "Future activity tracking will show uploads, evidence links, share events and buyer requests.",
+  uploadsTitle: "Uploads and evidence links",
+  uploadsDescription: "Document uploads and answer links will appear here after activity tracking is enabled.",
+  sharingTitle: "Sharing events",
+  sharingDescription: "Public link views and buyer requests will appear here in a later version.",
+};
+
+export function ActivityPageContent({ labels = defaultActivityLabels }: { labels?: ActivityPageLabels }) {
   return (
-    <DashboardPlaceholder
-      title="Activity"
-      subtitle="Track recent uploads, buyer requests, reviews, and passport sharing events."
-      primaryAction="View activity log"
-      cards={[
-        {
-          title: "Recent activity",
-          description: "The dashboard can surface the latest organization events from mock data.",
-          icon: "activity",
-          metric: `${recentActivity.length} events`,
-          progress: 70,
-        },
-        {
-          title: "Notifications",
-          description: "Buyer requests and expiring evidence will become notification events.",
-          icon: "bell",
-          metric: "3 updates",
-        },
-        {
-          title: "Audit trail",
-          description: "A timeline-style audit trail will support review and collaboration.",
-          icon: "history",
-          metric: "Planned",
-        },
-      ]}
-    />
+    <div className="flex flex-col gap-6">
+      <div>
+        <h1 className="text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">
+          {labels.title}
+        </h1>
+        <p className="mt-2 max-w-3xl text-base leading-7 text-slate-600">
+          {labels.subtitle}
+        </p>
+      </div>
+      <StateCard
+        title={labels.unavailableTitle}
+        description={labels.unavailableDescription}
+        tone="info"
+      />
+      <div className="grid gap-4 lg:grid-cols-2">
+        <StateCard
+          title={labels.uploadsTitle}
+          description={labels.uploadsDescription}
+          tone="empty"
+        />
+        <StateCard
+          title={labels.sharingTitle}
+          description={labels.sharingDescription}
+          tone="empty"
+        />
+      </div>
+    </div>
   );
 }
 

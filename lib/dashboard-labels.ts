@@ -22,6 +22,7 @@ export type DashboardShellLabels = {
   helpCenter: string;
   openNavigation: string;
   notifications: string;
+  notificationsUnavailable: string;
 };
 
 export const defaultDashboardShellLabels: DashboardShellLabels = {
@@ -47,6 +48,7 @@ export const defaultDashboardShellLabels: DashboardShellLabels = {
   helpCenter: "Visit our Help Center",
   openNavigation: "Open navigation",
   notifications: "Notifications",
+  notificationsUnavailable: "Notifications are not available yet.",
 };
 
 export type DashboardOverviewLabels = {

@@ -1,18 +1,12 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
-import { MoreHorizontal, Send, Save, ArrowLeft, ArrowRight } from "lucide-react";
+import { Send, Save, ArrowLeft, ArrowRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Progress } from "@/components/ui/progress";
 import { AttachEvidenceDialog } from "@/components/questionnaire/attach-evidence-dialog";
 import { QuestionnaireHelperPanel } from "@/components/questionnaire/questionnaire-helper-panel";
@@ -430,6 +424,13 @@ export function QuestionnairePageClient({
       totalQuestions: total,
     };
   }, [liveMode, sections]);
+  const currentSectionIndex = sections.findIndex((section) => section.id === selectedSectionCode);
+  const previousSectionCode =
+    currentSectionIndex > 0 ? sections[currentSectionIndex - 1]?.id : undefined;
+  const nextSectionCode =
+    currentSectionIndex >= 0 && currentSectionIndex < sections.length - 1
+      ? sections[currentSectionIndex + 1]?.id
+      : undefined;
 
   function handleValueChange(questionId: string, value: AnswerValue) {
     const nextValues = { ...answerValues, [questionId]: value };
@@ -449,7 +450,7 @@ export function QuestionnairePageClient({
         tone: "success",
         text: labels.mockSaveMessage,
       });
-      return;
+      return true;
     }
 
     const session = await getFreshBrowserNhostSession();
@@ -459,7 +460,7 @@ export function QuestionnairePageClient({
         tone: "error",
         text: labels.saveSignInError,
       });
-      return;
+      return false;
     }
 
     setIsSaving(true);
@@ -530,7 +531,7 @@ export function QuestionnairePageClient({
           tone: response.status === 503 ? "info" : "error",
           text: payload.error ?? labels.saveError,
         });
-        return;
+        return false;
       }
 
       if (payload.saved?.length) {
@@ -583,12 +584,14 @@ export function QuestionnairePageClient({
       }
 
       setMessage({ tone: "success", text: labels.saveSuccess });
+      return true;
     } catch (error) {
       console.error("Questionnaire save failed", error);
       setMessage({
         tone: "error",
         text: labels.saveError,
       });
+      return false;
     } finally {
       setIsSaving(false);
     }
@@ -755,7 +758,7 @@ export function QuestionnairePageClient({
         </div>
 
         <div className="flex flex-wrap gap-2">
-          <Button variant="outline">
+          <Button variant="outline" render={<Link href={`/${locale}/dashboard/share`} />}>
             <Send data-icon="inline-start" />
             {labels.shareProgress}
           </Button>
@@ -767,19 +770,6 @@ export function QuestionnairePageClient({
             <Save data-icon="inline-start" />
             {isSaving ? labels.saving : labels.saveAndContinue}
           </Button>
-          <DropdownMenu>
-            <DropdownMenuTrigger render={<Button variant="outline" size="icon" />}>
-              <MoreHorizontal />
-              <span className="sr-only">{labels.moreActions}</span>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuGroup>
-                <DropdownMenuItem>Export draft</DropdownMenuItem>
-                <DropdownMenuItem>Assign section owner</DropdownMenuItem>
-                <DropdownMenuItem>Reset section</DropdownMenuItem>
-              </DropdownMenuGroup>
-            </DropdownMenuContent>
-          </DropdownMenu>
         </div>
       </header>
 
@@ -877,14 +867,29 @@ export function QuestionnairePageClient({
           )}
 
           <footer className="flex flex-col justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:flex-row">
-            <Button variant="outline">
+            <Button
+              type="button"
+              variant="outline"
+              disabled={!previousSectionCode}
+              onClick={() => {
+                if (previousSectionCode) {
+                  setSelectedSectionCode(previousSectionCode);
+                }
+              }}
+            >
               <ArrowLeft data-icon="inline-start" />
               {labels.previousSection}
             </Button>
             <Button
               className="shadow-lg shadow-blue-600/15"
               disabled={isSaving}
-              onClick={handleSave}
+              onClick={async () => {
+                const saved = await handleSave();
+
+                if (saved && nextSectionCode) {
+                  setSelectedSectionCode(nextSectionCode);
+                }
+              }}
             >
               {isSaving ? labels.saving : labels.saveAndContinue}
               <ArrowRight data-icon="inline-end" />
@@ -899,21 +904,14 @@ export function QuestionnairePageClient({
           evidenceRecommendationsTitle={labels.evidenceRecommendationsTitle}
           uploadEvidenceLabel={labels.uploadEvidence}
           relatedDocumentsTitle={labels.relatedDocumentsTitle}
+          relatedDocumentsUnavailable={labels.relatedDocumentsUnavailable}
           needHelpTitle={labels.needHelpTitle}
           needHelpText={labels.needHelpText}
           contactSupportLabel={labels.contactSupport}
           evidenceRecommendations={labels.evidenceRecommendations}
           relatedDocuments={labels.relatedDocuments}
           onUploadEvidence={() => {
-            if (process.env.NODE_ENV !== "production") {
-              console.warn("[questionnaire] attach evidence helper action", {
-                flow: "questionnaire_page",
-                action: "helper_upload_evidence",
-                hasQuestionItemId: false,
-              });
-            }
-
-            setMessage({ tone: "info", text: labels.attachSelectDocumentFirst });
+            router.push(`/${locale}/dashboard/documents`);
           }}
         />
       </div>

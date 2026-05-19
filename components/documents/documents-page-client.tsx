@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
-import { FolderPlus, UploadCloud } from "lucide-react";
+import { UploadCloud } from "lucide-react";
 import { DocumentsMetricCards } from "@/components/documents/documents-metric-cards";
 import { DocumentsToolbar } from "@/components/documents/documents-toolbar";
 import { EvidenceDataRoom } from "@/components/documents/evidence-data-room";
@@ -26,7 +26,6 @@ import {
   evidenceRoomFilters,
   evidenceRoomLinkedQuestions,
   evidenceRoomMetrics,
-  evidenceRoomReview,
   evidenceRoomSelectedDocumentId,
   type EvidenceRoomDocument,
   type EvidenceRoomLinkedQuestion,
@@ -172,6 +171,13 @@ export function DocumentsPageClient({
   const [isLinkDialogOpen, setIsLinkDialogOpen] = useState(false);
   const [isLinking, setIsLinking] = useState(false);
   const [documentToLink, setDocumentToLink] = useState<EvidenceRoomDocument | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedTypeFilter, setSelectedTypeFilter] = useState<string>(
+    evidenceRoomFilters.types[0],
+  );
+  const [selectedStatusFilter, setSelectedStatusFilter] = useState<string>(
+    evidenceRoomFilters.statuses[0],
+  );
 
   useEffect(() => {
     let cancelled = false;
@@ -308,6 +314,38 @@ export function DocumentsPageClient({
     () => createLinkedQuestionsByDocument(documentLinks),
     [documentLinks],
   );
+  const filteredDocuments = useMemo(
+    () =>
+      documents.filter((document) => {
+        const query = searchQuery.trim().toLowerCase();
+        const matchesSearch =
+          !query ||
+          [
+            document.title,
+            document.fileName,
+            document.type,
+            document.status,
+            document.linkedTo.join(" "),
+            document.linkedExtra ?? "",
+          ]
+            .join(" ")
+            .toLowerCase()
+            .includes(query);
+        const matchesType =
+          selectedTypeFilter === evidenceRoomFilters.types[0] || document.type === selectedTypeFilter;
+        const matchesStatus =
+          selectedStatusFilter === evidenceRoomFilters.statuses[0] ||
+          document.status === selectedStatusFilter;
+
+        return matchesSearch && matchesType && matchesStatus;
+      }),
+    [documents, searchQuery, selectedStatusFilter, selectedTypeFilter],
+  );
+  const visibleSelectedDocumentId = filteredDocuments.some(
+    (document) => document.id === selectedDocumentId,
+  )
+    ? selectedDocumentId
+    : filteredDocuments[0]?.id ?? "";
 
   async function handleUpload(values: UploadDocumentValues) {
     const session = await getFreshBrowserNhostSession();
@@ -568,9 +606,14 @@ export function DocumentsPageClient({
             }
             labels={labels}
           />
-          <Button variant="outline" className="h-11 rounded-xl bg-white px-5">
-            <FolderPlus data-icon="inline-start" />
-            {labels.createFolder}
+          <Button
+            type="button"
+            variant="outline"
+            className="h-11 rounded-xl bg-white px-5"
+            disabled
+            title={labels.createFolderUnavailable}
+          >
+            {labels.createFolderUnavailable}
           </Button>
         </div>
       </div>
@@ -578,17 +621,25 @@ export function DocumentsPageClient({
       {message ? <DocumentsMessage message={message} /> : null}
 
       <DocumentsMetricCards metrics={metrics} labels={labels} />
-      <DocumentsToolbar filters={evidenceRoomFilters} labels={labels} />
+      <DocumentsToolbar
+        filters={evidenceRoomFilters}
+        searchQuery={searchQuery}
+        selectedType={selectedTypeFilter}
+        selectedStatus={selectedStatusFilter}
+        onSearchQueryChange={setSearchQuery}
+        onTypeChange={setSelectedTypeFilter}
+        onStatusChange={setSelectedStatusFilter}
+        labels={labels}
+      />
       {isLoading ? (
         <DocumentsSkeleton />
       ) : (
         <EvidenceDataRoom
-          key={selectedDocumentId}
-          documents={documents}
-          initialSelectedDocumentId={selectedDocumentId}
+          key={visibleSelectedDocumentId}
+          documents={filteredDocuments}
+          initialSelectedDocumentId={visibleSelectedDocumentId}
           linkedQuestions={liveMode ? [] : evidenceRoomLinkedQuestions}
           linkedQuestionsByDocument={linkedQuestionsByDocument}
-          review={evidenceRoomReview}
           onLinkToAnswer={(document) => {
             const documentId = resolveEvidenceDocumentId(document);
 
