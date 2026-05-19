@@ -10,6 +10,7 @@ import {
 } from "@/lib/graphql/mutations";
 import {
   GET_PUBLIC_SHARE_DOCUMENTS,
+  GET_PUBLIC_SHARE_DOCUMENT_LINKS,
   GET_PUBLIC_SHARE_DOCUMENT_ACCESS,
   GET_PUBLIC_SHARE_ORGANIZATION,
   GET_PUBLIC_SHARE_PASSPORT,
@@ -106,6 +107,10 @@ type PublicPassportResponse = {
 
 type PublicDocumentsResponse = {
   documents: PublicDocumentRecord[];
+};
+
+type PublicDocumentLinksResponse = {
+  document_links: Array<{ id: string; document_id: string; question_answer_id: string }>;
 };
 
 type PublicQuestionnaireResponse = {
@@ -238,6 +243,10 @@ export async function getPublicShareByToken(
       { useAdminSecret: true },
     ),
   ]);
+  const documentsWithLinks = await loadPublicShareDocumentsWithLinks(
+    documentsData.documents,
+    questionnaireData.question_answers,
+  );
 
   const organization = organizationData.organizations_by_pk;
   const passport = passportData.supplier_passports_by_pk;
@@ -252,11 +261,45 @@ export async function getPublicShareByToken(
       shareLink,
       organizationData,
       passport,
-      documentsData.documents,
+      documentsWithLinks,
       questionnaireData,
     ),
     source: "live" as const,
   };
+}
+
+async function loadPublicShareDocumentsWithLinks(
+  documents: PublicDocumentRecord[],
+  answers: PassportSummaryAnswer[],
+) {
+  const documentIds = documents.map((document) => document.id);
+  const questionAnswerIds = answers
+    .map((answer) => answer.id)
+    .filter((answerId): answerId is string => Boolean(answerId));
+
+  if (!documentIds.length || !questionAnswerIds.length) {
+    return documents.map((document) => ({ ...document, document_links: [] }));
+  }
+
+  const linksData = await executeHasuraGraphql<PublicDocumentLinksResponse>(
+    GET_PUBLIC_SHARE_DOCUMENT_LINKS,
+    { documentIds, questionAnswerIds },
+    { useAdminSecret: true },
+  );
+  const linksByDocument = new Map<string, PublicDocumentRecord["document_links"]>();
+
+  for (const link of linksData.document_links) {
+    const current = linksByDocument.get(link.document_id) ?? [];
+    linksByDocument.set(link.document_id, [
+      ...current,
+      { id: link.id, question_answer_id: link.question_answer_id },
+    ]);
+  }
+
+  return documents.map((document) => ({
+    ...document,
+    document_links: linksByDocument.get(document.id) ?? [],
+  }));
 }
 
 export async function createShareLink(input: CreateShareLinkInput, accessToken?: string) {

@@ -493,9 +493,63 @@ Fix:
 - Confirm document organization matches share link organization.
 - Confirm Nhost Storage access strategy from `docs/nhost-storage.md`.
 
-## Faza 2.8 End-to-End Supplier Passport QA
+## Public Passport Route Server Error
+
+Symptoms:
+
+- `/[locale]/passport/[token]` shows the Next/Vercel "This page couldn't load" server error.
+- The same token may exist in `share_links`, but the public buyer-facing page crashes before rendering.
+
+Likely causes:
+
+- Public token lookup failed or threw a GraphQL error.
+- The public route reused an authenticated/dashboard-only loader.
+- A live share link points to missing organization/passport data and the summary mapper was not null-safe.
+- A public GraphQL query requested a Hasura relationship that is not tracked or has a different name.
+
+Fix:
+
+- Resolve the organization through `share_links.token`, not through a signed-in user.
+- Catch public loader failures and render the safe unavailable state instead of bubbling a server error.
+- Avoid fragile relationship selections in public Passport queries. Query scalar root fields and compose the buyer-safe summary server-side.
+- Never expose private file URLs, storage file IDs, user/member data, raw sensitive answers, or admin/debug details on `/passport/[token]`.
+
+Safe share-link verification:
+
+```sql
+select
+  id,
+  organization_id,
+  token,
+  is_active,
+  expires_at,
+  created_at
+from share_links
+order by created_at desc
+limit 20;
+```
+
+Treat `token` as sensitive operational data: use it only for debugging in the Nhost/Hasura console and never paste it into public logs or screenshots.
+
+Manual checks:
+
+1. Open a valid `/en/passport/[token]` link in incognito.
+2. Confirm the page loads without login.
+3. Confirm the page shows a buyer-safe Supplier Passport summary.
+4. Confirm no private document file URL, Nhost Storage file ID, member/user data, raw sensitive answer, or admin/debug field is visible.
+5. Open `/en/passport/invalid-token-test` and confirm a safe unavailable/not-found state.
+6. Repeat a quick check for `/hr/passport/[token]` and `/de/passport/[token]`.
+
+## Faza 2.8 Final Supplier Passport QA
 
 Run this after deploying the final Faza 2.8 changes to Vercel.
+
+Known production actions already completed:
+
+- The expanded questionnaire taxonomy has been applied to live Nhost/Hasura.
+- Document upload metadata uses the existing `documents.document_type` field for evidence category/readiness.
+- Certificate expiry tracking uses the existing `documents.expires_at` field.
+- Evidence links use `document_links(document_id, question_answer_id)` and avoid fragile Hasura relationship names in `/api/document-links`.
 
 Questionnaire taxonomy verification:
 
@@ -551,6 +605,41 @@ group by document_type, status
 order by document_type, status;
 ```
 
+Document link verification:
+
+```sql
+select
+  dl.id,
+  d.file_name as document_name,
+  qi.code as question_code,
+  qs.code as section_code,
+  qa.status,
+  dl.created_at
+from document_links dl
+join documents d on d.id = dl.document_id
+join question_answers qa on qa.id = dl.question_answer_id
+join question_items qi on qi.id = qa.question_item_id
+join question_sections qs on qs.id = qi.section_id
+order by dl.created_at desc
+limit 50;
+```
+
+Document expiry verification:
+
+```sql
+select
+  id,
+  organization_id,
+  file_name,
+  document_type,
+  status,
+  expires_at,
+  created_at
+from documents
+order by created_at desc
+limit 50;
+```
+
 Production test checklist:
 
 1. Sign in as a real production supplier user.
@@ -567,7 +656,8 @@ Production test checklist:
 12. Open the public `/hr/passport/[token]` link in an incognito window.
 13. Confirm the public Passport shows a buyer-safe summary only.
 14. Confirm no private document file URLs, storage file IDs, user/member data, raw sensitive answers, or admin/debug values are visible.
-15. Repeat quick route checks for `/en` and `/de`.
+15. Confirm invalid/inactive public tokens show a safe unavailable/not-found state, not mock Passport data.
+16. Repeat quick route checks for `/en` and `/de`.
 
 No extra production database action is required for document evidence categories if the `documents.document_type` column already exists. The app uses that existing field for evidence readiness.
 

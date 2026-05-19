@@ -1101,6 +1101,8 @@
     "expiredText": "Kontaktirajte dobavljača i zatražite novi Supplier Passport link.",
     "inactiveTitle": "Ovaj share link nije aktivan",
     "inactiveText": "Ovaj Supplier Passport link viće nije dostupan.",
+    "unavailableTitle": "Ovaj Supplier Passport link nije dostupan.",
+    "unavailableText": "Link je možda neispravan, istekao ili više nije aktivan.",
     "passwordTitle": "Potrebna je lozinka",
     "passwordText": "Unesite lozinku koju vam je dobavljač poslao kako biste otvorili Passport.",
     "enterPassword": "Unesite lozinku",

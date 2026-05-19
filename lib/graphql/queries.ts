@@ -193,12 +193,21 @@ export const GET_PUBLIC_SHARE_DOCUMENTS = `
       status
       expires_at
       created_at
-      document_links(
-        where: { question_answer: { organization_id: { _eq: $organizationId } } }
-      ) {
-        id
-        question_answer_id
+    }
+  }
+`;
+
+export const GET_PUBLIC_SHARE_DOCUMENT_LINKS = `
+  query GetPublicShareDocumentLinks($documentIds: [uuid!], $questionAnswerIds: [uuid!]) {
+    document_links(
+      where: {
+        document_id: { _in: $documentIds }
+        question_answer_id: { _in: $questionAnswerIds }
       }
+    ) {
+      id
+      document_id
+      question_answer_id
     }
   }
 `;

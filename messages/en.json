@@ -1101,6 +1101,8 @@
     "expiredText": "Contact the supplier to request a new Supplier Passport link.",
     "inactiveTitle": "This share link is inactive",
     "inactiveText": "This Supplier Passport link is no longer available.",
+    "unavailableTitle": "This Supplier Passport link is unavailable.",
+    "unavailableText": "The link may be invalid, expired, or no longer active.",
     "passwordTitle": "Password required",
     "passwordText": "Enter the password provided by the supplier to view this Passport.",
     "enterPassword": "Enter password",
