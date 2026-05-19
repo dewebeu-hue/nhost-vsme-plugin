@@ -1578,6 +1578,65 @@ Manual QA checklist:
 8. Open `/hr/dashboard/activity` and confirm it remains neutral with no fake events.
 9. Repeat quick checks on `/en` and `/de`.
 
+### Faza 3.2 Buyer Request Workspace Final QA
+
+Production migration readiness:
+
+- Migration file: `nhost/migrations/default/0004_add_buyer_requests/up.sql`.
+- Production action: apply the migration in Nhost/Hasura and ensure `buyer_requests` is tracked before demoing this workspace.
+- The table is organization-scoped through `organization_id`.
+- The API verifies `organization_members` before list, create, detail, and update operations.
+- Client-supplied `organizationId` is ignored.
+
+Useful verification SQL:
+
+```sql
+select
+  id,
+  organization_id,
+  buyer_name,
+  request_title,
+  status,
+  requested_sections,
+  due_date,
+  notes,
+  created_at,
+  updated_at
+from buyer_requests
+order by created_at desc
+limit 20;
+```
+
+API checklist:
+
+- `GET /api/buyer-requests` returns only current organization requests.
+- `POST /api/buyer-requests` creates rows for the current organization only.
+- `GET /api/buyer-requests/[id]` returns the request only when it belongs to the current organization.
+- `PATCH /api/buyer-requests/[id]` updates only safe request fields and never `organization_id`.
+- All errors are JSON responses with safe diagnostic categories.
+- Do not log JWTs, cookies, share tokens, private URLs, document contents, or secrets.
+
+Workspace QA checklist:
+
+1. Open `/hr/dashboard/buyer-requests`.
+2. Confirm empty state is neutral if there are no requests.
+3. Create a request with buyer name, title, due date, requested sections, and notes.
+4. Confirm buyer contact email validation works when an invalid email is entered.
+5. Refresh and confirm the request persists.
+6. Open the detail page.
+7. Update status, notes, and requested sections.
+8. Confirm requested-section readiness, evidence counts, missing actions, certificate expiry warnings, response package, copy response note, and due labels use real data.
+9. Confirm quick actions route to questionnaire, documents, Passport, share page, and the Passport PDF area.
+10. Confirm no email is sent and no buyer portal, buyer login, or buyer-specific public workspace appears.
+11. Confirm copied response text includes only the active public Passport link when one exists.
+12. Confirm internal notes are not visible on public Passport, public PDF, share links, or copied response text.
+13. Confirm `/hr/dashboard/activity` remains neutral and has no fake activity events.
+14. Repeat route and localization checks on `/en` and `/de`.
+
+Deferred items:
+
+- Buyer accounts, buyer login, buyer portal, email sending, request-specific public links, and full audit/event history are intentionally not included in Faza 3.2.
+
 ## Safe Logging Rules
 
 Allowed categories:
