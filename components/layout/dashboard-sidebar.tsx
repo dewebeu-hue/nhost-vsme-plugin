@@ -9,6 +9,7 @@ import { type DashboardShellLabels } from "@/lib/dashboard-labels";
 const navigation = [
   { href: "/dashboard", labelKey: "dashboard", icon: "layout" },
   { href: "/dashboard/company", labelKey: "companyProfile", icon: "building" },
+  { href: "/dashboard/buyer-requests", labelKey: "buyerRequests", icon: "clipboard-check" },
   { href: "/dashboard/questionnaire", labelKey: "questionnaire", icon: "clipboard-check" },
   { href: "/dashboard/documents", labelKey: "evidenceRoom", icon: "file-text" },
   { href: "/dashboard/passport", labelKey: "passport", icon: "shield" },

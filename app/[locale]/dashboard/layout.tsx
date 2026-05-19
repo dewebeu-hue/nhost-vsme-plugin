@@ -24,6 +24,7 @@ export default async function DashboardRouteLayout({
     navigation: {
       dashboard: nav("dashboard"),
       companyProfile: nav("companyProfile"),
+      buyerRequests: nav("buyerRequests"),
       questionnaire: nav("questionnaire"),
       evidenceRoom: nav("evidenceRoom"),
       passport: nav("passport"),

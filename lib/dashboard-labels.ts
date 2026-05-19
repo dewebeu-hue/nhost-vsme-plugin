@@ -1,6 +1,7 @@
 export type DashboardNavKey =
   | "dashboard"
   | "companyProfile"
+  | "buyerRequests"
   | "questionnaire"
   | "evidenceRoom"
   | "passport"
@@ -29,6 +30,7 @@ export const defaultDashboardShellLabels: DashboardShellLabels = {
   navigation: {
     dashboard: "Dashboard",
     companyProfile: "Company Profile",
+    buyerRequests: "Buyer requests",
     questionnaire: "Questionnaire",
     evidenceRoom: "Evidence Room",
     passport: "Passport",

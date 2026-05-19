@@ -1416,6 +1416,55 @@ Manual QA checklist:
 5. Open `/en/dashboard/settings` and `/en/dashboard/company-profile`; verify no Elena/Acme/Munich/future-workflow placeholders.
 6. Repeat quick checks for `/hr` and `/de` localized routes.
 
+## Faza 3.2 Buyer Request Workspace Foundation
+
+Routes:
+
+- `/en/dashboard/buyer-requests`, `/hr/dashboard/buyer-requests`, `/de/dashboard/buyer-requests`
+- `/en/dashboard/buyer-requests/[id]`, `/hr/dashboard/buyer-requests/[id]`, `/de/dashboard/buyer-requests/[id]`
+- `/api/buyer-requests`
+- `/api/buyer-requests/[id]`
+
+Data model:
+
+- Migration: `nhost/migrations/default/0004_add_buyer_requests/up.sql`
+- Table: `buyer_requests`
+- Organization-scoped by `organization_id`.
+- Status values: `draft`, `in_progress`, `ready_to_share`, `shared`, `closed`.
+- Requested sections are stored as a JSON array of questionnaire section codes.
+- No private document URLs, storage file IDs, buyer login, buyer portal, or outbound email are included in this foundation step.
+
+Useful QA SQL:
+
+```sql
+select
+  id,
+  organization_id,
+  buyer_name,
+  request_title,
+  status,
+  requested_sections,
+  due_date,
+  created_at,
+  updated_at
+from buyer_requests
+order by created_at desc
+limit 50;
+```
+
+Manual QA checklist:
+
+1. Apply migration `nhost/migrations/default/0004_add_buyer_requests/up.sql` in the production Nhost/Hasura environment and ensure the table is tracked by Hasura.
+2. Log in as a supplier organization member.
+3. Open `/hr/dashboard/buyer-requests`.
+4. Create a request with buyer name, title, due date, requested sections, and notes.
+5. Open the request detail page.
+6. Update status, notes, and requested sections.
+7. Refresh the browser and confirm persistence.
+8. Confirm a different organization cannot see or update the request.
+9. Confirm no private document URLs or storage IDs are shown.
+10. Repeat quick route checks on `/en` and `/de`.
+
 ## Safe Logging Rules
 
 Allowed categories:
