@@ -383,8 +383,9 @@ Manual UI check after applying:
 Likely causes:
 
 - Nhost Storage is not enabled.
-- Storage permissions are missing.
+- Storage rejects the upload request.
 - `HASURA_GRAPHQL_ADMIN_SECRET` is missing in Vercel.
+- `NHOST_ADMIN_SECRET` or `HASURA_GRAPHQL_ADMIN_SECRET` is missing for server-side Storage upload.
 - Server-side metadata insert into `documents` fails after file upload.
 - `NEXT_PUBLIC_NHOST_STORAGE_URL` is wrong.
 - The logged-in user has no `organization_members` row.
@@ -395,11 +396,33 @@ Fix:
 - Confirm Nhost Storage is enabled.
 - Confirm Storage URL matches the Nhost dashboard.
 - Confirm `HASURA_GRAPHQL_ADMIN_SECRET` is configured as a server-only Vercel env var.
+- Confirm `NHOST_ADMIN_SECRET` is configured if Nhost Storage requires it; otherwise the app falls back to `HASURA_GRAPHQL_ADMIN_SECRET` server-side.
 - Confirm `GET /api/documents` returns the real organization documents after login.
 - Confirm `POST /api/documents/upload` returns a `document` object after upload.
+- If `POST /api/documents/upload` fails, inspect the JSON `category`, `stage`, and `storageStatus` fields. These are safe diagnostics and do not include secrets.
 - Confirm the uploaded file appears in Nhost Storage.
 - Confirm the inserted row in `documents` includes `organization_id`, `uploaded_by`, `file_id`, `file_name`, `file_size_bytes`, `mime_type`, `document_type`, `status`, and `expires_at`.
 - Press F5 on `/en/dashboard/documents` and confirm the document remains visible.
+
+Useful SQL after a successful upload:
+
+```sql
+select column_name, data_type, is_nullable
+from information_schema.columns
+where table_name = 'documents'
+order by ordinal_position;
+
+select
+  id,
+  organization_id,
+  file_name,
+  document_type,
+  status,
+  created_at
+from documents
+order by created_at desc
+limit 20;
+```
 
 ## Documents Page Shows Mock Data After Refresh
 

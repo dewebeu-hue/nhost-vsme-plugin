@@ -487,7 +487,7 @@
     "liveUnavailableMessage": "We could not load your documents right now.",
     "emptyLiveMessage": "No live evidence documents yet. Upload your first document to start building the evidence room.",
     "uploadMockMessage": "Connect Nhost and sign in to upload real evidence documents. Mock data remains available.",
-    "uploadError": "We could not upload this document right now. Please try again.",
+    "uploadError": "We could not upload this document right now.",
     "uploadSuccess": "Evidence document uploaded securely.",
     "workspaceUser": "Workspace user",
     "linkMockSuccess": "Evidence linked locally in mock mode.",

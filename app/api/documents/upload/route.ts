@@ -3,7 +3,14 @@ import { createAPIClient } from "@nhost/nhost-js/storage";
 import type { FileMetadata } from "@nhost/nhost-js/storage";
 import { logSafeDiagnostic } from "@/lib/diagnostics/server-env";
 import { evidenceDocumentTypes, type EvidenceDocumentType } from "@/lib/data/documents";
-import { getNhostAuthUrl, getNhostGraphqlUrl, getNhostStorageUrl } from "@/lib/nhost/config";
+import {
+  getNhostAdminSecret,
+  getNhostAuthUrl,
+  getNhostGraphqlUrl,
+  getNhostStorageUrl,
+} from "@/lib/nhost/config";
+
+export const runtime = "nodejs";
 
 type Membership = {
   id: string;
@@ -123,8 +130,14 @@ export async function POST(request: Request) {
   }
 
   const storageUrl = getNhostStorageUrl();
+  const storageAdminSecret = getNhostAdminSecret();
 
-  if (!storageUrl || !getNhostGraphqlUrl() || !process.env.HASURA_GRAPHQL_ADMIN_SECRET) {
+  if (
+    !storageUrl ||
+    !storageAdminSecret ||
+    !getNhostGraphqlUrl() ||
+    !process.env.HASURA_GRAPHQL_ADMIN_SECRET
+  ) {
     return uploadError("documents_backend_missing", "configuration", 503, {
       hasUserId: true,
       organizationIdPresent: true,
@@ -154,22 +167,32 @@ export async function POST(request: Request) {
     });
   }
 
+  logSafeDiagnostic("document_upload_validated", {
+    hasUserId: true,
+    organizationIdPresent: true,
+    membershipVerified: true,
+    hasFile: true,
+    fileSize: file.size,
+    mimeType: file.type || "unknown",
+  });
+
   const storageResult = await uploadFileToNhost({
-    accessToken: tokenResult.token,
     documentType,
     file,
     note,
     organizationId: organizationResult.organizationId,
+    storageAdminSecret,
     storageUrl,
   });
 
   if (!storageResult.ok) {
-    return uploadError("storage_upload_failed", "storage_upload", 502, {
+    return uploadError(storageResult.category, "storage_upload", 502, {
       hasUserId: true,
       organizationIdPresent: true,
       membershipVerified: true,
       storageUploadSucceeded: false,
       safeGraphqlMessage: storageResult.safeMessage,
+      storageStatus: storageResult.status,
     });
   }
 
@@ -216,21 +239,26 @@ export async function POST(request: Request) {
 
 type UploadFileResult =
   | { ok: true; file: FileMetadata }
-  | { ok: false; safeMessage: string };
+  | {
+      ok: false;
+      category: "storage_upload_failed" | "storage_permission_denied" | "storage_bucket_missing";
+      safeMessage: string;
+      status?: number;
+    };
 
 async function uploadFileToNhost({
-  accessToken,
   documentType,
   file,
   note,
   organizationId,
+  storageAdminSecret,
   storageUrl,
 }: {
-  accessToken: string;
   documentType: EvidenceDocumentType;
   file: File;
   note: string;
   organizationId: string;
+  storageAdminSecret: string;
   storageUrl: string;
 }): Promise<UploadFileResult> {
   try {
@@ -251,22 +279,32 @@ async function uploadFileToNhost({
       },
       {
         headers: {
-          authorization: `Bearer ${accessToken}`,
+          "x-hasura-admin-secret": storageAdminSecret,
         },
       },
     );
     const uploadedFile = response.body.processedFiles[0];
 
     if (!uploadedFile?.id) {
-      return { ok: false, safeMessage: "Nhost Storage did not return a file identifier." };
+      return {
+        ok: false,
+        category: "storage_upload_failed",
+        safeMessage: "Nhost Storage did not return a file identifier.",
+      };
     }
 
     return { ok: true, file: uploadedFile };
   } catch (error) {
+    const status = readFetchErrorStatus(error);
+    const category = classifyStorageUploadError(status, error);
+    const safeMessage = readSafeStorageErrorMessage(error, status);
+
     console.error("Nhost Storage upload failed", {
-      message: error instanceof Error ? error.message : "unknown",
+      category,
+      status,
+      message: safeMessage,
     });
-    return { ok: false, safeMessage: "Storage upload failed." };
+    return { ok: false, category, safeMessage, status };
   }
 }
 
@@ -364,6 +402,7 @@ function uploadError(
     membershipVerified?: boolean;
     storageUploadSucceeded?: boolean;
     safeGraphqlMessage?: string;
+    storageStatus?: number;
   } = {},
 ) {
   logSafeDiagnostic("document_upload_failed", {
@@ -373,6 +412,7 @@ function uploadError(
     organizationIdPresent: metadata.organizationIdPresent ?? false,
     membershipVerified: metadata.membershipVerified ?? false,
     storageUploadSucceeded: metadata.storageUploadSucceeded ?? false,
+    storageStatus: metadata.storageStatus,
     message: metadata.safeGraphqlMessage,
   });
 
@@ -385,6 +425,7 @@ function uploadError(
       organizationIdPresent: metadata.organizationIdPresent ?? false,
       membershipVerified: metadata.membershipVerified ?? false,
       storageUploadSucceeded: metadata.storageUploadSucceeded ?? false,
+      storageStatus: metadata.storageStatus,
       safeGraphqlMessage: metadata.safeGraphqlMessage,
     },
     { status },
@@ -549,4 +590,38 @@ function decodeBase64Url(value: string) {
   const padded = base64.padEnd(base64.length + ((4 - (base64.length % 4)) % 4), "=");
 
   return Buffer.from(padded, "base64").toString("utf8");
+}
+
+function readFetchErrorStatus(error: unknown) {
+  if (typeof error === "object" && error && "status" in error) {
+    const status = (error as { status?: unknown }).status;
+    return typeof status === "number" ? status : undefined;
+  }
+
+  return undefined;
+}
+
+function readSafeStorageErrorMessage(error: unknown, status?: number) {
+  if (error instanceof Error && error.message) {
+    return status ? `Nhost Storage returned HTTP ${status}: ${error.message}` : error.message;
+  }
+
+  return status ? `Nhost Storage returned HTTP ${status}.` : "Nhost Storage upload failed.";
+}
+
+function classifyStorageUploadError(
+  status: number | undefined,
+  error: unknown,
+): "storage_upload_failed" | "storage_permission_denied" | "storage_bucket_missing" {
+  const message = error instanceof Error ? error.message.toLowerCase() : "";
+
+  if (status === 401 || status === 403) {
+    return "storage_permission_denied";
+  }
+
+  if (status === 404 || message.includes("bucket")) {
+    return "storage_bucket_missing";
+  }
+
+  return "storage_upload_failed";
 }

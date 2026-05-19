@@ -41,7 +41,7 @@ Evidence files for Supplier Passport are stored in Nhost Storage. The `documents
 1. A signed-in owner/editor/admin opens `/[locale]/dashboard/documents`.
 2. The browser sends the active Nhost access token to the server route.
 3. The server verifies the user, confirms their organization membership, uploads the selected file to Nhost Storage, and receives the Nhost file id.
-4. The server inserts metadata into `public.documents` through Hasura GraphQL using the user access token.
+4. The server inserts metadata into `public.documents` through Hasura GraphQL with the server-side admin secret after verifying the user and organization membership.
 5. `documents.file_id` stores the Nhost Storage file id. It is not displayed in the normal UI and must not be treated as public authorization.
 
 ## Controlled Public Document Access

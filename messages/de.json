@@ -477,7 +477,7 @@
     "liveUnavailableMessage": "Ihre Dokumente konnten gerade nicht geladen werden.",
     "emptyLiveMessage": "Es gibt noch keine Live-Nachweisdokumente. Laden Sie Ihr erstes Dokument hoch, um den Datenraum aufzubauen.",
     "uploadMockMessage": "Verbinden Sie Nhost und melden Sie sich an, um echte Nachweisdokumente hochzuladen. Mock-Daten bleiben verfügbar.",
-    "uploadError": "Ihr Dokument konnte gerade nicht hochgeladen werden.",
+    "uploadError": "Dieses Dokument konnte gerade nicht hochgeladen werden.",
     "uploadSuccess": "Nachweisdokument sicher hochgeladen.",
     "workspaceUser": "Workspace-Benutzer",
     "linkMockSuccess": "Nachweis lokal im Mock-Modus verknüpft.",

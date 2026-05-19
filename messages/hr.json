@@ -477,7 +477,7 @@
     "liveUnavailableMessage": "Trenutno ne možemo učitati vaše dokumente.",
     "emptyLiveMessage": "Još nema live dokaznih dokumenata. Učitajte prvi dokument kako biste počeli graditi data room.",
     "uploadMockMessage": "Povežite Nhost i prijavite se za učitavanje stvarnih dokaznih dokumenata. Mock podaci ostaju dostupni.",
-    "uploadError": "Trenutno ne možemo prenijeti vaš dokument.",
+    "uploadError": "Trenutno ne mo?emo u?itati ovaj dokument.",
     "uploadSuccess": "Dokazni dokument je sigurno učitan.",
     "workspaceUser": "Korisnik workspacea",
     "linkMockSuccess": "Dokaz je lokalno povezan u mock modu.",

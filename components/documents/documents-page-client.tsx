@@ -340,12 +340,26 @@ export function DocumentsPageClient({
           });
         }
       }
-      const payload = (await response.json()) as { document?: LiveDocument; error?: string };
+      const payload = (await response.json()) as {
+        document?: LiveDocument;
+        error?: string;
+        category?: string;
+        stage?: string;
+        storageStatus?: number;
+      };
 
       if (!response.ok || !payload.document) {
+        if (process.env.NODE_ENV !== "production") {
+          console.warn("[documents] upload failed", {
+            category: payload.category,
+            stage: payload.stage,
+            storageStatus: payload.storageStatus,
+          });
+        }
+
         setMessage({
           tone: "error",
-          text: payload.error ?? labels.uploadError,
+          text: labels.uploadError,
         });
         return;
       }
