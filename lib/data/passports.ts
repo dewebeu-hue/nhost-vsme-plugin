@@ -7,8 +7,8 @@ import { getNhostGraphqlUrl } from "@/lib/nhost/config";
 import {
   getOrganizationAnswers,
   getQuestionItems,
-  type QuestionAnswerRecord,
 } from "@/lib/data/questionnaire";
+import { calculatePassportReadinessScore } from "@/lib/passport-summary";
 import {
   passportApprovedDocuments,
   passportCompanyProfile,
@@ -74,21 +74,7 @@ export async function calculateReadinessScore(organizationId: string, accessToke
     getOrganizationAnswers(organizationId, accessToken),
   ]);
 
-  if (!items.length) {
-    return 0;
-  }
-
-  const answersByQuestionId = new Map(
-    answers.map((answer) => [answer.question_item_id, answer]),
-  );
-
-  const completedCount = items.reduce((count, item) => {
-    const answer = answersByQuestionId.get(item.id);
-
-    return isAnswerComplete(answer) ? count + 1 : count;
-  }, 0);
-
-  return Math.round((completedCount / items.length) * 100);
+  return calculatePassportReadinessScore(items, answers);
 }
 
 export async function generateSupplierPassport(
@@ -143,10 +129,6 @@ export async function generateSupplierPassport(
   }
 
   return data.insert_supplier_passports_one;
-}
-
-function isAnswerComplete(answer?: QuestionAnswerRecord) {
-  return answer?.status === "completed" || answer?.status === "reviewed";
 }
 
 async function executePassportGraphql<TData>(

@@ -94,7 +94,7 @@ export function PublicSharePage({ passport, documentsRestricted = false }: Publi
             <div className="flex flex-col gap-6">
               <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
                 <div className="flex size-20 shrink-0 items-center justify-center rounded-3xl bg-slate-950 text-xl font-semibold tracking-[0.16em] text-white shadow-lg shadow-slate-300">
-                  ACME
+                  {getCompanyInitials(passport.company.name)}
                 </div>
                 <div>
                   <div className="mb-3 flex flex-wrap items-center gap-2">
@@ -163,7 +163,10 @@ export function PublicSharePage({ passport, documentsRestricted = false }: Publi
             <div className="flex flex-col gap-6 lg:flex-row lg:items-center">
               <ProgressRing value={passport.readinessScore} label={t("readinessScore")} size={156} />
               <div className="grid flex-1 gap-4 md:grid-cols-2">
-                <InfoBlock label={t("industries")} value={passport.company.industries.join(", ")} />
+                <InfoBlock
+                  label={t("industries")}
+                  value={passport.company.industries.length ? passport.company.industries.join(", ") : t("notProvided")}
+                />
                 <InfoBlock label={t("countriesServed")} value={passport.company.countriesServed} />
                 <InfoBlock label={t("employeeCount")} value={passport.company.employeeCount} />
                 <InfoBlock label={t("headquarters")} value={passport.company.headquarters} />
@@ -172,15 +175,19 @@ export function PublicSharePage({ passport, documentsRestricted = false }: Publi
             <div className="mt-6 border-t border-slate-100 pt-5">
               <p className="mb-3 text-sm font-semibold text-slate-950">{t("certifications")}</p>
               <div className="flex flex-wrap gap-2">
-                {passport.company.certifications.map((certification) => (
-                  <Badge
-                    key={certification}
-                    variant="outline"
-                    className="rounded-full border-slate-200 bg-slate-50 px-3 py-1 text-slate-700"
-                  >
-                    {certification}
-                  </Badge>
-                ))}
+                {passport.company.certifications.length ? (
+                  passport.company.certifications.map((certification) => (
+                    <Badge
+                      key={certification}
+                      variant="outline"
+                      className="rounded-full border-slate-200 bg-slate-50 px-3 py-1 text-slate-700"
+                    >
+                      {certification}
+                    </Badge>
+                  ))
+                ) : (
+                  <p className="text-sm font-medium text-slate-500">{t("notProvided")}</p>
+                )}
               </div>
             </div>
           </div>
@@ -255,60 +262,68 @@ export function PublicSharePage({ passport, documentsRestricted = false }: Publi
               </TableRow>
             </TableHeader>
             <TableBody>
-              {passport.documents.map((document) => (
-                <TableRow key={document.id} className="border-slate-100">
-                  <TableCell className="min-w-56 py-4 pl-6 font-semibold text-slate-950">
-                    {document.name}
-                  </TableCell>
-                  <TableCell className="text-slate-600">{document.category}</TableCell>
-                  <TableCell>
-                    <Badge
-                      variant="outline"
-                      className="rounded-full border-slate-200 bg-slate-50 text-slate-700"
-                    >
-                      {document.fileType}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-slate-600">{document.uploaded}</TableCell>
-                  <TableCell className="pr-6 text-right">
-                    <div className="flex justify-end gap-2">
-                      {document.accessUrl && !documentsRestricted ? (
-                        <a
-                          href={document.accessUrl}
-                          target="_blank"
-                          rel="noreferrer"
-                          className={cn(buttonVariants({ variant: "ghost", size: "sm" }))}
-                        >
-                          <Eye data-icon="inline-start" />
-                          {t("view")}
-                        </a>
-                      ) : (
-                        <Button variant="ghost" size="sm" disabled>
-                          <Eye data-icon="inline-start" />
-                          {t("requestAccess")}
-                        </Button>
-                      )}
-                      {document.downloadUrl && !documentsRestricted ? (
-                        <a
-                          href={document.downloadUrl}
-                          className={cn(
-                            buttonVariants({ variant: "outline", size: "sm" }),
-                            "bg-white",
-                          )}
-                        >
-                          <Download data-icon="inline-start" />
-                          {t("download")}
-                        </a>
-                      ) : (
-                        <Button variant="outline" size="sm" className="bg-white" disabled>
-                          <Download data-icon="inline-start" />
-                          {t("download")}
-                        </Button>
-                      )}
-                    </div>
+              {passport.documents.length ? (
+                passport.documents.map((document) => (
+                  <TableRow key={document.id} className="border-slate-100">
+                    <TableCell className="min-w-56 py-4 pl-6 font-semibold text-slate-950">
+                      {document.name}
+                    </TableCell>
+                    <TableCell className="text-slate-600">{document.category}</TableCell>
+                    <TableCell>
+                      <Badge
+                        variant="outline"
+                        className="rounded-full border-slate-200 bg-slate-50 text-slate-700"
+                      >
+                        {document.fileType}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-slate-600">{document.uploaded}</TableCell>
+                    <TableCell className="pr-6 text-right">
+                      <div className="flex justify-end gap-2">
+                        {document.accessUrl && !documentsRestricted ? (
+                          <a
+                            href={document.accessUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            className={cn(buttonVariants({ variant: "ghost", size: "sm" }))}
+                          >
+                            <Eye data-icon="inline-start" />
+                            {t("view")}
+                          </a>
+                        ) : (
+                          <Button variant="ghost" size="sm" disabled>
+                            <Eye data-icon="inline-start" />
+                            {t("requestAccess")}
+                          </Button>
+                        )}
+                        {document.downloadUrl && !documentsRestricted ? (
+                          <a
+                            href={document.downloadUrl}
+                            className={cn(
+                              buttonVariants({ variant: "outline", size: "sm" }),
+                              "bg-white",
+                            )}
+                          >
+                            <Download data-icon="inline-start" />
+                            {t("download")}
+                          </a>
+                        ) : (
+                          <Button variant="outline" size="sm" className="bg-white" disabled>
+                            <Download data-icon="inline-start" />
+                            {t("download")}
+                          </Button>
+                        )}
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={5} className="px-6 py-6 text-sm font-medium text-slate-500">
+                    {t("evidenceAvailableOnRequest")}
                   </TableCell>
                 </TableRow>
-              ))}
+              )}
             </TableBody>
           </Table>
         </section>
@@ -350,6 +365,7 @@ function translateShareDetail(label: string, t: ReturnType<typeof useTranslation
 
 function translateShareSectionTitle(title: string, t: ReturnType<typeof useTranslations<"share">>) {
   const map: Record<string, string> = {
+    "Company overview": t("companyOverview"),
     Environment: t("environment"),
     Social: t("social"),
     Governance: t("governance"),
@@ -365,6 +381,7 @@ function translateShareSectionDescription(
   t: ReturnType<typeof useTranslations<"share">>,
 ) {
   const map: Record<string, string> = {
+    "Company overview": t("companyOverviewDescription"),
     Environment: t("environmentDescription"),
     Social: t("socialDescription"),
     Governance: t("governanceDescription"),
@@ -372,6 +389,15 @@ function translateShareSectionDescription(
   };
 
   return map[title] ?? fallback;
+}
+
+function getCompanyInitials(name: string) {
+  return name
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((word) => word[0]?.toUpperCase())
+    .join("") || "SP";
 }
 
 function translateShareMetricLabel(label: string, t: ReturnType<typeof useTranslations<"share">>) {

@@ -22,6 +22,10 @@ export default async function PassportPage({ params }: PassportPageProps) {
       ...defaultPassportLabels.documentCategories,
       ...source.documentCategories,
     },
+    evidenceMissingBySection: {
+      ...defaultPassportLabels.evidenceMissingBySection,
+      ...source.evidenceMissingBySection,
+    },
   };
 
   return <PassportPageContent labels={labels} />;

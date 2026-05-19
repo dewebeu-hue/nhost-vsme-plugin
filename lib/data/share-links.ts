@@ -13,6 +13,7 @@ import {
   GET_PUBLIC_SHARE_DOCUMENT_ACCESS,
   GET_PUBLIC_SHARE_ORGANIZATION,
   GET_PUBLIC_SHARE_PASSPORT,
+  GET_PUBLIC_SHARE_QUESTIONNAIRE,
   GET_SHARE_LINK_BY_TOKEN,
 } from "@/lib/graphql/queries";
 import { executeHasuraGraphql } from "@/lib/graphql/client";
@@ -22,8 +23,15 @@ import {
   getNhostStorageUrl,
   getShareLinkCookieSecret,
 } from "@/lib/nhost/config";
-import { activeShareLinks, publicSharePassport, type PublicShareDocument } from "@/lib/mock-data";
+import { activeShareLinks, publicSharePassport } from "@/lib/mock-data";
 import type { SupplierPassportRecord } from "@/lib/data/passports";
+import {
+  calculatePassportReadinessScore,
+  createPassportSectionSummaries,
+  type PassportSummaryAnswer,
+  type PassportSummaryQuestion,
+  type PassportSummarySection,
+} from "@/lib/passport-summary";
 
 export type ShareLinkRecord = {
   id: string;
@@ -98,6 +106,12 @@ type PublicPassportResponse = {
 
 type PublicDocumentsResponse = {
   documents: PublicDocumentRecord[];
+};
+
+type PublicQuestionnaireResponse = {
+  question_sections: PassportSummarySection[];
+  question_items: PassportSummaryQuestion[];
+  question_answers: PassportSummaryAnswer[];
 };
 
 type PublicDocumentRecord = {
@@ -196,7 +210,7 @@ export async function getPublicShareByToken(
     return { state: "password" as const, source: "live" as const };
   }
 
-  const [organizationData, passportData, documentsData] = await Promise.all([
+  const [organizationData, passportData, documentsData, questionnaireData] = await Promise.all([
     executeHasuraGraphql<PublicOrganizationResponse>(
       GET_PUBLIC_SHARE_ORGANIZATION,
       { organizationId: shareLink.organization_id },
@@ -218,6 +232,11 @@ export async function getPublicShareByToken(
       },
       { useAdminSecret: true },
     ),
+    executeHasuraGraphql<PublicQuestionnaireResponse>(
+      GET_PUBLIC_SHARE_QUESTIONNAIRE,
+      { organizationId: shareLink.organization_id },
+      { useAdminSecret: true },
+    ),
   ]);
 
   const organization = organizationData.organizations_by_pk;
@@ -229,7 +248,13 @@ export async function getPublicShareByToken(
 
   return {
     state: "ok" as const,
-    share: mapPublicShare(shareLink, organizationData, passport, documentsData.documents),
+    share: mapPublicShare(
+      shareLink,
+      organizationData,
+      passport,
+      documentsData.documents,
+      questionnaireData,
+    ),
     source: "live" as const,
   };
 }
@@ -433,21 +458,44 @@ function mapPublicShare(
   data: PublicOrganizationResponse,
   passport: SupplierPassportRecord,
   documents: PublicDocumentRecord[],
+  questionnaire: PublicQuestionnaireResponse,
 ): typeof publicSharePassport {
   const organization = data.organizations_by_pk;
   const profile = data.company_profiles[0];
-  const companyName = profile?.trade_name || profile?.legal_name || organization?.name || "Supplier";
+  const answersByCode = mapAnswersByQuestionCode(questionnaire);
+  const companyName =
+    readAnswerText(answersByCode.get("company_legal_name")) ||
+    profile?.trade_name ||
+    profile?.legal_name ||
+    organization?.name ||
+    "Supplier";
+  const industryAnswer = readAnswerText(answersByCode.get("company_main_activity"));
   const industries = profile?.industries?.length
     ? profile.industries
-    : organization?.industry
+    : industryAnswer
+      ? [industryAnswer]
+      : organization?.industry
       ? [organization.industry]
       : [];
   const countries = profile?.countries_served?.length
     ? profile.countries_served
-    : organization?.countries_served ?? [];
-  const headquarters = [organization?.headquarters_city, organization?.headquarters_country]
+      : organization?.countries_served ?? [];
+  const headquarters = [
+    readAnswerText(answersByCode.get("company_city")) || organization?.headquarters_city,
+    readAnswerText(answersByCode.get("company_country")) || organization?.headquarters_country,
+  ]
     .filter(Boolean)
     .join(", ");
+  const readinessScore = calculatePassportReadinessScore(
+    questionnaire.question_items,
+    questionnaire.question_answers,
+  );
+  const sections = createPassportSectionSummaries(
+    questionnaire.question_sections,
+    questionnaire.question_items,
+    questionnaire.question_answers,
+    documents,
+  );
 
   return {
     token: shareLink.token,
@@ -456,11 +504,15 @@ function mapPublicShare(
       verified: organization?.is_verified ?? false,
       industries,
       countriesServed: countries.length ? countries.join(", ") : "Not provided",
-      employeeCount: profile?.employee_count_range || organization?.employee_count_range || "Not provided",
+      employeeCount:
+        readAnswerText(answersByCode.get("employees_total_headcount")) ||
+        profile?.employee_count_range ||
+        organization?.employee_count_range ||
+        "Not provided",
       headquarters: headquarters || "Not provided",
-      certifications: profile?.certifications ?? [],
+      certifications: createCertificationList(answersByCode, profile?.certifications ?? []),
     },
-    readinessScore: passport.readiness_score,
+    readinessScore,
     lastUpdated: formatDate(passport.generated_at ?? passport.updated_at),
     sharedWith: shareLink.buyer_email || shareLink.buyer_name || "Buyer",
     sharedOn: formatDate(shareLink.created_at),
@@ -471,39 +523,20 @@ function mapPublicShare(
       ...(shareLink.expires_at ? [`Expires: ${formatDate(shareLink.expires_at)}`] : []),
     ],
     heroText: `${companyName} has shared their VSME / ESG profile with you. This information is provided securely and is read-only.`,
-    sections: [
-      {
-        title: "Environment",
-        description: "Strong management of environmental impact.",
-        metricLabel: "Completion",
-        metricValue: `${passport.readiness_score}%`,
-        actionLabel: "View details",
-      },
-      {
-        title: "Social",
-        description: "Commitment to people, health & safety, and communities.",
-        metricLabel: "Completion",
-        metricValue: `${passport.readiness_score}%`,
-        actionLabel: "View details",
-      },
-      {
-        title: "Governance",
-        description: "Robust policies, ethics, and risk management.",
-        metricLabel: "Completion",
-        metricValue: `${passport.readiness_score}%`,
-        actionLabel: "View details",
-      },
-      {
-        title: "Evidence summary",
-        description: "Documents reviewed and approved for sharing.",
-        metricLabel: "Evidence files",
-        metricValue: String(documents.length),
-        actionLabel: "View all evidence",
-      },
-    ],
-    documents: documents
-      .filter((document) => isDocumentBuyerVisible(shareLink, document))
-      .map((document) => mapPublicDocument(document, shareLink.token)),
+    sections: sections.map((section) => ({
+      title: section.title,
+      description: getPublicSectionDescription(section.title),
+      metricLabel: section.title === "Evidence summary" ? "Evidence files" : "Completion",
+      metricValue:
+        section.title === "Evidence summary"
+          ? String(section.linkedDocuments)
+          : `${section.completion}%`,
+      actionLabel:
+        section.title === "Evidence summary"
+          ? "Evidence documents are available on request"
+          : "View details",
+    })),
+    documents: [],
     details: [
       { label: "Shared on", value: formatDate(shareLink.created_at) },
       { label: "Shared with", value: shareLink.buyer_email || shareLink.buyer_name || "Buyer" },
@@ -515,18 +548,66 @@ function mapPublicShare(
   } as typeof publicSharePassport;
 }
 
-function mapPublicDocument(document: PublicDocumentRecord, token: string): PublicShareDocument {
-  const accessUrl = `/api/share/${encodeURIComponent(token)}/documents/${encodeURIComponent(document.id)}`;
+function mapAnswersByQuestionCode(questionnaire: PublicQuestionnaireResponse) {
+  const itemsById = new Map(questionnaire.question_items.map((item) => [item.id, item]));
+  const answersByCode = new Map<string, PassportSummaryAnswer>();
 
-  return {
-    id: document.id,
-    name: document.file_name,
-    category: document.document_type,
-    fileType: "PDF",
-    uploaded: formatDate(document.created_at),
-    accessUrl,
-    downloadUrl: `${accessUrl}?download=1`,
+  for (const answer of questionnaire.question_answers) {
+    const item = itemsById.get(answer.question_item_id);
+
+    if (item) {
+      answersByCode.set(item.code, answer);
+    }
+  }
+
+  return answersByCode;
+}
+
+function readAnswerText(answer: PassportSummaryAnswer | undefined) {
+  const value = answer?.value;
+
+  if (typeof value === "string") {
+    return value.trim();
+  }
+
+  if (typeof value === "number") {
+    return String(value);
+  }
+
+  return "";
+}
+
+function createCertificationList(
+  answersByCode: Map<string, PassportSummaryAnswer>,
+  profileCertifications: string[],
+) {
+  const certificationCodes = [
+    ["cert_iso_9001", "ISO 9001"],
+    ["cert_iso_14001", "ISO 14001"],
+    ["cert_iso_45001", "ISO 45001"],
+    ["cert_iso_50001", "ISO 50001"],
+  ] as const;
+  const certifications = certificationCodes
+    .filter(([code]) => answersByCode.get(code)?.value === true)
+    .map(([, label]) => label);
+  const otherRating = readAnswerText(answersByCode.get("cert_esg_rating"));
+  const industrySpecific = readAnswerText(answersByCode.get("cert_industry_specific"));
+
+  return [...profileCertifications, ...certifications, otherRating, industrySpecific].filter(
+    (value, index, values): value is string => Boolean(value) && values.indexOf(value) === index,
+  );
+}
+
+function getPublicSectionDescription(title: string) {
+  const descriptions: Record<string, string> = {
+    "Company overview": "Supplier identity and reporting basis.",
+    Environment: "VSME-aligned environmental and evidence readiness.",
+    Social: "Workforce, health, safety, and training readiness.",
+    Governance: "Governance, ethics, and supplier due-diligence readiness.",
+    "Evidence summary": "Documents reviewed and approved for sharing.",
   };
+
+  return descriptions[title] ?? "Buyer-safe Supplier Passport summary.";
 }
 
 function isDocumentBuyerVisible(

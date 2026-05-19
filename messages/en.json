@@ -386,13 +386,14 @@
       "Expiring soon": "Expiring soon"
     },
     "documentTypes": {
-      "Certificate": "Certificate",
-      "Utility Bill": "Utility Bill",
-      "Policy": "Policy",
-      "Report": "Report",
-      "Training": "Training",
-      "Safety": "Safety",
-      "Questionnaire": "Customer Questionnaire",
+      "Certificate": "Certifications",
+      "Utility Bill": "Energy",
+      "Policy": "Environmental policy",
+      "Waste Report": "Waste",
+      "Report": "Other report",
+      "Training": "Workforce / training",
+      "Safety": "Health and safety",
+      "Questionnaire": "Supplier information",
       "Other": "Other"
     }
   },
@@ -472,13 +473,14 @@
     "noDocumentsTitle": "No documents yet",
     "noDocumentsText": "Upload your first evidence document to start building your Supplier Passport.",
     "documentTypes": {
-      "Certificate": "Certificate",
-      "Utility Bill": "Utility Bill",
-      "Policy": "Policy",
-      "Report": "Report",
-      "Training": "Training",
-      "Safety": "Safety",
-      "Questionnaire": "Customer Questionnaire",
+      "Certificate": "Certifications",
+      "Utility Bill": "Energy",
+      "Policy": "Environmental policy",
+      "Waste Report": "Waste",
+      "Report": "Other report",
+      "Training": "Workforce / training",
+      "Safety": "Health and safety",
+      "Questionnaire": "Supplier information",
       "Other": "Other"
     },
     "uploadedBy": "uploaded by {name}",
@@ -1038,8 +1040,11 @@
     "permissioned": "Access is permissioned and this shared passport is read-only.",
     "overviewTitle": "Company overview",
     "overviewText": "A structured VSME / ESG profile prepared by the supplier and shared for buyer review.",
+    "companyOverviewDescription": "Supplier identity and reporting basis.",
     "secureTagline": "Secure. Structured. Trusted.",
     "certifications": "Key certifications",
+    "notProvided": "Not provided yet",
+    "evidenceAvailableOnRequest": "Evidence is available on request or when explicitly shared by the supplier.",
     "approvedDocuments": "Approved documents",
     "approvedDescription": "Evidence files reviewed and approved for this shared passport.",
     "approvedOnly": "Approved only",
@@ -1213,11 +1218,27 @@
       "Environmental policy approved": "Environmental policy approved"
     },
     "documentCategories": {
-      "Environment": "Environment",
-      "Governance": "Governance",
-      "Social": "Social",
-      "Quality Management": "Quality Management",
-      "ESG Overview": "ESG Overview"
+      "certificate": "Certifications",
+      "utility_bill": "Energy",
+      "policy": "Environmental policy",
+      "waste_report": "Waste",
+      "safety": "Health and safety",
+      "customer_questionnaire": "Supplier information",
+      "report": "Other report",
+      "training": "Workforce / training",
+      "other": "Other"
+    },
+    "evidenceMissingBySection": {
+      "company_basics": "Company profile evidence is missing",
+      "employees": "Workforce evidence is missing",
+      "energy": "Energy evidence is missing",
+      "fuel": "Fuel evidence is missing",
+      "waste": "Waste documentation is missing",
+      "environmental_policies": "Environmental policy evidence is missing",
+      "health_safety": "Health and safety evidence is missing",
+      "certifications": "Certification documents are missing",
+      "governance": "Governance evidence is missing",
+      "supplier_information": "Supplier information evidence is missing"
     }
   },
   "passportShare": {

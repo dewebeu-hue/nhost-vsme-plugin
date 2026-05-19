@@ -43,6 +43,13 @@ import {
   getFreshBrowserNhostSession,
 } from "@/lib/nhost/client";
 import { defaultPassportLabels, type PassportLabels } from "@/lib/passport-labels";
+import {
+  calculatePassportReadinessScore,
+  createMissingDataItems,
+  createMissingEvidenceItems,
+  createPassportReadinessModules,
+  createPassportSectionSummaries,
+} from "@/lib/passport-summary";
 
 type SupplierPassportPayload = {
   configured?: boolean;
@@ -143,7 +150,7 @@ export function PassportPageClient({
   );
   const [sections, setSections] = useState<PassportSection[]>([]);
   const [approvedDocuments, setApprovedDocuments] = useState<PassportApprovedDocument[]>([]);
-  const [missingDataChecklist] = useState<PassportChecklistItem[]>([]);
+  const [missingDataChecklist, setMissingDataChecklist] = useState<PassportChecklistItem[]>([]);
   const [message, setMessage] = useState<MessageState | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [isShareOpen, setIsShareOpen] = useState(false);
@@ -191,12 +198,31 @@ export function PassportPageClient({
 
         if (organizationResponse.ok && organizationPayload.organization) {
           const organization = organizationPayload.organization;
+          const questionSections = questionnairePayload.sections ?? [];
+          const questionItems = questionnairePayload.items ?? [];
+          const questionAnswers = questionnairePayload.answers ?? [];
+          const documents = questionnairePayload.documents ?? [];
 
           setOrganizationId(organization.id);
           setCompanyProfile(createCompanyProfile(organization, questionnairePayload, labels));
-          setReadiness(createReadiness(questionnairePayload));
-          setSections(createPassportSections(questionnairePayload));
-          setApprovedDocuments(createApprovedDocuments(questionnairePayload.documents ?? []));
+          setReadiness({
+            score: calculatePassportReadinessScore(questionItems, questionAnswers),
+            modules: createPassportReadinessModules(questionSections, questionItems, questionAnswers),
+          });
+          setSections(
+            createPassportSectionSummaries(questionSections, questionItems, questionAnswers, documents),
+          );
+          setApprovedDocuments(createApprovedDocuments(documents));
+          setMissingDataChecklist([
+            ...createMissingEvidenceItems(
+              questionSections,
+              questionItems,
+              questionAnswers,
+              documents,
+              labels.evidenceMissingBySection,
+            ),
+            ...createMissingDataItems(questionSections, questionItems, questionAnswers),
+          ].slice(0, 5));
         }
 
         if (passportResponse.ok && payload.configured !== false && payload.organization) {
@@ -217,11 +243,8 @@ export function PassportPageClient({
   }, [labels]);
 
   const readinessView = useMemo(
-    () => ({
-      ...readiness,
-      score: passport?.readiness_score ?? readiness.score,
-    }),
-    [passport, readiness],
+    () => readiness,
+    [readiness],
   );
 
   async function handleGeneratePassport() {
@@ -445,107 +468,6 @@ function createCompanyProfile(
   };
 }
 
-function createReadiness(questionnaire: QuestionnairePayload) {
-  const sections = questionnaire.sections ?? [];
-  const items = questionnaire.items ?? [];
-  const answers = questionnaire.answers ?? [];
-  const modules = [
-    createModule("Basic Information", ["company_basics"], sections, items, answers),
-    createModule(
-      "Environment",
-      ["energy", "fuel", "waste", "environmental_policies", "certifications"],
-      sections,
-      items,
-      answers,
-    ),
-    createModule("Social", ["employees", "health_safety"], sections, items, answers),
-    createModule(
-      "Governance",
-      ["governance", "supplier_information"],
-      sections,
-      items,
-      answers,
-    ),
-  ];
-  const answeredCount = countAnsweredQuestions(items, answers);
-
-  return {
-    score: calculatePercent(answeredCount, items.length),
-    modules,
-  };
-}
-
-function createPassportSections(questionnaire: QuestionnairePayload): PassportSection[] {
-  const sections = questionnaire.sections ?? [];
-  const items = questionnaire.items ?? [];
-  const answers = questionnaire.answers ?? [];
-
-  return [
-    createPassportSection("Company overview", ["company_basics"], sections, items, answers),
-    createPassportSection(
-      "Environment",
-      ["energy", "fuel", "waste", "environmental_policies", "certifications"],
-      sections,
-      items,
-      answers,
-    ),
-    createPassportSection("Social", ["employees", "health_safety"], sections, items, answers),
-    createPassportSection(
-      "Governance",
-      ["governance", "supplier_information"],
-      sections,
-      items,
-      answers,
-    ),
-    {
-      title: "Evidence summary",
-      completion: calculatePercent(
-        (questionnaire.documents ?? []).filter((document) => document.status === "reviewed").length,
-        (questionnaire.documents ?? []).length,
-      ),
-      approvedAnswers: 0,
-      linkedDocuments: (questionnaire.documents ?? []).filter(
-        (document) => document.status === "reviewed",
-      ).length,
-      visibility: "Shared",
-    },
-  ];
-}
-
-function createPassportSection(
-  title: string,
-  sectionCodes: string[],
-  sections: QuestionSectionRecord[],
-  items: QuestionItemRecord[],
-  answers: QuestionAnswerRecord[],
-): PassportSection {
-  const scopedItems = getItemsForSectionCodes(sectionCodes, sections, items);
-  const answered = countAnsweredQuestions(scopedItems, answers);
-
-  return {
-    title,
-    completion: calculatePercent(answered, scopedItems.length),
-    approvedAnswers: answered,
-    linkedDocuments: 0,
-    visibility: "Shared",
-  };
-}
-
-function createModule(
-  label: string,
-  sectionCodes: string[],
-  sections: QuestionSectionRecord[],
-  items: QuestionItemRecord[],
-  answers: QuestionAnswerRecord[],
-): PassportReadinessModule {
-  const scopedItems = getItemsForSectionCodes(sectionCodes, sections, items);
-
-  return {
-    label,
-    value: calculatePercent(countAnsweredQuestions(scopedItems, answers), scopedItems.length),
-  };
-}
-
 function createApprovedDocuments(documents: EvidenceDocumentRecord[]): PassportApprovedDocument[] {
   return documents
     .filter((document) => document.status === "reviewed")
@@ -601,48 +523,6 @@ function createCertificationList(answersByCode: Map<string, QuestionAnswerRecord
   );
 }
 
-function getItemsForSectionCodes(
-  sectionCodes: string[],
-  sections: QuestionSectionRecord[],
-  items: QuestionItemRecord[],
-) {
-  const sectionIds = new Set(
-    sections.filter((section) => sectionCodes.includes(section.code)).map((section) => section.id),
-  );
-
-  return items.filter((item) => sectionIds.has(item.section_id));
-}
-
-function countAnsweredQuestions(items: QuestionItemRecord[], answers: QuestionAnswerRecord[]) {
-  const answersByQuestion = new Map(answers.map((answer) => [answer.question_item_id, answer]));
-
-  return items.filter((item) => isAnswerComplete(answersByQuestion.get(item.id))).length;
-}
-
-function isAnswerComplete(answer: QuestionAnswerRecord | undefined) {
-  if (!answer || answer.status === "not_started") {
-    return false;
-  }
-
-  return hasAnswerValue(answer.value) || answer.status === "completed" || answer.status === "reviewed";
-}
-
-function hasAnswerValue(value: unknown) {
-  if (value === null || value === undefined) {
-    return false;
-  }
-
-  if (Array.isArray(value)) {
-    return value.length > 0;
-  }
-
-  if (typeof value === "string") {
-    return value.trim().length > 0;
-  }
-
-  return true;
-}
-
 function readAnswerText(answer: QuestionAnswerRecord | undefined) {
   const value = answer?.value;
 
@@ -655,14 +535,6 @@ function readAnswerText(answer: QuestionAnswerRecord | undefined) {
   }
 
   return "";
-}
-
-function calculatePercent(answered: number, total: number) {
-  if (total <= 0) {
-    return 0;
-  }
-
-  return Math.round((answered / total) * 100);
 }
 
 type ShareLinkFormValues = {

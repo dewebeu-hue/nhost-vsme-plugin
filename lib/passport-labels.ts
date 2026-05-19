@@ -78,6 +78,7 @@ export type PassportLabels = {
   settingValues: Record<string, string>;
   checklist: Record<string, string>;
   documentCategories: Record<string, string>;
+  evidenceMissingBySection: Record<string, string>;
 };
 
 export const defaultPassportLabels: PassportLabels = {
@@ -188,10 +189,26 @@ export const defaultPassportLabels: PassportLabels = {
     "Environmental policy approved": "Environmental policy approved",
   },
   documentCategories: {
-    Environment: "Environment",
-    Governance: "Governance",
-    Social: "Social",
-    "Quality Management": "Quality Management",
-    "ESG Overview": "ESG Overview",
+    certificate: "Certifications",
+    utility_bill: "Energy",
+    policy: "Environmental policy",
+    waste_report: "Waste",
+    safety: "Health and safety",
+    customer_questionnaire: "Supplier information",
+    report: "Other report",
+    training: "Workforce / training",
+    other: "Other",
+  },
+  evidenceMissingBySection: {
+    company_basics: "Company profile evidence is missing",
+    employees: "Workforce evidence is missing",
+    energy: "Energy evidence is missing",
+    fuel: "Fuel evidence is missing",
+    waste: "Waste documentation is missing",
+    environmental_policies: "Environmental policy evidence is missing",
+    health_safety: "Health and safety evidence is missing",
+    certifications: "Certification documents are missing",
+    governance: "Governance evidence is missing",
+    supplier_information: "Supplier information evidence is missing",
   },
 };

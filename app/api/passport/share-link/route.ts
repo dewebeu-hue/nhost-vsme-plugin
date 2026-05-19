@@ -1,6 +1,7 @@
 import { randomBytes } from "node:crypto";
 import { NextResponse } from "next/server";
 import { getNhostAuthUrl, getNhostGraphqlUrl } from "@/lib/nhost/config";
+import { calculatePassportReadinessScore } from "@/lib/passport-summary";
 
 export const runtime = "nodejs";
 
@@ -128,15 +129,16 @@ const getReadinessQuery = `
   query GetPassportShareReadiness($organizationId: uuid!) {
     question_items {
       id
+      section_id
+      code
+      title
     }
     question_answers(
-      where: {
-        organization_id: { _eq: $organizationId }
-        status: { _in: ["completed", "reviewed"] }
-      }
+      where: { organization_id: { _eq: $organizationId } }
     ) {
-      id
       question_item_id
+      value
+      status
     }
   }
 `;
@@ -436,8 +438,8 @@ async function getOrCreatePassport(input: { organizationId: string; userId: stri
 
 async function calculateReadinessScore(organizationId: string) {
   const readinessResult = await executeAdminGraphql<{
-    question_items: Array<{ id: string }>;
-    question_answers: Array<{ id: string; question_item_id: string }>;
+    question_items: Array<{ id: string; section_id: string; code: string; title: string }>;
+    question_answers: Array<{ question_item_id: string; value: unknown; status: string }>;
   }>({
     operationName: "GetPassportShareReadiness",
     query: getReadinessQuery,
@@ -448,11 +450,10 @@ async function calculateReadinessScore(organizationId: string) {
     return 0;
   }
 
-  const completedQuestionIds = new Set(
-    readinessResult.data.question_answers.map((answer) => answer.question_item_id),
+  return calculatePassportReadinessScore(
+    readinessResult.data.question_items,
+    readinessResult.data.question_answers,
   );
-
-  return Math.round((completedQuestionIds.size / readinessResult.data.question_items.length) * 100);
 }
 
 async function createShareLink(input: { organizationId: string; passportId: string; userId: string }) {

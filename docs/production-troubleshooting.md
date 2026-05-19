@@ -251,11 +251,38 @@ Likely causes:
 - `question_items` is tracked, but only Energy rows exist.
 - The deployed app is correct, but Hasura is reading old seed data.
 
-Fix:
+Why Vercel deploy does not fix this by itself:
 
-- Apply the expanded taxonomy migration/seed to the live Nhost/Hasura database.
-- The expanded taxonomy is data-only and uses `on conflict (code) do update`, so it can be rerun without deleting saved answers.
-- Confirm every active section has question rows:
+- Vercel builds and deploys the Next.js app only.
+- The expanded questionnaire taxonomy is database seed/migration data.
+- Unless a separate Nhost migration step is configured, production Nhost/Hasura will keep its existing `question_sections` and `question_items` rows.
+
+Safe production apply path:
+
+1. In Nhost, open the production project.
+2. Take a backup/export before changing live data. At minimum export these tables:
+   - `question_sections`
+   - `question_items`
+   - `question_answers`
+3. Open the production Hasura Console for the Nhost project.
+4. Go to Data / SQL.
+5. Open this repo file locally:
+   - `nhost/migrations/default/0003_expand_questionnaire_taxonomy/up.sql`
+6. Paste the full contents into Hasura SQL and run it once.
+7. If your workflow uses seeds rather than data migrations, run either equivalent seed file instead:
+   - `nhost/seeds/0002_expand_questionnaire_taxonomy.sql`
+   - `nhost/seeds/default/0002_expand_questionnaire_taxonomy.sql`
+8. Do not run the `down.sql` file in production. It is intentionally a no-op for this data-only migration.
+
+Rerun safety:
+
+- The expanded taxonomy SQL is safe to rerun.
+- `question_sections` uses `on conflict (code) do update`.
+- `question_items` uses `on conflict (code) do update`.
+- Existing `question_answers` are not deleted.
+- Existing Energy answers remain attached because stable question `code` values are updated in place rather than recreated.
+
+Verification before applying:
 
 ```sql
 select
@@ -266,6 +293,62 @@ from question_sections qs
 left join question_items qi on qi.section_id = qs.id
 group by qs.code, qs.title, qs.sort_order
 order by qs.sort_order;
+```
+
+Verification after applying:
+
+```sql
+select
+  qs.code,
+  qs.title,
+  count(qi.id) as question_count
+from question_sections qs
+left join question_items qi on qi.section_id = qs.id
+group by qs.code, qs.title, qs.sort_order
+order by qs.sort_order;
+```
+
+Confirm there are 100 active questionnaire items:
+
+```sql
+select count(*) as total_question_items
+from question_items;
+```
+
+Confirm the section ids used by the app are present:
+
+```sql
+select id, code, title, sort_order
+from question_sections
+where code in (
+  'company_basics',
+  'employees',
+  'energy',
+  'fuel',
+  'waste',
+  'environmental_policies',
+  'health_safety',
+  'certifications',
+  'governance',
+  'supplier_information'
+)
+order by sort_order;
+```
+
+Confirm saved answers were preserved:
+
+```sql
+select
+  qa.organization_id,
+  qi.code as question_code,
+  qs.code as section_code,
+  qa.status,
+  qa.updated_at
+from question_answers qa
+join question_items qi on qi.id = qa.question_item_id
+join question_sections qs on qs.id = qi.section_id
+order by qa.updated_at desc
+limit 50;
 ```
 
 Expected production counts after the expanded seed:
@@ -284,6 +367,16 @@ Expected production counts after the expanded seed:
 | `supplier_information` | 9 |
 
 If these counts are present but the UI still shows `0/0`, confirm `GET /api/questionnaire` returns `items` and that the latest Vercel deployment is active.
+
+Manual UI check after applying:
+
+1. Open `/hr/dashboard/questionnaire` as a real logged-in production user.
+2. Confirm each active section shows a non-zero total.
+3. Open Company Basics, Employees, Fuel, Waste, Environmental Policies, Health & Safety, Certifications, Governance, and Supplier Information.
+4. Answer one question.
+5. Click Save & Continue.
+6. Press F5.
+7. Confirm the answer remains and completion changes.
 
 ## Documents Upload Fails
 
@@ -376,6 +469,84 @@ Fix:
 - Confirm `document_links` row exists when using all-linked visibility.
 - Confirm document organization matches share link organization.
 - Confirm Nhost Storage access strategy from `docs/nhost-storage.md`.
+
+## Faza 2.8 End-to-End Supplier Passport QA
+
+Run this after deploying the final Faza 2.8 changes to Vercel.
+
+Questionnaire taxonomy verification:
+
+```sql
+select
+  qs.code,
+  count(qi.id) as question_count
+from question_sections qs
+left join question_items qi on qi.section_id = qs.id
+where qs.code in (
+  'company_basics',
+  'employees',
+  'energy',
+  'fuel',
+  'waste',
+  'environmental_policies',
+  'health_safety',
+  'certifications',
+  'governance',
+  'supplier_information'
+)
+group by qs.code, qs.sort_order
+order by qs.sort_order;
+```
+
+Expected counts:
+
+| Section code | Expected questions |
+| --- | ---: |
+| `company_basics` | 12 |
+| `employees` | 10 |
+| `energy` | 15 |
+| `fuel` | 8 |
+| `waste` | 9 |
+| `environmental_policies` | 10 |
+| `health_safety` | 9 |
+| `certifications` | 9 |
+| `governance` | 9 |
+| `supplier_information` | 9 |
+
+Document evidence verification:
+
+```sql
+select column_name, data_type
+from information_schema.columns
+where table_name = 'documents'
+  and column_name in ('organization_id', 'file_id', 'file_name', 'document_type', 'status')
+order by ordinal_position;
+
+select document_type, status, count(*) as document_count
+from documents
+group by document_type, status
+order by document_type, status;
+```
+
+Production test checklist:
+
+1. Sign in as a real production supplier user.
+2. Open `/hr/dashboard` and confirm the real organization name appears.
+3. Open `/hr/dashboard/questionnaire` and confirm no active section shows `0/0`.
+4. Answer questions in Company Basics, Energy, Certifications, and Governance.
+5. Save, press F5, and confirm answers and completion persist.
+6. Open `/hr/dashboard/documents`.
+7. Upload a small evidence file and choose an evidence category such as Energy or Certifications.
+8. Press F5 and confirm the document and category remain visible.
+9. Open `/hr/dashboard/passport` and confirm the Passport uses real organization/questionnaire/document data or neutral fallbacks.
+10. Confirm missing evidence entries are based on real answered sections without matching documents.
+11. Open `/hr/dashboard/share`, create or copy the share link, and press F5 to confirm it persists.
+12. Open the public `/hr/passport/[token]` link in an incognito window.
+13. Confirm the public Passport shows a buyer-safe summary only.
+14. Confirm no private document file URLs, storage file IDs, user/member data, raw sensitive answers, or admin/debug values are visible.
+15. Repeat quick route checks for `/en` and `/de`.
+
+No extra production database action is required for document evidence categories if the `documents.document_type` column already exists. The app uses that existing field for evidence readiness.
 
 ## Safe Logging Rules
 

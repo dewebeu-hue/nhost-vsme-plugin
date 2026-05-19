@@ -1010,6 +1010,7 @@ export type EvidenceRoomDocument = {
     | "Certificate"
     | "Utility Bill"
     | "Policy"
+    | "Waste Report"
     | "Report"
     | "Training"
     | "Safety"

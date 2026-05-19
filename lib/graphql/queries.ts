@@ -203,6 +203,31 @@ export const GET_PUBLIC_SHARE_DOCUMENTS = `
   }
 `;
 
+export const GET_PUBLIC_SHARE_QUESTIONNAIRE = `
+  query GetPublicShareQuestionnaire($organizationId: uuid!) {
+    question_sections(order_by: { sort_order: asc }) {
+      id
+      code
+      title
+    }
+    question_items(order_by: { sort_order: asc }) {
+      id
+      section_id
+      code
+      title
+      evidence_required
+    }
+    question_answers(
+      where: { organization_id: { _eq: $organizationId } }
+      order_by: { updated_at: desc }
+    ) {
+      question_item_id
+      value
+      status
+    }
+  }
+`;
+
 export const GET_PUBLIC_SHARE_DOCUMENT_ACCESS = `
   query GetPublicShareDocumentAccess($documentId: uuid!, $organizationId: uuid!) {
     documents_by_pk(id: $documentId) {

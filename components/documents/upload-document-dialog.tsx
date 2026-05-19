@@ -44,7 +44,7 @@ const documentTypes = [
   { value: "certificate", label: "Certificate" },
   { value: "utility_bill", label: "Utility Bill" },
   { value: "policy", label: "Policy" },
-  { value: "waste_report", label: "Report" },
+  { value: "waste_report", label: "Waste Report" },
   { value: "safety", label: "Safety" },
   { value: "customer_questionnaire", label: "Questionnaire" },
   { value: "report", label: "Report" },

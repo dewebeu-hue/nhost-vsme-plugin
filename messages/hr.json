@@ -386,13 +386,14 @@
       "Expiring soon": "Uskoro istječe"
     },
     "documentTypes": {
-      "Certificate": "Certifikat",
-      "Utility Bill": "Račun za energiju/usluge",
-      "Policy": "Politika",
-      "Report": "Izvještaj",
-      "Training": "Edukacija",
-      "Safety": "Sigurnost",
-      "Questionnaire": "Upitnik kupca",
+      "Certificate": "Certifikati",
+      "Utility Bill": "Energija",
+      "Policy": "Okoli?ne politike",
+      "Waste Report": "Otpad",
+      "Report": "Ostali izvje?taji",
+      "Training": "Zaposlenici / edukacija",
+      "Safety": "Zdravlje i sigurnost",
+      "Questionnaire": "Podaci o dobavlja?ima",
       "Other": "Ostalo"
     }
   },
@@ -487,13 +488,14 @@
     "recently": "Nedavno",
     "notLinked": "Još nije povezano",
     "documentTypes": {
-      "Certificate": "Certifikat",
-      "Utility Bill": "Račun za energiju/usluge",
-      "Policy": "Politika",
-      "Report": "Izvještaj",
-      "Training": "Edukacija",
-      "Safety": "Sigurnost",
-      "Questionnaire": "Upitnik kupca",
+      "Certificate": "Certifikati",
+      "Utility Bill": "Energija",
+      "Policy": "Okoli?ne politike",
+      "Waste Report": "Otpad",
+      "Report": "Ostali izvje?taji",
+      "Training": "Zaposlenici / edukacija",
+      "Safety": "Zdravlje i sigurnost",
+      "Questionnaire": "Podaci o dobavlja?ima",
       "Other": "Ostalo"
     },
     "statuses": {
@@ -1038,8 +1040,11 @@
     "permissioned": "Pristup je permissioned i ovaj shared passport je read-only.",
     "overviewTitle": "Pregled tvrtke",
     "overviewText": "Strukturirani VSME / ESG profil koji je pripremio dobavljac i podijelio za pregled kupca.",
+    "companyOverviewDescription": "Identitet dobavljača i osnova izvještavanja.",
     "secureTagline": "Sigurno. Strukturirano. Pouzdano.",
     "certifications": "Ključni certifikati",
+    "notProvided": "Još nije uneseno",
+    "evidenceAvailableOnRequest": "Dokazna dokumentacija dostupna je na zahtjev ili kada je dobavljač izričito podijeli.",
     "approvedDocuments": "Odobreni dokumenti",
     "approvedDescription": "Dokazni dokumenti pregledani i odobreni za ovaj shared passport.",
     "approvedOnly": "Samo odobreno",
@@ -1213,11 +1218,27 @@
       "Environmental policy approved": "Okolišna politika odobrena"
     },
     "documentCategories": {
-      "Environment": "Okoliš",
-      "Governance": "Upravljanje",
-      "Social": "Društvo",
-      "Quality Management": "Upravljanje kvalitetom",
-      "ESG Overview": "ESG pregled"
+      "certificate": "Certifikati",
+      "utility_bill": "Energija",
+      "policy": "Okoli?ne politike",
+      "waste_report": "Otpad",
+      "safety": "Zdravlje i sigurnost",
+      "customer_questionnaire": "Podaci o dobavlja?ima",
+      "report": "Ostali izvje?taji",
+      "training": "Zaposlenici / edukacija",
+      "other": "Ostalo"
+    },
+    "evidenceMissingBySection": {
+      "company_basics": "Nedostaje dokazna dokumentacija za profil tvrtke",
+      "employees": "Nedostaje dokazna dokumentacija za zaposlenike",
+      "energy": "Nedostaje dokazna dokumentacija za energiju",
+      "fuel": "Nedostaje dokazna dokumentacija za gorivo",
+      "waste": "Nedostaje dokumentacija o otpadu",
+      "environmental_policies": "Nedostaje dokazna dokumentacija za okoli?ne politike",
+      "health_safety": "Nedostaje dokazna dokumentacija za zdravlje i sigurnost",
+      "certifications": "Nedostaju dokumenti certifikata",
+      "governance": "Nedostaje dokazna dokumentacija za upravljanje",
+      "supplier_information": "Nedostaje dokazna dokumentacija za podatke o dobavlja?ima"
     }
   },
   "passportShare": {

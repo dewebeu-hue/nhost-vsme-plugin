@@ -125,7 +125,7 @@ const documentTypeLabels: Record<LiveDocumentType, EvidenceRoomDocument["type"]>
   certificate: "Certificate",
   utility_bill: "Utility Bill",
   policy: "Policy",
-  waste_report: "Report",
+  waste_report: "Waste Report",
   safety: "Safety",
   customer_questionnaire: "Questionnaire",
   other: "Other",
