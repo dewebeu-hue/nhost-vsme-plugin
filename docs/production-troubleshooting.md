@@ -897,6 +897,79 @@ limit 20;
 
 The app uses the existing `documents.expires_at` field as the certificate expiry date. No separate `expiry_date` column is required. Dashboard warnings are calculated from real dates: expired certificates are flagged when `expires_at` is before today, critical warnings appear within 30 days, and upcoming warnings appear within 90 days.
 
+## Faza 2.9 Final Public Passport and Share-Link QA
+
+Use this checklist after deploying public Passport/share-link changes to production.
+
+Share link lifecycle:
+
+- Open `/hr/dashboard/share` as an authenticated organization member.
+- Confirm the public Supplier Passport URL is visible.
+- Copy the link and open it in an incognito browser.
+- Confirm the warning explains that anyone with the link can view the public summary.
+- Confirm the warning explains that private evidence files are not publicly downloadable from the public page.
+- If deactivate/regenerate controls are enabled, deactivate the current link and confirm the old URL shows the safe unavailable state.
+- Regenerate a link and confirm the new URL works while the old URL remains unavailable.
+
+Public Passport valid-token QA:
+
+- Open a valid `/en/passport/[token]`, `/hr/passport/[token]`, and `/de/passport/[token]` in incognito.
+- Confirm the page loads without login.
+- Confirm the organization name is the real supplier organization.
+- Confirm readiness score, readiness label, section statuses, evidence summary, certificate status, and disclaimer are visible.
+- Confirm wording uses `VSME-aligned` or equivalent wording and does not claim audit, certification, approval, or legal compliance.
+- Confirm certificate status is neutral or based on real `documents.expires_at` data.
+
+Invalid, inactive, and expired token QA:
+
+- Open `/en/passport/invalid-token-test`, `/hr/passport/invalid-token-test`, and `/de/passport/invalid-token-test`.
+- Confirm each route shows the safe unavailable state.
+- Confirm invalid, inactive, and expired tokens do not fall back to mock Passport data.
+- Confirm no server error page is shown.
+
+Public data safety checklist:
+
+- No private Nhost Storage URL is visible.
+- No raw storage file ID is visible.
+- No private document download link is visible unless an explicit public document-sharing flow is enabled.
+- No `organization_members`, user/member names, user IDs, or auth data are visible.
+- No raw sensitive questionnaire answers are rendered publicly; public pages should show summary/status data.
+- No admin/debug payload is visible.
+- No full share token, JWT, cookie, password, password hash, or secret is logged.
+
+Share-link verification SQL:
+
+```sql
+select
+  id,
+  organization_id,
+  is_active,
+  expires_at,
+  created_at,
+  updated_at
+from share_links
+order by created_at desc
+limit 20;
+```
+
+Public document safety spot check:
+
+```sql
+select
+  id,
+  organization_id,
+  file_name,
+  document_type,
+  status,
+  expires_at,
+  created_at
+from documents
+order by created_at desc
+limit 20;
+```
+
+Expected result: the public Passport page may summarize evidence availability and certificate expiry status, but it must not render `file_id`, storage paths, private URLs, internal notes, user/member data, or raw document content.
+
 ## Safe Logging Rules
 
 Allowed categories:

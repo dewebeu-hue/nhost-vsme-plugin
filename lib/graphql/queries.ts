@@ -146,7 +146,6 @@ export const GET_PUBLIC_SHARE_ORGANIZATION = `
       id
       name
       slug
-      vat_id
       industry
       employee_count_range
       headquarters_city
@@ -158,7 +157,6 @@ export const GET_PUBLIC_SHARE_ORGANIZATION = `
       id
       legal_name
       trade_name
-      website
       industries
       certifications
       employee_count_range
@@ -232,7 +230,6 @@ export const GET_PUBLIC_SHARE_QUESTIONNAIRE = `
     ) {
       id
       question_item_id
-      value
       status
     }
   }

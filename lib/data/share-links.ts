@@ -27,9 +27,7 @@ import {
 import { activeShareLinks, publicSharePassport } from "@/lib/mock-data";
 import type { SupplierPassportRecord } from "@/lib/data/passports";
 import {
-  calculatePassportReadinessScore,
   passportEvidenceTypesBySectionCode,
-  type PassportSummaryAnswer,
   type PassportSummaryQuestion,
   type PassportSummarySection,
 } from "@/lib/passport-summary";
@@ -82,7 +80,6 @@ type PublicOrganizationResponse = {
     id: string;
     name: string;
     slug: string;
-    vat_id: string | null;
     industry: string | null;
     employee_count_range: string | null;
     headquarters_city: string | null;
@@ -93,7 +90,6 @@ type PublicOrganizationResponse = {
   company_profiles: Array<{
     legal_name: string | null;
     trade_name: string | null;
-    website: string | null;
     industries: string[] | null;
     certifications: string[] | null;
     employee_count_range: string | null;
@@ -116,7 +112,13 @@ type PublicDocumentLinksResponse = {
 type PublicQuestionnaireResponse = {
   question_sections: PassportSummarySection[];
   question_items: PassportSummaryQuestion[];
-  question_answers: PassportSummaryAnswer[];
+  question_answers: PublicQuestionnaireAnswer[];
+};
+
+type PublicQuestionnaireAnswer = {
+  id?: string;
+  question_item_id: string;
+  status?: string | null;
 };
 
 type PublicDocumentRecord = {
@@ -182,15 +184,15 @@ export async function getPublicShareByToken(
   token: string,
   options: { verificationCookieValue?: string } = {},
 ) {
-  if (token === "acme-manufacturing") {
-    return {
-      state: "ok" as const,
-      share: publicSharePassport,
-      source: "mock" as const,
-    };
-  }
-
   if (!isShareLinksBackendConfigured()) {
+    if (token === "acme-manufacturing") {
+      return {
+        state: "ok" as const,
+        share: publicSharePassport,
+        source: "mock" as const,
+      };
+    }
+
     return null;
   }
 
@@ -270,7 +272,7 @@ export async function getPublicShareByToken(
 
 async function loadPublicShareDocumentsWithLinks(
   documents: PublicDocumentRecord[],
-  answers: PassportSummaryAnswer[],
+  answers: PublicQuestionnaireAnswer[],
 ) {
   const documentIds = documents.map((document) => document.id);
   const questionAnswerIds = answers
@@ -505,31 +507,26 @@ function mapPublicShare(
 ): typeof publicSharePassport {
   const organization = data.organizations_by_pk;
   const profile = data.company_profiles[0];
-  const answersByCode = mapAnswersByQuestionCode(questionnaire);
   const companyName =
-    readAnswerText(answersByCode.get("company_legal_name")) ||
     profile?.trade_name ||
     profile?.legal_name ||
     organization?.name ||
     "Supplier";
-  const industryAnswer = readAnswerText(answersByCode.get("company_main_activity"));
   const industries = profile?.industries?.length
     ? profile.industries
-    : industryAnswer
-      ? [industryAnswer]
-      : organization?.industry
+    : organization?.industry
       ? [organization.industry]
       : [];
   const countries = profile?.countries_served?.length
     ? profile.countries_served
       : organization?.countries_served ?? [];
   const headquarters = [
-    readAnswerText(answersByCode.get("company_city")) || organization?.headquarters_city,
-    readAnswerText(answersByCode.get("company_country")) || organization?.headquarters_country,
+    organization?.headquarters_city,
+    organization?.headquarters_country,
   ]
     .filter(Boolean)
     .join(", ");
-  const readinessScore = calculatePassportReadinessScore(
+  const readinessScore = calculatePublicReadinessScore(
     questionnaire.question_items,
     questionnaire.question_answers,
   );
@@ -548,17 +545,16 @@ function mapPublicShare(
       industries,
       countriesServed: countries.length ? countries.join(", ") : "Not provided",
       employeeCount:
-        readAnswerText(answersByCode.get("employees_total_headcount")) ||
         profile?.employee_count_range ||
         organization?.employee_count_range ||
         "Not provided",
       headquarters: headquarters || "Not provided",
-      certifications: createCertificationList(answersByCode, profile?.certifications ?? []),
+      certifications: profile?.certifications ?? [],
     },
     readinessScore,
     certificateStatus: getPublicCertificateStatus(documents),
     lastUpdated: formatDate(passport.generated_at ?? passport.updated_at),
-    sharedWith: shareLink.buyer_email || shareLink.buyer_name || "Buyer",
+    sharedWith: shareLink.buyer_name || "Buyer",
     sharedOn: formatDate(shareLink.created_at),
     expiresOn: shareLink.expires_at ? formatDate(shareLink.expires_at) : "No expiry",
     statusChips: [
@@ -585,7 +581,7 @@ function mapPublicShare(
     documents: [],
     details: [
       { label: "Shared on", value: formatDate(shareLink.created_at) },
-      { label: "Shared with", value: shareLink.buyer_email || shareLink.buyer_name || "Buyer" },
+      { label: "Shared with", value: shareLink.buyer_name || "Buyer" },
       { label: "Access", value: "Read-only" },
       { label: "Security", value: shareLink.password_hash ? "Password protected" : "Read-only" },
       { label: "Expires", value: shareLink.expires_at ? formatDate(shareLink.expires_at) : "No expiry" },
@@ -597,7 +593,7 @@ function mapPublicShare(
 function createPublicPassportSectionSummaries(
   sections: PassportSummarySection[],
   questions: PassportSummaryQuestion[],
-  answers: PassportSummaryAnswer[],
+  answers: PublicQuestionnaireAnswer[],
   documents: ReturnType<typeof mapPublicDocumentsForSummary>,
 ) {
   const answerByQuestion = new Map(answers.map((answer) => [answer.question_item_id, answer]));
@@ -666,7 +662,7 @@ function getPublicSectionTitle(code: string, fallback: string) {
   return titles[code] ?? fallback;
 }
 
-function isPublicAnswerComplete(answer: PassportSummaryAnswer | undefined) {
+function isPublicAnswerComplete(answer: PublicQuestionnaireAnswer | undefined) {
   if (!answer || answer.status === "not_started") {
     return false;
   }
@@ -675,27 +671,23 @@ function isPublicAnswerComplete(answer: PassportSummaryAnswer | undefined) {
     return true;
   }
 
-  return hasPublicAnswerValue(answer.value);
-}
-
-function hasPublicAnswerValue(value: unknown) {
-  if (value === null || value === undefined) {
-    return false;
-  }
-
-  if (Array.isArray(value)) {
-    return value.length > 0;
-  }
-
-  if (typeof value === "string") {
-    return value.trim().length > 0;
-  }
-
-  return true;
+  return false;
 }
 
 function isPublicEvidenceAvailable(status: string) {
   return ["reviewed", "linked", "uploaded", "needs_review", "expiring_soon"].includes(status);
+}
+
+function calculatePublicReadinessScore(
+  questions: PassportSummaryQuestion[],
+  answers: PublicQuestionnaireAnswer[],
+) {
+  const answerByQuestion = new Map(answers.map((answer) => [answer.question_item_id, answer]));
+  const completedCount = questions.filter((question) =>
+    isPublicAnswerComplete(answerByQuestion.get(question.id)),
+  ).length;
+
+  return calculatePublicPercent(completedCount, questions.length);
 }
 
 function getPublicCertificateStatus(documents: PublicDocumentRecord[]) {
@@ -745,56 +737,6 @@ function mapPublicDocumentsForSummary(documents: PublicDocumentRecord[]) {
       (link) => link.question_answer_id,
     ),
   }));
-}
-
-function mapAnswersByQuestionCode(questionnaire: PublicQuestionnaireResponse) {
-  const itemsById = new Map(questionnaire.question_items.map((item) => [item.id, item]));
-  const answersByCode = new Map<string, PassportSummaryAnswer>();
-
-  for (const answer of questionnaire.question_answers) {
-    const item = itemsById.get(answer.question_item_id);
-
-    if (item) {
-      answersByCode.set(item.code, answer);
-    }
-  }
-
-  return answersByCode;
-}
-
-function readAnswerText(answer: PassportSummaryAnswer | undefined) {
-  const value = answer?.value;
-
-  if (typeof value === "string") {
-    return value.trim();
-  }
-
-  if (typeof value === "number") {
-    return String(value);
-  }
-
-  return "";
-}
-
-function createCertificationList(
-  answersByCode: Map<string, PassportSummaryAnswer>,
-  profileCertifications: string[],
-) {
-  const certificationCodes = [
-    ["cert_iso_9001", "ISO 9001"],
-    ["cert_iso_14001", "ISO 14001"],
-    ["cert_iso_45001", "ISO 45001"],
-    ["cert_iso_50001", "ISO 50001"],
-  ] as const;
-  const certifications = certificationCodes
-    .filter(([code]) => answersByCode.get(code)?.value === true)
-    .map(([, label]) => label);
-  const otherRating = readAnswerText(answersByCode.get("cert_esg_rating"));
-  const industrySpecific = readAnswerText(answersByCode.get("cert_industry_specific"));
-
-  return [...profileCertifications, ...certifications, otherRating, industrySpecific].filter(
-    (value, index, values): value is string => Boolean(value) && values.indexOf(value) === index,
-  );
 }
 
 function getPublicSectionDescription(title: string) {
