@@ -657,6 +657,25 @@ If `/api/document-links` returns `invalid_link_payload`, inspect the browser Net
 
 `hasDocumentId: false` means the browser did not send the selected `documents.id` UUID, sent it under the wrong field name, or sent a storage/file identifier instead of the document metadata row ID. The evidence-link modal must receive the selected document row's `documents.id` value and the POST body must use the `documentId` field exactly. Do not send `file_id`, storage IDs, question codes, or UI labels as `documentId`.
 
+If the Network payload contains a visible UUID-like `documentId` but the API still reports `hasDocumentId: false`, verify the client/API UUID guard accepts the live database UUID format. The application should require UUID-shaped IDs (`8-4-4-4-12` hex groups), but it must not reject valid document row IDs just because the UUID version is not in an older v1-v5 range.
+
+Use the canonical document metadata row ID from `documents.id`:
+
+```sql
+select
+  id,
+  organization_id,
+  file_name,
+  document_type,
+  file_id,
+  created_at
+from documents
+order by created_at desc
+limit 20;
+```
+
+`id` is the value expected as `/api/document-links` `documentId`. `file_id` is the Nhost Storage file identifier and must not be used as `documentId`.
+
 Expected Data Room link flow:
 
 1. Open `/[locale]/dashboard/documents`.
