@@ -38,6 +38,7 @@ export default async function DashboardRouteLayout({
     renewal: shell("renewal"),
     workspace: shell("workspace"),
     account: shell("account"),
+    logOut: shell("logOut"),
     needHelp: shell("needHelp"),
     helpCenter: shell("helpCenter"),
     openNavigation: shell("openNavigation"),

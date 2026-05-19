@@ -176,7 +176,7 @@ type QuestionnairePageClientProps = {
   labels?: QuestionnaireLabels;
 };
 
-const activeSectionCode = "energy";
+const defaultActiveSectionCode = "energy";
 const documentStatusLabels: Record<LiveDocumentStatus, EvidenceRoomStatus> = {
   uploaded: "Uploaded",
   linked: "Linked",
@@ -203,6 +203,7 @@ export function QuestionnairePageClient({
   const [isSaving, setIsSaving] = useState(false);
   const [message, setMessage] = useState<MessageState | null>(null);
   const [organizationId, setOrganizationId] = useState<string | null>(null);
+  const [selectedSectionCode, setSelectedSectionCode] = useState(defaultActiveSectionCode);
   const [sections, setSections] = useState<QuestionnaireSectionProgress[]>(
     questionnaireSectionProgress,
   );
@@ -251,7 +252,7 @@ export function QuestionnairePageClient({
       }
 
       try {
-        let response = await fetch(`/api/questionnaire?sectionCode=${activeSectionCode}`, {
+        let response = await fetch(`/api/questionnaire?sectionCode=${selectedSectionCode}`, {
           method: "GET",
           headers: {
             authorization: `Bearer ${session.accessToken}`,
@@ -262,7 +263,7 @@ export function QuestionnairePageClient({
           const refreshedSession = await forceRefreshBrowserNhostSession();
 
           if (refreshedSession?.accessToken) {
-            response = await fetch(`/api/questionnaire?sectionCode=${activeSectionCode}`, {
+            response = await fetch(`/api/questionnaire?sectionCode=${selectedSectionCode}`, {
               method: "GET",
               headers: {
                 authorization: `Bearer ${refreshedSession.accessToken}`,
@@ -301,12 +302,13 @@ export function QuestionnairePageClient({
           return;
         }
 
-        const liveItems = payload.questions ?? payload.items ?? [];
-        const nextValues = valuesFromAnswers(liveItems, payload.answers ?? []);
+        const allLiveItems = payload.items ?? payload.questions ?? [];
+        const activeLiveItems = payload.questions ?? allLiveItems;
+        const nextValues = valuesFromAnswers(allLiveItems, payload.answers ?? []);
         const nextDocumentLinks = payload.documentLinks ?? [];
         const nextDocuments = (payload.documents ?? []).map(mapLiveDocument);
         const nextQuestions = mapLiveQuestions(
-          liveItems,
+          activeLiveItems,
           payload.answers ?? [],
           nextValues,
           nextDocumentLinks,
@@ -314,14 +316,15 @@ export function QuestionnairePageClient({
         );
         const nextSections = mapLiveSections(
           payload.sections ?? [],
-          liveItems,
+          allLiveItems,
           payload.answers ?? [],
+          selectedSectionCode,
         );
         const currentSection = payload.sections?.find(
-          (section) => section.code === activeSectionCode,
+          (section) => section.code === selectedSectionCode,
         );
         const currentProgress = nextSections.find(
-          (section) => section.id === activeSectionCode,
+          (section) => section.id === selectedSectionCode,
         );
 
         if (!nextQuestions.length || !currentSection) {
@@ -337,7 +340,7 @@ export function QuestionnairePageClient({
         setLiveSections(payload.sections ?? []);
         setSections(nextSections);
         setQuestions(nextQuestions);
-        setLiveQuestions(liveItems);
+        setLiveQuestions(allLiveItems);
         setLiveAnswers(payload.answers ?? []);
         setOrganizationDocuments(nextDocuments);
         setDocumentLinks(nextDocumentLinks);
@@ -379,7 +382,7 @@ export function QuestionnairePageClient({
     return () => {
       cancelled = true;
     };
-  }, [labels, locale, router]);
+  }, [labels, locale, router, selectedSectionCode]);
 
   const overall = useMemo(() => {
     const completed = sections.reduce((sum, section) => sum + section.completed, 0);
@@ -504,10 +507,20 @@ export function QuestionnairePageClient({
 
       if (payload.saved?.length) {
         const nextAnswers = mergeAnswers(liveAnswers, payload.saved);
-        const nextSections = mapLiveSections(liveSections, liveQuestions, nextAnswers);
-        const currentProgress = nextSections.find((section) => section.id === activeSectionCode);
-        const nextQuestions = mapLiveQuestions(
+        const nextSections = mapLiveSections(
+          liveSections,
           liveQuestions,
+          nextAnswers,
+          selectedSectionCode,
+        );
+        const currentProgress = nextSections.find((section) => section.id === selectedSectionCode);
+        const activeLiveItems = liveQuestions.filter((question) =>
+          liveSections.some(
+            (section) => section.code === selectedSectionCode && section.id === question.section_id,
+          ),
+        );
+        const nextQuestions = mapLiveQuestions(
+          activeLiveItems,
           nextAnswers,
           answerValues,
           documentLinks,
@@ -521,7 +534,7 @@ export function QuestionnairePageClient({
               (sum, section) => sum + section.completed,
               0,
             ),
-            section_code: activeSectionCode,
+            section_code: selectedSectionCode,
             section_total: currentProgress?.total ?? 0,
             section_answered: currentProgress?.completed ?? 0,
           });
@@ -534,10 +547,10 @@ export function QuestionnairePageClient({
           ...current,
           completion: calculatePercent(
             currentProgress?.completed ?? 0,
-            currentProgress?.total ?? liveQuestions.length,
+            currentProgress?.total ?? activeLiveItems.length,
           ),
           completedQuestions: currentProgress?.completed ?? 0,
-          totalQuestions: currentProgress?.total ?? liveQuestions.length,
+          totalQuestions: currentProgress?.total ?? activeLiveItems.length,
         }));
       }
 
@@ -719,6 +732,7 @@ export function QuestionnairePageClient({
           completedQuestions={overall.completedQuestions}
           totalQuestions={overall.totalQuestions}
           sections={sections}
+          onSelectSection={setSelectedSectionCode}
           labels={labels}
         />
 
@@ -903,7 +917,7 @@ function mapLiveQuestions(
         prompt,
         status,
         type: "yes-no",
-        value: value === false ? "No" : "Yes",
+        value: value === true ? "Yes" : value === false ? "No" : "",
       };
     }
 
@@ -957,6 +971,7 @@ function mapLiveSections(
   sectionRecords: QuestionSectionRecord[],
   questionItems: QuestionItemRecord[],
   answers: QuestionAnswerRecord[],
+  activeSectionCode: string,
 ): QuestionnaireSectionProgress[] {
   return sectionRecords.map((section) => {
     const completion = calculateSectionCompletion(section, questionItems, answers);

@@ -13,9 +13,11 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
   setRequestLocale(locale);
   const t = await getTranslations("dashboard.overview");
   const statuses = await getTranslations("statuses");
+  const shell = await getTranslations("dashboard.shell");
 
   const labels: DashboardOverviewLabels = {
     title: t("welcome", { name: "{name}" }),
+    account: shell("account"),
     subtitle: t("subtitle"),
     overallReadiness: t("overallReadiness"),
     readinessDescription: t("readinessDescription"),

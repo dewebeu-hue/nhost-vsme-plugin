@@ -13,6 +13,7 @@ type QuestionnaireSectionListProps = {
   completedQuestions: number;
   totalQuestions: number;
   sections: QuestionnaireSectionProgress[];
+  onSelectSection?: (sectionId: string) => void;
   labels?: QuestionnaireLabels;
 };
 
@@ -21,6 +22,7 @@ export function QuestionnaireSectionList({
   completedQuestions,
   totalQuestions,
   sections,
+  onSelectSection,
   labels = defaultQuestionnaireLabels,
 }: QuestionnaireSectionListProps) {
   return (
@@ -50,6 +52,7 @@ export function QuestionnaireSectionList({
             <button
               key={section.id}
               type="button"
+              onClick={() => onSelectSection?.(section.id)}
               className={cn(
                 "flex w-full items-center justify-between gap-3 rounded-xl px-3 py-3 text-left transition-colors",
                 section.isActive

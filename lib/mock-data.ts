@@ -846,7 +846,7 @@ export type QuestionnaireEnergyQuestion = QuestionnaireQuestionEvidence &
       prompt: string;
       status: QuestionnaireAnswerStatus;
       type: "yes-no";
-      value: "Yes" | "No";
+      value: "Yes" | "No" | "";
     }
   | {
       id: string;

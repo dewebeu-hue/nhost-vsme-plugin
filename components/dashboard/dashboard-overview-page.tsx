@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { ActiveShareLinksCard } from "@/components/dashboard/active-share-links-card";
 import { BuyerRequestsCard } from "@/components/dashboard/buyer-requests-card";
 import { MissingDataSummaryCard } from "@/components/dashboard/missing-data-summary-card";
@@ -12,6 +15,7 @@ import {
   defaultDashboardOverviewLabels,
   type DashboardOverviewLabels,
 } from "@/lib/dashboard-labels";
+import { getFreshBrowserNhostSession } from "@/lib/nhost/client";
 import {
   dashboardActiveShareLinks,
   dashboardBuyerRequests,
@@ -33,10 +37,39 @@ export function DashboardOverviewPage({
   labels = defaultDashboardOverviewLabels,
   localePrefix = "",
 }: DashboardOverviewPageProps) {
+  const [welcomeName, setWelcomeName] = useState(labels.account);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadUserName() {
+      const session = await getFreshBrowserNhostSession();
+      const user = session?.user as
+        | {
+            displayName?: string | null;
+            email?: string | null;
+            metadata?: { displayName?: string; name?: string; fullName?: string };
+          }
+        | undefined;
+
+      if (!user || cancelled) {
+        return;
+      }
+
+      setWelcomeName(getUserSafeLabel(user, labels.account));
+    }
+
+    void loadUserName();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [labels.account]);
+
   return (
     <div className="mx-auto flex w-full max-w-[1600px] flex-col gap-6">
       <PageHeader
-        title={`${labels.title.replace("{name}", dashboardOverview.userName)} 👋`}
+        title={`${labels.title.replace("{name}", welcomeName)} 👋`}
         subtitle={labels.subtitle}
       />
 
@@ -83,4 +116,19 @@ export function DashboardOverviewPage({
       </section>
     </div>
   );
+}
+
+function getUserSafeLabel(
+  user: {
+    displayName?: string | null;
+    email?: string | null;
+    metadata?: { displayName?: string; name?: string; fullName?: string };
+  },
+  fallbackLabel: string,
+) {
+  const metadataName =
+    user.metadata?.displayName || user.metadata?.fullName || user.metadata?.name;
+  const emailLocalPart = user.email?.split("@")[0];
+
+  return user.displayName || metadataName || emailLocalPart || fallbackLabel;
 }

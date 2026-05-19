@@ -17,6 +17,7 @@ export type DashboardShellLabels = {
   renewal: string;
   workspace: string;
   account: string;
+  logOut: string;
   needHelp: string;
   helpCenter: string;
   openNavigation: string;
@@ -41,6 +42,7 @@ export const defaultDashboardShellLabels: DashboardShellLabels = {
   renewal: "Renewal",
   workspace: "Workspace",
   account: "Account",
+  logOut: "Log out",
   needHelp: "Need help?",
   helpCenter: "Visit our Help Center",
   openNavigation: "Open navigation",
@@ -49,6 +51,7 @@ export const defaultDashboardShellLabels: DashboardShellLabels = {
 
 export type DashboardOverviewLabels = {
   title: string;
+  account: string;
   subtitle: string;
   overallReadiness: string;
   readinessDescription: string;
@@ -85,6 +88,7 @@ export type DashboardOverviewLabels = {
 
 export const defaultDashboardOverviewLabels: DashboardOverviewLabels = {
   title: "Welcome back, {name}",
+  account: "Account",
   subtitle: "Here's an overview of your VSME readiness and recent activity.",
   overallReadiness: "Overall readiness",
   readinessDescription: "Your current VSME readiness snapshot.",

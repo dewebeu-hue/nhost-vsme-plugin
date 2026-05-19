@@ -36,7 +36,7 @@ export function DashboardTopbar({ labels }: DashboardTopbarProps) {
           <Button variant="outline" size="icon" aria-label={labels.notifications}>
             <Bell />
           </Button>
-          <DashboardUserAvatar fallbackLabel={labels.account} />
+          <DashboardUserAvatar fallbackLabel={labels.account} logoutLabel={labels.logOut} />
         </div>
       </div>
     </header>

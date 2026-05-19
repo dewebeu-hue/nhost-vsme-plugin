@@ -1,0 +1,1 @@
+-- Data-only questionnaire taxonomy migration. Intentionally no-op to avoid deleting saved answers.

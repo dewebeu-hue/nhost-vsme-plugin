@@ -50,9 +50,9 @@ Use this checklist before founder demos, buyer walkthroughs, and pilot calls.
 
 - `/en/dashboard/questionnaire`, `/hr/dashboard/questionnaire`, and `/de/dashboard/questionnaire` load.
 - Question sections load from Hasura in live mode.
-- Energy questions load from Hasura in live mode.
+- Questions load from Hasura across all active VSME/Supplier Passport sections in live mode.
 - Existing answers load for the current organization.
-- Save Energy answers.
+- Save answers in at least Energy, Waste, Workforce, and Governance.
 - Refresh the page and confirm answers persist.
 - Confirm `question_answers.value` stores JSON values.
 - Confirm completed/reviewed statuses count toward Passport readiness.

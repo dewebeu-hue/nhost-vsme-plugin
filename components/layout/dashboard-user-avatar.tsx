@@ -1,14 +1,21 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { LogOut } from "lucide-react";
+import { useLocale } from "next-intl";
+import { useRouter } from "next/navigation";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { getFreshBrowserNhostSession } from "@/lib/nhost/client";
+import { getBrowserNhostClient, getFreshBrowserNhostSession } from "@/lib/nhost/client";
 
 type DashboardUserAvatarProps = {
   fallbackLabel: string;
+  logoutLabel: string;
 };
 
-export function DashboardUserAvatar({ fallbackLabel }: DashboardUserAvatarProps) {
+export function DashboardUserAvatar({ fallbackLabel, logoutLabel }: DashboardUserAvatarProps) {
+  const locale = useLocale();
+  const router = useRouter();
+  const [isOpen, setIsOpen] = useState(false);
   const [initials, setInitials] = useState(createInitials(fallbackLabel));
 
   useEffect(() => {
@@ -47,10 +54,57 @@ export function DashboardUserAvatar({ fallbackLabel }: DashboardUserAvatarProps)
     };
   }, [fallbackLabel]);
 
+  async function handleSignOut() {
+    const nhost = getBrowserNhostClient();
+
+    if (nhost) {
+      const session = nhost.getUserSession();
+
+      try {
+        if (session?.refreshToken) {
+          await nhost.auth.signOut({ refreshToken: session.refreshToken });
+        }
+      } finally {
+        nhost.clearSession();
+      }
+    }
+
+    setIsOpen(false);
+    router.push(`/${locale}/login`);
+    router.refresh();
+  }
+
   return (
-    <Avatar className="size-10 border border-slate-200">
-      <AvatarFallback>{initials}</AvatarFallback>
-    </Avatar>
+    <div className="relative">
+      <button
+        type="button"
+        className="rounded-full focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
+        aria-haspopup="menu"
+        aria-expanded={isOpen}
+        onClick={() => setIsOpen((current) => !current)}
+      >
+        <Avatar className="size-10 border border-slate-200">
+          <AvatarFallback>{initials}</AvatarFallback>
+        </Avatar>
+      </button>
+
+      {isOpen ? (
+        <div
+          role="menu"
+          className="absolute right-0 mt-3 w-44 rounded-lg border border-slate-200 bg-white p-1 shadow-lg"
+        >
+          <button
+            type="button"
+            role="menuitem"
+            className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+            onClick={() => void handleSignOut()}
+          >
+            <LogOut className="size-4" />
+            {logoutLabel}
+          </button>
+        </div>
+      ) : null}
+    </div>
   );
 }
 

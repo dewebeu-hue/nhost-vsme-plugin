@@ -71,7 +71,7 @@ Do not swap service URLs: `NEXT_PUBLIC_NHOST_AUTH_URL` must look like `https://<
 - Schema migration is applied.
 - Questionnaire seed is applied.
 - `question_sections` contains seeded sections.
-- `question_items` contains seeded Energy questions.
+- `question_items` contains the expanded VSME/Supplier Passport questionnaire taxonomy.
 - All public MVP tables are tracked.
 - Required object/array relationships are tracked.
 - Hasura `user` role exists.
@@ -86,7 +86,7 @@ Do not swap service URLs: `NEXT_PUBLIC_NHOST_AUTH_URL` must look like `https://<
 - Demo organization exists, or onboarding flow is ready to create it.
 - Demo user is an `organization_members.owner`.
 - Demo company profile exists.
-- Energy questionnaire seed exists.
+- Expanded VSME/Supplier Passport questionnaire seed exists.
 - Optional demo documents are uploaded through the app, not manually exposed publicly.
 - Optional demo share link is created from the app.
 

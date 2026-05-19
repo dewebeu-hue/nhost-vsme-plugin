@@ -112,7 +112,7 @@ Do not translate these terms unless explicitly required by a future localization
 - Configure Nhost Auth.
 - Apply the Hasura/PostgreSQL schema for organizations, questionnaire, documents, passports, share links, notes, and audit events.
 - Use `docs/nhost-schema.md` as the MVP schema readiness checklist.
-- Seed questionnaire sections and Energy questions.
+- Seed expanded VSME/Supplier Passport questionnaire sections and questions.
 - Set environment variables in `.env.local`.
 - Configure Hasura permissions from `docs/hasura-permissions.md`.
 - Configure Nhost Storage access from `docs/nhost-storage.md`.
@@ -223,7 +223,7 @@ The real Nhost workflow for pilot validation is:
 1. Sign up or log in through Nhost Auth.
 2. Complete onboarding.
 3. Confirm `organizations`, `organization_members`, and `company_profiles` rows are created.
-4. Open questionnaire and save Energy answers through Hasura GraphQL.
+4. Open questionnaire and save answers across multiple VSME/Supplier Passport sections through Hasura GraphQL.
 5. Refresh and confirm `question_answers` persisted.
 6. Upload a document through Nhost Storage.
 7. Confirm `documents.file_id` stores the Nhost Storage file id.

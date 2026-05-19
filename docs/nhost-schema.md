@@ -8,7 +8,9 @@ Supplier Passport uses Nhost PostgreSQL exposed through Hasura GraphQL. The init
 Questionnaire seed data lives in:
 
 - `nhost/seeds/0001_seed_questionnaire.sql`
+- `nhost/seeds/0002_expand_questionnaire_taxonomy.sql`
 - `nhost/seeds/default/0001_seed.sql`
+- `nhost/seeds/default/0002_expand_questionnaire_taxonomy.sql`
 
 ## Tables
 
@@ -95,7 +97,7 @@ The seed creates these `question_sections` codes:
 - `governance`
 - `supplier_information`
 
-The seed also creates the eight Energy questions used by the current questionnaire UI.
+The expanded taxonomy migration/seed creates 100 VSME-aligned and Supplier Passport buyer-readiness questions across all active sections. It is intentionally data-only and upserts by stable `question_items.code`, so existing saved answers remain attached where question codes already existed.
 
 ## Permissions
 
