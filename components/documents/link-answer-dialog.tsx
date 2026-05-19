@@ -99,6 +99,9 @@ export function LinkAnswerDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl rounded-2xl border border-slate-200 bg-white p-0 shadow-2xl shadow-slate-950/10">
         <form onSubmit={handleSubmit}>
+          {selectedIds.map((selectedId) => (
+            <input key={selectedId} type="hidden" name="questionItemIds" value={selectedId} />
+          ))}
           <DialogHeader className="border-b border-slate-100 px-6 py-5">
             <DialogTitle className="text-xl font-semibold tracking-tight text-slate-950">
               {labels.linkDialogTitle}

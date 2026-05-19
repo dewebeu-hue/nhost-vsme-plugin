@@ -644,6 +644,18 @@ order by dl.created_at desc;
 
 Expected result: documents selected in the data room should have `organization_id` equal to the signed-in user's `organization_members.organization_id`, and the mismatch detector should return zero rows. If an old document row belongs to a different organization, do not relink it automatically; upload it again under the correct organization or reassign it manually only after confirming ownership.
 
+If `/api/document-links` returns `invalid_link_payload`, inspect the browser Network Payload. The expected request body is:
+
+```json
+{
+  "action": "link",
+  "documentId": "<document uuid>",
+  "questionItemIds": ["<question_items.id uuid>"]
+}
+```
+
+`selectedQuestionItemCount: 0` means the browser did not send selected questionnaire item IDs, or it sent them under an unexpected field. The modal should store `question_items.id` values in selection state and send them as `questionItemIds`; question codes such as `cert_iso_50001` are display labels only.
+
 Certificate expiry verification:
 
 ```sql

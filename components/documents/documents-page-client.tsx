@@ -457,6 +457,14 @@ export function DocumentsPageClient({
     setMessage(null);
 
     try {
+      if (process.env.NODE_ENV !== "production") {
+        console.info("[documents] evidence link request", {
+          hasDocumentId: Boolean(documentToLink.id),
+          selectedQuestionItemCount: questionItemIds.length,
+          firstSelectedQuestionItemIdPresent: Boolean(questionItemIds[0]),
+        });
+      }
+
       const response = await fetch("/api/document-links", {
         method: "POST",
         headers: {
@@ -465,10 +473,9 @@ export function DocumentsPageClient({
         },
         body: JSON.stringify({
           action: "link",
-          userId: session.user.id,
-          organizationId,
           documentId: documentToLink.id,
           questionItemIds,
+          selectedQuestionItemIds: questionItemIds,
           currentDocumentStatus: documentToLink.status,
         }),
       });

@@ -7,10 +7,11 @@ export const runtime = "nodejs";
 
 type DocumentLinksPayload = {
   action?: unknown;
-  organizationId?: unknown;
   documentId?: unknown;
   questionAnswerId?: unknown;
+  questionAnswerIds?: unknown;
   questionItemIds?: unknown;
+  selectedQuestionItemIds?: unknown;
   currentDocumentStatus?: unknown;
 };
 
@@ -58,6 +59,9 @@ type DocumentLinksErrorMetadata = {
   hasDocumentOrganizationId?: boolean;
   hasMembership?: boolean;
   documentBelongsToCurrentOrganization?: boolean;
+  hasDocumentId?: boolean;
+  hasQuestionItemIds?: boolean;
+  firstSelectedQuestionItemIdPresent?: boolean;
   selectedQuestionItemCount?: number;
   foundQuestionItemCount?: number;
   answerOrganizationMatches?: boolean;
@@ -220,13 +224,21 @@ export async function POST(request: Request) {
 
     if (action === "link") {
       const documentId = readString(payload.documentId);
-      const questionItemIds = readUuidArray(payload.questionItemIds);
+      const questionItemIds = readIdArray(
+        payload.questionItemIds ?? payload.selectedQuestionItemIds ?? payload.questionAnswerIds,
+      );
 
       if (!isUuid(documentId) || !questionItemIds.length) {
         return documentLinksError("invalid_link_payload", "validation", 400, {
           hasUserId: true,
           hasCurrentOrganizationId: true,
           hasMembership: true,
+          hasDocumentId: isUuid(documentId),
+          hasQuestionItemIds:
+            Array.isArray(payload.questionItemIds) ||
+            Array.isArray(payload.selectedQuestionItemIds) ||
+            Array.isArray(payload.questionAnswerIds),
+          firstSelectedQuestionItemIdPresent: questionItemIds.length > 0,
           selectedQuestionItemCount: questionItemIds.length,
         });
       }
@@ -753,6 +765,9 @@ function documentLinksError(
     hasCurrentOrganizationId: metadata.hasCurrentOrganizationId ?? false,
     hasDocumentOrganizationId: metadata.hasDocumentOrganizationId ?? false,
     hasMembership: metadata.hasMembership ?? false,
+    hasDocumentId: metadata.hasDocumentId,
+    hasQuestionItemIds: metadata.hasQuestionItemIds,
+    firstSelectedQuestionItemIdPresent: metadata.firstSelectedQuestionItemIdPresent,
     documentBelongsToCurrentOrganization: metadata.documentBelongsToCurrentOrganization,
     selectedQuestionItemCount: metadata.selectedQuestionItemCount,
     foundQuestionItemCount: metadata.foundQuestionItemCount,
@@ -770,6 +785,9 @@ function documentLinksError(
       hasCurrentOrganizationId: metadata.hasCurrentOrganizationId ?? false,
       hasDocumentOrganizationId: metadata.hasDocumentOrganizationId ?? false,
       hasMembership: metadata.hasMembership ?? false,
+      hasDocumentId: metadata.hasDocumentId,
+      hasQuestionItemIds: metadata.hasQuestionItemIds,
+      firstSelectedQuestionItemIdPresent: metadata.firstSelectedQuestionItemIdPresent,
       documentBelongsToCurrentOrganization: metadata.documentBelongsToCurrentOrganization,
       selectedQuestionItemCount: metadata.selectedQuestionItemCount,
       foundQuestionItemCount: metadata.foundQuestionItemCount,
@@ -784,12 +802,19 @@ function readString(value: unknown) {
   return typeof value === "string" ? value.trim() : "";
 }
 
-function readUuidArray(value: unknown) {
+function readIdArray(value: unknown) {
   if (!Array.isArray(value)) {
     return [];
   }
 
-  return value.filter((item): item is string => typeof item === "string" && isUuid(item));
+  return Array.from(
+    new Set(
+      value
+        .filter((item): item is string => typeof item === "string")
+        .map((item) => item.trim())
+        .filter((item) => item.length > 0),
+    ),
+  );
 }
 
 function isUuid(value: string) {
