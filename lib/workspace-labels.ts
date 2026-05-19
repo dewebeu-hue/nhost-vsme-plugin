@@ -60,6 +60,7 @@ export type QuestionnaireLabels = {
   loadFallbackError: string;
   seedFallbackMessage: string;
   attachSaveFirstMessage: string;
+  attachSelectDocumentFirst: string;
   attachMockSuccess: string;
   attachSignInError: string;
   attachError: string;
@@ -161,6 +162,8 @@ export type DocumentsLabels = {
   linkMockSuccess: string;
   linkSignInError: string;
   linkError: string;
+  linkMissingDocumentId: string;
+  linkDialogOpenError: string;
   linkSuccess: string;
   expired: string;
   expiresWithin30Days: string;
@@ -235,6 +238,7 @@ export const defaultQuestionnaireLabels: QuestionnaireLabels = {
   loadFallbackError: "We could not load live questionnaire data.",
   seedFallbackMessage: "Questionnaire seed data is not available yet. Showing mock data.",
   attachSaveFirstMessage: "Save this answer once before attaching evidence.",
+  attachSelectDocumentFirst: "Select or upload a document before linking evidence.",
   attachMockSuccess: "Evidence attached locally in mock mode.",
   attachSignInError: "Please sign in before attaching evidence.",
   attachError: "We could not attach this evidence right now. Please try again.",
@@ -408,6 +412,8 @@ export const defaultDocumentsLabels: DocumentsLabels = {
   linkMockSuccess: "Evidence linked locally in mock mode.",
   linkSignInError: "Please sign in before linking evidence.",
   linkError: "We could not update evidence links right now. Please try again.",
+  linkMissingDocumentId: "This document cannot be linked because its ID is missing.",
+  linkDialogOpenError: "We could not open the evidence link dialog.",
   linkSuccess: "Evidence linked to questionnaire answer.",
   expired: "Expired",
   expiresWithin30Days: "Certification expires within 30 days",

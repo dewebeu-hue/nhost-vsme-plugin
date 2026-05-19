@@ -33,6 +33,11 @@ import {
   getBrowserNhostClient,
   getFreshBrowserNhostSession,
 } from "@/lib/nhost/client";
+import {
+  linkDocumentToQuestionItems,
+  normalizeQuestionItemIds,
+  resolveEvidenceDocumentId,
+} from "@/lib/document-linking-client";
 import { calculateSectionCompletion } from "@/lib/questionnaire-completion";
 import type { QuestionAnswerStatus } from "@/lib/types";
 import {
@@ -164,6 +169,13 @@ type DocumentLinkRecord = {
   document_id: string;
   question_answer_id: string;
   document: LiveDocument | null;
+  question_answer?: {
+    id: string;
+    question_item_id: string;
+    question_item?: {
+      id: string;
+    } | null;
+  } | null;
 };
 
 type ActiveSectionState = {
@@ -572,12 +584,7 @@ export function QuestionnairePageClient({
 
   async function handleAttachEvidence(documentIds: string[]) {
     if (!questionToAttach || documentIds.length === 0) {
-      return;
-    }
-
-    if (liveMode && !questionToAttach.answerId) {
-      setMessage({ tone: "info", text: labels.attachSaveFirstMessage });
-      return;
+      return false;
     }
 
     if (!liveMode || !organizationId) {
@@ -604,15 +611,43 @@ export function QuestionnairePageClient({
       );
       setIsAttachDialogOpen(false);
       setMessage({ tone: "success", text: labels.attachMockSuccess });
-      return;
+      return true;
     }
 
-    const nhost = getBrowserNhostClient();
-    const session = nhost?.getUserSession();
+    const selectedDocumentIds = documentIds
+      .map((documentId) =>
+        resolveEvidenceDocumentId(
+          organizationDocuments.find((document) => document.id === documentId) ?? {
+            id: documentId,
+          },
+        ),
+      )
+      .filter(Boolean);
+    const questionItemIds = normalizeQuestionItemIds([questionToAttach.id]);
+
+    if (
+      !selectedDocumentIds.length ||
+      selectedDocumentIds.length !== documentIds.length ||
+      !questionItemIds.length
+    ) {
+      if (process.env.NODE_ENV !== "production") {
+        console.warn("[questionnaire] attach evidence blocked before request", {
+          flow: "questionnaire_page",
+          hasDocumentId:
+            selectedDocumentIds.length > 0 && selectedDocumentIds.length === documentIds.length,
+          questionItemCount: questionItemIds.length,
+        });
+      }
+
+      setMessage({ tone: "error", text: labels.attachSelectDocumentFirst });
+      return false;
+    }
+
+    const session = await getFreshBrowserNhostSession();
 
     if (!session?.user?.id) {
       setMessage({ tone: "error", text: labels.attachSignInError });
-      return;
+      return false;
     }
 
     setIsAttaching(true);
@@ -621,45 +656,48 @@ export function QuestionnairePageClient({
     try {
       let latestLinks = documentLinks;
 
-      for (const documentId of documentIds) {
-        const document = organizationDocuments.find((item) => item.id === documentId);
-        const response = await fetch("/api/document-links", {
-          method: "POST",
-          headers: {
-            "content-type": "application/json",
-            authorization: `Bearer ${session.accessToken}`,
-          },
-          body: JSON.stringify({
-            action: "link",
-            userId: session.user.id,
-            organizationId,
-            documentId,
-            questionAnswerIds: [questionToAttach.answerId],
-            currentDocumentStatus: document?.status,
-          }),
+      for (const documentId of selectedDocumentIds) {
+        if (process.env.NODE_ENV !== "production") {
+          console.info("[questionnaire] attach evidence request", {
+            flow: "questionnaire_page",
+            hasDocumentId: Boolean(documentId),
+            questionItemCount: questionItemIds.length,
+          });
+        }
+
+        const { response, payload } = await linkDocumentToQuestionItems<DocumentLinkRecord>({
+          accessToken: session.accessToken,
+          documentId,
+          questionItemIds,
         });
-        const payload = (await response.json()) as { links?: DocumentLinkRecord[]; error?: string };
 
         if (!response.ok || !payload.links) {
           setMessage({
             tone: response.status === 503 ? "info" : "error",
             text: payload.error ?? labels.attachError,
           });
-          return;
+          return false;
         }
 
         latestLinks = payload.links;
       }
 
       setDocumentLinks(latestLinks);
+      const attachedQuestionAnswerId =
+        questionToAttach.answerId ??
+        latestLinks.find(
+          (link) => link.question_answer?.question_item_id === questionToAttach.id,
+        )?.question_answer_id ??
+        "";
       setQuestions((currentQuestions) =>
         currentQuestions.map((question) =>
           question.id === questionToAttach.id
             ? {
                 ...question,
+                answerId: attachedQuestionAnswerId || question.answerId,
                 status: question.status === "Needs evidence" ? "Completed" : question.status,
                 linkedDocuments: linkedDocumentsForAnswer(
-                  questionToAttach.answerId ?? "",
+                  attachedQuestionAnswerId,
                   latestLinks,
                 ),
               }
@@ -668,12 +706,16 @@ export function QuestionnairePageClient({
       );
       setIsAttachDialogOpen(false);
       setMessage({ tone: "success", text: labels.attachSuccess });
+      return true;
     } catch (error) {
-      console.error("Attach evidence failed", error);
+      if (process.env.NODE_ENV !== "production") {
+        console.error("Attach evidence failed", error);
+      }
       setMessage({
         tone: "error",
         text: labels.attachError,
       });
+      return false;
     } finally {
       setIsAttaching(false);
     }
@@ -833,7 +875,13 @@ export function QuestionnairePageClient({
 
       <AttachEvidenceDialog
         open={isAttachDialogOpen}
-        documents={organizationDocuments.length ? organizationDocuments : mockEvidenceDocuments()}
+        documents={
+          liveMode
+            ? organizationDocuments
+            : organizationDocuments.length
+              ? organizationDocuments
+              : mockEvidenceDocuments()
+        }
         linkedDocumentIds={questionToAttach?.linkedDocuments?.map((document) => document.id) ?? []}
         isSaving={isAttaching}
         labels={labels}

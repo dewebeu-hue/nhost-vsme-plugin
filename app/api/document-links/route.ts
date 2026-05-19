@@ -219,7 +219,15 @@ export async function POST(request: Request) {
 
   try {
     const payload = (await request.json()) as DocumentLinksPayload;
-    const action = readString(payload.action) || "list";
+    const explicitAction = readString(payload.action);
+    const inferredAction = payload.documentId
+      ? payload.questionItemIds || payload.selectedQuestionItemIds || payload.questionAnswerIds
+        ? "link"
+        : payload.questionAnswerId
+          ? "unlink"
+          : "list"
+      : "list";
+    const action = explicitAction || inferredAction;
     const organizationId = organizationResult.organizationId;
 
     if (action === "link") {

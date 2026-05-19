@@ -36,7 +36,7 @@ type AttachEvidenceDialogProps = {
   isSaving: boolean;
   labels?: QuestionnaireLabels;
   onOpenChange: (open: boolean) => void;
-  onAttach: (documentIds: string[]) => Promise<void>;
+  onAttach: (documentIds: string[]) => Promise<boolean>;
 };
 
 export function AttachEvidenceDialog({
@@ -78,11 +78,14 @@ export function AttachEvidenceDialog({
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    await onAttach(selectedIds);
-    setSelectedIds([]);
-    setQuery("");
-    setType("all");
-    setStatus("all");
+    const attached = await onAttach(selectedIds);
+
+    if (attached) {
+      setSelectedIds([]);
+      setQuery("");
+      setType("all");
+      setStatus("all");
+    }
   }
 
   function toggleDocument(documentId: string) {

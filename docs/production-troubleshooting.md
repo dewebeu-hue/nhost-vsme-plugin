@@ -648,7 +648,6 @@ If `/api/document-links` returns `invalid_link_payload`, inspect the browser Net
 
 ```json
 {
-  "action": "link",
   "documentId": "<document uuid>",
   "questionItemIds": ["<question_items.id uuid>"]
 }
@@ -657,6 +656,30 @@ If `/api/document-links` returns `invalid_link_payload`, inspect the browser Net
 `selectedQuestionItemCount: 0` means the browser did not send selected questionnaire item IDs, or it sent them under an unexpected field. The modal should store `question_items.id` values in selection state and send them as `questionItemIds`; question codes such as `cert_iso_50001` are display labels only.
 
 `hasDocumentId: false` means the browser did not send the selected `documents.id` UUID, sent it under the wrong field name, or sent a storage/file identifier instead of the document metadata row ID. The evidence-link modal must receive the selected document row's `documents.id` value and the POST body must use the `documentId` field exactly. Do not send `file_id`, storage IDs, question codes, or UI labels as `documentId`.
+
+Expected Data Room link flow:
+
+1. Open `/[locale]/dashboard/documents`.
+2. Select an existing evidence document.
+3. Click **Link to answer**.
+4. The link dialog opens with the selected `documents.id`.
+5. Select one or more questionnaire items.
+6. The browser sends `documentId` plus `questionItemIds` to `/api/document-links`.
+
+Expected Questionnaire evidence flow:
+
+1. Open `/[locale]/dashboard/questionnaire`.
+2. Click **Attach evidence** on a question.
+3. Select an existing real organization document from the dialog.
+4. The browser sends the selected document's `documents.id` and the current question's `question_items.id`.
+5. If no real documents exist yet, the UI should ask the user to select or upload a document first and must not call `/api/document-links` with a missing `documentId`.
+
+Network checklist:
+
+- Dead click with no request: confirm the selected document row has a valid `documents.id` UUID and the Data Room detail action receives it.
+- `hasDocumentId: false`: the client is not sending the selected `documents.id`, or it is sending a storage/file ID instead.
+- `selectedQuestionItemCount: 0`: the dialog selection state did not send `question_items.id` values.
+- Valid link request should receive `200` and return refreshed `links`.
 
 Successful response shape:
 

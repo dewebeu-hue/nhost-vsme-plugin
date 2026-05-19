@@ -17,6 +17,11 @@ import {
 } from "@/components/documents/upload-document-dialog";
 import { Button } from "@/components/ui/button";
 import {
+  linkDocumentToQuestionItems,
+  normalizeQuestionItemIds,
+  resolveEvidenceDocumentId,
+} from "@/lib/document-linking-client";
+import {
   evidenceRoomDocuments,
   evidenceRoomFilters,
   evidenceRoomLinkedQuestions,
@@ -125,11 +130,6 @@ type DocumentLinkRecord = {
 
 type DocumentsPageClientProps = {
   labels?: DocumentsLabels;
-};
-
-type EvidenceRoomDocumentWithAliases = EvidenceRoomDocument & {
-  documentId?: string | null;
-  document_id?: string | null;
 };
 
 const statusLabels: Record<LiveDocumentStatus, EvidenceRoomStatus> = {
@@ -408,13 +408,15 @@ export function DocumentsPageClient({
     }
 
     const documentId = resolveEvidenceDocumentId(documentToLink);
+    const normalizedQuestionItemIds = normalizeQuestionItemIds(questionItemIds);
 
-    if (!documentId) {
+    if (!documentId || normalizedQuestionItemIds.length === 0) {
       if (process.env.NODE_ENV !== "production") {
         console.warn("[documents] evidence link blocked before request", {
-          hasDocumentId: false,
-          selectedQuestionItemCount: questionItemIds.length,
-          firstSelectedQuestionItemIdPresent: Boolean(questionItemIds[0]),
+          flow: "documents_page",
+          hasDocumentId: Boolean(documentId),
+          selectedQuestionItemCount: normalizedQuestionItemIds.length,
+          firstSelectedQuestionItemIdPresent: Boolean(normalizedQuestionItemIds[0]),
         });
       }
 
@@ -424,7 +426,7 @@ export function DocumentsPageClient({
 
     if (!liveMode || !organizationId) {
       setDocumentLinks((currentLinks) => [
-        ...questionItemIds.map((questionItemId) => {
+        ...normalizedQuestionItemIds.map((questionItemId) => {
           const answer = linkableAnswers.find((item) => item.id === questionItemId);
 
           return {
@@ -479,27 +481,18 @@ export function DocumentsPageClient({
     try {
       if (process.env.NODE_ENV !== "production") {
         console.info("[documents] evidence link request", {
+          flow: "documents_page",
           hasDocumentId: Boolean(documentId),
-          selectedQuestionItemCount: questionItemIds.length,
-          firstSelectedQuestionItemIdPresent: Boolean(questionItemIds[0]),
+          selectedQuestionItemCount: normalizedQuestionItemIds.length,
+          firstSelectedQuestionItemIdPresent: Boolean(normalizedQuestionItemIds[0]),
         });
       }
 
-      const response = await fetch("/api/document-links", {
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
-          authorization: `Bearer ${session.accessToken}`,
-        },
-        body: JSON.stringify({
-          action: "link",
-          documentId,
-          questionItemIds,
-          selectedQuestionItemIds: questionItemIds,
-          currentDocumentStatus: documentToLink.status,
-        }),
+      const { response, payload } = await linkDocumentToQuestionItems<DocumentLinkRecord>({
+        accessToken: session.accessToken,
+        documentId,
+        questionItemIds: normalizedQuestionItemIds,
       });
-      const payload = (await response.json()) as { links?: DocumentLinkRecord[]; error?: string };
 
       if (!response.ok || !payload.links) {
         setMessage({
@@ -596,11 +589,13 @@ export function DocumentsPageClient({
             if (!documentId) {
               if (process.env.NODE_ENV !== "production") {
                 console.warn("[documents] evidence link dialog blocked", {
+                  flow: "documents_page",
                   hasDocumentId: false,
+                  dialogOpen: false,
                 });
               }
 
-              setMessage({ tone: "error", text: labels.linkError });
+              setMessage({ tone: "error", text: labels.linkMissingDocumentId });
               return;
             }
 
@@ -676,31 +671,6 @@ function mapLiveDocument(
     mimeType: document.mime_type ?? undefined,
     expiresAt: document.expires_at,
   };
-}
-
-function resolveEvidenceDocumentId(document: EvidenceRoomDocument | null) {
-  if (!document) {
-    return "";
-  }
-
-  const documentWithAliases = document as EvidenceRoomDocumentWithAliases;
-  const candidates = [
-    documentWithAliases.id,
-    documentWithAliases.documentId,
-    documentWithAliases.document_id,
-  ];
-  const documentId = candidates.find(
-    (candidate): candidate is string =>
-      typeof candidate === "string" && isUuid(candidate.trim()),
-  );
-
-  return documentId?.trim() ?? "";
-}
-
-function isUuid(value: string) {
-  return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{12}$/i.test(
-    value,
-  );
 }
 
 function createDocumentTitle(fileName: string) {
