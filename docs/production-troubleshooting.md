@@ -676,6 +676,42 @@ limit 20;
 
 `id` is the value expected as `/api/document-links` `documentId`. `file_id` is the Nhost Storage file identifier and must not be used as `documentId`.
 
+### document_links GraphQL relationship error
+
+Symptom:
+
+```json
+{
+  "category": "document_link_graphql_error",
+  "stage": "link_mutation",
+  "safeGraphqlMessage": "field 'document' not found in type: 'document_links'"
+}
+```
+
+Cause: the GraphQL mutation requested a nested Hasura relationship such as `document { ... }` from `document_links`, but the live Hasura schema does not track that relationship or uses a different relationship name.
+
+Fix: keep `/api/document-links` independent of Hasura relationship names. The link mutation should return only scalar `document_links` columns (`id`, `document_id`, `question_answer_id`, `created_at`). If the UI needs labels after saving, refresh link state with root-field queries for `documents`, `question_answers`, `question_items`, and `question_sections`, then compose the response server-side.
+
+Verification SQL:
+
+```sql
+select
+  dl.id,
+  dl.document_id,
+  d.file_name as document_name,
+  dl.question_answer_id,
+  qi.code as question_code,
+  qs.code as section_code,
+  dl.created_at
+from document_links dl
+join documents d on d.id = dl.document_id
+join question_answers qa on qa.id = dl.question_answer_id
+join question_items qi on qi.id = qa.question_item_id
+join question_sections qs on qs.id = qi.section_id
+order by dl.created_at desc
+limit 50;
+```
+
 Expected Data Room link flow:
 
 1. Open `/[locale]/dashboard/documents`.

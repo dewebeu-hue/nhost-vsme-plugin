@@ -1,6 +1,4 @@
 import { NextResponse } from "next/server";
-import { DOCUMENT_LINK_FRAGMENT } from "@/lib/graphql/fragments";
-import { GET_DOCUMENT_LINKS } from "@/lib/graphql/queries";
 import { getNhostAuthUrl, getNhostGraphqlUrl } from "@/lib/nhost/config";
 
 export const runtime = "nodejs";
@@ -42,6 +40,55 @@ type DocumentLinkRecord = {
   document_id: string;
   question_answer_id: string;
   created_at: string;
+};
+
+type DocumentLinkDocumentRecord = {
+  id: string;
+  organization_id: string;
+  file_name: string;
+  file_size_bytes: number | null;
+  mime_type: string | null;
+  document_type: string;
+  status: string;
+  expires_at: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+type DocumentLinkAnswerRecord = {
+  id: string;
+  organization_id: string;
+  question_item_id: string;
+  status: string;
+  value: unknown;
+  updated_at: string;
+};
+
+type DocumentLinkQuestionItemRecord = {
+  id: string;
+  code: string;
+  title: string;
+  evidence_required: boolean;
+  section_id: string;
+};
+
+type DocumentLinkQuestionSectionRecord = {
+  id: string;
+  code: string;
+  title: string;
+};
+
+type EnrichedDocumentLinkRecord = DocumentLinkRecord & {
+  document: DocumentLinkDocumentRecord | null;
+  question_answer:
+    | (DocumentLinkAnswerRecord & {
+        question_item:
+          | (DocumentLinkQuestionItemRecord & {
+              question_section: DocumentLinkQuestionSectionRecord | null;
+            })
+          | null;
+      })
+    | null;
 };
 
 type GraphqlResponse<T> = {
@@ -151,8 +198,6 @@ const createMissingAnswersMutation = `
 `;
 
 const linkDocumentsToAnswersMutation = `
-  ${DOCUMENT_LINK_FRAGMENT}
-
   mutation LinkDocumentsToAnswers($objects: [document_links_insert_input!]!) {
     insert_document_links(
       objects: $objects
@@ -162,15 +207,16 @@ const linkDocumentsToAnswersMutation = `
       }
     ) {
       returning {
-        ...DocumentLinkFields
+        id
+        document_id
+        question_answer_id
+        created_at
       }
     }
   }
 `;
 
 const unlinkDocumentFromAnswerMutation = `
-  ${DOCUMENT_LINK_FRAGMENT}
-
   mutation UnlinkDocumentFromAnswer($documentId: uuid!, $questionAnswerId: uuid!) {
     delete_document_links(
       where: {
@@ -179,8 +225,65 @@ const unlinkDocumentFromAnswerMutation = `
       }
     ) {
       returning {
-        ...DocumentLinkFields
+        id
+        document_id
+        question_answer_id
+        created_at
       }
+    }
+  }
+`;
+
+const getDocumentLinkDocumentIdsQuery = `
+  query GetDocumentLinkDocumentIds($organizationId: uuid!) {
+    documents(where: { organization_id: { _eq: $organizationId } }) {
+      id
+    }
+  }
+`;
+
+const getDocumentLinksDataQuery = `
+  query GetDocumentLinksData($organizationId: uuid!, $documentIds: [uuid!]) {
+    documents(where: { organization_id: { _eq: $organizationId } }) {
+      id
+      organization_id
+      file_name
+      file_size_bytes
+      mime_type
+      document_type
+      status
+      expires_at
+      created_at
+      updated_at
+    }
+    question_answers(where: { organization_id: { _eq: $organizationId } }) {
+      id
+      organization_id
+      question_item_id
+      status
+      value
+      updated_at
+    }
+    question_items {
+      id
+      code
+      title
+      evidence_required
+      section_id
+    }
+    question_sections(order_by: { sort_order: asc }) {
+      id
+      code
+      title
+    }
+    document_links(
+      where: { document_id: { _in: $documentIds } }
+      order_by: { created_at: desc }
+    ) {
+      id
+      document_id
+      question_answer_id
+      created_at
     }
   }
 `;
@@ -309,6 +412,7 @@ export async function POST(request: Request) {
           {
             hasUserId: true,
             hasCurrentOrganizationId: true,
+            hasDocumentOrganizationId: true,
             hasMembership: true,
             selectedQuestionItemCount: questionItemIds.length,
             safeGraphqlMessage: linkResult.safeGraphqlMessage,
@@ -412,11 +516,7 @@ export async function POST(request: Request) {
       }
     }
 
-    const linksResult = await executeDocumentLinksAdminGraphql<{ document_links: unknown[] }>({
-      operationName: "GetDocumentLinks",
-      query: GET_DOCUMENT_LINKS,
-      variables: { organizationId },
-    });
+    const linksResult = await loadDocumentLinksForOrganization(organizationId);
 
     if (!linksResult.ok) {
       return documentLinksError(
@@ -432,7 +532,12 @@ export async function POST(request: Request) {
       );
     }
 
-    return NextResponse.json({ configured: true, links: linksResult.data.document_links });
+    return NextResponse.json({
+      configured: true,
+      ok: true,
+      linkedCount: linksResult.links.length,
+      links: linksResult.links,
+    });
   } catch {
     return documentLinksError("unknown_document_links_error", "unknown", 500);
   }
@@ -493,6 +598,77 @@ async function resolveOrganizationForRequest(token: string): Promise<Organizatio
     userId: userResult.userId,
     organizationId: membership.organization_id,
     role: membership.role,
+  };
+}
+
+async function loadDocumentLinksForOrganization(
+  organizationId: string,
+): Promise<
+  | { ok: true; links: EnrichedDocumentLinkRecord[] }
+  | { ok: false; safeGraphqlMessage: string }
+> {
+  const documentIdsResult = await executeDocumentLinksAdminGraphql<{
+    documents: Array<{ id: string }>;
+  }>({
+    operationName: "GetDocumentLinkDocumentIds",
+    query: getDocumentLinkDocumentIdsQuery,
+    variables: { organizationId },
+  });
+
+  if (!documentIdsResult.ok) {
+    return documentIdsResult;
+  }
+
+  const documentIds = documentIdsResult.data.documents.map((document) => document.id);
+
+  if (!documentIds.length) {
+    return { ok: true, links: [] };
+  }
+
+  const dataResult = await executeDocumentLinksAdminGraphql<{
+    documents: DocumentLinkDocumentRecord[];
+    question_answers: DocumentLinkAnswerRecord[];
+    question_items: DocumentLinkQuestionItemRecord[];
+    question_sections: DocumentLinkQuestionSectionRecord[];
+    document_links: DocumentLinkRecord[];
+  }>({
+    operationName: "GetDocumentLinksData",
+    query: getDocumentLinksDataQuery,
+    variables: { organizationId, documentIds },
+  });
+
+  if (!dataResult.ok) {
+    return dataResult;
+  }
+
+  const documentMap = new Map(dataResult.data.documents.map((document) => [document.id, document]));
+  const answerMap = new Map(dataResult.data.question_answers.map((answer) => [answer.id, answer]));
+  const questionItemMap = new Map(dataResult.data.question_items.map((item) => [item.id, item]));
+  const sectionMap = new Map(dataResult.data.question_sections.map((section) => [section.id, section]));
+
+  return {
+    ok: true,
+    links: dataResult.data.document_links.map((link) => {
+      const answer = answerMap.get(link.question_answer_id);
+      const questionItem = answer ? questionItemMap.get(answer.question_item_id) : null;
+      const questionSection = questionItem ? sectionMap.get(questionItem.section_id) : null;
+
+      return {
+        ...link,
+        document: documentMap.get(link.document_id) ?? null,
+        question_answer: answer
+          ? {
+              ...answer,
+              question_item: questionItem
+                ? {
+                    ...questionItem,
+                    question_section: questionSection ?? null,
+                  }
+                : null,
+            }
+          : null,
+      };
+    }),
   };
 }
 
