@@ -503,7 +503,8 @@
       "Linked": "Verknüpft",
       "Uploaded": "Hochgeladen",
       "Needs review": "Prüfung erforderlich",
-      "Expiring soon": "Läuft bald ab"
+      "Expiring soon": "Läuft bald ab",
+      "Expired": "Abgelaufen"
     },
     "answerStatuses": {
       "Not started": "Nicht begonnen",
@@ -511,7 +512,10 @@
       "Completed": "Abgeschlossen",
       "Needs evidence": "Nachweis erforderlich",
       "Reviewed": "Geprüft"
-    }
+    },
+    "expired": "Abgelaufen",
+    "expiresWithin30Days": "Zertifikat läuft innerhalb von 30 Tagen ab",
+    "expiresWithin90Days": "Zertifikat läuft innerhalb von 90 Tagen ab"
   },
   "emptyStates": {
     "mockMode": {
@@ -1262,7 +1266,10 @@
       "certifications": "Zertifikatsdokumente fehlen",
       "governance": "Governance-Nachweise fehlen",
       "supplier_information": "Nachweise zu Lieferantendaten fehlen"
-    }
+    },
+    "certificateExpired": "Zertifikatsnachweis ist abgelaufen",
+    "certificateExpiresWithin30Days": "Zertifikat läuft innerhalb von 30 Tagen ab",
+    "certificateExpiresWithin90Days": "Zertifikat läuft innerhalb von 90 Tagen ab"
   },
   "passportShare": {
     "title": "Supplier Passport teilen",

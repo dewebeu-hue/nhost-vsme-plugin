@@ -999,7 +999,8 @@ export type EvidenceRoomStatus =
   | "Linked"
   | "Uploaded"
   | "Needs review"
-  | "Expiring soon";
+  | "Expiring soon"
+  | "Expired";
 
 export type EvidenceRoomDocument = {
   id: string;

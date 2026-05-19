@@ -153,17 +153,44 @@ export function LinkAnswerDialog({
                     const selected = selectedIds.includes(answer.id) || alreadyLinked;
 
                     return (
-                      <button
+                      <div
                         key={answer.id}
-                        type="button"
-                        disabled={alreadyLinked}
-                        className="flex w-full items-start gap-3 rounded-xl border border-slate-200 bg-white p-3 text-left shadow-sm transition hover:border-blue-200 hover:bg-blue-50/40 disabled:cursor-not-allowed disabled:opacity-70"
-                        onClick={() => toggleAnswer(answer.id)}
+                        role="checkbox"
+                        aria-checked={selected}
+                        aria-disabled={alreadyLinked}
+                        tabIndex={alreadyLinked ? -1 : 0}
+                        className={`flex w-full items-start gap-3 rounded-xl border p-3 text-left shadow-sm transition ${
+                          selected
+                            ? "border-blue-300 bg-blue-50"
+                            : "border-slate-200 bg-white hover:border-blue-200 hover:bg-blue-50/40"
+                        } ${alreadyLinked ? "cursor-not-allowed opacity-70" : "cursor-pointer"}`}
+                        onClick={() => {
+                          if (!alreadyLinked) {
+                            toggleAnswer(answer.id);
+                          }
+                        }}
+                        onKeyDown={(event) => {
+                          if (alreadyLinked) {
+                            return;
+                          }
+
+                          if (event.key === " " || event.key === "Enter") {
+                            event.preventDefault();
+                            toggleAnswer(answer.id);
+                          }
+                        }}
                       >
                         <Checkbox
                           checked={selected}
+                          disabled={alreadyLinked}
                           aria-label={`Select ${answer.code}`}
                           className="mt-1"
+                          onClick={(event) => event.stopPropagation()}
+                          onCheckedChange={() => {
+                            if (!alreadyLinked) {
+                              toggleAnswer(answer.id);
+                            }
+                          }}
                         />
                         <div className="min-w-0 flex-1">
                           <div className="flex flex-wrap items-center gap-2">
@@ -187,7 +214,7 @@ export function LinkAnswerDialog({
                             </p>
                           ) : null}
                         </div>
-                      </button>
+                      </div>
                     );
                   })}
                 </div>

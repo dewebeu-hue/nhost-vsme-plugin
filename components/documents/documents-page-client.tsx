@@ -604,6 +604,8 @@ function mapLiveDocument(
   labels: DocumentsLabels,
   locale: string,
 ): EvidenceRoomDocument {
+  const expiryState = getCertificateExpiryState(document.document_type, document.expires_at);
+
   return {
     id: document.id,
     title: createDocumentTitle(document.file_name),
@@ -613,7 +615,7 @@ function mapLiveDocument(
     linkedTo: [labels.notLinked],
     uploaded: formatDate(document.created_at, locale, labels),
     uploadedBy: labels.workspaceUser,
-    status: statusLabels[document.status],
+    status: expiryState?.status ?? statusLabels[document.status],
     previewUrl: undefined,
     mimeType: document.mime_type ?? undefined,
     expiresAt: document.expires_at,
@@ -636,7 +638,9 @@ function createLiveMetrics(
     (document) => document.status === "Linked" || document.status === "Reviewed",
   ).length;
   const needsReview = documents.filter((document) => document.status === "Needs review").length;
-  const expiringSoon = documents.filter((document) => document.status === "Expiring soon").length;
+  const expiringSoon = documents.filter(
+    (document) => document.status === "Expiring soon" || document.status === "Expired",
+  ).length;
   const linkedPercent = documents.length ? Math.round((linked / documents.length) * 100) : 0;
 
   return [
@@ -661,6 +665,46 @@ function createLiveMetrics(
       detail: labels.next90Days,
     },
   ];
+}
+
+function getCertificateExpiryState(
+  documentType: LiveDocumentType,
+  expiresAt: string | null,
+): { status: EvidenceRoomStatus; daysUntilExpiry: number } | null {
+  if (documentType !== "certificate" || !expiresAt) {
+    return null;
+  }
+
+  const daysUntilExpiry = getDaysUntilDate(expiresAt);
+
+  if (daysUntilExpiry === null) {
+    return null;
+  }
+
+  if (daysUntilExpiry < 0) {
+    return { status: "Expired", daysUntilExpiry };
+  }
+
+  if (daysUntilExpiry <= 90) {
+    return { status: "Expiring soon", daysUntilExpiry };
+  }
+
+  return null;
+}
+
+function getDaysUntilDate(value: string) {
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return null;
+  }
+
+  const startOfToday = new Date();
+  startOfToday.setHours(0, 0, 0, 0);
+  const startOfTarget = new Date(date);
+  startOfTarget.setHours(0, 0, 0, 0);
+
+  return Math.ceil((startOfTarget.getTime() - startOfToday.getTime()) / 86_400_000);
 }
 
 function formatFileSize(size: number | null, labels: DocumentsLabels) {

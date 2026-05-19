@@ -45,6 +45,7 @@ import {
 import { defaultPassportLabels, type PassportLabels } from "@/lib/passport-labels";
 import {
   calculatePassportReadinessScore,
+  createCertificateExpiryItems,
   createMissingDataItems,
   createMissingEvidenceItems,
   createPassportReadinessModules,
@@ -110,6 +111,7 @@ type EvidenceDocumentRecord = {
   file_name: string;
   document_type: string;
   status: string;
+  expires_at?: string | null;
   linked_question_answer_ids?: string[];
 };
 
@@ -225,6 +227,11 @@ export function PassportPageClient({
           );
           setApprovedDocuments(createApprovedDocuments(documents));
           setMissingDataChecklist([
+            ...createCertificateExpiryItems(documents, {
+              expired: labels.certificateExpired,
+              within30Days: labels.certificateExpiresWithin30Days,
+              within90Days: labels.certificateExpiresWithin90Days,
+            }),
             ...createMissingEvidenceItems(
               questionSections,
               questionItems,

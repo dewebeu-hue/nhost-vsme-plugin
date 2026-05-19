@@ -22,6 +22,7 @@ export type PassportSummaryAnswer = {
 export type PassportSummaryDocument = {
   status: string;
   document_type?: string | null;
+  expires_at?: string | null;
   linked_question_answer_ids?: string[];
 };
 
@@ -41,6 +42,12 @@ export type PassportSectionSummary = {
 export type PassportMissingDataItemSummary = {
   label: string;
   status: "warning" | "review" | "recommended" | "approved";
+};
+
+export type CertificateExpiryLabels = {
+  expired: string;
+  within30Days: string;
+  within90Days: string;
 };
 
 export const passportEvidenceTypesBySectionCode: Record<string, string[]> = {
@@ -183,6 +190,32 @@ export function createMissingEvidenceItems(
     }));
 }
 
+export function createCertificateExpiryItems(
+  documents: PassportSummaryDocument[],
+  labels: CertificateExpiryLabels,
+  limit = 3,
+): PassportMissingDataItemSummary[] {
+  return documents
+    .map((document) => ({
+      document,
+      risk: getCertificateExpiryRisk(document),
+    }))
+    .filter((item): item is { document: PassportSummaryDocument; risk: CertificateExpiryRisk } =>
+      Boolean(item.risk),
+    )
+    .sort((a, b) => a.risk.daysUntilExpiry - b.risk.daysUntilExpiry)
+    .slice(0, limit)
+    .map(({ risk }) => ({
+      label:
+        risk.level === "expired"
+          ? labels.expired
+          : risk.level === "within_30_days"
+            ? labels.within30Days
+            : labels.within90Days,
+      status: risk.level === "within_90_days" ? "review" : "warning",
+    }));
+}
+
 function getQuestionsForSectionCodes(
   sectionCodes: readonly string[],
   sections: PassportSummarySection[],
@@ -223,6 +256,52 @@ function countEvidenceDocumentsForSectionCodes(
 
 function isEvidenceDocumentAvailable(document: PassportSummaryDocument) {
   return ["reviewed", "linked", "uploaded", "needs_review", "expiring_soon"].includes(document.status);
+}
+
+type CertificateExpiryRisk = {
+  level: "expired" | "within_30_days" | "within_90_days";
+  daysUntilExpiry: number;
+};
+
+function getCertificateExpiryRisk(document: PassportSummaryDocument): CertificateExpiryRisk | null {
+  if (document.document_type !== "certificate" || !document.expires_at) {
+    return null;
+  }
+
+  const daysUntilExpiry = getDaysUntilDate(document.expires_at);
+
+  if (daysUntilExpiry === null) {
+    return null;
+  }
+
+  if (daysUntilExpiry < 0) {
+    return { level: "expired", daysUntilExpiry };
+  }
+
+  if (daysUntilExpiry <= 30) {
+    return { level: "within_30_days", daysUntilExpiry };
+  }
+
+  if (daysUntilExpiry <= 90) {
+    return { level: "within_90_days", daysUntilExpiry };
+  }
+
+  return null;
+}
+
+function getDaysUntilDate(value: string) {
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return null;
+  }
+
+  const startOfToday = new Date();
+  startOfToday.setHours(0, 0, 0, 0);
+  const startOfTarget = new Date(date);
+  startOfTarget.setHours(0, 0, 0, 0);
+
+  return Math.ceil((startOfTarget.getTime() - startOfToday.getTime()) / 86_400_000);
 }
 
 function hasLinkedEvidenceForSections(

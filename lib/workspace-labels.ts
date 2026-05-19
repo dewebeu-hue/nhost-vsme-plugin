@@ -162,6 +162,9 @@ export type DocumentsLabels = {
   linkSignInError: string;
   linkError: string;
   linkSuccess: string;
+  expired: string;
+  expiresWithin30Days: string;
+  expiresWithin90Days: string;
   unknownSize: string;
   recently: string;
   notLinked: string;
@@ -299,6 +302,7 @@ export const defaultQuestionnaireLabels: QuestionnaireLabels = {
     Uploaded: "Uploaded",
     "Needs review": "Needs review",
     "Expiring soon": "Expiring soon",
+    Expired: "Expired",
   },
   documentTypes: {
     Certificate: "Certifications",
@@ -405,6 +409,9 @@ export const defaultDocumentsLabels: DocumentsLabels = {
   linkSignInError: "Please sign in before linking evidence.",
   linkError: "We could not link this evidence right now. Please try again.",
   linkSuccess: "Evidence linked to questionnaire answer.",
+  expired: "Expired",
+  expiresWithin30Days: "Certification expires within 30 days",
+  expiresWithin90Days: "Certification expires within 90 days",
   unknownSize: "Unknown size",
   recently: "Recently",
   notLinked: "Not linked yet",
@@ -414,6 +421,7 @@ export const defaultDocumentsLabels: DocumentsLabels = {
     Uploaded: "Uploaded",
     "Needs review": "Needs review",
     "Expiring soon": "Expiring soon",
+    Expired: "Expired",
   },
   answerStatuses: defaultQuestionnaireLabels.statuses,
   documentTypes: defaultQuestionnaireLabels.documentTypes,

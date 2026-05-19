@@ -12,6 +12,7 @@ const statusStyles: Record<EvidenceRoomStatus, string> = {
   Uploaded: "border-slate-200 bg-slate-50 text-slate-600",
   "Needs review": "border-amber-200 bg-amber-50 text-amber-700",
   "Expiring soon": "border-red-200 bg-red-50 text-red-700",
+  Expired: "border-red-300 bg-red-100 text-red-800",
 };
 
 export function DocumentStatusBadge({ status, label }: DocumentStatusBadgeProps) {

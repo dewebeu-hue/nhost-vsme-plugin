@@ -503,7 +503,8 @@
       "Linked": "Povezano",
       "Uploaded": "Učitano",
       "Needs review": "Treba pregled",
-      "Expiring soon": "Uskoro istječe"
+      "Expiring soon": "Uskoro istječe",
+      "Expired": "Isteklo"
     },
     "answerStatuses": {
       "Not started": "Nije započeto",
@@ -511,7 +512,10 @@
       "Completed": "Dovršeno",
       "Needs evidence": "Treba dokaz",
       "Reviewed": "Pregledano"
-    }
+    },
+    "expired": "Isteklo",
+    "expiresWithin30Days": "Certifikat istječe unutar 30 dana",
+    "expiresWithin90Days": "Certifikat istječe unutar 90 dana"
   },
   "emptyStates": {
     "mockMode": {
@@ -1105,7 +1109,7 @@
     "incorrectPassword": "Lozinka nije ispravna. Pokušajte ponovno.",
     "passwordVerificationFailed": "Nismo mogli provjeriti lozinku. Pokušajte ponovno.",
     "protectedPassport": "Ovaj Supplier Passport je zaštićen.",
-    "requestAccess": "Zatra?i pristup",
+    "requestAccess": "Zatraži pristup",
     "documentAccessUnavailable": "Pristup dokumentu nije dostupan",
     "secureDocumentAccessUnavailable": "Siguran pristup dokumentima jo? nije konfiguriran."
   },
@@ -1239,7 +1243,10 @@
       "certifications": "Nedostaju dokumenti certifikata",
       "governance": "Nedostaje dokazna dokumentacija za upravljanje",
       "supplier_information": "Nedostaje dokazna dokumentacija za podatke o dobavlja?ima"
-    }
+    },
+    "certificateExpired": "Dokaz certifikata je istekao",
+    "certificateExpiresWithin30Days": "Certifikat istječe unutar 30 dana",
+    "certificateExpiresWithin90Days": "Certifikat istječe unutar 90 dana"
   },
   "passportShare": {
     "title": "Dijeljenje Supplier Passporta",
@@ -1327,7 +1334,7 @@
     "lowPriority": "Niski prioritet",
     "documentsNeedingValidation": "Dokumenti koji trebaju validaciju",
     "acrossOrganizations": "Kroz {count} organizacija",
-    "expiringSoon": "Uskoro istjeće",
+    "expiringSoon": "Uskoro istječe",
     "missingInfo": "Nedostaju informacije",
     "outdated": "Zastarjelo",
     "recentActivity": "Nedavne aktivnosti",
@@ -1374,7 +1381,7 @@
       "High priority": "Visoki prioritet",
       "Medium priority": "Srednji prioritet",
       "Low priority": "Niski prioritet",
-      "Expiring soon": "Uskoro istjeće",
+      "Expiring soon": "Uskoro istječe",
       "Missing info": "Nedostaju informacije",
       "Outdated": "Zastarjelo"
     },

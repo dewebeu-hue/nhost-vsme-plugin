@@ -25,6 +25,9 @@ export type PassportLabels = {
   approvedDocuments: string;
   approvedDocumentsDescription: string;
   noApprovedDocuments: string;
+  certificateExpired: string;
+  certificateExpiresWithin30Days: string;
+  certificateExpiresWithin90Days: string;
   document: string;
   category: string;
   linkedSections: string;
@@ -110,6 +113,9 @@ export const defaultPassportLabels: PassportLabels = {
   approvedDocuments: "Approved documents",
   approvedDocumentsDescription: "Evidence files approved for the buyer-facing passport.",
   noApprovedDocuments: "No approved documents yet.",
+  certificateExpired: "Certification evidence is expired",
+  certificateExpiresWithin30Days: "Certification expires within 30 days",
+  certificateExpiresWithin90Days: "Certification expires within 90 days",
   document: "Document",
   category: "Category",
   linkedSections: "Linked sections",

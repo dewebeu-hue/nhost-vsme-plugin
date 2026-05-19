@@ -94,6 +94,23 @@ export function DocumentPreviewPanel({
             {labels.fileType}: {labels.documentTypes[document.type] ?? document.type}.{" "}
             {labels.uploaded} {document.uploaded}{" "}
             {formatLabel(labels.uploadedBy, { name: document.uploadedBy })}.
+            {document.expiresAt ? (
+              <>
+                {" "}
+                {labels.expiryDate}: {formatDate(document.expiresAt)}.
+              </>
+            ) : null}
+            {document.status === "Expired" ? (
+              <p className="mt-3 font-semibold text-red-700">{labels.expired}</p>
+            ) : null}
+            {document.status === "Expiring soon" ? (
+              <p className="mt-3 font-semibold text-red-700">
+                {getDaysUntilDate(document.expiresAt) !== null &&
+                Number(getDaysUntilDate(document.expiresAt)) <= 30
+                  ? labels.expiresWithin30Days
+                  : labels.expiresWithin90Days}
+              </p>
+            ) : null}
           </div>
         </TabsContent>
         <TabsContent value="versions" className="mt-4">
@@ -160,4 +177,31 @@ export function DocumentPreviewPanel({
       </section>
     </aside>
   );
+}
+
+function formatDate(value: string) {
+  return new Intl.DateTimeFormat(undefined, {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  }).format(new Date(value));
+}
+
+function getDaysUntilDate(value: string | null | undefined) {
+  if (!value) {
+    return null;
+  }
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return null;
+  }
+
+  const startOfToday = new Date();
+  startOfToday.setHours(0, 0, 0, 0);
+  const startOfTarget = new Date(date);
+  startOfTarget.setHours(0, 0, 0, 0);
+
+  return Math.ceil((startOfTarget.getTime() - startOfToday.getTime()) / 86_400_000);
 }

@@ -592,6 +592,23 @@ limit 20;
 
 The document-link API validates the Nhost user, resolves their organization membership server-side, and then uses `HASURA_GRAPHQL_ADMIN_SECRET` only on the server to verify that both the document and linked questionnaire answer belong to that same organization. Public Passport pages use these links only for high-level evidence readiness; they do not expose private file URLs or storage IDs.
 
+Certificate expiry verification:
+
+```sql
+select
+  id,
+  file_name,
+  document_type,
+  status,
+  expires_at
+from documents
+where document_type = 'certificate'
+order by created_at desc
+limit 20;
+```
+
+The app uses the existing `documents.expires_at` field as the certificate expiry date. No separate `expiry_date` column is required. Dashboard warnings are calculated from real dates: expired certificates are flagged when `expires_at` is before today, critical warnings appear within 30 days, and upcoming warnings appear within 90 days.
+
 ## Safe Logging Rules
 
 Allowed categories:

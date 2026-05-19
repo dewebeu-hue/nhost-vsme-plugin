@@ -503,7 +503,8 @@
       "Linked": "Linked",
       "Uploaded": "Uploaded",
       "Needs review": "Needs review",
-      "Expiring soon": "Expiring soon"
+      "Expiring soon": "Expiring soon",
+      "Expired": "Expired"
     },
     "answerStatuses": {
       "Not started": "Not started",
@@ -511,7 +512,10 @@
       "Completed": "Completed",
       "Needs evidence": "Needs evidence",
       "Reviewed": "Reviewed"
-    }
+    },
+    "expired": "Expired",
+    "expiresWithin30Days": "Certification expires within 30 days",
+    "expiresWithin90Days": "Certification expires within 90 days"
   },
   "emptyStates": {
     "mockMode": {
@@ -1239,7 +1243,10 @@
       "certifications": "Certification documents are missing",
       "governance": "Governance evidence is missing",
       "supplier_information": "Supplier information evidence is missing"
-    }
+    },
+    "certificateExpired": "Certification evidence is expired",
+    "certificateExpiresWithin30Days": "Certification expires within 30 days",
+    "certificateExpiresWithin90Days": "Certification expires within 90 days"
   },
   "passportShare": {
     "title": "Supplier Passport sharing",
