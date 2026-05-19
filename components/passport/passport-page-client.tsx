@@ -377,6 +377,7 @@ export function PassportPageClient({
       link.click();
       link.remove();
       URL.revokeObjectURL(url);
+      setMessage({ tone: "success", text: labels.exportPdfSuccess });
     } catch {
       setMessage({ tone: "error", text: labels.exportPdfError });
     } finally {

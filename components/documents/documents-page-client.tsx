@@ -403,7 +403,13 @@ export function DocumentsPageClient({
   }
 
   async function handleLinkAnswers(questionItemIds: string[]) {
-    if (!documentToLink || questionItemIds.length === 0) {
+    if (questionItemIds.length === 0) {
+      setMessage({ tone: "error", text: labels.linkSelectQuestion });
+      return false;
+    }
+
+    if (!documentToLink) {
+      setMessage({ tone: "error", text: labels.linkMissingDocumentId });
       return false;
     }
 

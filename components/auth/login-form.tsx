@@ -111,7 +111,7 @@ export function LoginForm() {
           required
           name="email"
           type="email"
-          placeholder="anna@acme-manufacturing.com"
+          placeholder="name@company.com"
           className="h-12 rounded-xl bg-slate-50 px-4"
         />
       </label>

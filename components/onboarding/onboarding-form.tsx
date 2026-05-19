@@ -127,18 +127,21 @@ export function OnboardingForm({
         <Field
           label={labels.companyLegalName}
           name="legalName"
-          placeholder="Acme Manufacturing GmbH"
+          placeholder="Example Manufacturing Ltd."
           defaultValue={prefilledCompanyName}
         />
         <Field label={labels.vatId} name="vatId" placeholder="DE123456789" />
-        <Field label={labels.industry} name="industry" placeholder="Industrial Manufacturing" />
+        <Field label={labels.industry} name="industry" placeholder="Manufacturing" />
         <label className="flex flex-col gap-2 text-sm font-semibold text-slate-700">
           {labels.employeeCountRange}
           <select
             name="employeeCountRange"
             className="h-12 rounded-xl border border-slate-200 bg-slate-50 px-4 text-sm font-medium text-slate-700 outline-none focus-visible:border-blue-500 focus-visible:ring-3 focus-visible:ring-blue-100"
-            defaultValue="250-499"
+            defaultValue=""
           >
+            <option value="" disabled>
+              {labels.employeeCountPlaceholder}
+            </option>
             {employeeRanges.map((range) => (
               <option key={range} value={range}>
                 {range}
@@ -146,10 +149,10 @@ export function OnboardingForm({
             ))}
           </select>
         </label>
-        <Field label={labels.headquartersCity} name="headquartersCity" placeholder="Munich" />
-        <Field label={labels.headquartersCountry} name="headquartersCountry" placeholder="Germany" />
+        <Field label={labels.headquartersCity} name="headquartersCity" placeholder="Zagreb" />
+        <Field label={labels.headquartersCountry} name="headquartersCountry" placeholder="Croatia" />
         <div className="md:col-span-2">
-          <Field label={labels.website} name="website" placeholder="https://acme-manufacturing.com" />
+          <Field label={labels.website} name="website" placeholder="https://example.com" />
         </div>
       </div>
 

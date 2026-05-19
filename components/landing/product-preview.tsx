@@ -4,10 +4,8 @@ import type { LucideIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { ProgressRing } from "@/components/shared/progress-ring";
-import { StatusBadge } from "@/components/shared/status-badge";
 import {
   buyerRequests,
-  currentOrganization,
   documents,
   missingDataSummary,
   readinessScore,
@@ -102,10 +100,12 @@ export function ProductPreview() {
           <div>
             <p className="text-sm font-medium text-slate-500">{t("passportPreview")}</p>
             <h3 className="mt-1 text-xl font-semibold tracking-tight text-slate-950">
-              {currentOrganization.name}
+              {t("exampleSupplierName")}
             </h3>
           </div>
-          <StatusBadge status="reviewed" />
+          <Badge className="rounded-full bg-blue-50 text-blue-700" variant="secondary">
+            {t("summaryOnly")}
+          </Badge>
         </div>
 
         <div className="mt-5 rounded-2xl border border-slate-200 bg-slate-50 p-4">

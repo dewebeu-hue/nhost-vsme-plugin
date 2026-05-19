@@ -2,7 +2,13 @@ import { Progress } from "@/components/ui/progress";
 import { ProgressRing } from "@/components/shared/progress-ring";
 import { SectionCard } from "@/components/shared/section-card";
 import { defaultDashboardOverviewLabels, type DashboardOverviewLabels } from "@/lib/dashboard-labels";
-import type { DashboardModuleCompletion } from "@/lib/mock-data";
+
+type DashboardModuleCompletion = {
+  name: string;
+  completed: number;
+  total: number;
+  percent: number;
+};
 
 type OverallReadinessCardProps = {
   readiness: number;
@@ -37,7 +43,7 @@ export function OverallReadinessCard({
       </div>
 
       <div className="flex flex-col gap-4">
-        {modules.map((module) => (
+        {modules.length ? modules.map((module) => (
           <div key={module.name} className="grid gap-2">
             <div className="flex items-center justify-between gap-3 text-sm">
               <span className="font-medium text-slate-700">
@@ -47,7 +53,11 @@ export function OverallReadinessCard({
             </div>
             <Progress value={module.percent} className="h-2" />
           </div>
-        ))}
+        )) : (
+          <p className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-500">
+            {labels.setupChecklist.neutralFallback}
+          </p>
+        )}
       </div>
 
       <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-500">

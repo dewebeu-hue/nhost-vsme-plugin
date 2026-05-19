@@ -82,6 +82,59 @@ export type DashboardOverviewLabels = {
   expires: string;
   recentActivity: string;
   recentActivityDescription: string;
+  noBuyerRequests: string;
+  noRecentUploads: string;
+  noRecentActivity: string;
+  noActiveShareLinks: string;
+  noReadinessTrend: string;
+  publicSupplierPassport: string;
+  noExpiry: string;
+  setupChecklist: {
+    title: string;
+    description: string;
+    emptyTitle: string;
+    emptyDescription: string;
+    nextRecommendedStep: string;
+    readinessDisclaimer: string;
+    completed: string;
+    available: string;
+    pending: string;
+    completeQuestionnaire: string;
+    completeQuestionnaireDescription: string;
+    completeQuestionnaireCta: string;
+    uploadEvidence: string;
+    uploadEvidenceDescription: string;
+    uploadEvidenceCta: string;
+    linkEvidence: string;
+    linkEvidenceDescription: string;
+    linkEvidenceCta: string;
+    reviewPassport: string;
+    reviewPassportDescription: string;
+    reviewPassportCta: string;
+    sharePublicLink: string;
+    sharePublicLinkDescription: string;
+    sharePublicLinkCta: string;
+    downloadPdf: string;
+    downloadPdfDescription: string;
+    downloadPdfCta: string;
+    startQuestionnaire: string;
+    uploadDocumentsNext: string;
+    linkEvidenceNext: string;
+    reviewAndShareNext: string;
+    downloadOrShareNext: string;
+    neutralFallback: string;
+    questionsAnswered: string;
+    documentsUploaded: string;
+    evidenceLinks: string;
+    activeShareLinksMetric: string;
+    pdfReady: string;
+  };
+  activity: {
+    answers: string;
+    documents: string;
+    links: string;
+    share: string;
+  };
   modules: Record<string, string>;
   statuses: Record<string, string>;
 };
@@ -119,6 +172,62 @@ export const defaultDashboardOverviewLabels: DashboardOverviewLabels = {
   expires: "Expires",
   recentActivity: "Recent activity",
   recentActivityDescription: "A concise audit trail of the latest workspace events.",
+  noBuyerRequests: "No buyer requests yet.",
+  noRecentUploads: "No evidence documents uploaded yet.",
+  noRecentActivity: "Activity will appear after questionnaire, evidence, sharing, or PDF work starts.",
+  noActiveShareLinks: "No active public share links yet.",
+  noReadinessTrend: "Readiness trend will appear after more saved progress.",
+  publicSupplierPassport: "Public Supplier Passport",
+  noExpiry: "No expiry",
+  setupChecklist: {
+    title: "Supplier Passport setup",
+    description: "Complete these steps to prepare a buyer-ready, VSME-aligned supplier profile.",
+    emptyTitle: "Your Supplier Passport is not ready yet.",
+    emptyDescription:
+      "Complete the steps below to create a buyer-ready, VSME-aligned supplier profile.",
+    nextRecommendedStep: "Next recommended step",
+    readinessDisclaimer:
+      "Readiness is based on completed questionnaire items and evidence metadata. It is not an audit or certification.",
+    completed: "Complete",
+    available: "Available",
+    pending: "Pending",
+    completeQuestionnaire: "Complete questionnaire",
+    completeQuestionnaireDescription: "Answer the Supplier Passport questionnaire.",
+    completeQuestionnaireCta: "Go to questionnaire",
+    uploadEvidence: "Upload evidence documents",
+    uploadEvidenceDescription: "Add supporting documents to your Evidence Data Room.",
+    uploadEvidenceCta: "Upload documents",
+    linkEvidence: "Link evidence to answers",
+    linkEvidenceDescription: "Connect uploaded documents to questionnaire answers.",
+    linkEvidenceCta: "Open Data Room",
+    reviewPassport: "Review Supplier Passport",
+    reviewPassportDescription: "Check the real readiness and evidence summary.",
+    reviewPassportCta: "Review Passport",
+    sharePublicLink: "Share public link",
+    sharePublicLinkDescription: "Create or manage the buyer-facing public link.",
+    sharePublicLinkCta: "Open sharing page",
+    downloadPdf: "Download PDF draft",
+    downloadPdfDescription: "Export the authenticated Supplier Passport draft.",
+    downloadPdfCta: "Review Passport",
+    startQuestionnaire: "Start by completing the questionnaire.",
+    uploadDocumentsNext: "Upload evidence documents to support your answers.",
+    linkEvidenceNext: "Link evidence documents to questionnaire answers.",
+    reviewAndShareNext: "Review your Supplier Passport and share it with buyers.",
+    downloadOrShareNext: "Download your PDF draft or share the public link.",
+    neutralFallback:
+      "Live dashboard metrics will appear after your organization data is available.",
+    questionsAnswered: "Questions answered",
+    documentsUploaded: "Documents uploaded",
+    evidenceLinks: "Evidence links",
+    activeShareLinksMetric: "Active share links",
+    pdfReady: "PDF draft",
+  },
+  activity: {
+    answers: "{count} questionnaire answers completed.",
+    documents: "{count} evidence documents uploaded.",
+    links: "{count} evidence links created.",
+    share: "{count} public share link active.",
+  },
   modules: {
     "Basic Information": "Basic Information",
     Environment: "Environment",

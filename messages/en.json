@@ -13,7 +13,7 @@
       "bookDemo": "Book a Demo"
     },
     "cta": {
-      "startPassport": "Start Passport Sprint",
+      "startPassport": "Start Supplier Passport",
       "seeSamplePassport": "See Sample Passport",
       "bookDemo": "Book a Demo",
       "viewFullPricing": "View full pricing"
@@ -46,6 +46,7 @@
     "exportPdf": "Download PDF",
     "exportPdfGenerating": "Generating PDF...",
     "exportPdfError": "We could not generate the PDF right now.",
+    "exportPdfSuccess": "PDF is ready.",
     "viewDetails": "View details",
     "viewAll": "View all",
     "goToMissingData": "Go to missing data",
@@ -136,6 +137,59 @@
       "expires": "Expires",
       "recentActivity": "Recent activity",
       "recentActivityDescription": "A concise audit trail of the latest workspace events.",
+      "noBuyerRequests": "No buyer requests yet.",
+      "noRecentUploads": "No evidence documents uploaded yet.",
+      "noRecentActivity": "Activity will appear after questionnaire, evidence, sharing, or PDF work starts.",
+      "noActiveShareLinks": "No active public share links yet.",
+      "noReadinessTrend": "Readiness trend will appear after more saved progress.",
+      "publicSupplierPassport": "Public Supplier Passport",
+      "noExpiry": "No expiry",
+      "setupChecklist": {
+        "title": "Supplier Passport setup",
+        "description": "Complete these steps to prepare a buyer-ready, VSME-aligned supplier profile.",
+        "emptyTitle": "Your Supplier Passport is not ready yet.",
+        "emptyDescription": "Your Supplier Passport is not ready yet. Complete the steps below to create a buyer-ready, VSME-aligned supplier profile.",
+        "nextRecommendedStep": "Next recommended step",
+        "readinessDisclaimer": "Readiness is based on completed questionnaire items and evidence metadata. It is not an audit or certification.",
+        "completed": "Complete",
+        "available": "Available",
+        "pending": "Pending",
+        "completeQuestionnaire": "Complete questionnaire",
+        "completeQuestionnaireDescription": "Answer the Supplier Passport questionnaire.",
+        "completeQuestionnaireCta": "Go to questionnaire",
+        "uploadEvidence": "Upload evidence documents",
+        "uploadEvidenceDescription": "Add supporting documents to your Evidence Data Room.",
+        "uploadEvidenceCta": "Upload documents",
+        "linkEvidence": "Link evidence to answers",
+        "linkEvidenceDescription": "Connect uploaded documents to questionnaire answers.",
+        "linkEvidenceCta": "Open Data Room",
+        "reviewPassport": "Review Supplier Passport",
+        "reviewPassportDescription": "Check the real readiness and evidence summary.",
+        "reviewPassportCta": "Review Passport",
+        "sharePublicLink": "Share public link",
+        "sharePublicLinkDescription": "Create or manage the buyer-facing public link.",
+        "sharePublicLinkCta": "Open sharing page",
+        "downloadPdf": "Download PDF draft",
+        "downloadPdfDescription": "Export the authenticated Supplier Passport draft.",
+        "downloadPdfCta": "Review Passport",
+        "startQuestionnaire": "Start by completing the questionnaire.",
+        "uploadDocumentsNext": "Upload evidence documents to support your answers.",
+        "linkEvidenceNext": "Link evidence documents to questionnaire answers.",
+        "reviewAndShareNext": "Review your Supplier Passport and share it with buyers.",
+        "downloadOrShareNext": "Download your PDF draft or share the public link.",
+        "neutralFallback": "Live dashboard metrics will appear after your organization data is available.",
+        "questionsAnswered": "Questions answered",
+        "documentsUploaded": "Documents uploaded",
+        "evidenceLinks": "Evidence links",
+        "activeShareLinksMetric": "Active share links",
+        "pdfReady": "PDF draft"
+      },
+      "activity": {
+        "answers": "{count} questionnaire answers completed.",
+        "documents": "{count} evidence documents uploaded.",
+        "links": "{count} evidence links created.",
+        "share": "{count} public share link active."
+      },
       "modules": {
         "basicInformation": "Basic Information",
         "environment": "Environment",
@@ -196,19 +250,21 @@
     "saveSignInError": "Please sign in before saving questionnaire answers.",
     "saveError": "We could not save your answers right now. Please try again.",
     "saveSuccess": "Questionnaire answers saved.",
-    "liveQuestionnaireLoadFailed": "We could not load live questionnaire data.",
+    "liveQuestionnaireLoadFailed": "We could not load the questionnaire right now.",
     "mockDataAvailable": "Mock data is still available.",
     "questionnairePermissionDenied": "You do not have permission to update this questionnaire.",
     "questionnaireSaved": "Questionnaire saved.",
     "sessionExpired": "Your session has expired. Please sign in again.",
-    "loadFallbackError": "We could not load live questionnaire data.",
-    "seedFallbackMessage": "Questionnaire seed data is not available yet. Showing mock data.",
+    "loadFallbackError": "We could not load the questionnaire right now.",
+    "seedFallbackMessage": "We could not load the questionnaire right now.",
     "attachSaveFirstMessage": "Save this answer once before attaching evidence.",
     "attachSelectDocumentFirst": "Select or upload a document before linking evidence.",
     "attachMockSuccess": "Evidence attached locally in mock mode.",
     "attachSignInError": "Please sign in before attaching evidence.",
     "attachError": "We could not attach this evidence right now. Please try again.",
-    "attachSuccess": "Evidence attached to questionnaire answer.",
+    "attachSuccess": "Document linked to questionnaire answer.",
+    "noAnswersSaved": "No answers saved yet.",
+    "startFirstSection": "Start with the first section to build your Supplier Passport.",
     "sections": {
       "Company Basics": "Company Basics",
       "Employees": "Employees",
@@ -478,15 +534,15 @@
     "allSections": "All sections",
     "alreadyLinked": "Already linked to this document",
     "noMatchingAnswers": "No matching answers",
-    "noAnswersYet": "No questionnaire answers yet",
+    "noAnswersYet": "No answers saved yet",
     "noMatchingAnswersDescription": "Adjust the search or section filter to find another answer.",
-    "noAnswersYetDescription": "Questionnaire items will appear here once the taxonomy is loaded.",
+    "noAnswersYetDescription": "Start with the first section to build your Supplier Passport.",
     "linkSelectedAnswers": "Link selected answers",
     "linking": "Linking...",
     "answered": "Answered",
     "notLinkedYet": "This document is not linked to a questionnaire answer yet.",
-    "noDocumentsTitle": "No documents yet",
-    "noDocumentsText": "Upload your first evidence document to start building your Supplier Passport.",
+    "noDocumentsTitle": "No evidence documents uploaded yet.",
+    "noDocumentsText": "Upload invoices, certificates, policies or other documents that support your questionnaire answers.",
     "documentTypes": {
       "Certificate": "Certifications",
       "Utility Bill": "Energy",
@@ -500,17 +556,18 @@
     },
     "uploadedBy": "uploaded by {name}",
     "liveUnavailableMessage": "We could not load your documents right now.",
-    "emptyLiveMessage": "No live evidence documents yet. Upload your first document to start building the evidence room.",
+    "emptyLiveMessage": "No evidence documents uploaded yet. Upload invoices, certificates, policies or other documents that support your questionnaire answers.",
     "uploadMockMessage": "Connect Nhost and sign in to upload real evidence documents. Mock data remains available.",
     "uploadError": "We could not upload this document right now.",
     "uploadSuccess": "Evidence document uploaded securely.",
     "workspaceUser": "Workspace user",
     "linkMockSuccess": "Evidence linked locally in mock mode.",
     "linkSignInError": "Please sign in before linking evidence.",
-    "linkError": "We could not update evidence links right now. Please try again.",
+    "linkError": "We could not link this document to an answer right now.",
     "linkMissingDocumentId": "This document cannot be linked because its ID is missing.",
+    "linkSelectQuestion": "Select at least one questionnaire item.",
     "linkDialogOpenError": "We could not open the evidence link dialog.",
-    "linkSuccess": "Evidence linked to questionnaire answer.",
+    "linkSuccess": "Document linked to questionnaire answer.",
     "unknownSize": "Unknown size",
     "recently": "Recently",
     "notLinked": "Not linked yet",
@@ -552,82 +609,112 @@
   },
   "landing": {
     "hero": {
-      "badge": "EU-aligned supplier evidence workspace",
-      "titlePrefix": "Prepare your VSME profile once. Share it with",
-      "titleEmphasis": "every buyer.",
-      "description": "Build your VSME / ESG profile, organize evidence documents, track readiness, and share a secure passport link with EU buyers - instantly.",
+      "badge": "VSME-aligned supplier readiness",
+      "titlePrefix": "Create a buyer-ready",
+      "titleEmphasis": "Supplier Passport.",
+      "description": "Collect questionnaire answers, evidence documents and readiness status in one VSME-aligned supplier profile.",
       "trustChips": [
-        "EU-aligned & VSME-ready",
-        "Secure & permissioned",
+        "VSME-aligned",
+        "Private evidence by default",
         "Evidence summary"
       ]
     },
     "features": {
-      "eyebrow": "Product foundation",
-      "title": "One workspace for VSME answers, evidence, gaps, and buyer sharing.",
+      "eyebrow": "What you can do",
+      "title": "One workspace for answers, evidence, readiness gaps and buyer sharing.",
       "items": [
         {
-          "title": "VSME Readiness Questionnaire",
-          "description": "Guide teams through VSME profile completion with clear module progress, evidence prompts, and review-ready answers."
+          "title": "Questionnaire workspace",
+          "description": "Complete structured Supplier Passport questions and see progress across VSME-aligned sections."
         },
         {
           "title": "Evidence Data Room",
-          "description": "Centralize policies, certificates, reports, and registers in one secure workspace mapped to buyer questions."
+          "description": "Upload invoices, certificates, policies and other evidence without making private files public."
         },
         {
-          "title": "Missing Data Dashboard",
-          "description": "See unanswered fields, expiring evidence, and buyer follow-ups before they slow down procurement."
+          "title": "Readiness overview",
+          "description": "Track unanswered items, evidence gaps and certificate expiry before buyer requests arrive."
         },
         {
-          "title": "Secure Buyer Share Link",
-          "description": "Publish a controlled passport link with read-only access, expiry dates, and buyer-friendly summaries."
+          "title": "Public Supplier Passport",
+          "description": "Share a buyer-safe public summary and keep evidence files available on request."
         }
       ]
     },
     "howItWorks": {
       "eyebrow": "How it works",
-      "title": "From scattered answers to a buyer-ready passport.",
-      "description": "A focused workflow for supplier teams that need clarity, speed, and evidence discipline.",
+      "title": "From first answers to a shareable Supplier Passport.",
+      "description": "A practical workflow for supplier teams preparing VSME-aligned readiness information.",
       "steps": [
         {
-          "title": "Complete profile",
-          "description": "Answer structured VSME questions once with clear ownership and progress."
+          "title": "Complete the questionnaire",
+          "description": "Start with structured company, environmental, workforce, governance and supplier information."
         },
         {
-          "title": "Upload evidence",
-          "description": "Attach policies, certificates, reports, and registers to the right disclosures."
+          "title": "Upload evidence documents",
+          "description": "Add certificates, policies, invoices or other files that support your answers."
         },
         {
-          "title": "Generate passport",
-          "description": "Turn completed answers and approved evidence into a polished buyer view."
+          "title": "Link evidence to answers",
+          "description": "Connect uploaded documents to questionnaire items so readiness is evidence-driven."
         },
         {
-          "title": "Share with buyer",
-          "description": "Send a secure, read-only link with permissions and expiry controls."
+          "title": "Share public Supplier Passport",
+          "description": "Send buyers a clear public summary without exposing private evidence files."
+        },
+        {
+          "title": "Download PDF draft",
+          "description": "Export a Supplier Passport draft for internal review or buyer conversations."
         }
       ]
     },
+    "value": {
+      "eyebrow": "Supplier and buyer value",
+      "title": "A clearer entry point for recurring supplier readiness requests.",
+      "groups": [
+        {
+          "title": "For suppliers",
+          "items": [
+            "Reduce repeated ESG and supplier questionnaire work",
+            "Keep one reusable Supplier Passport profile",
+            "See evidence readiness and certificate expiry in one place"
+          ]
+        },
+        {
+          "title": "For buyers",
+          "items": [
+            "Screen suppliers faster with a consistent public summary",
+            "Understand which areas have supporting evidence available",
+            "Avoid receiving private files before they are requested"
+          ]
+        }
+      ],
+      "disclaimerEyebrow": "Important limitation",
+      "disclaimerTitle": "Readiness, not certification",
+      "disclaimerText": "Supplier Passport is VSME-aligned and designed for supplier readiness workflows. It is not an audit opinion, legal certification, or assurance report."
+    },
     "socialProof": {
       "logos": [
-        "Lumen Technologies",
-        "GreenParts Industries",
-        "Nova Packaging",
-        "Metaline Solutions",
-        "EcoTextile Group"
+        "Supplier teams",
+        "Procurement teams",
+        "ESG coordinators",
+        "Operations teams",
+        "Advisor teams"
       ],
-      "quote": "Supplier Passport helped us prepare our VSME profile in weeks, not months. Buyers love the clarity and the secure access.",
-      "person": "Anna Muller",
-      "role": "Sustainability Manager"
+      "quote": "A reusable Supplier Passport helps suppliers answer faster while giving buyers a clear, buyer-safe readiness summary.",
+      "person": "Supplier Passport",
+      "role": "Product overview"
     },
     "pricingPreview": {
       "eyebrow": "Pricing",
       "title": "Pricing for professional supplier readiness.",
-      "description": "Prepare your Supplier Passport, organize evidence, and present buyer-ready compliance information with confidence.",
+      "description": "Prepare your Supplier Passport, organize evidence, and present buyer-ready readiness information with confidence.",
       "note": "Need to manage multiple clients or suppliers? See Partner and Buyer plans."
     },
     "finalCta": {
       "eyebrow": "Supplier Passport",
-      "title": "Ready to create your Supplier Passport?"
+      "title": "Ready to create your Supplier Passport?",
+      "secondaryCta": "Sign in"
     },
     "preview": {
       "supplierReadiness": "Supplier readiness",
@@ -640,6 +727,8 @@
       "buyerRequests": "Buyer requests",
       "lastUpdated": "Last updated May 12, 2024",
       "passportPreview": "Passport preview",
+      "exampleSupplierName": "Example Supplier Ltd.",
+      "summaryOnly": "Summary only",
       "basicModule": "VSME Basic Module",
       "module": "VSME Module",
       "readiness": "Readiness {score}%",
@@ -650,14 +739,14 @@
         "Governance",
         "Evidence summary"
       ],
-      "secureLine": "Secure - Read-only - Expires May 12, 2025"
+      "secureLine": "Private files are not publicly downloadable"
     }
   },
   "pricing": {
     "hero": {
       "eyebrow": "Pricing",
       "title": "Pricing for professional supplier readiness.",
-      "description": "Prepare your Supplier Passport, organize evidence, and present buyer-ready compliance information with confidence.",
+      "description": "Prepare your Supplier Passport, organize evidence, and present buyer-ready readiness information with confidence.",
       "annualNote": "Annual plans include around 20% savings and one yearly profile review on Supplier Pro.",
       "setupNote": "Setup is an assisted onboarding add-on for subscription plans. Sprint is a one-time service package for companies that need to handle one concrete buyer request before committing to a subscription."
     },
@@ -955,17 +1044,17 @@
   "auth": {
     "shell": {
       "headline": "Supplier readiness without spreadsheet drift.",
-      "subtitle": "Prepare your VSME profile, organize approved evidence, and manage buyer access from a secure supplier workspace.",
+      "subtitle": "Prepare your VSME-aligned profile, organize evidence, and manage buyer-facing Supplier Passport summaries from one workspace.",
       "benefits": [
-        "Nhost Auth ready",
-        "Hasura permissions planned",
-        "Buyer-facing Passports"
+        "Questionnaire and evidence workflow",
+        "Buyer-safe public summary",
+        "PDF draft export"
       ]
     },
     "login": {
       "eyebrow": "Welcome back",
-      "title": "Sign in to Supplier Passport",
-      "subtitle": "Access your supplier workspace, evidence documents, and Passport links.",
+      "title": "Sign in to continue your Supplier Passport.",
+      "subtitle": "Access your questionnaire, evidence documents, public link and PDF draft.",
       "email": "Work email",
       "password": "Password",
       "passwordPlaceholder": "Enter your password",
@@ -989,8 +1078,8 @@
     },
     "signup": {
       "eyebrow": "Company workspace",
-      "title": "Create your Supplier Passport account",
-      "subtitle": "Start preparing your VSME profile and buyer-ready evidence room.",
+      "title": "Create your Supplier Passport workspace.",
+      "subtitle": "Start preparing your VSME-aligned supplier profile and evidence readiness overview.",
       "fullName": "Full name",
       "workEmail": "Work email",
       "password": "Password",
@@ -1016,10 +1105,10 @@
       "authNetworkError": "We could not reach Nhost Auth. Check the production Auth URL and allowed origins.",
       "unknownAuthError": "Signup failed. Please try again or contact support."
     },
-    "loginTitle": "Sign in to Supplier Passport",
-    "loginSubtitle": "Access your supplier workspace, evidence documents, and Passport links.",
-    "signupTitle": "Create your Supplier Passport account",
-    "signupSubtitle": "Start preparing your VSME profile and buyer-ready evidence room.",
+    "loginTitle": "Sign in to continue your Supplier Passport.",
+    "loginSubtitle": "Access your questionnaire, evidence documents, public link and PDF draft.",
+    "signupTitle": "Create your Supplier Passport workspace.",
+    "signupSubtitle": "Start preparing your VSME-aligned supplier profile and evidence readiness overview.",
     "email": "Work email",
     "password": "Password",
     "fullName": "Full name",
@@ -1195,8 +1284,9 @@
     "exportPdf": "Download PDF",
     "exportPdfGenerating": "Generating PDF...",
     "exportPdfError": "We could not generate the PDF right now.",
+    "exportPdfSuccess": "PDF is ready.",
     "draftStateTitle": "Passport preview is using draft data",
-    "draftStateText": "Generate a passport when the organization profile, questionnaire answers, and evidence metadata are ready. Until then, this page shows the buyer-safe preview structure for demo review.",
+    "draftStateText": "Complete the questionnaire and link evidence documents to improve readiness.",
     "companySummary": "Company summary",
     "companySummaryDescription": "The organization profile buyers will see in the passport.",
     "verified": "Profile",
@@ -1220,7 +1310,7 @@
     "linkedSections": "Linked sections",
     "status": "Status",
     "approved": "Available",
-    "noApprovedDocuments": "No evidence documents yet.",
+    "noApprovedDocuments": "No evidence summary available yet.",
     "missingDataChecklist": "Missing data checklist",
     "missingDataChecklistDescription": "Open items before this passport is shared externally.",
     "missingDataNeutral": "Missing-data checks will appear here once your questionnaire and documents are reviewed.",
@@ -1241,8 +1331,8 @@
     "completion": "completion",
     "passportStatus": "Passport status",
     "generatedAt": "Generated at",
-    "noPassportTitle": "No Passport generated yet",
-    "noPassportText": "Generate your first Supplier Passport to prepare a buyer-ready profile.",
+    "noPassportTitle": "Your Supplier Passport draft is not ready yet.",
+    "noPassportText": "Complete the questionnaire and link evidence documents to improve readiness.",
     "generateSuccess": "Supplier Passport generated successfully.",
     "generateError": "We could not generate the Supplier Passport right now.",
     "shareLinkGenerateFirst": "Generate a Supplier Passport before creating a buyer share link.",
@@ -1325,6 +1415,7 @@
     "publicPdfWarning": "Buyers can also download a buyer-safe public PDF summary from the public Passport page.",
     "copyLink": "Copy link",
     "linkCopied": "Link copied",
+    "copyError": "We could not copy the link.",
     "loadError": "We could not load your share link right now.",
     "generateLink": "Generate share link",
     "generatingLink": "Generating...",
@@ -1344,8 +1435,8 @@
     "regenerateConfirm": "Regenerating creates a new public link and disables the old one.",
     "regeneratingLink": "Regenerating...",
     "linkRegenerated": "Link regenerated",
-    "noLinkTitle": "No share link yet",
-    "noLinkText": "Generate a secure public link when you are ready to share your Supplier Passport summary.",
+    "noLinkTitle": "No active public link yet.",
+    "noLinkText": "Create a public link when you are ready to share your Supplier Passport with buyers.",
     "signInRequired": "Please sign in to manage your Supplier Passport share link."
   },
   "onboarding": {
@@ -1356,6 +1447,7 @@
     "vatId": "VAT / OIB",
     "industry": "Industry",
     "employeeCountRange": "Employee count",
+    "employeeCountPlaceholder": "Select range",
     "headquartersCity": "Headquarters city",
     "headquartersCountry": "Headquarters country",
     "website": "Website",

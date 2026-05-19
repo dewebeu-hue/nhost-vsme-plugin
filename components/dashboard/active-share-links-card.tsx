@@ -5,7 +5,13 @@ import {
   defaultDashboardOverviewLabels,
   type DashboardOverviewLabels,
 } from "@/lib/dashboard-labels";
-import type { DashboardShareLink } from "@/lib/mock-data";
+
+type DashboardShareLink = {
+  buyer: string;
+  module: string;
+  status: "Active";
+  expires: string;
+};
 
 type ActiveShareLinksCardProps = {
   links: DashboardShareLink[];
@@ -23,7 +29,7 @@ export function ActiveShareLinksCard({
       className="h-full"
     >
       <div className="flex flex-col gap-3">
-        {links.map((link) => (
+        {links.length ? links.map((link) => (
           <div
             key={`${link.buyer}-${link.expires}`}
             className="flex gap-3 rounded-xl border border-slate-200 bg-white p-3"
@@ -33,18 +39,38 @@ export function ActiveShareLinksCard({
             </div>
             <div className="min-w-0 flex-1">
               <div className="flex flex-wrap items-center gap-2">
-                <p className="font-semibold text-slate-950">{link.buyer}</p>
+                <p className="font-semibold text-slate-950">
+                  {link.buyer === "public_supplier_passport"
+                    ? labels.publicSupplierPassport
+                    : link.buyer}
+                </p>
                 <DashboardStatusPill tone="green">
                   {labels.statuses[link.status] ?? link.status}
                 </DashboardStatusPill>
               </div>
               <p className="mt-1 text-sm text-slate-500">
-                {link.module} - {labels.expires} {link.expires}
+                {link.module} - {labels.expires} {formatExpiry(link.expires, labels)}
               </p>
             </div>
           </div>
-        ))}
+        )) : (
+          <p className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-500">
+            {labels.noActiveShareLinks}
+          </p>
+        )}
       </div>
     </SectionCard>
   );
+}
+
+function formatExpiry(value: string, labels: DashboardOverviewLabels) {
+  if (!value) {
+    return labels.noExpiry;
+  }
+
+  return new Intl.DateTimeFormat(undefined, {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  }).format(new Date(value));
 }

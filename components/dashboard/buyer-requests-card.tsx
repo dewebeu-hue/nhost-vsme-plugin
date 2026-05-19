@@ -1,7 +1,13 @@
 import { SectionCard } from "@/components/shared/section-card";
 import { DashboardStatusPill } from "@/components/dashboard/dashboard-status-pill";
 import { defaultDashboardOverviewLabels, type DashboardOverviewLabels } from "@/lib/dashboard-labels";
-import type { DashboardBuyerRequest } from "@/lib/mock-data";
+
+type DashboardBuyerRequest = {
+  buyer: string;
+  module: string;
+  status: "In progress" | "Requested" | "Not started";
+  dueDate: string;
+};
 
 type BuyerRequestsCardProps = {
   requests: DashboardBuyerRequest[];
@@ -25,7 +31,7 @@ export function BuyerRequestsCard({
       className="h-full"
     >
       <div className="flex flex-col divide-y divide-slate-100">
-        {requests.map((request) => (
+        {requests.length ? requests.map((request) => (
           <div key={`${request.buyer}-${request.dueDate}`} className="grid gap-3 py-4 first:pt-0 last:pb-0 sm:grid-cols-[1fr_auto]">
             <div>
               <p className="font-semibold text-slate-950">{request.buyer}</p>
@@ -40,7 +46,11 @@ export function BuyerRequestsCard({
               </span>
             </div>
           </div>
-        ))}
+        )) : (
+          <p className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-500">
+            {labels.noBuyerRequests}
+          </p>
+        )}
       </div>
     </SectionCard>
   );

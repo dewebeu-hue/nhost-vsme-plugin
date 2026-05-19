@@ -49,7 +49,8 @@ export function ReadinessChartCard({
           <p className="text-3xl font-semibold tracking-tight text-slate-950">{endValue}%</p>
         </div>
       </div>
-      <div className="w-full overflow-x-auto">
+      {data.length ? (
+        <div className="w-full overflow-x-auto">
           <LineChart
             width={720}
             height={288}
@@ -58,7 +59,7 @@ export function ReadinessChartCard({
           >
             <CartesianGrid stroke="#E2E8F0" strokeDasharray="4 4" vertical={false} />
             <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fill: "#64748B", fontSize: 12 }} />
-            <YAxis domain={[50, 80]} axisLine={false} tickLine={false} tick={{ fill: "#64748B", fontSize: 12 }} />
+            <YAxis domain={[0, 100]} axisLine={false} tickLine={false} tick={{ fill: "#64748B", fontSize: 12 }} />
             <Tooltip
               cursor={{ stroke: "#0B5CFF", strokeOpacity: 0.18 }}
               contentStyle={{
@@ -76,7 +77,12 @@ export function ReadinessChartCard({
               activeDot={{ r: 6 }}
             />
           </LineChart>
-      </div>
+        </div>
+      ) : (
+        <p className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-500">
+          {labels.noReadinessTrend}
+        </p>
+      )}
     </SectionCard>
   );
 }

@@ -133,7 +133,7 @@ export function SignupForm() {
         <Input
           required
           name="fullName"
-          placeholder="Anna Muller"
+          placeholder="Your name"
           className="h-12 rounded-xl bg-slate-50 px-4"
         />
       </label>
@@ -144,7 +144,7 @@ export function SignupForm() {
           required
           name="email"
           type="email"
-          placeholder="anna@acme-manufacturing.com"
+          placeholder="name@company.com"
           className="h-12 rounded-xl bg-slate-50 px-4"
         />
       </label>
@@ -166,7 +166,7 @@ export function SignupForm() {
         <Input
           required
           name="companyName"
-          placeholder="Acme Manufacturing GmbH"
+          placeholder="Your company name"
           className="h-12 rounded-xl bg-slate-50 px-4"
         />
       </label>

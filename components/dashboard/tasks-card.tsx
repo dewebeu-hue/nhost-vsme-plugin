@@ -2,7 +2,13 @@ import { CheckCircle2, Circle } from "lucide-react";
 import { SectionCard } from "@/components/shared/section-card";
 import { DashboardStatusPill } from "@/components/dashboard/dashboard-status-pill";
 import { defaultDashboardOverviewLabels, type DashboardOverviewLabels } from "@/lib/dashboard-labels";
-import type { DashboardTask } from "@/lib/mock-data";
+
+type DashboardTask = {
+  title: string;
+  category: string;
+  due: string;
+  completed: boolean;
+};
 
 type TasksCardProps = {
   tasks: DashboardTask[];

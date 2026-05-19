@@ -22,7 +22,7 @@ export function HowItWorks() {
           </p>
         </div>
 
-        <div className="mt-10 grid gap-4 lg:grid-cols-4">
+        <div className="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-5">
           {steps.map((step, index) => (
             <article key={step.title} className="relative rounded-2xl bg-slate-50 p-5">
               <div className="mb-7 flex items-center justify-between">

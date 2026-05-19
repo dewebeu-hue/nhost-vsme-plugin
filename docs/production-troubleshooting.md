@@ -1185,6 +1185,189 @@ limit 50;
 
 Use this SQL only to verify metadata in Nhost/Hasura. Do not copy private file URLs, storage paths, storage IDs, or document contents into logs, screenshots, or public PDFs.
 
+## Faza 3.1 Guided Dashboard Checklist
+
+The authenticated dashboard home includes a Supplier Passport setup checklist for demo readiness and new supplier onboarding.
+
+Workflow shown:
+
+1. Complete questionnaire.
+2. Upload evidence documents.
+3. Link evidence to answers.
+4. Review Supplier Passport.
+5. Share public link.
+6. Download PDF draft.
+
+Live metrics used:
+
+- `question_items` and current-organization `question_answers` for answered/total questionnaire progress.
+- Current-organization `documents` for uploaded evidence count and recent upload metadata.
+- Current-organization `document_links` filtered through the organization's documents and answers for linked evidence count.
+- Current-organization `share_links` for active public link state.
+- Current-organization `supplier_passports` timestamp where available for last-updated context.
+
+Safety notes:
+
+- The checklist is available only inside the authenticated dashboard.
+- It resolves the organization server-side from the signed-in user membership.
+- It does not trust a client-provided organization ID.
+- It does not render private document URLs, storage file IDs, share tokens, JWTs, cookies, or admin secrets.
+- Readiness is described as an indicator based on questionnaire completion and evidence metadata, not an audit or certification.
+- If live metrics cannot be loaded, the dashboard shows neutral fallback text instead of mock values.
+
+Manual QA:
+
+1. Deploy the latest dashboard changes.
+2. Sign in as a real supplier.
+3. Open `/hr/dashboard`.
+4. Confirm the Supplier Passport setup checklist appears.
+5. Confirm the next recommended step matches the real state of questionnaire answers, documents, evidence links, and share links.
+6. Confirm CTAs route to `/hr/dashboard/questionnaire`, `/hr/dashboard/documents`, `/hr/dashboard/passport`, and `/hr/dashboard/share`.
+7. Confirm no Acme/Anna/Munich or other mock dashboard data appears.
+8. Confirm no private file URL, storage file ID, share token, or user/member data appears.
+9. Repeat a quick check on `/en/dashboard` and `/de/dashboard`.
+
+## Faza 3.1 Empty States And Production Copy QA
+
+Use this checklist during demo-readiness QA for authenticated supplier flows.
+
+Dashboard:
+
+- New or low-data organizations should see the Supplier Passport setup checklist with a clear next recommended step.
+- Empty dashboard cards should show neutral guidance, not mock buyer names, mock companies, or blank panels.
+- Readiness must be described as an indicator based on questionnaire completion and evidence metadata, not an audit or certification.
+
+Questionnaire:
+
+- With no saved answers, show a message such as `No answers saved yet` / `Još nema spremljenih odgovora` / `Noch keine Antworten gespeichert`.
+- Loading or live-data failures should use localized non-technical copy.
+- Do not show fake answers when live taxonomy is available but answers are empty.
+
+Documents and evidence linking:
+
+- With no documents, show guidance to upload invoices, certificates, policies, or other supporting evidence.
+- Upload failures should show a safe localized error.
+- Evidence-link failures should say the document could not be linked to an answer, without exposing internal IDs or GraphQL details.
+- If no questionnaire item is selected, show a localized selection prompt.
+
+Passport, share, and PDF:
+
+- Low-readiness Passport states should guide the user back to questionnaire and evidence linking.
+- Missing evidence summaries should use neutral copy.
+- Share pages should explain that no active public link exists yet and guide the user to create one.
+- Clipboard and PDF failures should use localized, non-technical messages.
+- PDF success may show `PDF is ready` / `PDF je spreman` / `PDF ist bereit`.
+
+Public Passport:
+
+- Invalid, inactive, or expired public tokens should show the safe unavailable state.
+- Public pages must not expose private file URLs, storage IDs, user/member data, raw answer dumps, stack traces, admin/debug fields, or mock fallback content.
+
+Localization QA:
+
+- Croatian: no `Saćetak`; prefer `Sažetak`, `dokazna dokumentacija`, `javni link`, `kupci`, `dobavljač`, `PDF nacrt`, and `Odjava`.
+- German: no Croatian fallback; use consistent `Nachweise`, `Lieferant`, `Käufer`, and `Bereitschaft`.
+- English: avoid audit, certification, legal compliance, or approval claims unless the sentence is explicitly a disclaimer.
+
+## Faza 3.1 Landing And Entry Flow QA
+
+Use this checklist for unauthenticated demo-readiness QA.
+
+Routes:
+
+- `/en`
+- `/hr`
+- `/de`
+- `/en/login`, `/hr/login`, `/de/login`
+- `/en/signup`, `/hr/signup`, `/de/signup`
+- `/en/onboarding`, `/hr/onboarding`, `/de/onboarding`
+
+Landing page expectations:
+
+- Hero explains Supplier Passport in under 30 seconds: questionnaire answers, evidence documents, readiness status, and a VSME-aligned supplier profile.
+- Primary CTA routes to localized signup, not pricing checkout or a payment flow.
+- No unsafe sample public Passport link is shown unless a buyer-safe demo token exists.
+- How-it-works section shows the live product workflow: questionnaire, evidence upload, evidence linking, public sharing, and PDF draft.
+- Supplier/buyer value is stated as readiness workflow support, not audit replacement or legal compliance.
+- Disclaimer is visible: Supplier Passport is VSME-aligned and is not an audit opinion, legal certification, or assurance report.
+
+Auth and onboarding expectations:
+
+- Login copy says the user is continuing their Supplier Passport.
+- Signup copy says the user is creating a Supplier Passport workspace.
+- Placeholders are neutral examples, not Acme/Anna/Munich demo data.
+- Onboarding does not preselect a fake employee count.
+
+No-overclaim checklist:
+
+- Do not use `VSME certified`, `Certified`, `Audit-ready`, `Approved`, `Verified supplier`, or `guaranteed compliance` in public landing/auth UI unless it is clearly part of a disclaimer saying the product is not that.
+- Use `VSME-aligned`, `supplier readiness`, `buyer-ready Supplier Passport`, `evidence summary`, and `public Supplier Passport`.
+
+Privacy checklist:
+
+- Landing and auth routes must not load private documents, storage URLs, storage IDs, share tokens, organization/member records, JWTs, cookies, or admin/debug values.
+- Public product previews may use neutral example labels only.
+
+## Faza 3.1 Final Demo Readiness QA
+
+Use this checklist before a live product demo.
+
+Demo flow:
+
+1. Visitor opens `/en`, `/hr`, or `/de`.
+2. Visitor understands that Supplier Passport collects questionnaire answers, evidence documents, readiness status, public sharing, and PDF draft export in a VSME-aligned supplier profile.
+3. Visitor starts signup or login.
+4. User completes onboarding or lands in the authenticated dashboard.
+5. Dashboard shows the Supplier Passport setup checklist.
+6. User completes questionnaire answers.
+7. User uploads an evidence document.
+8. User links evidence to a questionnaire answer.
+9. User reviews the dashboard Supplier Passport.
+10. User creates or opens a public share link.
+11. Buyer opens the public Passport in an incognito/no-login session.
+12. User downloads the authenticated PDF draft.
+13. User logs out.
+
+Landing/auth QA:
+
+- `/en`, `/hr`, and `/de` load without authentication.
+- Hero, workflow, supplier/buyer value, and disclaimer are understandable without sales narration.
+- CTAs route to localized signup/login flows.
+- Login, signup, and onboarding copy is production-ready.
+- No Acme/Anna/Munich sample identity appears in public landing/auth/onboarding UI.
+- No certified, audited, approved, verified-supplier, or guaranteed-compliance claim appears unless it is part of a disclaimer saying Supplier Passport is not that.
+
+Authenticated dashboard QA:
+
+- Checklist uses real questionnaire, document, evidence-link, share-link, and Passport/PDF state.
+- Questionnaire active sections show real non-zero taxonomy totals.
+- Answers save, update completion, and survive refresh.
+- Document upload persists metadata, category/type, and expiry date where applicable.
+- Link-to-answer opens the modal, sends `documentId` plus `questionItemIds`, returns 200 for valid current-organization data, and persists after refresh.
+- Passport uses real or neutral data and shows evidence/expiry state from real metadata.
+- Authenticated PDF downloads and excludes private URLs, storage IDs, user/member data, share tokens, raw sensitive answer dumps, and misleading claims.
+
+Public sharing QA:
+
+- Share page copies and opens the public link.
+- Valid public token loads without login.
+- Invalid, inactive, or expired token shows the safe unavailable state.
+- Public Passport and public PDF, if enabled, are buyer-safe summaries only.
+- Public surfaces do not expose private document URLs, storage IDs, member/user data, raw sensitive answers, admin/debug data, or mock fallback content.
+
+Localization QA:
+
+- English copy is clear and avoids overclaiming.
+- Croatian uses `Sažetak`, `dokazna dokumentacija`, `javni Supplier Passport`, `PDF nacrt`, `Odjava`, `dobavljač`, and `kupci`; no `Saćetak`.
+- German has no Croatian fallback and uses consistent `Nachweise`, `Lieferant`, `Käufer`, and `Bereitschaft`.
+
+Known manual production QA:
+
+- Run the full flow with a real production user and organization after deployment.
+- Confirm public links in a private/incognito browser window.
+- Confirm PDF downloads in each locale.
+- Confirm logout returns the user to the localized login/entry flow.
+
 ## Safe Logging Rules
 
 Allowed categories:

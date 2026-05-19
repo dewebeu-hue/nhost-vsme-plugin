@@ -5,7 +5,11 @@ import {
   defaultDashboardOverviewLabels,
   type DashboardOverviewLabels,
 } from "@/lib/dashboard-labels";
-import type { DashboardMissingDataItem } from "@/lib/mock-data";
+
+type DashboardMissingDataItem = {
+  area: string;
+  items: number;
+};
 
 type MissingDataSummaryCardProps = {
   total: number;
@@ -34,7 +38,7 @@ export function MissingDataSummaryCard({
           </p>
         </div>
         <div className="flex flex-col gap-3">
-          {items.map((item) => (
+          {items.length ? items.map((item) => (
             <div
               key={item.area}
               className="flex items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3"
@@ -46,7 +50,11 @@ export function MissingDataSummaryCard({
                 {item.items} {labels.items}
               </span>
             </div>
-          ))}
+          )) : (
+            <p className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-500">
+              {labels.setupChecklist.neutralFallback}
+            </p>
+          )}
         </div>
         <Link
           href={`${localePrefix}/dashboard/missing-data`}

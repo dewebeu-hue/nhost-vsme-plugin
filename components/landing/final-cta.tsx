@@ -1,10 +1,11 @@
 import Link from "next/link";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { ArrowRight } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 export function FinalCta() {
+  const locale = useLocale();
   const t = useTranslations("landing.finalCta");
   const cta = useTranslations("common.cta");
 
@@ -21,7 +22,7 @@ export function FinalCta() {
         </div>
         <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
           <Link
-            href="/dashboard"
+            href={`/${locale}/signup`}
             className={cn(
               buttonVariants({ variant: "secondary", size: "lg" }),
               "h-12 bg-white px-5 text-blue-700 hover:bg-white/90",
@@ -31,13 +32,13 @@ export function FinalCta() {
             <ArrowRight data-icon="inline-end" />
           </Link>
           <Link
-            href="/contact"
+            href={`/${locale}/login`}
             className={cn(
               buttonVariants({ variant: "outline", size: "lg" }),
               "h-12 border-white/40 bg-white/10 px-5 text-white hover:bg-white/15 hover:text-white",
             )}
           >
-            {cta("bookDemo")}
+            {t("secondaryCta")}
           </Link>
         </div>
       </div>

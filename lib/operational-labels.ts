@@ -7,6 +7,7 @@ export type OnboardingLabels = {
   vatId: string;
   industry: string;
   employeeCountRange: string;
+  employeeCountPlaceholder: string;
   headquartersCity: string;
   headquartersCountry: string;
   website: string;
@@ -98,6 +99,7 @@ export const defaultOnboardingLabels: OnboardingLabels = {
   vatId: "VAT / OIB",
   industry: "Industry",
   employeeCountRange: "Employee count",
+  employeeCountPlaceholder: "Select range",
   headquartersCity: "Headquarters city",
   headquartersCountry: "Headquarters country",
   website: "Website",

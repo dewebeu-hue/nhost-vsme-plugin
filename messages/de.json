@@ -13,10 +13,10 @@
       "bookDemo": "Demo buchen"
     },
     "cta": {
-      "startPassport": "Start Passport Sprint",
+      "startPassport": "Supplier Passport starten",
       "seeSamplePassport": "See Sample Passport",
-      "bookDemo": "Book a Demo",
-      "viewFullPricing": "View full pricing"
+      "bookDemo": "Demo buchen",
+      "viewFullPricing": "Alle Preise ansehen"
     }
   },
   "navigation": {
@@ -46,6 +46,7 @@
     "exportPdf": "PDF herunterladen",
     "exportPdfGenerating": "PDF wird erstellt...",
     "exportPdfError": "Das PDF konnte gerade nicht erstellt werden.",
+    "exportPdfSuccess": "PDF ist bereit.",
     "viewDetails": "Details ansehen",
     "viewAll": "Alle ansehen",
     "goToMissingData": "Zu fehlenden Daten",
@@ -136,6 +137,59 @@
       "expires": "Laeuft ab",
       "recentActivity": "Aktuelle Aktivitaet",
       "recentActivityDescription": "Kurzer Audit Trail der letzten Workspace-Ereignisse.",
+      "noBuyerRequests": "Noch keine Kaeuferanfragen.",
+      "noRecentUploads": "Noch keine Nachweisdokumente hochgeladen.",
+      "noRecentActivity": "Aktivitaet erscheint nach Arbeit am Fragebogen, an Nachweisen, Freigaben oder PDF.",
+      "noActiveShareLinks": "Noch keine aktiven oeffentlichen Links.",
+      "noReadinessTrend": "Der Bereitschaftstrend erscheint nach weiterem gespeichertem Fortschritt.",
+      "publicSupplierPassport": "Oeffentlicher Supplier Passport",
+      "noExpiry": "Kein Ablaufdatum",
+      "setupChecklist": {
+        "title": "Supplier-Passport-Einrichtung",
+        "description": "Schliessen Sie diese Schritte ab, um ein VSME-orientiertes Lieferantenprofil fuer Kaeufer vorzubereiten.",
+        "emptyTitle": "Ihr Supplier Passport ist noch nicht bereit.",
+        "emptyDescription": "Ihr Supplier Passport ist noch nicht bereit. Schliessen Sie die folgenden Schritte ab, um ein VSME-orientiertes Lieferantenprofil fuer Kaeufer vorzubereiten.",
+        "nextRecommendedStep": "Naechster empfohlener Schritt",
+        "readinessDisclaimer": "Die Bereitschaft basiert auf ausgefuellten Fragebogenpunkten und Nachweis-Metadaten. Sie ist keine Pruefung oder Zertifizierung.",
+        "completed": "Abgeschlossen",
+        "available": "Verfuegbar",
+        "pending": "Ausstehend",
+        "completeQuestionnaire": "Fragebogen ausfuellen",
+        "completeQuestionnaireDescription": "Beantworten Sie den Supplier-Passport-Fragebogen.",
+        "completeQuestionnaireCta": "Zum Fragebogen",
+        "uploadEvidence": "Nachweisdokumente hochladen",
+        "uploadEvidenceDescription": "Fuegen Sie unterstuetzende Dokumente zum Evidence Data Room hinzu.",
+        "uploadEvidenceCta": "Dokumente hochladen",
+        "linkEvidence": "Nachweise mit Antworten verknuepfen",
+        "linkEvidenceDescription": "Verknuepfen Sie hochgeladene Dokumente mit Fragebogenantworten.",
+        "linkEvidenceCta": "Data Room oeffnen",
+        "reviewPassport": "Supplier Passport pruefen",
+        "reviewPassportDescription": "Pruefen Sie die echte Bereitschafts- und Nachweiszusammenfassung.",
+        "reviewPassportCta": "Passport pruefen",
+        "sharePublicLink": "Oeffentlichen Link teilen",
+        "sharePublicLinkDescription": "Erstellen oder verwalten Sie den oeffentlichen Link fuer Kaeufer.",
+        "sharePublicLinkCta": "Teilen-Seite oeffnen",
+        "downloadPdf": "PDF-Entwurf herunterladen",
+        "downloadPdfDescription": "Exportieren Sie den authentifizierten Supplier-Passport-Entwurf.",
+        "downloadPdfCta": "Passport pruefen",
+        "startQuestionnaire": "Beginnen Sie mit dem Ausfuellen des Fragebogens.",
+        "uploadDocumentsNext": "Laden Sie Nachweisdokumente hoch, die Ihre Antworten unterstuetzen.",
+        "linkEvidenceNext": "Verknuepfen Sie Nachweisdokumente mit Fragebogenantworten.",
+        "reviewAndShareNext": "Pruefen Sie Ihren Supplier Passport und teilen Sie ihn mit Kaeufern.",
+        "downloadOrShareNext": "Laden Sie den PDF-Entwurf herunter oder teilen Sie den oeffentlichen Link.",
+        "neutralFallback": "Live-Dashboard-Metriken erscheinen, sobald Organisationsdaten verfuegbar sind.",
+        "questionsAnswered": "Antworten im Fragebogen",
+        "documentsUploaded": "Hochgeladene Dokumente",
+        "evidenceLinks": "Nachweisverknuepfungen",
+        "activeShareLinksMetric": "Aktive oeffentliche Links",
+        "pdfReady": "PDF-Entwurf"
+      },
+      "activity": {
+        "answers": "{count} Fragebogenantworten abgeschlossen.",
+        "documents": "{count} Nachweisdokumente hochgeladen.",
+        "links": "{count} Nachweisverknuepfungen erstellt.",
+        "share": "{count} oeffentlicher Link aktiv."
+      },
       "modules": {
         "basicInformation": "Basisinformationen",
         "environment": "Umwelt",
@@ -196,19 +250,21 @@
     "saveSignInError": "Bitte melden Sie sich an, bevor Sie Fragebogenantworten speichern.",
     "saveError": "Ihre Antworten konnten momentan nicht gespeichert werden. Bitte versuchen Sie es erneut.",
     "saveSuccess": "Fragebogenantworten gespeichert.",
-    "liveQuestionnaireLoadFailed": "Live-Fragebogendaten konnten nicht geladen werden.",
+    "liveQuestionnaireLoadFailed": "Der Fragebogen konnte gerade nicht geladen werden.",
     "mockDataAvailable": "Demo-Daten sind weiterhin verfügbar.",
     "questionnairePermissionDenied": "Sie haben keine Berechtigung, diesen Fragebogen zu bearbeiten.",
     "questionnaireSaved": "Fragebogen gespeichert.",
     "sessionExpired": "Ihre Sitzung ist abgelaufen. Bitte melden Sie sich erneut an.",
-    "loadFallbackError": "Live-Fragebogendaten konnten nicht geladen werden.",
-    "seedFallbackMessage": "Fragebogen-Seed-Daten sind noch nicht verfügbar. Es werden Mock-Daten angezeigt.",
+    "loadFallbackError": "Der Fragebogen konnte gerade nicht geladen werden.",
+    "seedFallbackMessage": "Der Fragebogen konnte gerade nicht geladen werden.",
     "attachSaveFirstMessage": "Speichern Sie diese Antwort einmal, bevor Sie Nachweise anhängen.",
     "attachSelectDocumentFirst": "Wählen Sie ein Dokument aus oder laden Sie eines hoch, bevor Sie den Nachweis verknüpfen.",
     "attachMockSuccess": "Nachweis wurde lokal im Mock-Modus angehängt.",
     "attachSignInError": "Bitte melden Sie sich an, bevor Sie Nachweise anhängen.",
     "attachError": "Dieser Nachweis konnte momentan nicht angehängt werden. Bitte versuchen Sie es erneut.",
-    "attachSuccess": "Nachweis wurde mit der Fragebogenantwort verknüpft.",
+    "attachSuccess": "Das Dokument wurde mit einer Fragebogenantwort verknüpft.",
+    "noAnswersSaved": "Noch keine Antworten gespeichert.",
+    "startFirstSection": "Beginnen Sie mit dem ersten Abschnitt, um Ihren Supplier Passport zu erstellen.",
     "sections": {
       "Company Basics": "Unternehmensgrundlagen",
       "Employees": "Mitarbeitende",
@@ -479,28 +535,29 @@
     "allSections": "Alle Abschnitte",
     "alreadyLinked": "Bereits mit diesem Dokument verknüpft",
     "noMatchingAnswers": "Keine passenden Antworten",
-    "noAnswersYet": "Noch keine Fragebogenantworten",
+    "noAnswersYet": "Noch keine Antworten gespeichert",
     "noMatchingAnswersDescription": "Passen Sie Suche oder Abschnittsfilter an, um eine andere Antwort zu finden.",
-    "noAnswersYetDescription": "Fragebogenelemente werden hier angezeigt, sobald die Taxonomie geladen ist.",
+    "noAnswersYetDescription": "Beginnen Sie mit dem ersten Abschnitt, um Ihren Supplier Passport zu erstellen.",
     "linkSelectedAnswers": "Ausgewählte Antworten verknüpfen",
     "linking": "Verknüpfen...",
     "answered": "Beantwortet",
     "notLinkedYet": "Dieses Dokument ist noch nicht mit einer Fragebogenantwort verknüpft.",
-    "noDocumentsTitle": "Noch keine Dokumente",
-    "noDocumentsText": "Laden Sie Ihr erstes Nachweisdokument hoch, um Ihren Supplier Passport aufzubauen.",
+    "noDocumentsTitle": "Noch keine Nachweisdokumente hochgeladen.",
+    "noDocumentsText": "Laden Sie Rechnungen, Zertifikate, Richtlinien oder andere Dokumente hoch, die Ihre Antworten im Fragebogen unterstützen.",
     "mockModeMessage": "Der Dokumenten-Datenraum läuft im Mock-Modus, bis Nhost konfiguriert ist und Sie angemeldet sind.",
     "liveUnavailableMessage": "Ihre Dokumente konnten gerade nicht geladen werden.",
-    "emptyLiveMessage": "Es gibt noch keine Live-Nachweisdokumente. Laden Sie Ihr erstes Dokument hoch, um den Datenraum aufzubauen.",
+    "emptyLiveMessage": "Noch keine Nachweisdokumente hochgeladen. Laden Sie Rechnungen, Zertifikate, Richtlinien oder andere Dokumente hoch, die Ihre Antworten im Fragebogen unterstützen.",
     "uploadMockMessage": "Verbinden Sie Nhost und melden Sie sich an, um echte Nachweisdokumente hochzuladen. Mock-Daten bleiben verfügbar.",
     "uploadError": "Dieses Dokument konnte gerade nicht hochgeladen werden.",
     "uploadSuccess": "Nachweisdokument sicher hochgeladen.",
     "workspaceUser": "Workspace-Benutzer",
     "linkMockSuccess": "Nachweis lokal im Mock-Modus verknüpft.",
     "linkSignInError": "Bitte melden Sie sich an, bevor Sie Nachweise verknüpfen.",
-    "linkError": "Die Nachweisverknüpfungen konnten gerade nicht aktualisiert werden. Bitte versuchen Sie es erneut.",
+    "linkError": "Dieses Dokument konnte gerade nicht mit einer Antwort verknüpft werden.",
     "linkMissingDocumentId": "Dieses Dokument kann nicht verknüpft werden, da die Dokument-ID fehlt.",
+    "linkSelectQuestion": "Wählen Sie mindestens einen Fragebogenpunkt aus.",
     "linkDialogOpenError": "Der Dialog zum Verknüpfen von Nachweisen konnte nicht geöffnet werden.",
-    "linkSuccess": "Nachweis mit Fragebogenantwort verknüpft.",
+    "linkSuccess": "Das Dokument wurde mit einer Fragebogenantwort verknüpft.",
     "unknownSize": "Unbekannte Größe",
     "recently": "Kürzlich",
     "notLinked": "Noch nicht verknüpft",
@@ -552,105 +609,137 @@
   },
   "landing": {
     "hero": {
-      "badge": "EU-aligned supplier evidence workspace",
-      "titlePrefix": "Bereiten Sie Ihr VSME-Profil einmal vor. Teilen Sie es mit",
-      "titleEmphasis": "jedem Käufer.",
-      "description": "Erstellen Sie Ihr VSME / ESG-Profil, organisieren Sie Nachweisdokumente, verfolgen Sie die Readiness und teilen Sie einen sicheren Passport-Link mit EU-Käufern.",
+      "badge": "VSME-orientierte Lieferantenbereitschaft",
+      "titlePrefix": "Erstellen Sie einen käuferbereiten",
+      "titleEmphasis": "Supplier Passport.",
+      "description": "Sammeln Sie Fragebogenantworten, Nachweisdokumente und Bereitschaftsstatus in einem VSME-orientierten Lieferantenprofil.",
       "trustChips": [
-        "EU-aligned & VSME-ready",
-        "Secure & permissioned",
+        "VSME-orientiert",
+        "Private Nachweise standardmäßig geschützt",
         "Nachweiszusammenfassung"
       ]
     },
     "features": {
-      "eyebrow": "Product foundation",
-      "title": "One workspace for VSME answers, evidence, gaps, and buyer sharing.",
+      "eyebrow": "Was Sie tun können",
+      "title": "Ein Workspace für Antworten, Nachweise, Bereitschaftslücken und Käuferfreigabe.",
       "items": [
         {
-          "title": "VSME Readiness Questionnaire",
-          "description": "Guide teams through VSME profile completion with clear module progress, evidence prompts, and review-ready answers."
+          "title": "Fragebogen-Workspace",
+          "description": "Bearbeiten Sie strukturierte Supplier-Passport-Fragen und verfolgen Sie den Fortschritt über VSME-orientierte Abschnitte."
         },
         {
-          "title": "Evidence Data Room",
-          "description": "Centralize policies, certificates, reports, and registers in one secure workspace mapped to buyer questions."
+          "title": "Nachweis-Datenraum",
+          "description": "Laden Sie Rechnungen, Zertifikate, Richtlinien und andere Nachweise hoch, ohne private Dateien öffentlich zu machen."
         },
         {
-          "title": "Missing Data Dashboard",
-          "description": "See unanswered fields, expiring evidence, and buyer follow-ups before they slow down procurement."
+          "title": "Bereitschaftsübersicht",
+          "description": "Verfolgen Sie unbeantwortete Punkte, Nachweislücken und Zertifikatsabläufe, bevor Käuferanfragen eintreffen."
         },
         {
-          "title": "Secure Buyer Share Link",
-          "description": "Publish a controlled passport link with read-only access, expiry dates, and buyer-friendly summaries."
+          "title": "Öffentlicher Supplier Passport",
+          "description": "Teilen Sie eine käufersichere öffentliche Zusammenfassung und halten Sie Nachweisdateien auf Anfrage bereit."
         }
       ]
     },
     "howItWorks": {
-      "eyebrow": "How it works",
-      "title": "From scattered answers to a buyer-ready passport.",
-      "description": "A focused workflow for supplier teams that need clarity, speed, and evidence discipline.",
+      "eyebrow": "So funktioniert es",
+      "title": "Von ersten Antworten zum teilbaren Supplier Passport.",
+      "description": "Ein praktischer Workflow für Lieferantenteams, die VSME-orientierte Bereitschaftsinformationen vorbereiten.",
       "steps": [
         {
-          "title": "Complete profile",
-          "description": "Answer structured VSME questions once with clear ownership and progress."
+          "title": "Fragebogen ausfüllen",
+          "description": "Beginnen Sie mit strukturierten Angaben zu Unternehmen, Umwelt, Beschäftigten, Governance und Lieferanteninformationen."
         },
         {
-          "title": "Upload evidence",
-          "description": "Attach policies, certificates, reports, and registers to the right disclosures."
+          "title": "Nachweisdokumente hochladen",
+          "description": "Fügen Sie Zertifikate, Richtlinien, Rechnungen oder andere Dateien hinzu, die Ihre Antworten unterstützen."
         },
         {
-          "title": "Generate passport",
-          "description": "Turn completed answers and approved evidence into a polished buyer view."
+          "title": "Nachweise mit Antworten verknüpfen",
+          "description": "Verknüpfen Sie hochgeladene Dokumente mit Fragebogenpunkten, damit die Bereitschaft nachweisbasiert ist."
         },
         {
-          "title": "Share with buyer",
-          "description": "Send a secure, read-only link with permissions and expiry controls."
+          "title": "Öffentlichen Supplier Passport teilen",
+          "description": "Senden Sie Käufern eine klare öffentliche Zusammenfassung, ohne private Nachweisdateien offenzulegen."
+        },
+        {
+          "title": "PDF-Entwurf herunterladen",
+          "description": "Exportieren Sie einen Supplier-Passport-Entwurf für interne Prüfung oder Käufergespräche."
         }
       ]
     },
+    "value": {
+      "eyebrow": "Wert für Lieferanten und Käufer",
+      "title": "Ein klarerer Einstieg in wiederkehrende Anforderungen zur Lieferantenbereitschaft.",
+      "groups": [
+        {
+          "title": "Für Lieferanten",
+          "items": [
+            "Weniger wiederholte ESG- und Lieferantenfragebögen",
+            "Ein wiederverwendbares Supplier-Passport-Profil pflegen",
+            "Nachweisbereitschaft und Zertifikatsabläufe an einem Ort sehen"
+          ]
+        },
+        {
+          "title": "Für Käufer",
+          "items": [
+            "Lieferanten schneller mit einer konsistenten öffentlichen Zusammenfassung prüfen",
+            "Erkennen, für welche Bereiche Nachweise verfügbar sind",
+            "Private Dateien erst erhalten, wenn sie angefragt werden"
+          ]
+        }
+      ],
+      "disclaimerEyebrow": "Wichtige Einschränkung",
+      "disclaimerTitle": "Bereitschaft, keine Zertifizierung",
+      "disclaimerText": "Der Supplier Passport ist VSME-orientiert und für Lieferantenbereitschaftsprozesse gedacht. Er ist kein Prüfungsurteil, keine rechtliche Zertifizierung und kein Assurance-Bericht."
+    },
     "socialProof": {
       "logos": [
-        "Lumen Technologies",
-        "GreenParts Industries",
-        "Nova Packaging",
-        "Metaline Solutions",
-        "EcoTextile Group"
+        "Lieferantenteams",
+        "Einkaufsteams",
+        "ESG-Koordination",
+        "Operations-Teams",
+        "Beratungsteams"
       ],
-      "quote": "Supplier Passport helped us prepare our VSME profile in weeks, not months. Buyers love the clarity and the secure access.",
-      "person": "Anna Muller",
-      "role": "Sustainability Manager"
+      "quote": "Ein wiederverwendbarer Supplier Passport hilft Lieferanten, schneller zu antworten, und gibt Käufern eine klare, käufersichere Bereitschaftszusammenfassung.",
+      "person": "Supplier Passport",
+      "role": "Produktübersicht"
     },
     "pricingPreview": {
       "eyebrow": "Preise",
       "title": "Preise für professionelle Supplier Readiness.",
-      "description": "Prepare your Supplier Passport, organize evidence, and present buyer-ready compliance information with confidence.",
-      "note": "Need to manage multiple clients or suppliers? See Partner and Buyer plans."
+      "description": "Bereiten Sie Ihren Supplier Passport vor, organisieren Sie Nachweise und präsentieren Sie käuferbereite Bereitschaftsinformationen mit Vertrauen.",
+      "note": "Müssen Sie mehrere Kunden oder Lieferanten verwalten? Sehen Sie sich Partner- und Käuferpläne an."
     },
     "finalCta": {
       "eyebrow": "Supplier Passport",
-      "title": "Ready to create your Supplier Passport?"
+      "title": "Bereit, Ihren Supplier Passport zu erstellen?",
+      "secondaryCta": "Anmelden"
     },
     "preview": {
-      "supplierReadiness": "Supplier readiness",
-      "dashboardPreview": "Dashboard preview",
-      "liveProfile": "Live profile",
-      "ready": "Ready",
+      "supplierReadiness": "Lieferantenbereitschaft",
+      "dashboardPreview": "Dashboard-Vorschau",
+      "liveProfile": "Aktives Profil",
+      "ready": "Bereit",
       "vsme": "VSME",
-      "evidenceFiles": "Evidence files",
-      "missingData": "Missing data",
-      "buyerRequests": "Buyer requests",
-      "lastUpdated": "Last updated May 12, 2024",
-      "passportPreview": "Passport preview",
+      "evidenceFiles": "Nachweisdateien",
+      "missingData": "Fehlende Angaben",
+      "buyerRequests": "Käuferanfragen",
+      "lastUpdated": "Zuletzt aktualisiert am 12. Mai 2024",
+      "passportPreview": "Passport-Vorschau",
+      "exampleSupplierName": "Beispiel Lieferant GmbH",
+      "summaryOnly": "Nur Zusammenfassung",
       "basicModule": "VSME Basic Module",
       "module": "VSME Module",
-      "readiness": "Readiness {score}%",
+      "readiness": "Bereitschaft {score}%",
       "sections": [
-        "Company overview",
-        "Environment",
-        "Social",
+        "Unternehmensüberblick",
+        "Umwelt",
+        "Soziales",
         "Governance",
-        "Evidence summary"
+        "Nachweiszusammenfassung"
       ],
-      "secureLine": "Secure - Read-only - Expires May 12, 2025"
+      "secureLine": "Private Dateien sind nicht öffentlich herunterladbar"
     }
   },
   "pricing": {
@@ -955,17 +1044,17 @@
   "auth": {
     "shell": {
       "headline": "Supplier Readiness ohne Tabellenchaos.",
-      "subtitle": "Bereiten Sie Ihr VSME-Profil vor, organisieren Sie freigegebene Nachweise und steuern Sie Käuferzugriff aus einem sicheren Supplier Workspace.",
+      "subtitle": "Bereiten Sie Ihr VSME-orientiertes Profil vor, organisieren Sie Nachweise und steuern Sie käuferseitige Supplier-Passport-Zusammenfassungen aus einem Workspace.",
       "benefits": [
-        "Nhost Auth vorbereitet",
-        "Hasura-Berechtigungen geplant",
-        "Käuferseitige Passports"
+        "Fragebogen- und Nachweisworkflow",
+        "Käufersichere öffentliche Zusammenfassung",
+        "PDF-Entwurf exportieren"
       ]
     },
     "login": {
       "eyebrow": "Willkommen zurück",
-      "title": "Bei Supplier Passport anmelden",
-      "subtitle": "Greifen Sie auf Ihren Supplier Workspace, Nachweisdokumente und Passport Links zu.",
+      "title": "Melden Sie sich an, um mit Ihrem Supplier Passport fortzufahren.",
+      "subtitle": "Greifen Sie auf Fragebogen, Nachweisdokumente, öffentlichen Link und PDF-Entwurf zu.",
       "email": "Geschäftliche E-Mail",
       "password": "Passwort",
       "passwordPlaceholder": "Passwort eingeben",
@@ -989,8 +1078,8 @@
     },
     "signup": {
       "eyebrow": "Supplier Workspace",
-      "title": "Supplier Passport Konto erstellen",
-      "subtitle": "Starten Sie mit Ihrem VSME-Profil und einem käuferbereiten Dokumenten-Datenraum.",
+      "title": "Erstellen Sie Ihren Supplier-Passport-Arbeitsbereich.",
+      "subtitle": "Beginnen Sie mit Ihrem VSME-orientierten Lieferantenprofil und der Übersicht zur Nachweisbereitschaft.",
       "fullName": "Vollständiger Name",
       "workEmail": "Geschäftliche E-Mail",
       "password": "Passwort",
@@ -1016,10 +1105,10 @@
       "authNetworkError": "Nhost Auth konnte nicht erreicht werden. Prüfen Sie die Produktions-Auth-URL und Allowed Origins.",
       "unknownAuthError": "Die Registrierung ist fehlgeschlagen. Bitte versuchen Sie es erneut oder kontaktieren Sie den Support."
     },
-    "loginTitle": "Bei Supplier Passport anmelden",
-    "loginSubtitle": "Greifen Sie auf Ihren Supplier Workspace, Nachweisdokumente und Passport Links zu.",
-    "signupTitle": "Supplier Passport Konto erstellen",
-    "signupSubtitle": "Starten Sie mit Ihrem VSME-Profil und einem käuferbereiten Dokumenten-Datenraum.",
+    "loginTitle": "Melden Sie sich an, um mit Ihrem Supplier Passport fortzufahren.",
+    "loginSubtitle": "Greifen Sie auf Fragebogen, Nachweisdokumente, öffentlichen Link und PDF-Entwurf zu.",
+    "signupTitle": "Erstellen Sie Ihren Supplier-Passport-Arbeitsbereich.",
+    "signupSubtitle": "Beginnen Sie mit Ihrem VSME-orientierten Lieferantenprofil und der Übersicht zur Nachweisbereitschaft.",
     "email": "Geschäftliche E-Mail",
     "password": "Passwort",
     "fullName": "Vollständiger Name",
@@ -1218,8 +1307,9 @@
     "exportPdf": "PDF herunterladen",
     "exportPdfGenerating": "PDF wird erstellt...",
     "exportPdfError": "Das PDF konnte gerade nicht erstellt werden.",
+    "exportPdfSuccess": "PDF ist bereit.",
     "draftStateTitle": "Passport-Vorschau nutzt Entwurfsdaten",
-    "draftStateText": "Generieren Sie einen Passport, sobald Organisationsprofil, Fragebogenantworten und Nachweis-Metadaten bereit sind. Bis dahin zeigt diese Seite die käufersichere Vorschau.",
+    "draftStateText": "Füllen Sie den Fragebogen aus und verknüpfen Sie Nachweisdokumente, um die Bereitschaft zu verbessern.",
     "companySummary": "Unternehmensübersicht",
     "companySummaryDescription": "Das Organisationsprofil, das Käufer im Passport sehen.",
     "verified": "Profil",
@@ -1243,7 +1333,7 @@
     "linkedSections": "Verknüpfte Abschnitte",
     "status": "Status",
     "approved": "Verfügbar",
-    "noApprovedDocuments": "Noch keine Nachweisdokumente.",
+    "noApprovedDocuments": "Noch keine Nachweiszusammenfassung verfügbar.",
     "missingDataChecklist": "Liste fehlender Daten",
     "missingDataChecklistDescription": "Offene Punkte vor der externen Freigabe dieses Passports.",
     "missingDataNeutral": "Prüfungen fehlender Daten werden hier angezeigt, sobald Fragebogen und Dokumente geprüft wurden.",
@@ -1264,8 +1354,8 @@
     "completion": "Fortschritt",
     "passportStatus": "Passport-Status",
     "generatedAt": "Generiert am",
-    "noPassportTitle": "Noch kein Passport generiert",
-    "noPassportText": "Generieren Sie Ihren ersten Supplier Passport, um ein käuferbereites Profil vorzubereiten.",
+    "noPassportTitle": "Ihr Supplier-Passport-Entwurf ist noch nicht bereit.",
+    "noPassportText": "Füllen Sie den Fragebogen aus und verknüpfen Sie Nachweisdokumente, um die Bereitschaft zu verbessern.",
     "generateSuccess": "Supplier Passport wurde erfolgreich generiert.",
     "generateError": "Der Supplier Passport konnte derzeit nicht generiert werden.",
     "shareLinkGenerateFirst": "Generieren Sie einen Supplier Passport, bevor Sie einen Freigabelink für Käufer erstellen.",
@@ -1348,6 +1438,7 @@
     "publicPdfWarning": "Käufer können auf der öffentlichen Supplier-Passport-Seite auch eine käufersichere öffentliche PDF-Zusammenfassung herunterladen.",
     "copyLink": "Link kopieren",
     "linkCopied": "Link kopiert",
+    "copyError": "Der Link konnte gerade nicht kopiert werden.",
     "loadError": "Ihr Freigabelink konnte gerade nicht geladen werden.",
     "generateLink": "Freigabelink generieren",
     "generatingLink": "Wird generiert...",
@@ -1367,8 +1458,8 @@
     "regenerateConfirm": "Dabei wird ein neuer öffentlicher Link erstellt und der alte deaktiviert.",
     "regeneratingLink": "Wird neu generiert...",
     "linkRegenerated": "Link neu generiert",
-    "noLinkTitle": "Noch kein Freigabelink",
-    "noLinkText": "Generieren Sie einen sicheren öffentlichen Link, sobald Sie Ihre Supplier-Passport-Zusammenfassung teilen möchten.",
+    "noLinkTitle": "Noch kein aktiver öffentlicher Link.",
+    "noLinkText": "Erstellen Sie einen öffentlichen Link, wenn Sie Ihren Supplier Passport mit Käufern teilen möchten.",
     "signInRequired": "Bitte melden Sie sich an, um Ihren Supplier-Passport-Freigabelink zu verwalten."
   },
   "onboarding": {
@@ -1379,6 +1470,7 @@
     "vatId": "USt-IdNr. / OIB",
     "industry": "Branche",
     "employeeCountRange": "Mitarbeiterzahl",
+    "employeeCountPlaceholder": "Bereich auswählen",
     "headquartersCity": "Stadt des Hauptsitzes",
     "headquartersCountry": "Land des Hauptsitzes",
     "website": "Website",

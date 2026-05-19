@@ -6,7 +6,13 @@ import {
   defaultDashboardOverviewLabels,
   type DashboardOverviewLabels,
 } from "@/lib/dashboard-labels";
-import type { DashboardModuleCompletion } from "@/lib/mock-data";
+
+type DashboardModuleCompletion = {
+  name: string;
+  completed: number;
+  total: number;
+  percent: number;
+};
 
 type ModuleCompletionCardProps = {
   modules: DashboardModuleCompletion[];
@@ -26,7 +32,7 @@ export function ModuleCompletionCard({
       className="h-full"
     >
       <div className="flex flex-col gap-4">
-        {modules.map((module) => (
+        {modules.length ? modules.map((module) => (
           <div key={module.name} className="rounded-xl border border-slate-200 bg-white p-3">
             <div className="mb-2 flex items-center justify-between gap-3 text-sm">
               <span className="font-semibold text-slate-950">
@@ -38,7 +44,11 @@ export function ModuleCompletionCard({
             </div>
             <Progress value={module.percent} className="h-2" />
           </div>
-        ))}
+        )) : (
+          <p className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-500">
+            {labels.setupChecklist.neutralFallback}
+          </p>
+        )}
         <Link
           href={`${localePrefix}/dashboard/questionnaire`}
           className="mt-1 inline-flex items-center gap-2 text-sm font-semibold text-blue-700 hover:text-blue-800"

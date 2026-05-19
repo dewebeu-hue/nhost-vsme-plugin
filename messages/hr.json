@@ -13,7 +13,7 @@
       "bookDemo": "Rezerviraj demo"
     },
     "cta": {
-      "startPassport": "Pokreni Passport Sprint",
+      "startPassport": "Započni Supplier Passport",
       "seeSamplePassport": "Pogledaj primjer Passporta",
       "bookDemo": "Rezerviraj demo",
       "viewFullPricing": "Pogledaj sve cijene"
@@ -46,6 +46,7 @@
     "exportPdf": "Preuzmi PDF",
     "exportPdfGenerating": "Generiranje PDF-a...",
     "exportPdfError": "Trenutno ne možemo generirati PDF.",
+    "exportPdfSuccess": "PDF je spreman.",
     "viewDetails": "Pogledaj detalje",
     "viewAll": "Pogledaj sve",
     "goToMissingData": "Idi na nedostajuće podatke",
@@ -136,6 +137,59 @@
       "expires": "Istječe",
       "recentActivity": "Nedavne aktivnosti",
       "recentActivityDescription": "Kratak audit trail najnovijih događaja u workspaceu.",
+      "noBuyerRequests": "Još nema zahtjeva kupaca.",
+      "noRecentUploads": "Još nema učitanih dokaznih dokumenata.",
+      "noRecentActivity": "Aktivnosti će se prikazati nakon rada na upitniku, dokazima, dijeljenju ili PDF-u.",
+      "noActiveShareLinks": "Još nema aktivnih javnih linkova.",
+      "noReadinessTrend": "Trend spremnosti prikazat će se nakon više spremljenog napretka.",
+      "publicSupplierPassport": "Javni Supplier Passport",
+      "noExpiry": "Bez isteka",
+      "setupChecklist": {
+        "title": "Postavljanje Supplier Passporta",
+        "description": "Dovršite ove korake kako biste pripremili VSME-aligned profil dobavljača za kupce.",
+        "emptyTitle": "Vaš Supplier Passport još nije spreman.",
+        "emptyDescription": "Vaš Supplier Passport još nije spreman. Dovršite korake u nastavku kako biste pripremili VSME-aligned profil dobavljača za kupce.",
+        "nextRecommendedStep": "Sljedeći preporučeni korak",
+        "readinessDisclaimer": "Spremnost se temelji na ispunjenim stavkama upitnika i metapodacima dokazne dokumentacije. Nije revizija niti certifikacija.",
+        "completed": "Dovršeno",
+        "available": "Dostupno",
+        "pending": "Na čekanju",
+        "completeQuestionnaire": "Ispunite upitnik",
+        "completeQuestionnaireDescription": "Odgovorite na upitnik za Supplier Passport.",
+        "completeQuestionnaireCta": "Idi na upitnik",
+        "uploadEvidence": "Učitajte dokazne dokumente",
+        "uploadEvidenceDescription": "Dodajte dokazne dokumente u Dokumentacijski Data Room.",
+        "uploadEvidenceCta": "Učitaj dokumente",
+        "linkEvidence": "Povežite dokaze s odgovorima",
+        "linkEvidenceDescription": "Povežite učitane dokumente s odgovorima iz upitnika.",
+        "linkEvidenceCta": "Otvori Data Room",
+        "reviewPassport": "Pregledajte Supplier Passport",
+        "reviewPassportDescription": "Provjerite stvarni sažetak spremnosti i dokazne dokumentacije.",
+        "reviewPassportCta": "Pregledaj Passport",
+        "sharePublicLink": "Podijelite javni link",
+        "sharePublicLinkDescription": "Kreirajte ili upravljajte javnim linkom za kupce.",
+        "sharePublicLinkCta": "Otvori dijeljenje",
+        "downloadPdf": "Preuzmite PDF nacrt",
+        "downloadPdfDescription": "Izvezite autentificirani Supplier Passport nacrt.",
+        "downloadPdfCta": "Pregledaj Passport",
+        "startQuestionnaire": "Započnite ispunjavanjem upitnika.",
+        "uploadDocumentsNext": "Učitajte dokazne dokumente koji podržavaju vaše odgovore.",
+        "linkEvidenceNext": "Povežite dokazne dokumente s odgovorima iz upitnika.",
+        "reviewAndShareNext": "Pregledajte Supplier Passport i podijelite ga s kupcima.",
+        "downloadOrShareNext": "Preuzmite PDF nacrt ili podijelite javni link.",
+        "neutralFallback": "Live metrike dashboarda prikazat će se nakon što podaci organizacije budu dostupni.",
+        "questionsAnswered": "Odgovori u upitniku",
+        "documentsUploaded": "Učitani dokumenti",
+        "evidenceLinks": "Poveznice dokaza",
+        "activeShareLinksMetric": "Aktivni javni linkovi",
+        "pdfReady": "PDF nacrt"
+      },
+      "activity": {
+        "answers": "{count} dovršenih odgovora u upitniku.",
+        "documents": "{count} učitanih dokaznih dokumenata.",
+        "links": "{count} kreiranih poveznica dokaza.",
+        "share": "{count} aktivan javni link."
+      },
       "modules": {
         "basicInformation": "Osnovni podaci",
         "environment": "Okoliš",
@@ -196,19 +250,21 @@
     "saveSignInError": "Prijavite se prije spremanja odgovora u upitniku.",
     "saveError": "Trenutno ne možemo spremiti odgovore. Pokušajte ponovno.",
     "saveSuccess": "Odgovori u upitniku su spremljeni.",
-    "liveQuestionnaireLoadFailed": "Nismo mogli učitati live podatke upitnika.",
+    "liveQuestionnaireLoadFailed": "Trenutno ne možemo učitati upitnik.",
     "mockDataAvailable": "Demo podaci su i dalje dostupni.",
     "questionnairePermissionDenied": "Nemate ovlaštenje za uređivanje ovog upitnika.",
     "questionnaireSaved": "Upitnik je spremljen.",
     "sessionExpired": "Vaša sesija je istekla. Prijavite se ponovno.",
-    "loadFallbackError": "Nismo mogli učitati live podatke upitnika.",
-    "seedFallbackMessage": "Seed podaci upitnika još nisu dostupni. Prikazujemo mock podatke.",
+    "loadFallbackError": "Trenutno ne možemo učitati upitnik.",
+    "seedFallbackMessage": "Trenutno ne možemo učitati upitnik.",
     "attachSaveFirstMessage": "Spremite ovaj odgovor prije prilaganja dokaza.",
     "attachSelectDocumentFirst": "Odaberite ili učitajte dokument prije povezivanja dokaza.",
     "attachMockSuccess": "Dokaz je lokalno priložen u mock modu.",
     "attachSignInError": "Prijavite se prije prilaganja dokaza.",
     "attachError": "Trenutno ne možemo priložiti ovaj dokaz. Pokušajte ponovno.",
-    "attachSuccess": "Dokaz je priložen odgovoru u upitniku.",
+    "attachSuccess": "Dokument je povezan s odgovorom iz upitnika.",
+    "noAnswersSaved": "Još nema spremljenih odgovora.",
+    "startFirstSection": "Započnite s prvom sekcijom kako biste izradili svoj Supplier Passport.",
     "sections": {
       "Company Basics": "Osnovni podaci",
       "Employees": "Zaposlenici",
@@ -479,28 +535,29 @@
     "allSections": "Sve sekcije",
     "alreadyLinked": "Već povezano s ovim dokumentom",
     "noMatchingAnswers": "Nema odgovarajućih odgovora",
-    "noAnswersYet": "Još nema odgovora u upitniku",
+    "noAnswersYet": "Još nema spremljenih odgovora",
     "noMatchingAnswersDescription": "Promijenite pretragu ili filter sekcije kako biste pronašli drugi odgovor.",
-    "noAnswersYetDescription": "Pitanja iz upitnika prikazat će se ovdje nakon učitavanja taksonomije.",
+    "noAnswersYetDescription": "Započnite s prvom sekcijom kako biste izradili svoj Supplier Passport.",
     "linkSelectedAnswers": "Poveži odabrane odgovore",
     "linking": "Povezivanje...",
     "answered": "Odgovoreno",
     "notLinkedYet": "Ovaj dokument još nije povezan s odgovorom iz upitnika.",
-    "noDocumentsTitle": "Još nema dokumenata",
-    "noDocumentsText": "Učitajte prvi dokazni dokument kako biste počeli graditi Supplier Passport.",
+    "noDocumentsTitle": "Još nema učitanih dokaznih dokumenata.",
+    "noDocumentsText": "Učitajte račune, certifikate, politike ili druge dokumente koji podržavaju vaše odgovore u upitniku.",
     "mockModeMessage": "Dokumentacijski Data Room radi u mock modu dok Nhost nije konfiguriran i dok niste prijavljeni.",
     "liveUnavailableMessage": "Trenutno ne možemo učitati vaše dokumente.",
-    "emptyLiveMessage": "Još nema live dokaznih dokumenata. Učitajte prvi dokument kako biste počeli graditi data room.",
+    "emptyLiveMessage": "Još nema učitanih dokaznih dokumenata. Učitajte račune, certifikate, politike ili druge dokumente koji podržavaju vaše odgovore u upitniku.",
     "uploadMockMessage": "Povežite Nhost i prijavite se za učitavanje stvarnih dokaznih dokumenata. Mock podaci ostaju dostupni.",
     "uploadError": "Trenutno ne mo?emo u?itati ovaj dokument.",
     "uploadSuccess": "Dokazni dokument je sigurno učitan.",
     "workspaceUser": "Korisnik workspacea",
     "linkMockSuccess": "Dokaz je lokalno povezan u mock modu.",
     "linkSignInError": "Prijavite se prije povezivanja dokaza.",
-    "linkError": "Trenutno ne možemo ažurirati poveznice s dokazima. Pokušajte ponovno.",
+    "linkError": "Trenutno ne možemo povezati ovaj dokument s odgovorom.",
     "linkMissingDocumentId": "Ovaj dokument nije moguće povezati jer nedostaje ID dokumenta.",
+    "linkSelectQuestion": "Odaberite barem jednu stavku upitnika.",
     "linkDialogOpenError": "Trenutno ne možemo otvoriti prozor za povezivanje dokaza.",
-    "linkSuccess": "Dokaz je povezan s odgovorom iz upitnika.",
+    "linkSuccess": "Dokument je povezan s odgovorom iz upitnika.",
     "unknownSize": "Nepoznata veličina",
     "recently": "Nedavno",
     "notLinked": "Još nije povezano",
@@ -552,82 +609,112 @@
   },
   "landing": {
     "hero": {
-      "badge": "EU-uskladen workspace za dokaznu dokumentaciju dobavljaca",
-      "titlePrefix": "Pripremite VSME profil jednom. Podijelite ga sa",
-      "titleEmphasis": "svakim kupcem.",
-      "description": "Izradite VSME / ESG profil, organizirajte dokazne dokumente, pratite spremnost i odmah podijelite sigurni passport link s EU kupcima.",
+      "badge": "VSME-aligned spremnost dobavljača",
+      "titlePrefix": "Izradite",
+      "titleEmphasis": "Supplier Passport spreman za kupce.",
+      "description": "Prikupite odgovore iz upitnika, dokaznu dokumentaciju i status spremnosti u jednom VSME-aligned profilu dobavljača.",
       "trustChips": [
-        "EU-uskladeno i VSME-ready",
-        "Sigurno i permissioned",
-        "Dokazi spremni za revizijski pregled"
+        "VSME-aligned",
+        "Privatni dokazi prema zadanim postavkama",
+        "Sažetak dokazne dokumentacije"
       ]
     },
     "features": {
-      "eyebrow": "Temelj proizvoda",
-      "title": "Jedan workspace za VSME odgovore, dokumente, nedostatke i dijeljenje s kupcima.",
+      "eyebrow": "Što možete napraviti",
+      "title": "Jedan workspace za odgovore, dokaze, nedostatke spremnosti i dijeljenje s kupcima.",
       "items": [
         {
-          "title": "VSME upitnik spremnosti",
-          "description": "Vodite tim kroz VSME profil uz jasan napredak modula, dokazne zahtjeve i odgovore spremne za pregled."
+          "title": "Radni prostor za upitnik",
+          "description": "Ispunite strukturirana Supplier Passport pitanja i pratite napredak kroz VSME-aligned sekcije."
         },
         {
           "title": "Dokumentacijski Data Room",
-          "description": "Centralizirajte politike, certifikate, izvjestaje i registre u sigurnom workspaceu povezanom s pitanjima kupaca."
+          "description": "Učitajte račune, certifikate, politike i druge dokaze bez javnog izlaganja privatnih datoteka."
         },
         {
-          "title": "Lista nedostajucih podataka",
-          "description": "Vidite neodgovorena polja, dokumente pred istekom i follow-up zahtjeve prije nego uspore nabavu."
+          "title": "Pregled spremnosti",
+          "description": "Pratite neodgovorene stavke, nedostatke dokazne dokumentacije i isteke certifikata prije zahtjeva kupaca."
         },
         {
-          "title": "Sigurni Share link za kupca",
-          "description": "Objavite kontrolirani passport link s read-only pristupom, rokovima isteka i sazetcima prilagodenima kupcima."
+          "title": "Javni Supplier Passport",
+          "description": "Podijelite sažetak siguran za kupce, a dokazne dokumente zadržite dostupnima na zahtjev."
         }
       ]
     },
     "howItWorks": {
       "eyebrow": "Kako funkcionira",
-      "title": "Od rasutih odgovora do passporta spremnog za kupca.",
-      "description": "Fokusiran workflow za dobavljacke timove kojima trebaju jasnoca, brzina i disciplina dokazne dokumentacije.",
+      "title": "Od prvih odgovora do Supplier Passporta koji možete podijeliti.",
+      "description": "Praktičan workflow za dobavljačke timove koji pripremaju VSME-aligned podatke o spremnosti.",
       "steps": [
         {
-          "title": "Ispunite profil",
-          "description": "Odgovorite na strukturirana VSME pitanja jednom, uz jasno vlasnistvo i napredak."
+          "title": "Ispunite upitnik",
+          "description": "Započnite sa strukturiranim podacima o tvrtki, okolišu, zaposlenicima, upravljanju i dobavljaču."
         },
         {
-          "title": "Ucitajte dokaze",
-          "description": "Povezite politike, certifikate, izvjestaje i registre s pravim objavama."
+          "title": "Učitajte dokazne dokumente",
+          "description": "Dodajte certifikate, politike, račune ili druge dokumente koji podržavaju vaše odgovore."
         },
         {
-          "title": "Generirajte passport",
-          "description": "Pretvorite dovrsene odgovore i odobrene dokaze u profesionalni buyer view."
+          "title": "Povežite dokaze s odgovorima",
+          "description": "Povežite učitane dokumente sa stavkama upitnika kako bi spremnost bila potkrijepljena dokazima."
         },
         {
-          "title": "Podijelite s kupcem",
-          "description": "Posaljite sigurni read-only link s dozvolama i rokom isteka."
+          "title": "Podijelite javni Supplier Passport",
+          "description": "Pošaljite kupcima jasan javni sažetak bez izlaganja privatnih dokaznih datoteka."
+        },
+        {
+          "title": "Preuzmite PDF nacrt",
+          "description": "Izvezite Supplier Passport nacrt za interni pregled ili razgovore s kupcima."
         }
       ]
     },
+    "value": {
+      "eyebrow": "Vrijednost za dobavljače i kupce",
+      "title": "Jasniji ulaz u ponavljajuće zahtjeve za spremnost dobavljača.",
+      "groups": [
+        {
+          "title": "Za dobavljače",
+          "items": [
+            "Smanjite ponavljanje ESG i dobavljačkih upitnika",
+            "Održavajte jedan ponovljivo upotrebljiv Supplier Passport profil",
+            "Pratite spremnost dokazne dokumentacije i isteke certifikata na jednom mjestu"
+          ]
+        },
+        {
+          "title": "Za kupce",
+          "items": [
+            "Brže pregledajte dobavljače kroz dosljedan javni sažetak",
+            "Vidite za koja područja postoji dokazna dokumentacija",
+            "Izbjegnite primanje privatnih datoteka prije nego što ih zatražite"
+          ]
+        }
+      ],
+      "disclaimerEyebrow": "Važno ograničenje",
+      "disclaimerTitle": "Spremnost, ne certifikacija",
+      "disclaimerText": "Supplier Passport je VSME-aligned i namijenjen je procesima spremnosti dobavljača. Nije revizijsko mišljenje, pravni certifikat niti izvješće s neovisnim uvjerenjem."
+    },
     "socialProof": {
       "logos": [
-        "Lumen Technologies",
-        "GreenParts Industries",
-        "Nova Packaging",
-        "Metaline Solutions",
-        "EcoTextile Group"
+        "Dobavljački timovi",
+        "Nabavni timovi",
+        "ESG koordinatori",
+        "Operativni timovi",
+        "Savjetnički timovi"
       ],
-      "quote": "Supplier Passport nam je pomogao pripremiti VSME profil u tjednima, ne mjesecima. Kupci vole jasnocu i sigurni pristup.",
-      "person": "Anna Muller",
-      "role": "Sustainability Manager"
+      "quote": "Ponovljivo upotrebljiv Supplier Passport pomaže dobavljačima brže odgovarati, a kupcima daje jasan sažetak spremnosti siguran za dijeljenje.",
+      "person": "Supplier Passport",
+      "role": "Pregled proizvoda"
     },
     "pricingPreview": {
       "eyebrow": "Cijene",
       "title": "Cijene za profesionalnu spremnost dobavljaca.",
-      "description": "Pripremite Supplier Passport, organizirajte dokaze i predstavite buyer-ready compliance informacije s povjerenjem.",
+      "description": "Pripremite Supplier Passport, organizirajte dokaze i predstavite informacije o spremnosti za kupce s povjerenjem.",
       "note": "Trebate upravljati s više klijenata ili dobavljača? Pogledajte Partner i Buyer planove."
     },
     "finalCta": {
       "eyebrow": "Supplier Passport",
-      "title": "Spremni za izradu Supplier Passporta?"
+      "title": "Spremni za izradu Supplier Passporta?",
+      "secondaryCta": "Prijava"
     },
     "preview": {
       "supplierReadiness": "Spremnost dobavljaca",
@@ -640,6 +727,8 @@
       "buyerRequests": "Zahtjevi kupaca",
       "lastUpdated": "Zadnje azurirano 12. svibnja 2024.",
       "passportPreview": "Pregled Passporta",
+      "exampleSupplierName": "Primjer dobavljača d.o.o.",
+      "summaryOnly": "Samo sažetak",
       "basicModule": "VSME Basic modul",
       "module": "VSME modul",
       "readiness": "Spremnost {score}%",
@@ -650,14 +739,14 @@
         "Upravljanje",
         "Sazetak dokaza"
       ],
-      "secureLine": "Sigurno - Read-only - Istjece 12. svibnja 2025."
+      "secureLine": "Privatne datoteke nisu javno dostupne za preuzimanje"
     }
   },
   "pricing": {
     "hero": {
       "eyebrow": "Cijene",
       "title": "Cijene za profesionalnu spremnost dobavljaca.",
-      "description": "Pripremite Supplier Passport, organizirajte dokaze i predstavite buyer-ready compliance informacije s povjerenjem.",
+      "description": "Pripremite Supplier Passport, organizirajte dokaze i predstavite informacije o spremnosti za kupce s povjerenjem.",
       "annualNote": "Godišnji planovi uključuju oko 20% uštede i jedan godišnji pregled Supplier Pro profila.",
       "setupNote": "Setup je assisted onboarding dodatak za pretplatničke planove. Sprint je jednokratni servisni paket za tvrtke koje trebaju riješiti jedan konkretan zahtjev kupca prije odluke o pretplati."
     },
@@ -955,17 +1044,17 @@
   "auth": {
     "shell": {
       "headline": "Spremnost dobavljača bez spreadsheet kaosa.",
-      "subtitle": "Pripremite VSME profil, organizirajte odobrene dokaze i upravljajte pristupom kupaca iz sigurnog supplier workspacea.",
+      "subtitle": "Pripremite VSME-aligned profil, organizirajte dokaznu dokumentaciju i upravljajte Supplier Passport sažecima za kupce iz jednog workspacea.",
       "benefits": [
-        "Nhost Auth spreman",
-        "Hasura permissions planirane",
-        "Buyer-facing Passporti"
+        "Workflow za upitnik i dokaze",
+        "Javni sažetak siguran za kupce",
+        "Izvoz PDF nacrta"
       ]
     },
     "login": {
       "eyebrow": "Dobrodošli natrag",
-      "title": "Prijavite se u Supplier Passport",
-      "subtitle": "Pristupite svom supplier workspaceu, dokaznim dokumentima i Passport linkovima.",
+      "title": "Prijavite se za nastavak rada na Supplier Passportu.",
+      "subtitle": "Pristupite upitniku, dokaznoj dokumentaciji, javnom linku i PDF nacrtu.",
       "email": "Poslovni email",
       "password": "Lozinka",
       "passwordPlaceholder": "Unesite lozinku",
@@ -989,8 +1078,8 @@
     },
     "signup": {
       "eyebrow": "Supplier workspace",
-      "title": "Kreirajte Supplier Passport račun",
-      "subtitle": "Započnite pripremu VSME profila i buyer-ready dokumentacijskog Data Rooma.",
+      "title": "Izradite svoj Supplier Passport radni prostor.",
+      "subtitle": "Započnite pripremu VSME-aligned profila dobavljača i pregleda spremnosti dokazne dokumentacije.",
       "fullName": "Ime i prezime",
       "workEmail": "Poslovni email",
       "password": "Lozinka",
@@ -1016,10 +1105,10 @@
       "authNetworkError": "Nismo mogli doći do Nhost Auth servisa. Provjerite produkcijski Auth URL i allowed origins.",
       "unknownAuthError": "Registracija nije uspjela. Pokušajte ponovno ili kontaktirajte podršku."
     },
-    "loginTitle": "Prijavite se u Supplier Passport",
-    "loginSubtitle": "Pristupite svom supplier workspaceu, dokaznim dokumentima i Passport linkovima.",
-    "signupTitle": "Kreirajte Supplier Passport račun",
-    "signupSubtitle": "Započnite pripremu VSME profila i buyer-ready dokumentacijskog Data Rooma.",
+    "loginTitle": "Prijavite se za nastavak rada na Supplier Passportu.",
+    "loginSubtitle": "Pristupite upitniku, dokaznoj dokumentaciji, javnom linku i PDF nacrtu.",
+    "signupTitle": "Izradite svoj Supplier Passport radni prostor.",
+    "signupSubtitle": "Započnite pripremu VSME-aligned profila dobavljača i pregleda spremnosti dokazne dokumentacije.",
     "email": "Poslovni email",
     "password": "Lozinka",
     "fullName": "Ime i prezime",
@@ -1195,8 +1284,9 @@
     "exportPdf": "Preuzmi PDF",
     "exportPdfGenerating": "Generiranje PDF-a...",
     "exportPdfError": "Trenutno ne možemo generirati PDF.",
+    "exportPdfSuccess": "PDF je spreman.",
     "draftStateTitle": "Passport pregled koristi radne podatke",
-    "draftStateText": "Generirajte Passport kada su profil organizacije, odgovori u upitniku i metapodaci dokazne dokumentacije spremni. Do tada ova stranica prikazuje strukturu sigurnu za kupce.",
+    "draftStateText": "Ispunite upitnik i povežite dokazne dokumente kako biste poboljšali spremnost.",
     "companySummary": "Sažetak tvrtke",
     "companySummaryDescription": "Profil organizacije koji će kupci vidjeti u Passportu.",
     "verified": "Profil",
@@ -1220,7 +1310,7 @@
     "linkedSections": "Povezane sekcije",
     "status": "Status",
     "approved": "Dostupno",
-    "noApprovedDocuments": "Još nema dokaznih dokumenata.",
+    "noApprovedDocuments": "Sažetak dokazne dokumentacije još nije dostupan.",
     "missingDataChecklist": "Lista nedostajućih podataka",
     "missingDataChecklistDescription": "Otvorene stavke prije vanjskog dijeljenja Passporta.",
     "missingDataNeutral": "Provjere nedostajućih podataka prikazat će se ovdje nakon pregleda upitnika i dokumenata.",
@@ -1241,8 +1331,8 @@
     "completion": "dovršenost",
     "passportStatus": "Status Passporta",
     "generatedAt": "Generirano",
-    "noPassportTitle": "Passport još nije generiran",
-    "noPassportText": "Generirajte prvi Supplier Passport kako biste pripremili profil spreman za kupca.",
+    "noPassportTitle": "Vaš Supplier Passport nacrt još nije spreman.",
+    "noPassportText": "Ispunite upitnik i povežite dokazne dokumente kako biste poboljšali spremnost.",
     "generateSuccess": "Supplier Passport je uspješno generiran.",
     "generateError": "Trenutno ne možemo generirati Supplier Passport.",
     "shareLinkGenerateFirst": "Generirajte Supplier Passport prije kreiranja share linka za kupca.",
@@ -1325,6 +1415,7 @@
     "publicPdfWarning": "Kupci mogu preuzeti i javni PDF sažetak siguran za kupce s javne Supplier Passport stranice.",
     "copyLink": "Kopiraj link",
     "linkCopied": "Link je kopiran",
+    "copyError": "Trenutno ne možemo kopirati link.",
     "loadError": "Trenutno ne možemo učitati link za dijeljenje.",
     "generateLink": "Generiraj link za dijeljenje",
     "generatingLink": "Generiranje...",
@@ -1344,8 +1435,8 @@
     "regenerateConfirm": "Generiranje novog linka stvara novi javni link i deaktivira stari.",
     "regeneratingLink": "Generiranje...",
     "linkRegenerated": "Novi link je generiran",
-    "noLinkTitle": "Još nema linka za dijeljenje",
-    "noLinkText": "Generirajte siguran javni link kada želite podijeliti sažetak Supplier Passporta.",
+    "noLinkTitle": "Još nema aktivnog javnog linka.",
+    "noLinkText": "Izradite javni link kada budete spremni podijeliti Supplier Passport s kupcima.",
     "signInRequired": "Prijavite se kako biste upravljali linkom za dijeljenje Supplier Passporta."
   },
   "onboarding": {
@@ -1356,6 +1447,7 @@
     "vatId": "VAT / OIB",
     "industry": "Industrija",
     "employeeCountRange": "Broj zaposlenih",
+    "employeeCountPlaceholder": "Odaberite raspon",
     "headquartersCity": "Grad sjedišta",
     "headquartersCountry": "Država sjedišta",
     "website": "Web stranica",

@@ -42,7 +42,7 @@ export function HeroSection() {
 
           <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
             <Link
-              href="/dashboard"
+              href={`/${locale}/signup`}
               className={cn(
                 buttonVariants({ size: "lg" }),
                 "h-12 px-5 shadow-xl shadow-blue-600/20",
@@ -50,12 +50,6 @@ export function HeroSection() {
             >
               {common("startPassport")}
               <ArrowRight data-icon="inline-end" />
-            </Link>
-            <Link
-              href={`/${locale}/share/acme-manufacturing`}
-              className={cn(buttonVariants({ variant: "outline", size: "lg" }), "h-12 px-5")}
-            >
-              {common("seeSamplePassport")}
             </Link>
           </div>
 

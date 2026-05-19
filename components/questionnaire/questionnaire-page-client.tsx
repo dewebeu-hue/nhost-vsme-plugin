@@ -373,7 +373,11 @@ export function QuestionnairePageClient({
           completedQuestions: currentProgress?.completed ?? 0,
           totalQuestions: currentProgress?.total ?? nextQuestions.length,
         });
-        setMessage(null);
+        setMessage(
+          (payload.answers ?? []).length
+            ? null
+            : { tone: "info", text: `${labels.noAnswersSaved} ${labels.startFirstSection}` },
+        );
       } catch (error) {
         if (process.env.NODE_ENV !== "production") {
           console.error("Questionnaire live load failed", error);
@@ -404,11 +408,19 @@ export function QuestionnairePageClient({
     const completed = sections.reduce((sum, section) => sum + section.completed, 0);
     const total = sections.reduce((sum, section) => sum + section.total, 0);
 
-    if (!liveMode || total === 0) {
+    if (!liveMode) {
       return {
         completion: questionnaireOverviewMock.completion,
         completedQuestions: questionnaireOverviewMock.completedQuestions,
         totalQuestions: questionnaireOverviewMock.totalQuestions,
+      };
+    }
+
+    if (total === 0) {
+      return {
+        completion: 0,
+        completedQuestions: 0,
+        totalQuestions: 0,
       };
     }
 
@@ -1309,14 +1321,14 @@ function mapLiveDocument(document: LiveDocument): EvidenceRoomDocument {
 function mockEvidenceDocuments(): EvidenceRoomDocument[] {
   return [
     {
-      id: "iso-14001-certificate",
-      title: "ISO 14001 Certificate",
-      fileName: "iso_14001_2024.pdf",
+      id: "environmental-policy-evidence",
+      title: "Environmental Policy Evidence",
+      fileName: "environmental_policy_evidence.pdf",
       fileSize: "2.4 MB",
       type: "Certificate",
       linkedTo: ["ENV-1.1"],
       uploaded: "May 12, 2024",
-      uploadedBy: "Anna Muller",
+      uploadedBy: "Workspace user",
       status: "Reviewed",
     },
     {
@@ -1327,7 +1339,7 @@ function mockEvidenceDocuments(): EvidenceRoomDocument[] {
       type: "Utility Bill",
       linkedTo: ["ENV-2.1"],
       uploaded: "May 10, 2024",
-      uploadedBy: "Anna Muller",
+      uploadedBy: "Workspace user",
       status: "Linked",
     },
   ];

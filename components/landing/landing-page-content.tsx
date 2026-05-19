@@ -5,6 +5,7 @@ import { HowItWorks } from "@/components/landing/how-it-works";
 import { LandingHeader } from "@/components/landing/landing-header";
 import { PricingPreview } from "@/components/landing/pricing-preview";
 import { SocialProof } from "@/components/landing/social-proof";
+import { ValueDisclaimer } from "@/components/landing/value-disclaimer";
 
 export function LandingPageContent() {
   return (
@@ -13,6 +14,7 @@ export function LandingPageContent() {
       <HeroSection />
       <FeatureCards />
       <HowItWorks />
+      <ValueDisclaimer />
       <SocialProof />
       <PricingPreview />
       <FinalCta />

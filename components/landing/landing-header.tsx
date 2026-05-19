@@ -16,6 +16,7 @@ const navItems = [
 export function LandingHeader() {
   const locale = useLocale();
   const t = useTranslations("common.navigation");
+  const cta = useTranslations("common.cta");
 
   return (
     <header className="sticky top-0 z-30 border-b border-slate-200/70 bg-white/85 backdrop-blur-xl">
@@ -45,13 +46,13 @@ export function LandingHeader() {
             {t("login")}
           </Link>
           <Link
-            href="/contact"
+            href={`/${locale}/signup`}
             className={cn(
               buttonVariants({ size: "lg" }),
               "h-10 px-4 shadow-lg shadow-blue-600/20",
             )}
           >
-            {t("bookDemo")}
+            {cta("startPassport")}
             <ArrowRight data-icon="inline-end" />
           </Link>
         </div>

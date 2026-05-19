@@ -65,6 +65,8 @@ export type QuestionnaireLabels = {
   attachSignInError: string;
   attachError: string;
   attachSuccess: string;
+  noAnswersSaved: string;
+  startFirstSection: string;
   sections: Record<string, string>;
   questionPrompts: Record<string, string>;
   questionOptions: Record<string, string>;
@@ -163,6 +165,7 @@ export type DocumentsLabels = {
   linkSignInError: string;
   linkError: string;
   linkMissingDocumentId: string;
+  linkSelectQuestion: string;
   linkDialogOpenError: string;
   linkSuccess: string;
   expired: string;
@@ -243,6 +246,8 @@ export const defaultQuestionnaireLabels: QuestionnaireLabels = {
   attachSignInError: "Please sign in before attaching evidence.",
   attachError: "We could not attach this evidence right now. Please try again.",
   attachSuccess: "Evidence attached to questionnaire answer.",
+  noAnswersSaved: "No answers saved yet.",
+  startFirstSection: "Start with the first section to build your Supplier Passport.",
   sections: {
     "Company Basics": "Company Basics",
     Employees: "Employees",
@@ -397,13 +402,14 @@ export const defaultDocumentsLabels: DocumentsLabels = {
   noAnswersYetDescription: "Questionnaire items will appear here once the taxonomy is loaded.",
   linking: "Linking...",
   linkSelectedAnswers: "Link selected answers",
-  noDocumentsTitle: "No documents yet",
-  noDocumentsText: "Upload your first evidence document to start building your Supplier Passport.",
+  noDocumentsTitle: "No evidence documents uploaded yet.",
+  noDocumentsText:
+    "Upload invoices, certificates, policies or other documents that support your questionnaire answers.",
   mockModeMessage:
     "Evidence room is running in mock mode until Nhost is configured and you are signed in.",
   liveUnavailableMessage: "We could not load your documents right now.",
   emptyLiveMessage:
-    "No live evidence documents yet. Upload your first document to start building the evidence room.",
+    "No evidence documents uploaded yet. Upload invoices, certificates, policies or other documents that support your questionnaire answers.",
   uploadMockMessage:
     "Connect Nhost and sign in to upload real evidence documents. Mock data remains available.",
   uploadError: "We could not upload this document right now. Please try again.",
@@ -411,10 +417,11 @@ export const defaultDocumentsLabels: DocumentsLabels = {
   workspaceUser: "Workspace user",
   linkMockSuccess: "Evidence linked locally in mock mode.",
   linkSignInError: "Please sign in before linking evidence.",
-  linkError: "We could not update evidence links right now. Please try again.",
+  linkError: "We could not link this document to an answer right now.",
   linkMissingDocumentId: "This document cannot be linked because its ID is missing.",
+  linkSelectQuestion: "Select at least one questionnaire item.",
   linkDialogOpenError: "We could not open the evidence link dialog.",
-  linkSuccess: "Evidence linked to questionnaire answer.",
+  linkSuccess: "Document linked to questionnaire answer.",
   expired: "Expired",
   expiresWithin30Days: "Certification expires within 30 days",
   expiresWithin90Days: "Certification expires within 90 days",

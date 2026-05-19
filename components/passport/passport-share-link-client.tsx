@@ -16,6 +16,7 @@ export type PassportShareLabels = {
   publicPdfWarning: string;
   copyLink: string;
   linkCopied: string;
+  copyError: string;
   loadError: string;
   generateLink: string;
   generatingLink: string;
@@ -48,6 +49,7 @@ export const defaultPassportShareLabels: PassportShareLabels = {
   publicPdfWarning: "Buyers can also download a buyer-safe public PDF summary from the public Passport page.",
   copyLink: "Copy link",
   linkCopied: "Link copied",
+  copyError: "We could not copy the link.",
   loadError: "We could not load your share link right now.",
   generateLink: "Generate share link",
   generatingLink: "Generating...",
@@ -175,8 +177,12 @@ export function PassportShareLinkClient({
       return;
     }
 
-    await navigator.clipboard.writeText(publicUrl);
-    setMessage({ tone: "success", text: labels.linkCopied });
+    try {
+      await navigator.clipboard.writeText(publicUrl);
+      setMessage({ tone: "success", text: labels.linkCopied });
+    } catch {
+      setMessage({ tone: "error", text: labels.copyError });
+    }
   }
 
   const isBusy = isLoading || pendingAction !== null;

@@ -6,6 +6,7 @@ export type PassportLabels = {
   exportPdf: string;
   exportPdfGenerating: string;
   exportPdfError: string;
+  exportPdfSuccess: string;
   draftStateTitle: string;
   draftStateText: string;
   companySummary: string;
@@ -95,9 +96,10 @@ export const defaultPassportLabels: PassportLabels = {
   exportPdf: "Download PDF",
   exportPdfGenerating: "Generating PDF...",
   exportPdfError: "We could not generate the PDF right now.",
+  exportPdfSuccess: "PDF is ready.",
   draftStateTitle: "Passport preview is using draft data",
   draftStateText:
-    "Generate a passport when the organization profile, questionnaire answers, and evidence metadata are ready. Until then, this page shows the buyer-safe preview structure for demo review.",
+    "Complete the questionnaire and link evidence documents to improve readiness.",
   companySummary: "Company summary",
   companySummaryDescription: "The organization profile buyers will see in the passport.",
   verified: "Profile",
@@ -116,7 +118,7 @@ export const defaultPassportLabels: PassportLabels = {
   passportSectionsDescription: "Control what buyers can review in the generated passport.",
   approvedDocuments: "Evidence documents",
   approvedDocumentsDescription: "Evidence metadata available for the buyer-facing passport.",
-  noApprovedDocuments: "No evidence documents yet.",
+  noApprovedDocuments: "No evidence summary available yet.",
   certificateExpired: "Certification evidence is expired",
   certificateExpiresWithin30Days: "Certification expires within 30 days",
   certificateExpiresWithin90Days: "Certification expires within 90 days",
@@ -148,8 +150,9 @@ export const defaultPassportLabels: PassportLabels = {
   completion: "completion",
   passportStatus: "Passport status",
   generatedAt: "Generated at",
-  noPassportTitle: "No Passport generated yet",
-  noPassportText: "Generate your first Supplier Passport to prepare a buyer-ready profile.",
+  noPassportTitle: "Your Supplier Passport draft is not ready yet.",
+  noPassportText:
+    "Complete the questionnaire and link evidence documents to improve readiness.",
   generateSuccess: "Supplier Passport generated successfully.",
   generateError: "We could not generate the Supplier Passport right now.",
   shareLinkGenerateFirst: "Generate a Supplier Passport before creating a buyer share link.",
