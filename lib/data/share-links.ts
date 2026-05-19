@@ -28,7 +28,7 @@ import { activeShareLinks, publicSharePassport } from "@/lib/mock-data";
 import type { SupplierPassportRecord } from "@/lib/data/passports";
 import {
   calculatePassportReadinessScore,
-  createPassportSectionSummaries,
+  passportEvidenceTypesBySectionCode,
   type PassportSummaryAnswer,
   type PassportSummaryQuestion,
   type PassportSummarySection,
@@ -533,7 +533,7 @@ function mapPublicShare(
     questionnaire.question_items,
     questionnaire.question_answers,
   );
-  const sections = createPassportSectionSummaries(
+  const detailedSections = createPublicPassportSectionSummaries(
     questionnaire.question_sections,
     questionnaire.question_items,
     questionnaire.question_answers,
@@ -566,7 +566,7 @@ function mapPublicShare(
       ...(shareLink.expires_at ? [`Expires: ${formatDate(shareLink.expires_at)}`] : []),
     ],
     heroText: `${companyName} has shared their VSME / ESG profile with you. This information is provided securely and is read-only.`,
-    sections: sections.map((section) => ({
+    sections: detailedSections.map((section) => ({
       title: section.title,
       description: getPublicSectionDescription(section.title),
       metricLabel: section.title === "Evidence summary" ? "Evidence files" : "Completion",
@@ -589,6 +589,118 @@ function mapPublicShare(
     ],
     footerDisclaimer: publicSharePassport.footerDisclaimer,
   } as typeof publicSharePassport;
+}
+
+function createPublicPassportSectionSummaries(
+  sections: PassportSummarySection[],
+  questions: PassportSummaryQuestion[],
+  answers: PassportSummaryAnswer[],
+  documents: ReturnType<typeof mapPublicDocumentsForSummary>,
+) {
+  const answerByQuestion = new Map(answers.map((answer) => [answer.question_item_id, answer]));
+  const answerById = new Map(
+    answers.flatMap((answer) => (answer.id ? [[answer.id, answer] as const] : [])),
+  );
+  const questionById = new Map(questions.map((question) => [question.id, question]));
+
+  return [
+    ...sections.map((section) => {
+      const sectionQuestions = questions.filter((question) => question.section_id === section.id);
+      const answeredCount = sectionQuestions.filter((question) =>
+        isPublicAnswerComplete(answerByQuestion.get(question.id)),
+      ).length;
+      const sectionEvidenceTypes = new Set(passportEvidenceTypesBySectionCode[section.code] ?? []);
+      const linkedDocuments = documents.filter((document) => {
+        const linkedToSection = (document.linked_question_answer_ids ?? []).some((answerId) => {
+          const answer = answerById.get(answerId);
+          const question = answer ? questionById.get(answer.question_item_id) : undefined;
+
+          return question?.section_id === section.id;
+        });
+
+        return (
+          isPublicEvidenceAvailable(document.status) &&
+          (linkedToSection ||
+            (Boolean(document.document_type) && sectionEvidenceTypes.has(String(document.document_type))))
+        );
+      }).length;
+
+      return {
+        title: getPublicSectionTitle(section.code, section.title),
+        completion: calculatePublicPercent(answeredCount, sectionQuestions.length),
+        approvedAnswers: answeredCount,
+        linkedDocuments,
+        visibility: "Shared" as const,
+      };
+    }),
+    {
+      title: "Evidence summary",
+      completion: calculatePublicPercent(
+        documents.filter((document) => isPublicEvidenceAvailable(document.status)).length,
+        documents.length,
+      ),
+      approvedAnswers: 0,
+      linkedDocuments: documents.filter((document) => isPublicEvidenceAvailable(document.status)).length,
+      visibility: "Shared" as const,
+    },
+  ];
+}
+
+function getPublicSectionTitle(code: string, fallback: string) {
+  const titles: Record<string, string> = {
+    company_basics: "Company basics",
+    employees: "Employees",
+    energy: "Energy",
+    fuel: "Fuel",
+    waste: "Waste",
+    environmental_policies: "Environmental policies",
+    health_safety: "Health and safety",
+    certifications: "Certifications",
+    governance: "Governance",
+    supplier_information: "Supplier information",
+  };
+
+  return titles[code] ?? fallback;
+}
+
+function isPublicAnswerComplete(answer: PassportSummaryAnswer | undefined) {
+  if (!answer || answer.status === "not_started") {
+    return false;
+  }
+
+  if (answer.status === "completed" || answer.status === "reviewed" || answer.status === "needs_evidence") {
+    return true;
+  }
+
+  return hasPublicAnswerValue(answer.value);
+}
+
+function hasPublicAnswerValue(value: unknown) {
+  if (value === null || value === undefined) {
+    return false;
+  }
+
+  if (Array.isArray(value)) {
+    return value.length > 0;
+  }
+
+  if (typeof value === "string") {
+    return value.trim().length > 0;
+  }
+
+  return true;
+}
+
+function isPublicEvidenceAvailable(status: string) {
+  return ["reviewed", "linked", "uploaded", "needs_review", "expiring_soon"].includes(status);
+}
+
+function calculatePublicPercent(answered: number, total: number) {
+  if (total <= 0) {
+    return 0;
+  }
+
+  return Math.round((answered / total) * 100);
 }
 
 function mapPublicDocumentsForSummary(documents: PublicDocumentRecord[]) {

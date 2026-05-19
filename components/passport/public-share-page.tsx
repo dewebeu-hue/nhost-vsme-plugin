@@ -1,8 +1,5 @@
 import {
-  ArrowUpRight,
   CalendarDays,
-  Download,
-  Eye,
   FileText,
   LockKeyhole,
   Mail,
@@ -14,21 +11,11 @@ import { LanguageSwitcher } from "@/components/shared/language-switcher";
 import { ProgressRing } from "@/components/shared/progress-ring";
 import { StateCard } from "@/components/shared/state-card";
 import { Badge } from "@/components/ui/badge";
-import { Button, buttonVariants } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
 import type { publicSharePassport } from "@/lib/mock-data";
 
 type PublicSharePageProps = {
   passport: typeof publicSharePassport;
-  documentsRestricted?: boolean;
 };
 
 export function PublicShareAccessState({
@@ -60,8 +47,14 @@ export function PublicShareAccessState({
   );
 }
 
-export function PublicSharePage({ passport, documentsRestricted = false }: PublicSharePageProps) {
+export function PublicSharePage({ passport }: PublicSharePageProps) {
   const t = useTranslations("share");
+  const evidenceSection = passport.sections.find((section) => section.title === "Evidence summary");
+  const readinessSections = passport.sections.filter((section) => section.title !== "Evidence summary");
+  const certificateStatus =
+    passport.company.certifications.length > 0
+      ? t("certificateEvidenceAvailable")
+      : t("certificateEvidenceNotProvided");
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-950">
@@ -103,6 +96,12 @@ export function PublicSharePage({ passport, documentsRestricted = false }: Publi
                     </Badge>
                     <Badge
                       variant="outline"
+                      className="rounded-full border-emerald-200 bg-emerald-50 px-3 py-1 text-emerald-700"
+                    >
+                      {t("vsmeAligned")}
+                    </Badge>
+                    <Badge
+                      variant="outline"
                       className="rounded-full border-teal-200 bg-teal-50 px-3 py-1 text-teal-700"
                     >
                       <ShieldCheck aria-hidden="true" />
@@ -116,6 +115,9 @@ export function PublicSharePage({ passport, documentsRestricted = false }: Publi
               </div>
               <p className="max-w-3xl text-lg leading-8 text-slate-600">
                 {t("sharedIntro", { companyName: passport.company.name })}
+              </p>
+              <p className="max-w-3xl text-sm leading-6 text-slate-500">
+                {t("publicSummaryExplanation")}
               </p>
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
                 <div className="flex items-center gap-2 text-sm font-medium text-slate-500">
@@ -194,10 +196,10 @@ export function PublicSharePage({ passport, documentsRestricted = false }: Publi
 
           <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm shadow-slate-200/70">
             <h2 className="text-lg font-semibold tracking-tight text-slate-950">
-              {t("overviewTitle")}
+              {t("readinessSummary")}
             </h2>
             <p className="mt-3 text-sm leading-7 text-slate-600">
-              {t("overviewText")}
+              {t("publicSummaryExplanation")}
             </p>
             <div className="mt-5 rounded-2xl bg-teal-50 p-4 text-sm font-semibold text-teal-800">
               {t("secureTagline")}
@@ -205,127 +207,80 @@ export function PublicSharePage({ passport, documentsRestricted = false }: Publi
           </div>
         </section>
 
-        <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-          {passport.sections.map((section) => (
-            <article
-              key={section.title}
-              className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm shadow-slate-200/70"
-            >
-              <h3 className="text-lg font-semibold tracking-tight text-slate-950">
-                {translateShareSectionTitle(section.title, t)}
-              </h3>
-              <p className="mt-2 min-h-12 text-sm leading-6 text-slate-600">
-                {translateShareSectionDescription(section.title, section.description, t)}
-              </p>
-              <div className="mt-5 rounded-2xl bg-slate-50 p-4">
-                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">
-                  {translateShareMetricLabel(section.metricLabel, t)}
-                </p>
-                <p className="mt-1 text-3xl font-semibold tracking-tight text-slate-950">
-                  {section.metricValue}
-                </p>
-              </div>
-              <Button variant="outline" className="mt-5 w-full rounded-xl bg-white">
-                {section.actionLabel === "View all evidence" ? t("viewAllEvidence") : t("viewDetails")}
-                <ArrowUpRight data-icon="inline-end" />
-              </Button>
-            </article>
-          ))}
-        </section>
-
-        <section className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm shadow-slate-200/70">
-          <div className="flex flex-col justify-between gap-3 border-b border-slate-100 p-6 sm:flex-row sm:items-end">
+        <section>
+          <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <h2 className="text-2xl font-semibold tracking-tight text-slate-950">
-                {t("approvedDocuments")}
+                {t("sectionReadiness")}
               </h2>
-              <p className="mt-1 text-sm text-slate-500">
-                {t("approvedDocumentsDescription")}
+              <p className="mt-1 max-w-3xl text-sm text-slate-500">
+                {t("sectionReadinessDescription")}
               </p>
             </div>
-            <Badge
-              variant="outline"
-              className="w-fit rounded-full border-teal-200 bg-teal-50 px-3 py-1 text-teal-700"
-            >
-              <FileText aria-hidden="true" />
-              {t("approvedOnly")}
-            </Badge>
           </div>
-          <Table>
-            <TableHeader>
-              <TableRow className="bg-slate-50/80">
-                <TableHead className="pl-6">{t("documentName")}</TableHead>
-                <TableHead>{t("category")}</TableHead>
-                <TableHead>{t("fileType")}</TableHead>
-                <TableHead>{t("dateUploaded")}</TableHead>
-                <TableHead className="pr-6 text-right">{t("actions")}</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {passport.documents.length ? (
-                passport.documents.map((document) => (
-                  <TableRow key={document.id} className="border-slate-100">
-                    <TableCell className="min-w-56 py-4 pl-6 font-semibold text-slate-950">
-                      {document.name}
-                    </TableCell>
-                    <TableCell className="text-slate-600">{document.category}</TableCell>
-                    <TableCell>
-                      <Badge
-                        variant="outline"
-                        className="rounded-full border-slate-200 bg-slate-50 text-slate-700"
-                      >
-                        {document.fileType}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-slate-600">{document.uploaded}</TableCell>
-                    <TableCell className="pr-6 text-right">
-                      <div className="flex justify-end gap-2">
-                        {document.accessUrl && !documentsRestricted ? (
-                          <a
-                            href={document.accessUrl}
-                            target="_blank"
-                            rel="noreferrer"
-                            className={cn(buttonVariants({ variant: "ghost", size: "sm" }))}
-                          >
-                            <Eye data-icon="inline-start" />
-                            {t("view")}
-                          </a>
-                        ) : (
-                          <Button variant="ghost" size="sm" disabled>
-                            <Eye data-icon="inline-start" />
-                            {t("requestAccess")}
-                          </Button>
-                        )}
-                        {document.downloadUrl && !documentsRestricted ? (
-                          <a
-                            href={document.downloadUrl}
-                            className={cn(
-                              buttonVariants({ variant: "outline", size: "sm" }),
-                              "bg-white",
-                            )}
-                          >
-                            <Download data-icon="inline-start" />
-                            {t("download")}
-                          </a>
-                        ) : (
-                          <Button variant="outline" size="sm" className="bg-white" disabled>
-                            <Download data-icon="inline-start" />
-                            {t("download")}
-                          </Button>
-                        )}
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={5} className="px-6 py-6 text-sm font-medium text-slate-500">
-                    {t("evidenceAvailableOnRequest")}
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
+          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+            {readinessSections.map((section) => (
+              <article
+                key={section.title}
+                className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm shadow-slate-200/70"
+              >
+                <h3 className="text-lg font-semibold tracking-tight text-slate-950">
+                  {translateShareSectionTitle(section.title, t)}
+                </h3>
+                <p className="mt-2 min-h-12 text-sm leading-6 text-slate-600">
+                  {translateShareSectionDescription(section.title, section.description, t)}
+                </p>
+                <div className="mt-5 rounded-2xl bg-slate-50 p-4">
+                  <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">
+                    {translateShareMetricLabel(section.metricLabel, t)}
+                  </p>
+                  <p className="mt-1 text-3xl font-semibold tracking-tight text-slate-950">
+                    {section.metricValue}
+                  </p>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section className="grid gap-6 lg:grid-cols-2">
+          <article className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm shadow-slate-200/70">
+            <div className="mb-4 flex size-11 items-center justify-center rounded-xl bg-blue-50 text-blue-700">
+              <FileText aria-hidden="true" className="size-5" />
+            </div>
+            <h2 className="text-2xl font-semibold tracking-tight text-slate-950">
+              {t("evidenceSummaryTitle")}
+            </h2>
+            <p className="mt-2 text-sm leading-7 text-slate-600">
+              {evidenceSection ? t("evidenceSummaryText") : t("noEvidenceSummaryAvailableYet")}
+            </p>
+            <div className="mt-5 rounded-2xl bg-slate-50 p-4">
+              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">
+                {t("evidenceFiles")}
+              </p>
+              <p className="mt-1 text-3xl font-semibold tracking-tight text-slate-950">
+                {evidenceSection?.metricValue ?? "0"}
+              </p>
+            </div>
+            <p className="mt-4 text-sm font-medium text-slate-500">
+              {t("privateFilesNotDownloadable")}
+            </p>
+          </article>
+
+          <article className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm shadow-slate-200/70">
+            <div className="mb-4 flex size-11 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700">
+              <ShieldCheck aria-hidden="true" className="size-5" />
+            </div>
+            <h2 className="text-2xl font-semibold tracking-tight text-slate-950">
+              {t("certificateStatus")}
+            </h2>
+            <p className="mt-2 text-sm leading-7 text-slate-600">
+              {t("certificateStatusText")}
+            </p>
+            <div className="mt-5 rounded-2xl bg-slate-50 p-4 text-sm font-semibold text-slate-700">
+              {certificateStatus}
+            </div>
+          </article>
         </section>
       </main>
 
@@ -366,9 +321,18 @@ function translateShareDetail(label: string, t: ReturnType<typeof useTranslation
 function translateShareSectionTitle(title: string, t: ReturnType<typeof useTranslations<"share">>) {
   const map: Record<string, string> = {
     "Company overview": t("companyOverview"),
+    "Company basics": t("companyBasics"),
+    Employees: t("employees"),
+    Energy: t("energy"),
+    Fuel: t("fuel"),
+    Waste: t("waste"),
+    "Environmental policies": t("environmentalPolicies"),
+    "Health and safety": t("healthSafety"),
+    Certifications: t("certifications"),
     Environment: t("environment"),
     Social: t("social"),
     Governance: t("governance"),
+    "Supplier information": t("supplierInformation"),
     "Evidence summary": t("evidenceSummary"),
   };
 
@@ -382,9 +346,18 @@ function translateShareSectionDescription(
 ) {
   const map: Record<string, string> = {
     "Company overview": t("companyOverviewDescription"),
+    "Company basics": t("companyBasicsDescription"),
+    Employees: t("employeesDescription"),
+    Energy: t("energyDescription"),
+    Fuel: t("fuelDescription"),
+    Waste: t("wasteDescription"),
+    "Environmental policies": t("environmentalPoliciesDescription"),
+    "Health and safety": t("healthSafetyDescription"),
+    Certifications: t("certificationsDescription"),
     Environment: t("environmentDescription"),
     Social: t("socialDescription"),
     Governance: t("governanceDescription"),
+    "Supplier information": t("supplierInformationDescription"),
     "Evidence summary": t("evidenceSummaryDescription"),
   };
 
