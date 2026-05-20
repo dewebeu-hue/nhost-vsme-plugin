@@ -2174,6 +2174,102 @@ Manual QA:
 8. Confirm supplier dashboard, public Passport, share links, and PDFs do not show handoff data.
 9. Repeat a quick route/copy check on `/en` and `/de`.
 
+## Faza 3.4 Assisted Onboarding Final QA
+
+Faza 3.4 closes the admin-only assisted onboarding and partner-ready workspace.
+
+Implemented scope:
+
+- Assisted onboarding status, next action, onboarding note, and follow-up date.
+- Derived onboarding checklist from real supplier workspace progress.
+- Portfolio grouping using internal portfolio and assisted-by labels.
+- Portfolio overview, grouping, and list filters.
+- Follow-up visibility for overdue, due today, due soon, and no scheduled follow-up.
+- Internal handoff summary with copy and text download.
+- Admin-only concierge status, priority, internal notes, and internal review marker.
+
+Production migration requirements:
+
+1. Apply and track `nhost/migrations/default/0005_add_organization_concierge_notes/up.sql`.
+2. Apply and track `nhost/migrations/default/0006_add_assisted_onboarding_fields/up.sql`.
+3. Apply and track `nhost/migrations/default/0007_add_admin_portfolio_fields/up.sql`.
+4. Refresh Hasura/Nhost metadata or schema cache if production does not immediately expose the new columns.
+
+SQL QA checklist:
+
+```sql
+select
+  id,
+  organization_id,
+  status,
+  priority,
+  internal_note,
+  next_follow_up_date,
+  onboarding_status,
+  onboarding_next_action,
+  onboarding_owner_note,
+  portfolio_label,
+  partner_label,
+  assigned_consultant_note,
+  reviewed_at,
+  created_at,
+  updated_at
+from organization_concierge_notes
+order by updated_at desc
+limit 20;
+```
+
+Admin route QA:
+
+- `/en/admin`
+- `/hr/admin`
+- `/de/admin`
+- `/en/admin/organizations`
+- `/hr/admin/organizations`
+- `/de/admin/organizations`
+- `/en/admin/organizations/[id]`
+- `/hr/admin/organizations/[id]`
+- `/de/admin/organizations/[id]`
+- `/en/admin/risks`
+- `/hr/admin/risks`
+- `/de/admin/risks`
+
+Privacy guarantees:
+
+- `organization_concierge_notes` data is admin-only.
+- Onboarding status, onboarding notes, portfolio labels, partner labels, assigned consultant notes, concierge status, internal notes, internal handoff summaries, reviewed timestamps, and reviewed-by fields must not be shown on supplier dashboards, public Passport pages, public PDFs, share links, or buyer-facing surfaces.
+- Admin handoff summaries must not include private document URLs, storage file IDs, raw sensitive answers, full share tokens, JWTs, cookies, secrets, or unnecessary user/member data.
+
+Deferred scope:
+
+- Partner accounts.
+- Partner login.
+- Partner permissions.
+- Automated email or reminder sending.
+- Buyer portal.
+- User impersonation.
+- AI, Stripe, XBRL, plan limits, or Supabase.
+
+Manual production QA:
+
+1. Deploy.
+2. Confirm `ADMIN_EMAIL_ALLOWLIST` is configured server-side in Vercel.
+3. Login as an allowlisted admin.
+4. Open `/hr/admin/organizations`.
+5. Open an organization detail page.
+6. Edit onboarding status, next action, onboarding note, and follow-up date.
+7. Save and refresh to confirm persistence.
+8. Edit portfolio label, assisted-by label, and internal partner note.
+9. Save and refresh to confirm persistence.
+10. Confirm portfolio overview cards, grouping, and filters use real counts.
+11. Confirm follow-up labels show overdue, due today, due soon, and no scheduled follow-up where applicable.
+12. Copy handoff summary and inspect the pasted text for internal-only safe content.
+13. Download handoff `.txt` and inspect the file.
+14. Open `/hr/admin/risks` and confirm risk links still open organization detail.
+15. Confirm supplier dashboard, Supplier Passport, public Passport, share links, and PDFs do not show onboarding, portfolio, concierge, or handoff data.
+16. Login as a normal supplier and confirm admin routes/APIs are forbidden.
+17. Repeat quick route/copy checks on `/en` and `/de`.
+
 ## Safe Logging Rules
 
 Allowed categories:
