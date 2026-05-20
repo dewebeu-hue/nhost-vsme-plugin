@@ -231,6 +231,7 @@ export function AdminOrganizationDetailClient({
 
     return [
       { label: labels.completion, value: `${organization.readinessPercent}%` },
+      { label: labels.currentWorkspacePlan, value: organization.commercialPlanLabel },
       { label: labels.documents, value: String(organization.documentCount) },
       { label: labels.linkedEvidence, value: String(organization.linkedEvidenceCount) },
       { label: labels.buyerRequests, value: String(organization.buyerRequestCount) },
@@ -399,6 +400,7 @@ export function AdminOrganizationDetailClient({
         {message ? <p className="mt-3 text-sm text-slate-600">{message}</p> : null}
         <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
           <HandoffMetric label={labels.portfolio} value={organization.concierge?.portfolioLabel || labels.noPortfolioAssigned} />
+          <HandoffMetric label={labels.currentWorkspacePlan} value={organization.commercialPlanLabel} />
           <HandoffMetric label={labels.conciergeStatus} value={formatConciergeStatus(organization.concierge?.status ?? "not_started", labels)} />
           <HandoffMetric label={labels.priority} value={formatPriority(organization.concierge?.priority ?? "normal", labels)} />
           <HandoffMetric label={labels.onboardingStatus} value={formatOnboardingStatus(organization.concierge?.onboardingStatus ?? "not_started", labels)} />

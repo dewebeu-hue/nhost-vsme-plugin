@@ -355,6 +355,12 @@ export function AdminOrganizationsClient({ labels = defaultAdminLabels }: AdminO
                       {labels.assistedBy}: {organization.concierge.partnerLabel}
                     </p>
                   ) : null}
+                  <p className="mt-2 text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">
+                    {labels.currentWorkspacePlan}
+                  </p>
+                  <p className="mt-1 text-sm text-slate-600">
+                    {organization.commercialPlanLabel}
+                  </p>
                 </div>
 
                 <div>

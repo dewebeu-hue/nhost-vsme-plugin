@@ -14,8 +14,8 @@ export function PricingComparisonTable() {
     feature: string;
     starter: string;
     pro: string;
-    sprint: string;
     partner: string;
+    buyer: string;
   }>;
 
   return (
@@ -39,8 +39,8 @@ export function PricingComparisonTable() {
                 <TableHead className="pl-6">{t("columns.feature")}</TableHead>
                 <TableHead>{t("columns.starter")}</TableHead>
                 <TableHead>{t("columns.pro")}</TableHead>
-                <TableHead>{t("columns.sprint")}</TableHead>
-                <TableHead className="pr-6">{t("columns.partner")}</TableHead>
+                <TableHead>{t("columns.partner")}</TableHead>
+                <TableHead className="pr-6">{t("columns.buyer")}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -51,8 +51,8 @@ export function PricingComparisonTable() {
                   </TableCell>
                   <TableCell className="text-slate-600">{row.starter}</TableCell>
                   <TableCell className="font-semibold text-blue-700">{row.pro}</TableCell>
-                  <TableCell className="text-slate-600">{row.sprint}</TableCell>
-                  <TableCell className="pr-6 text-slate-600">{row.partner}</TableCell>
+                  <TableCell className="text-slate-600">{row.partner}</TableCell>
+                  <TableCell className="pr-6 text-slate-600">{row.buyer}</TableCell>
                 </TableRow>
               ))}
             </TableBody>

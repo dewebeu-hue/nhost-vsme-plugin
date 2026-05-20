@@ -2270,6 +2270,49 @@ Manual production QA:
 16. Login as a normal supplier and confirm admin routes/APIs are forbidden.
 17. Repeat quick route/copy checks on `/en` and `/de`.
 
+## Faza 3.5 Korak 1 - Commercial Readiness Without Billing
+
+Faza 3.5 starts with commercial positioning only. It does not add billing, checkout, Stripe, invoices, or plan enforcement.
+
+Commercial plan labels:
+
+- Starter: core Supplier Passport readiness workspace.
+- Supplier Pro: buyer request, evidence readiness, certificate tracking, and response preparation positioning.
+- Partner: assisted portfolio, concierge dashboard, onboarding tracking, and internal handoff positioning.
+- Buyer Pilot: buyer-side discovery and pilot scoping.
+- Buyer Pro: future/deferred buyer-side supplier network concept.
+
+Important behavior:
+
+- Plan labels are copy/metadata only.
+- Admin organization list/detail may show the current workspace plan label.
+- If an organization has no recognized `plan_key`, the UI falls back to `Starter`.
+- Billing is not enabled in this version.
+- Plan limits are not enforced in this version.
+- Pricing CTAs are demo/contact links only and must not route to checkout.
+
+Manual production QA:
+
+1. Deploy.
+2. Open `/en`, `/hr`, and `/de` and confirm the landing plan section describes plan positioning without prices or checkout.
+3. Open `/en/pricing`, `/hr/pricing`, and `/de/pricing`.
+4. Confirm the page shows Starter, Supplier Pro, Partner, Buyer Pilot, and Buyer Pro future/deferred positioning.
+5. Confirm there is no monthly/annual billing toggle, no checkout, no invoices, and no hard plan limit language.
+6. Click the demo/contact CTA and confirm it opens a real mail link, not a dead route.
+7. Login as admin and open `/hr/admin/organizations`.
+8. Confirm each organization shows a safe current workspace plan label.
+9. Open an organization detail page and confirm the plan label appears in the admin summary/handoff context.
+10. Confirm supplier/public routes do not expose admin-only commercial notes.
+
+Deferred scope:
+
+- Stripe.
+- Billing.
+- Checkout.
+- Invoices.
+- Plan enforcement.
+- Buyer Pro product behavior.
+
 ## Safe Logging Rules
 
 Allowed categories:

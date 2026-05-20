@@ -16,7 +16,7 @@
       "startPassport": "Supplier Passport starten",
       "seeSamplePassport": "See Sample Passport",
       "bookDemo": "Demo buchen",
-      "viewFullPricing": "Alle Preise ansehen"
+      "viewFullPricing": "Pl?ne ansehen"
     }
   },
   "navigation": {
@@ -694,10 +694,10 @@
       "role": "Produktübersicht"
     },
     "pricingPreview": {
-      "eyebrow": "Preise",
-      "title": "Preise für professionelle Supplier Readiness.",
-      "description": "Bereiten Sie Ihren Supplier Passport vor, organisieren Sie Nachweise und präsentieren Sie käuferbereite Bereitschaftsinformationen mit Vertrauen.",
-      "note": "Müssen Sie mehrere Kunden oder Lieferanten verwalten? Sehen Sie sich Partner- und Käuferpläne an."
+      "eyebrow": "Pl?ne",
+      "title": "Pl?ne f?r Lieferantenbereitschaft",
+      "description": "Klare kommerzielle Positionierung f?r Lieferanten, Partner und Buyer-Piloten. Abrechnung und Checkout sind nicht aktiviert.",
+      "note": "M?ssen Sie mehrere Kunden oder Lieferanten verwalten? Sehen Sie sich Partner- und Buyer-Positionierung an."
     },
     "finalCta": {
       "eyebrow": "Supplier Passport",
@@ -732,19 +732,19 @@
   },
   "pricing": {
     "hero": {
-      "eyebrow": "Preise",
-      "title": "Preise für professionelle Supplier Readiness.",
-      "description": "Bereiten Sie Ihren Supplier Passport vor, organisieren Sie Nachweise und präsentieren Sie käuferbereite Compliance-Informationen mit Sicherheit.",
-      "annualNote": "Jahrespläne beinhalten rund 20% Ersparnis und eine jährliche Profilprüfung bei Supplier Pro.",
-      "setupNote": "Setup ist ein unterstütztes Add-on für Abonnementpläne. Sprint ist ein einmaliges Servicepaket für Unternehmen, die eine konkrete Käuferanfrage bearbeiten müssen, bevor sie ein Abonnement abschlie?en."
+      "eyebrow": "Kommerzielle Bereitschaft",
+      "title": "Pl?ne f?r Lieferantenbereitschaft.",
+      "description": "Diese Planlabels dienen Verkaufs- und Demo-Gespr?chen. Abrechnung, Checkout und harte Planlimits sind in dieser Version nicht aktiviert.",
+      "annualNote": "Kommerzielle Planlabels dienen nur der Positionierung; sie ?ndern keinen Workspace-Zugriff.",
+      "setupNote": "Sprechen Sie mit uns ?ber Supplier Passport f?r Ihre Lieferanten oder Kunden."
     },
     "billing": {
-      "monthly": "Monatlich",
-      "annual": "J?hrlich",
-      "save": "Ca. 20% sparen"
+      "monthly": "Positionierung",
+      "annual": "Zuk?nftig",
+      "save": "Keine Abrechnung aktiviert"
     },
     "card": {
-      "notIncluded": "Not included",
+      "notIncluded": "Nicht enthalten",
       "cadence": {
         "month": "Monat",
         "year": "Jahr",
@@ -753,280 +753,163 @@
       "from": "ab"
     },
     "founding": {
-      "offer": "Founding offer",
-      "locked": "{price}/month locked price",
-      "description": "Selective program for the first 10 companies from Croatia or the region."
+      "offer": "Kommerzieller Hinweis",
+      "locked": "{price}",
+      "description": "Abrechnung ist in dieser Version nicht aktiviert."
     },
     "sections": {
-      "partnerEyebrow": "Partner- und Käuferpl?ne",
-      "partnerTitle": "Skalieren Sie Lieferantenbereitschaft über Kunden oder Lieferantennetzwerke.",
-      "partnerDescription": "Partner- und Käuferpl?ne sind für Teams konzipiert, die viele Unternehmen, gemeinsame Nachweisprozesse und Lieferantenstatus verwalten."
+      "partnerEyebrow": "Buyer-Pl?ne",
+      "partnerTitle": "Buyer-seitige Pl?ne sind zukunftsorientiert.",
+      "partnerDescription": "Buyer Pilot und Buyer Pro werden nur f?r kommerzielle Discovery gezeigt. Buyer-Konten, Buyer-Login und Buyer-Portal sind noch nicht implementiert."
     },
     "plans": {
-      "supplier-passport-setup": {
-        "name": "Supplier Passport Setup",
-        "audience": "Companies that want expert help preparing their first buyer-ready passport.",
-        "description": "Assisted setup for companies that want help preparing their first Supplier Passport.",
-        "features": [
-          "Review of existing documents",
-          "Initial company profile structuring",
-          "Mapping documents to VSME sections",
-          "Missing data checklist",
-          "First Supplier Passport link",
-          "Basic review before sending to buyer"
-        ],
-        "setup": "Can be added to Starter. Required/recommended for Supplier Pro. One-time fee.",
-        "ctaLabel": "Add assisted setup"
-      },
       "starter": {
         "name": "Starter",
-        "audience": "Kleinstlieferanten und Unternehmen mit einem EU-Käufer.",
-        "description": "Für Kleinstlieferanten und Unternehmen mit einem EU-Käufer.",
+        "displayLabel": "Demo anfragen",
+        "audience": "Lieferanten, die einen ersten k?uferbereiten Supplier Passport vorbereiten.",
+        "description": "Ein fokussierter Workspace, um den zentralen Supplier-Passport-Ablauf vorzubereiten.",
         "features": [
-          "1 Unternehmen",
-          "1 Benutzer",
-          "1 aktiver Supplier Passport Link",
-          "Basisprofil für VSME Readiness",
-          "Bis zu 15 Dokumente",
-          "Einfacher PDF-Export",
-          "E-Mail-Support"
+          "Supplier-Passport-Workspace",
+          "Fragebogen-Bereitschaftsflow",
+          "Nachweisdokumente hochladen",
+          "?ffentlicher Freigabelink",
+          "PDF-Entwurf exportieren"
         ],
-        "limitations": [
-          "Keine unbegrenzten Share Links",
-          "Kein Excel-Export",
-          "Kein Priority Support",
-          "Keine automatischen Erinnerungen an Zertifikatsabl?ufe",
-          "Kein Buyer Questionnaire Workspace",
-          "Kein Audit Trail",
-          "Keine jährliche Profilprüfung"
-        ],
-        "setup": "Optionales unterstütztes Setup - 499 EUR.",
-        "ctaLabel": "Mit Starter beginnen",
-        "monthlySubtext": "oder 950 EUR/Jahr",
-        "annualSubtext": "entspricht 79 EUR/Monat, jährlich abgerechnet"
+        "setup": "Nur kommerzielles Label. Abrechnung und Limits sind in dieser Version nicht aktiviert.",
+        "ctaLabel": "Demo anfragen"
       },
       "supplier-pro": {
         "name": "Supplier Pro",
-        "audience": "SME-Exporteure, Hersteller, Logistikunternehmen, Verpackungsunternehmen, Metall-/Kunststofflieferanten, Automobilzulieferer und professionelle B2B-Lieferanten.",
-        "description": "Hauptpaket für professionelle B2B-Lieferanten, die Käuferanfragen strukturiert bearbeiten müssen.",
+        "displayLabel": "Demo anfragen",
+        "audience": "Lieferanten, die wiederkehrende K?uferanfragen und Nachweisbereitschaft verwalten.",
+        "description": "Positioniert f?r Lieferanten, die st?rkere Antwortvorbereitung und operative Nachverfolgung ben?tigen.",
         "features": [
-          "Bis zu 5 Benutzer",
-          "Unbegrenzte Supplier Passport Links",
-          "Bis zu 100 Dokumente",
-          "Document Vault",
-          "Dokumente mit VSME-Fragen verkn?pfen",
-          "Erinnerungen an Zertifikatsabl?ufe",
-          "PDF-Export",
-          "Excel-Export",
-          "Buyer Questionnaire Workspace",
-          "Dashboard für fehlende Daten",
-          "Audit Trail",
-          "Priority Support"
+          "Buyer Request Workspace",
+          "Bereitschaft angefragter Abschnitte",
+          "Nachweisverkn?pfung und fehlende Schritte",
+          "Zertifikatsabl?ufe verfolgen",
+          "Antwortpaket vorbereiten",
+          "Concierge-Support als Positionierung"
         ],
-        "setup": "Supplier Passport Setup - 499 EUR einmalig.",
-        "badge": "Empfohlen",
-        "ctaLabel": "Supplier Pro starten",
-        "monthlySubtext": "oder 2.390 EUR/Jahr",
-        "annualSubtext": "entspricht 199 EUR/Monat, jährlich abgerechnet"
+        "setup": "Nur kommerzielles Label. Es werden keine Planlimits durchgesetzt.",
+        "badge": "Supplier growth",
+        "ctaLabel": "Demo anfragen"
       },
-      "vsme-passport-sprint": {
-        "name": "VSME Passport Sprint",
-        "audience": "Unternehmen, die noch kein Abonnement möchten, aber eine konkrete Käuferanfrage bearbeiten müssen.",
-        "description": "Ein fokussierter einmaliger Weg zum ersten Supplier Passport für eine konkrete Käuferanfrage.",
+      "partner": {
+        "name": "Partner",
+        "displayLabel": "Demo anfragen",
+        "audience": "Berater, Agenturen und Partnerteams, die mehrere Lieferantenkunden unterst?tzen.",
+        "description": "Positioniert f?r begleitetes Onboarding, Portfoliomanagement und Kunden?bergaben.",
         "features": [
-          "Profil-Setup",
-          "Pr?fung vorhandener Dokumente",
-          "Basisprofil für VSME Readiness",
-          "Zuordnung von Dokumenten zu Abschnitten",
-          "Liste fehlender Daten",
-          "Erster Supplier Passport PDF/Link",
-          "Basispr?fung vor Versand an den Käufer",
-          "30 Tage Plattformzugang"
+          "Betreute Portfolio-Gruppierung",
+          "Concierge-Dashboard f?r mehrere Kunden",
+          "Interne Onboarding-Notizen",
+          "Nachverfolgung",
+          "Interne ?bergabezusammenfassung",
+          "Admin-Risiko?bersicht"
         ],
-        "setup": "Nach 30 Tagen Wechsel zu Starter - 99 EUR/Monat oder Supplier Pro - 249 EUR/Monat.",
-        "ctaLabel": "Passport Sprint buchen"
-      },
-      "partner-consultant": {
-        "name": "Partner / Consultant",
-        "audience": "ESG-Berater, ISO-Berater, Steuerberater, Advisor und Agenturen, die mehrere SME-Kunden betreuen.",
-        "description": "Für Beratungsteams, die Supplier Passport Workflows über mehrere Kunden steuern.",
-        "features": [
-          "Mehrere Kunden",
-          "Kunden-Dashboard",
-          "Statusübersicht je Unternehmen",
-          "Wiederverwendbare Vorlagen",
-          "Interne Notizen",
-          "Consultant Review Workflow",
-          "Basis Admin-/Concierge-Panel",
-          "Supplier Passports für Kunden generieren",
-          "White-Label-Option",
-          "Custom Branding",
-          "Partner Reporting",
-          "Team-Berechtigungen",
-          "API-Zugang"
-        ],
-        "ctaLabel": "Partner-Demo buchen",
-        "annualSubtext": "individueller Jahresvertrag"
+        "setup": "Partnerkonten und Partner-Login sind zur?ckgestellt.",
+        "ctaLabel": "Partner-Demo anfragen"
       },
       "buyer-pilot": {
         "name": "Buyer Pilot",
-        "audience": "Größere Käufer, die bis zu 25 Lieferanten überwachen möchten.",
-        "description": "Pilot-Workspace für Käufer zur überwachung von Supplier Readiness und fehlenden Daten bei bis zu 25 Lieferanten.",
+        "displayLabel": "Demo anfragen",
+        "audience": "Buyer-seitige Discovery-Gespr?che und Pilotumfang.",
+        "description": "Positioniert f?r K?ufer, die Lieferantenbereitschaft ohne Buyer-Portal pr?fen m?chten.",
         "features": [
-          "Buyer Dashboard",
-          "Lieferanten einladen",
-          "Status der Lieferantenfertigstellung",
-          "Basisübersicht Lieferantenrisiko",
-          "übersicht fehlender Daten",
-          "Datenexport",
-          "Basis-Reporting",
-          "Bis zu 25 Lieferanten",
-          "Jahresvertrag oder mindestens Quartalsbindung empfohlen"
+          "Konzept zur Nachverfolgung von K?uferanfragen",
+          "Supplier-Readiness-Zusammenfassungen",
+          "Nachweise auf Anfrage",
+          "?ffentlichen Supplier Passport pr?fen",
+          "Pilot-Workflow definieren"
         ],
-        "ctaLabel": "Buyer Pilot buchen",
-        "annualSubtext": "Jahresvertrag empfohlen"
+        "setup": "Buyer-Portal, Buyer-Login und E-Mail-Versand sind noch nicht enthalten.",
+        "ctaLabel": "Buyer Pilot anfragen"
       },
       "buyer-pro": {
         "name": "Buyer Pro",
-        "audience": "Größere Käufer mit 50+ Lieferanten.",
-        "description": "Käuferseitiges Lieferantentracking für größere Procurement-Teams und Lieferantennetzwerke.",
+        "displayLabel": "Zuk?nftig",
+        "audience": "Zuk?nftiger buyer-seitiger Workspace f?r Lieferantennetzwerke.",
+        "description": "Zur?ckgestellte Planpositionierung f?r gr??ere Buyer-Netzwerke und Lieferantenportfolios.",
         "features": [
-          "50+ Lieferanten",
-          "Mehrere interne Teams",
-          "Individuelle Frageb?gen",
-          "Lieferantenerinnerungen",
-          "Buyer Reporting",
-          "Supplier Status Dashboard",
-          "Priority Support",
-          "Supplier Onboarding",
-          "Custom Branding",
-          "Für 50-150 Lieferanten liegt ein realistischer Bereich bei 1.200-2.500 EUR/Monat",
-          "Für größere Systeme individuelle Enterprise-Preise"
+          "Buyer-seitiges Dashboard zuk?nftig",
+          "Lieferantenliste zuk?nftig",
+          "Koordination von K?uferanfragen zuk?nftig",
+          "Netzwerkreporting zuk?nftig"
         ],
-        "ctaLabel": "Sales kontaktieren",
-        "annualSubtext": "Jahresvertrag empfohlen"
-      },
-      "founding-partner-program": {
-        "name": "Founding Partner Program",
-        "audience": "Die ersten 10 Partnerunternehmen aus Kroatien oder der Region.",
-        "description": "Selektives Early-Partner-Programm für Unternehmen, die Supplier Passport an realen EU-Käuferanforderungen mitgestalten möchten.",
-        "features": [
-          "Kostenloses Setup",
-          "Basis Supplier Pro Workflow",
-          "Supplier Passport Link",
-          "Document Vault",
-          "Liste fehlender Daten",
-          "Feedback-Zusammenarbeit",
-          "Kunde liefert konkretes Feedback",
-          "Kunde nimmt an 2-3 kurzen Produktgespr?chen teil",
-          "Kunde erlaubt Produktgestaltung anhand realer EU-Käuferanforderungen"
-        ],
-        "badge": "Erste 10 Unternehmen",
-        "ctaLabel": "Als Founding Partner bewerben"
+        "setup": "Zuk?nftig/zur?ckgestellt. In dieser Version nicht implementiert.",
+        "ctaLabel": "Sprechen Sie mit uns"
       }
     },
     "comparison": {
-      "title": "Kernpakete vergleichen",
-      "description": "Ein praktischer überblick darüber, wie sich Setup, Abonnement und Sprint unterscheiden.",
+      "title": "Kommerzielle Positionierung vergleichen",
+      "description": "Eine nicht abrechnungsbezogene Sicht auf die Planlabels f?r Verkaufsgespr?che.",
       "columns": {
         "feature": "Funktion",
         "starter": "Starter",
         "pro": "Supplier Pro",
-        "sprint": "Sprint",
-        "partner": "Partner"
+        "partner": "Partner",
+        "buyer": "Buyer Pilot / Pro"
       },
       "rows": [
         {
-          "feature": "Supplier Passport Setup",
-          "starter": "Optional, 499 EUR",
-          "pro": "Empfohlen, 499 EUR",
-          "sprint": "Enthalten",
-          "partner": "Kundenbasiert"
+          "feature": "Workspace f?r Lieferantenbereitschaft",
+          "starter": "Kern",
+          "pro": "Erweitert",
+          "partner": "Portfolio",
+          "buyer": "Pilotumfang"
         },
         {
-          "feature": "Aktive Supplier Passport Links",
-          "starter": "1",
-          "pro": "Unbegrenzt",
-          "sprint": "Erster PDF/Link",
-          "partner": "Mehrere Kunden"
+          "feature": "K?uferanfragen",
+          "starter": "Basispr?fung",
+          "pro": "Workspace",
+          "partner": "Kunden?bersicht",
+          "buyer": "Zuk?nftig buyer-seitig"
         },
         {
-          "feature": "Dokumentenkapazit?t",
-          "starter": "15 Dokumente",
-          "pro": "100 Dokumente",
-          "sprint": "Paket für Käuferanfrage",
-          "partner": "Kundenbasiert"
+          "feature": "Nachweisbereitschaft",
+          "starter": "Hochladen und verkn?pfen",
+          "pro": "Fehlende Schritte",
+          "partner": "Portfolio-Triage",
+          "buyer": "Zusammenfassung pr?fen"
         },
         {
-          "feature": "Nachweismanagement",
-          "starter": "Basis",
-          "pro": "Document Vault + Verkn?pfung",
-          "sprint": "Einmalig zugeordnet",
-          "partner": "Wiederverwendbare Vorlagen"
+          "feature": "Begleitetes Onboarding",
+          "starter": "Verf?gbar",
+          "pro": "Verf?gbar",
+          "partner": "Prim?rer Workflow",
+          "buyer": "Pilotdefinition"
         },
         {
-          "feature": "Exporte",
-          "starter": "PDF",
-          "pro": "PDF + Excel",
-          "sprint": "PDF/Link",
-          "partner": "Kundenreporting"
-        },
-        {
-          "feature": "Operative Kontrollen",
-          "starter": "E-Mail-Support",
-          "pro": "Erinnerungen + Audit Trail",
-          "sprint": "30 Tage Zugang",
-          "partner": "Admin-/Concierge-Workflow"
+          "feature": "Abrechnung und Limits",
+          "starter": "Nicht aktiviert",
+          "pro": "Nicht aktiviert",
+          "partner": "Nicht aktiviert",
+          "buyer": "Nicht aktiviert"
         }
       ]
     },
     "faq": {
       "eyebrow": "FAQ",
-      "title": "Fragen, die Käufer und Lieferanten häufig stellen.",
+      "title": "Hinweise zur kommerziellen Bereitschaft.",
       "items": [
         {
-          "question": "Ben?tige ich das Supplier Passport Setup?",
-          "answer": "Supplier Passport Setup ist ein unterstütztes Setup-Add-on für Starter- oder Supplier Pro-Abonnements. Es hilft, Unternehmensprofil, Dokumente und den ersten Passport Workspace zu strukturieren."
+          "question": "Ist Abrechnung aktiviert?",
+          "answer": "Nein. Diese Pl?ne sind kommerzielle Positionierungslabels f?r Verkaufs- und Demo-Gespr?che. Stripe, Abrechnung, Checkout und Rechnungen sind nicht implementiert."
         },
         {
-          "question": "Kann ich nur mit dem VSME Passport Sprint starten?",
-          "answer": "Ja. Der Sprint ist ein einmaliges Paket für Unternehmen, die eine konkrete Käuferanfrage beantworten müssen, bevor sie ein Abonnement abschlie?en."
+          "question": "Werden Planlimits durchgesetzt?",
+          "answer": "Nein. Starter, Supplier Pro, Partner, Buyer Pilot und Buyer Pro sind in dieser Version nur Labels. Sie ?ndern keinen Produktzugriff und setzen keine Limits durch."
         },
         {
-          "question": "Was ist der Unterschied zwischen Starter und Supplier Pro?",
-          "answer": "Starter ist auf einen Benutzer, einen aktiven Passport Link und bis zu 15 Dokumente begrenzt. Supplier Pro ergänzt bis zu 5 Benutzer, unbegrenzte Passport Links, bis zu 100 Dokumente, Excel-Export, Zertifikatserinnerungen, Buyer Questionnaire Workspace, Audit Trail und Priority Support."
+          "question": "Ist Buyer Pro jetzt verf?gbar?",
+          "answer": "Nein. Buyer Pro ist ein zuk?nftiges/zur?ckgestelltes buyer-seitiges Konzept. Diese Version enth?lt keine Buyer-Konten, keinen Buyer-Login und kein Buyer-Portal."
         },
         {
-          "question": "Ist dies eine Zertifizierung oder ein Assurance-Bericht?",
-          "answer": "Nein. Supplier Passport strukturiert vom Lieferanten bereitgestellte Nachhaltigkeitsinformationen und Nachweise. Es ist keine Zertifizierung, kein Assurance-Bericht und keine rechtliche Einschätzung zur Compliance."
-        },
-        {
-          "question": "K?nnen Käufer auf meine Dokumente zugreifen?",
-          "answer": "Auf käuferseitigen Share Links werden nur Dokumente angezeigt, die Sie zur Weitergabe freigeben. Interne Notizen und nicht freigegebene Dokumente bleiben verborgen."
-        },
-        {
-          "question": "K?nnen Berater mehrere Kunden verwalten?",
-          "answer": "Ja. Der Partner / Consultant Plan ist für ESG-Berater, ISO-Berater, Buchhalter und Advisor konzipiert, die mehrere SME-Kunden betreuen."
-        },
-        {
-          "question": "Unterst?tzen Sie käuferseitiges Lieferantentracking?",
-          "answer": "Ja. Buyer Pilot und Buyer Pro sind für Unternehmen gedacht, die Lieferanten über ein Buyer Dashboard einladen und überwachen möchten."
+          "question": "Ist Supplier Passport eine Zertifizierung?",
+          "answer": "Nein. Supplier Passport strukturiert vom Lieferanten bereitgestellte Nachhaltigkeitsinformationen und Nachweise. Es ist keine Zertifizierung, kein Assurance-Bericht und keine rechtliche Compliance-Einsch?tzung."
         }
-      ],
-      "faqSetupQuestion": "Ben?tige ich das Supplier Passport Setup?",
-      "faqSetupAnswer": "Supplier Passport Setup ist ein unterstütztes Setup-Add-on für Starter- oder Supplier Pro-Abonnements. Es hilft, Unternehmensprofil, Dokumente und den ersten Passport Workspace zu strukturieren.",
-      "faqSprintQuestion": "Kann ich nur mit dem VSME Passport Sprint starten?",
-      "faqSprintAnswer": "Ja. Der Sprint ist ein einmaliges Paket für Unternehmen, die eine konkrete Käuferanfrage beantworten müssen, bevor sie ein Abonnement abschlie?en.",
-      "faqStarterProQuestion": "Was ist der Unterschied zwischen Starter und Supplier Pro?",
-      "faqStarterProAnswer": "Starter ist auf einen Benutzer, einen aktiven Passport Link und bis zu 15 Dokumente begrenzt. Supplier Pro ergänzt bis zu 5 Benutzer, unbegrenzte Passport Links, bis zu 100 Dokumente, Excel-Export, Zertifikatserinnerungen, Buyer Questionnaire Workspace, Audit Trail und Priority Support.",
-      "faqCertificationQuestion": "Ist dies eine Zertifizierung oder ein Assurance-Bericht?",
-      "faqCertificationAnswer": "Nein. Supplier Passport strukturiert vom Lieferanten bereitgestellte Nachhaltigkeitsinformationen und Nachweise. Es ist keine Zertifizierung, kein Assurance-Bericht und keine rechtliche Einschätzung zur Compliance.",
-      "faqBuyerAccessQuestion": "K?nnen Käufer auf meine Dokumente zugreifen?",
-      "faqBuyerAccessAnswer": "Auf käuferseitigen Share Links werden nur Dokumente angezeigt, die Sie zur Weitergabe freigeben. Interne Notizen und nicht freigegebene Dokumente bleiben verborgen.",
-      "faqConsultantsQuestion": "K?nnen Berater mehrere Kunden verwalten?",
-      "faqConsultantsAnswer": "Ja. Der Partner / Consultant Plan ist für ESG-Berater, ISO-Berater, Buchhalter und Advisor konzipiert, die mehrere SME-Kunden betreuen.",
-      "faqBuyerTrackingQuestion": "Unterst?tzen Sie käuferseitiges Lieferantentracking?",
-      "faqBuyerTrackingAnswer": "Ja. Buyer Pilot und Buyer Pro sind für Unternehmen gedacht, die Lieferanten über ein Buyer Dashboard einladen und überwachen möchten."
+      ]
     }
   },
   "auth": {
@@ -1744,7 +1627,8 @@
       "openOrganizations": "Organisationen öffnen",
       "noNotesTitle": "Keine Admin-Notiz ausgew?hlt",
       "noNotesText": "Interne Notizen bleiben im Concierge/Admin-Workspace und werden niemals auf käuferseitigen Share-Seiten angezeigt."
-    }
+    },
+    "currentWorkspacePlan": "Aktueller Workspace-Plan"
   },
   "activity": {
     "title": "Aktivität",

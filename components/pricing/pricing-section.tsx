@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { PricingCard } from "@/components/pricing/pricing-card";
-import type { BillingCycle, PricingPlan } from "@/lib/pricing";
+import type { PricingPlan } from "@/lib/pricing";
 
 type PricingSectionProps = {
   eyebrow?: string;
@@ -8,7 +8,6 @@ type PricingSectionProps = {
   description: string;
   plans: PricingPlan[];
   columns?: "two" | "three";
-  billingCycle?: BillingCycle;
   children?: ReactNode;
 };
 
@@ -18,7 +17,6 @@ export function PricingSection({
   description,
   plans,
   columns = "three",
-  billingCycle = "monthly",
   children,
 }: PricingSectionProps) {
   return (
@@ -44,7 +42,7 @@ export function PricingSection({
           }
         >
           {plans.map((plan) => (
-            <PricingCard key={plan.id} plan={plan} billingCycle={billingCycle} />
+            <PricingCard key={plan.id} plan={plan} />
           ))}
         </div>
         {children}

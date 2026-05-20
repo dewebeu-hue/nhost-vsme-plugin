@@ -3,19 +3,17 @@ import { useTranslations } from "next-intl";
 import { ArrowRight, CheckCircle2, MinusCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
-import { getPricingDisplay, type BillingCycle, type PricingPlan } from "@/lib/pricing";
+import { getPricingDisplay, type PricingPlan } from "@/lib/pricing";
 import { cn } from "@/lib/utils";
 
 type PricingCardProps = {
   plan: PricingPlan;
   compact?: boolean;
-  billingCycle?: BillingCycle;
 };
 
 export function PricingCard({
   plan,
   compact = false,
-  billingCycle = "monthly",
 }: PricingCardProps) {
   const t = useTranslations("pricing.card");
 
@@ -39,7 +37,7 @@ export function PricingCard({
         <p className="mt-2 text-sm font-medium leading-6 text-slate-500">{plan.audience}</p>
       </div>
 
-      <PriceLine plan={plan} billingCycle={billingCycle} />
+      <PriceLine plan={plan} />
 
       <p className="mt-5 text-sm leading-6 text-slate-600">{plan.description}</p>
 
@@ -92,13 +90,11 @@ export function PricingCard({
 
 function PriceLine({
   plan,
-  billingCycle,
 }: {
   plan: PricingPlan;
-  billingCycle: BillingCycle;
 }) {
   const t = useTranslations("pricing.card");
-  const display = getPricingDisplay(plan, billingCycle);
+  const display = getPricingDisplay(plan);
   const prefix = display.prefix === "from" ? t("from") : display.prefix;
 
   return (

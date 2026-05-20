@@ -16,7 +16,7 @@
       "startPassport": "Započni Supplier Passport",
       "seeSamplePassport": "Pogledaj primjer Passporta",
       "bookDemo": "Rezerviraj demo",
-      "viewFullPricing": "Pogledaj sve cijene"
+      "viewFullPricing": "Pogledaj planove"
     }
   },
   "navigation": {
@@ -694,10 +694,10 @@
       "role": "Pregled proizvoda"
     },
     "pricingPreview": {
-      "eyebrow": "Cijene",
-      "title": "Cijene za profesionalnu spremnost dobavljaca.",
-      "description": "Pripremite Supplier Passport, organizirajte dokaze i predstavite informacije o spremnosti za kupce s povjerenjem.",
-      "note": "Trebate upravljati s više klijenata ili dobavljača? Pogledajte Partner i Buyer planove."
+      "eyebrow": "Planovi",
+      "title": "Planovi za spremnost dobavlja?a",
+      "description": "Jasno komercijalno pozicioniranje za dobavlja?e, partnere i buyer pilote. Naplata i checkout nisu omogu?eni.",
+      "note": "Trebate upravljati s vi?e klijenata ili dobavlja?a? Pogledajte Partner i Buyer pozicioniranje."
     },
     "finalCta": {
       "eyebrow": "Supplier Passport",
@@ -732,19 +732,19 @@
   },
   "pricing": {
     "hero": {
-      "eyebrow": "Cijene",
-      "title": "Cijene za profesionalnu spremnost dobavljaca.",
-      "description": "Pripremite Supplier Passport, organizirajte dokaze i predstavite informacije o spremnosti za kupce s povjerenjem.",
-      "annualNote": "Godišnji planovi uključuju oko 20% uštede i jedan godišnji pregled Supplier Pro profila.",
-      "setupNote": "Setup je assisted onboarding dodatak za pretplatničke planove. Sprint je jednokratni servisni paket za tvrtke koje trebaju riješiti jedan konkretan zahtjev kupca prije odluke o pretplati."
+      "eyebrow": "Komercijalna spremnost",
+      "title": "Planovi za spremnost dobavlja?a.",
+      "description": "Koristite ove oznake planova za prodajne i demo razgovore. Naplata, checkout i tvrda ograni?enja planova nisu omogu?eni u ovoj verziji.",
+      "annualNote": "Oznake komercijalnih planova slu?e samo za pozicioniranje; ne mijenjaju pristup workspaceu.",
+      "setupNote": "Razgovarajte s nama o Supplier Passportu za va?e dobavlja?e ili klijente."
     },
     "billing": {
-      "monthly": "Mjesečno",
-      "annual": "Godišnje",
-      "save": "Ušteda ~20%"
+      "monthly": "Pozicioniranje",
+      "annual": "Budu?e",
+      "save": "Naplata nije omogu?ena"
     },
     "card": {
-      "notIncluded": "Nije ukljuceno",
+      "notIncluded": "Nije uklju?eno",
       "cadence": {
         "month": "mjesec",
         "year": "godina",
@@ -753,280 +753,163 @@
       "from": "od"
     },
     "founding": {
-      "offer": "Founding ponuda",
-      "locked": "{price}/mjesec zakljucana cijena",
-      "description": "Selektivni program za prvih 10 tvrtki iz Hrvatske ili regije."
+      "offer": "Komercijalna napomena",
+      "locked": "{price}",
+      "description": "Naplata nije omogu?ena u ovoj verziji."
     },
     "sections": {
-      "partnerEyebrow": "Partner i buyer planovi",
-      "partnerTitle": "Skalirajte spremnost dobavljaca kroz klijente ili dobavljacke mreze.",
-      "partnerDescription": "Partner i buyer planovi su za timove koji upravljaju s vise tvrtki, evidence workflowima i pracenjem statusa dobavljaca."
+      "partnerEyebrow": "Buyer planovi",
+      "partnerTitle": "Buyer-side planovi su budu?e pozicioniranje.",
+      "partnerDescription": "Buyer Pilot i Buyer Pro prikazani su samo za komercijalno istra?ivanje. Buyer ra?uni, buyer login i buyer portal jo? nisu implementirani."
     },
     "plans": {
-      "supplier-passport-setup": {
-        "name": "Supplier Passport Setup",
-        "audience": "Tvrtke koje zele strucnu pomoc u pripremi prvog buyer-ready passporta.",
-        "description": "Asistirani setup za tvrtke koje zele pomoc u pripremi prvog Supplier Passporta.",
-        "features": [
-          "Pregled postojecih dokumenata",
-          "Pocetno strukturiranje profila tvrtke",
-          "Mapiranje dokumenata na VSME sekcije",
-          "Lista nedostajucih podataka",
-          "Prvi Supplier Passport link",
-          "Osnovni pregled prije slanja kupcu"
-        ],
-        "setup": "Moze se dodati na Starter. Preporuceno/obavezno za Supplier Pro. Jednokratna naknada.",
-        "ctaLabel": "Dodaj asistirani setup"
-      },
       "starter": {
         "name": "Starter",
-        "audience": "Mikro dobavljaci i tvrtke s jednim EU kupcem.",
-        "description": "Za mikro dobavljace i tvrtke s jednim EU kupcem.",
+        "displayLabel": "Zatra?ite demo",
+        "audience": "Dobavlja?i koji pripremaju prvi Supplier Passport spreman za kupca.",
+        "description": "Fokusiran workspace za postavljanje osnovnog Supplier Passport toka.",
         "features": [
-          "1 tvrtka",
-          "1 korisnik",
-          "1 aktivni Supplier Passport link",
-          "Osnovni VSME readiness profil",
-          "Do 15 dokumenata",
-          "Osnovni PDF export",
-          "Email podrska"
+          "Supplier Passport workspace",
+          "Tok spremnosti upitnika",
+          "U?itavanje dokazne dokumentacije",
+          "Javni link",
+          "Izvoz PDF nacrta"
         ],
-        "limitations": [
-          "Nema neogranicenih share linkova",
-          "Nema Excel exporta",
-          "Nema prioritetne podrske",
-          "Nema automatskih podsjetnika za istek certifikata",
-          "Nema buyer questionnaire workspacea",
-          "Nema audit traila",
-          "Nema godisnjeg pregleda profila"
-        ],
-        "setup": "Opcionalni asistirani setup - 499 EUR.",
-        "ctaLabel": "Kreni sa Starterom",
-        "monthlySubtext": "ili 950 EUR/godisnje",
-        "annualSubtext": "ekvivalent 79 EUR/mjesec, naplata godisnje"
+        "setup": "Samo komercijalna oznaka. Naplata i ograni?enja nisu omogu?eni u ovoj verziji.",
+        "ctaLabel": "Zatra?ite demo"
       },
       "supplier-pro": {
         "name": "Supplier Pro",
-        "audience": "SME izvoznici, proizvodaci, logisticke tvrtke, ambalazne tvrtke, metal/plastika dobavljaci, automotive dobavljaci i ozbiljni B2B dobavljaci.",
-        "description": "Glavni paket za ozbiljne B2B dobavljace koji upravljaju spremnoscu za kupce, dokazima i ponavljajucim compliance zahtjevima.",
+        "displayLabel": "Zatra?ite demo",
+        "audience": "Dobavlja?i koji upravljaju ponavljaju?im zahtjevima kupaca i spremno??u dokaza.",
+        "description": "Pozicionirano za dobavlja?e kojima treba ja?a priprema odgovora i operativno pra?enje.",
         "features": [
-          "Do 5 korisnika",
-          "Neograniceni Supplier Passport linkovi",
-          "Do 100 dokumenata",
-          "Document Vault",
-          "Povezivanje dokumenata s VSME pitanjima",
-          "Podsjetnici za istek certifikata",
-          "PDF export",
-          "Excel export",
-          "Buyer questionnaire workspace",
-          "Missing data dashboard",
-          "Audit trail",
-          "Prioritetna podrska"
+          "Buyer Request Workspace",
+          "Spremnost tra?enih sekcija",
+          "Povezivanje dokaza i nedostaju?i koraci",
+          "Pra?enje isteka certifikata",
+          "Priprema paketa odgovora",
+          "Concierge podr?ka kao pozicioniranje"
         ],
-        "setup": "Supplier Passport Setup - 499 EUR jednokratno.",
-        "badge": "Najpopularnije",
-        "ctaLabel": "Pokreni Supplier Pro",
-        "monthlySubtext": "ili 2.390 EUR/godisnje",
-        "annualSubtext": "ekvivalent 199 EUR/mjesec, naplata godisnje"
+        "setup": "Samo komercijalna oznaka. Ograni?enja planova se ne provode.",
+        "badge": "Rast dobavlja?a",
+        "ctaLabel": "Zatra?ite demo"
       },
-      "vsme-passport-sprint": {
-        "name": "VSME Passport Sprint",
-        "audience": "Tvrtke koje jos ne zele pretplatu, ali trebaju rijesiti jedan konkretan zahtjev kupca.",
-        "description": "Fokusiran jednokratni put do prvog Supplier Passporta za specifican zahtjev kupca.",
+      "partner": {
+        "name": "Partner",
+        "displayLabel": "Zatra?ite demo",
+        "audience": "Konzultanti, agencije i partnerski timovi koji podr?avaju vi?e dobavlja?a.",
+        "description": "Pozicionirano za asistirani onboarding, upravljanje portfeljem i handoff klijenata.",
         "features": [
-          "Postavljanje profila",
-          "Pregled postojecih dokumenata",
-          "Osnovni VSME readiness profil",
-          "Mapiranje dokumenata na sekcije",
-          "Lista nedostajucih podataka",
-          "Prvi Supplier Passport PDF/link",
-          "Osnovni pregled prije slanja kupcu",
-          "30 dana pristupa platformi"
+          "Grupiranje asistiranog portfelja",
+          "Concierge dashboard za vi?e klijenata",
+          "Interne onboarding bilje?ke",
+          "Pra?enje kontakata",
+          "Interni handoff sa?etak",
+          "Admin pregled rizika"
         ],
-        "setup": "Nakon 30 dana prijelaz na Starter - 99 EUR/mjesec ili Supplier Pro - 249 EUR/mjesec.",
-        "ctaLabel": "Rezerviraj Passport Sprint"
-      },
-      "partner-consultant": {
-        "name": "Partner / Consultant",
-        "audience": "ESG konzultanti, ISO konzultanti, racunovode, savjetnici i agencije koje upravljaju s vise SME klijenata.",
-        "description": "Za savjetnicke timove koji upravljaju Supplier Passport workflowima kroz vise klijenata.",
-        "features": [
-          "Vise klijenata",
-          "Client dashboard",
-          "Pregled statusa po tvrtki",
-          "Reusable templates",
-          "Interne biljeske",
-          "Consultant review workflow",
-          "Osnovni admin / concierge panel",
-          "Generiranje Supplier Passporta za klijente",
-          "White-label opcija",
-          "Custom branding",
-          "Partner reporting",
-          "Team permissions",
-          "API access"
-        ],
-        "ctaLabel": "Rezerviraj partner demo",
-        "annualSubtext": "custom godisnji ugovor"
+        "setup": "Partner ra?uni i partner login su odgo?eni.",
+        "ctaLabel": "Zatra?ite partner demo"
       },
       "buyer-pilot": {
         "name": "Buyer Pilot",
-        "audience": "Veci kupci koji zele pratiti do 25 dobavljaca.",
-        "description": "Pilot buyer workspace za pracenje spremnosti dobavljaca i nedostajucih podataka do 25 dobavljaca.",
+        "displayLabel": "Zatra?ite demo",
+        "audience": "Buyer-side discovery razgovori i definiranje pilota.",
+        "description": "Pozicionirano za kupce koji istra?uju pregled spremnosti dobavlja?a bez buyer portala.",
         "features": [
-          "Buyer dashboard",
-          "Pozivanje dobavljaca",
-          "Status dovrsenosti dobavljaca",
-          "Osnovni pregled rizika dobavljaca",
-          "Pregled nedostajucih podataka",
-          "Data export",
-          "Osnovno izvjestavanje",
-          "Do 25 dobavljaca",
-          "Preporucen godisnji ugovor ili barem kvartalna obveza"
+          "Koncept pra?enja zahtjeva kupaca",
+          "Sa?eci spremnosti dobavlja?a",
+          "Dokazna dokumentacija dostupna na zahtjev",
+          "Pregled javnog Supplier Passporta",
+          "Definiranje pilot workflowa"
         ],
-        "ctaLabel": "Rezerviraj buyer pilot",
-        "annualSubtext": "preporucen godisnji ugovor"
+        "setup": "Buyer portal, buyer login i slanje emailova jo? nisu uklju?eni.",
+        "ctaLabel": "Zatra?ite buyer pilot"
       },
       "buyer-pro": {
         "name": "Buyer Pro",
-        "audience": "Veci kupci s 50+ dobavljaca.",
-        "description": "Buyer-side pracenje dobavljaca za vece procurement timove i dobavljacke mreze.",
+        "displayLabel": "Budu?e",
+        "audience": "Budu?i buyer-side workspace za mre?u dobavlja?a.",
+        "description": "Odgo?eno pozicioniranje plana za ve?e buyer mre?e i pra?enje portfelja dobavlja?a.",
         "features": [
-          "50+ dobavljaca",
-          "Vise internih timova",
-          "Custom questionnaires",
-          "Podsjetnici dobavljacima",
-          "Buyer reporting",
-          "Supplier status dashboard",
-          "Prioritetna podrska",
-          "Supplier onboarding",
-          "Custom branding",
-          "Za 50-150 dobavljaca realan raspon je 1.200-2.500 EUR/mjesec",
-          "Za vece sustave custom enterprise pricing"
+          "Buyer-side dashboard budu?e",
+          "Lista dobavlja?a budu?e",
+          "Koordinacija zahtjeva kupaca budu?e",
+          "Mre?no izvje?tavanje budu?e"
         ],
-        "ctaLabel": "Kontaktiraj sales",
-        "annualSubtext": "preporucen godisnji ugovor"
-      },
-      "founding-partner-program": {
-        "name": "Founding Partner Program",
-        "audience": "Prvih 10 partner tvrtki iz Hrvatske ili regije.",
-        "description": "Selektivni early partner program za tvrtke koje zele oblikovati Supplier Passport oko stvarnih EU buyer zahtjeva.",
-        "features": [
-          "Besplatan setup",
-          "Osnovni Supplier Pro workflow",
-          "Supplier Passport link",
-          "Document Vault",
-          "Lista nedostajucih podataka",
-          "Feedback suradnja",
-          "Kupac daje konkretan feedback",
-          "Kupac sudjeluje u 2-3 kratka product calla",
-          "Kupac dopusta oblikovanje proizvoda oko stvarnih EU buyer zahtjeva"
-        ],
-        "badge": "Prvih 10 tvrtki",
-        "ctaLabel": "Prijavi se kao founding partner"
+        "setup": "Budu?e/odgo?eno. Nije implementirano u ovoj verziji.",
+        "ctaLabel": "Razgovarajte s nama"
       }
     },
     "comparison": {
-      "title": "Usporedba glavnih paketa",
-      "description": "Praktican pregled razlika izmedu setupa, pretplate i Sprint opcije.",
+      "title": "Usporedba komercijalnog pozicioniranja",
+      "description": "Pregled oznaka planova bez naplate, za prodajne razgovore.",
       "columns": {
         "feature": "Stavka",
         "starter": "Starter",
         "pro": "Supplier Pro",
-        "sprint": "Sprint",
-        "partner": "Partner"
+        "partner": "Partner",
+        "buyer": "Buyer Pilot / Pro"
       },
       "rows": [
         {
-          "feature": "Supplier Passport Setup",
-          "starter": "Opcionalno, 499 EUR",
-          "pro": "Preporuceno, 499 EUR",
-          "sprint": "Ukljuceno",
-          "partner": "Po klijentu"
-        },
-        {
-          "feature": "Aktivni Supplier Passport linkovi",
-          "starter": "1",
-          "pro": "Neograniceno",
-          "sprint": "Prvi PDF/link",
-          "partner": "Vise klijenata"
-        },
-        {
-          "feature": "Kapacitet dokumenata",
-          "starter": "15 dokumenata",
-          "pro": "100 dokumenata",
-          "sprint": "Paket za buyer request",
-          "partner": "Po klijentu"
-        },
-        {
-          "feature": "Evidence management",
+          "feature": "Workspace za spremnost dobavlja?a",
           "starter": "Osnovno",
-          "pro": "Document Vault + linking",
-          "sprint": "Jednokratno mapirano",
-          "partner": "Reusable templates"
+          "pro": "Pro?ireno",
+          "partner": "Portfelj",
+          "buyer": "Pilot opseg"
         },
         {
-          "feature": "Exporti",
-          "starter": "PDF",
-          "pro": "PDF + Excel",
-          "sprint": "PDF/link",
-          "partner": "Client reporting"
+          "feature": "Zahtjevi kupaca",
+          "starter": "Osnovni pregled",
+          "pro": "Workspace",
+          "partner": "Pregled klijenata",
+          "buyer": "Budu?i buyer-side"
         },
         {
-          "feature": "Operativne kontrole",
-          "starter": "Email podrska",
-          "pro": "Podsjetnici + audit trail",
-          "sprint": "30 dana pristupa",
-          "partner": "Admin / concierge workflow"
+          "feature": "Spremnost dokaza",
+          "starter": "U?itavanje i povezivanje",
+          "pro": "Nedostaju?i koraci",
+          "partner": "Triage portfelja",
+          "buyer": "Pregled sa?etka"
+        },
+        {
+          "feature": "Asistirani onboarding",
+          "starter": "Dostupno",
+          "pro": "Dostupno",
+          "partner": "Glavni workflow",
+          "buyer": "Definiranje pilota"
+        },
+        {
+          "feature": "Naplata i ograni?enja",
+          "starter": "Nije omogu?eno",
+          "pro": "Nije omogu?eno",
+          "partner": "Nije omogu?eno",
+          "buyer": "Nije omogu?eno"
         }
       ]
     },
     "faq": {
       "eyebrow": "FAQ",
-      "title": "Pitanja koja kupci i dobavljaci najcesce postavljaju.",
+      "title": "Napomene o komercijalnoj spremnosti.",
       "items": [
         {
-          "question": "Trebam li Supplier Passport Setup?",
-          "answer": "Supplier Passport Setup je assisted setup dodatak uz Starter ili Supplier Pro pretplatu. Pomaće strukturirati profil tvrtke, dokumente i prvi Passport workspace."
+          "question": "Je li naplata omogu?ena?",
+          "answer": "Ne. Ovi planovi su komercijalne oznake za prodajne i demo razgovore. Stripe, naplata, checkout i ra?uni nisu implementirani."
         },
         {
-          "question": "Mogu li krenuti samo s VSME Passport Sprintom?",
-          "answer": "Da. Sprint je jednokratni paket za firme koje trebaju odgovoriti na jedan konkretan zahtjev kupca prije nego se odluće za pretplatu."
+          "question": "Provode li se ograni?enja planova?",
+          "answer": "Ne. Starter, Supplier Pro, Partner, Buyer Pilot i Buyer Pro su samo oznake u ovoj verziji. Ne mijenjaju pristup proizvodu i ne provode ograni?enja."
         },
         {
-          "question": "Koja je razlika između Starter i Supplier Pro paketa?",
-          "answer": "Starter je ogranićen na jednog korisnika, jedan aktivan Passport link i do 15 dokumenata. Supplier Pro dodaje do 5 korisnika, neogranićene Passport linkove, do 100 dokumenata, Excel export, reminder za istek certifikata, buyer questionnaire workspace, audit trail i prioritetnu podršku."
+          "question": "Je li Buyer Pro sada dostupan?",
+          "answer": "Ne. Buyer Pro je budu?i/odgo?eni buyer-side koncept. Ova verzija ne uklju?uje buyer ra?une, buyer login ni buyer portal."
         },
         {
-          "question": "Je li ovo certifikat ili assurance izvještaj?",
-          "answer": "Ne. Supplier Passport strukturira informacije o održivosti i dokaznu dokumentaciju koje dostavlja dobavljač. Ne predstavlja certifikat, assurance izvještaj niti pravno mišljenje o usklaćenosti."
-        },
-        {
-          "question": "Mogu li kupci pristupiti mojim dokumentima?",
-          "answer": "Na buyer-facing share linkovima prikazuju se samo dokumenti koje odobrite za dijeljenje. Interne bilješke i neodobreni dokumenti ostaju skriveni."
-        },
-        {
-          "question": "Mogu li konzultanti upravljati s viće klijenata?",
-          "answer": "Da. Partner / Consultant paket namijenjen je ESG konzultantima, ISO konzultantima, računovo?ama i savjetnicima koji rade s viće SME klijenata."
-        },
-        {
-          "question": "Podržavate li buyer-side praćenje dobavljača?",
-          "answer": "Da. Buyer Pilot i Buyer Pro namijenjeni su tvrtkama koje ćele pozivati i pratiti dobavljaće kroz buyer dashboard."
+          "question": "Je li Supplier Passport certifikacija?",
+          "answer": "Ne. Supplier Passport strukturira informacije o odr?ivosti i dokaznu dokumentaciju koju dostavlja dobavlja?. To nije certifikacija, assurance izvje?taj ni pravno mi?ljenje o uskla?enosti."
         }
-      ],
-      "faqSetupQuestion": "Trebam li Supplier Passport Setup?",
-      "faqSetupAnswer": "Supplier Passport Setup je assisted setup dodatak uz Starter ili Supplier Pro pretplatu. Pomaće strukturirati profil tvrtke, dokumente i prvi Passport workspace.",
-      "faqSprintQuestion": "Mogu li krenuti samo s VSME Passport Sprintom?",
-      "faqSprintAnswer": "Da. Sprint je jednokratni paket za firme koje trebaju odgovoriti na jedan konkretan zahtjev kupca prije nego se odluće za pretplatu.",
-      "faqStarterProQuestion": "Koja je razlika između Starter i Supplier Pro paketa?",
-      "faqStarterProAnswer": "Starter je ogranićen na jednog korisnika, jedan aktivan Passport link i do 15 dokumenata. Supplier Pro dodaje do 5 korisnika, neogranićene Passport linkove, do 100 dokumenata, Excel export, reminder za istek certifikata, buyer questionnaire workspace, audit trail i prioritetnu podršku.",
-      "faqCertificationQuestion": "Je li ovo certifikat ili assurance izvještaj?",
-      "faqCertificationAnswer": "Ne. Supplier Passport strukturira informacije o održivosti i dokaznu dokumentaciju koje dostavlja dobavljač. Ne predstavlja certifikat, assurance izvještaj niti pravno mišljenje o usklaćenosti.",
-      "faqBuyerAccessQuestion": "Mogu li kupci pristupiti mojim dokumentima?",
-      "faqBuyerAccessAnswer": "Na buyer-facing share linkovima prikazuju se samo dokumenti koje odobrite za dijeljenje. Interne bilješke i neodobreni dokumenti ostaju skriveni.",
-      "faqConsultantsQuestion": "Mogu li konzultanti upravljati s viće klijenata?",
-      "faqConsultantsAnswer": "Da. Partner / Consultant paket namijenjen je ESG konzultantima, ISO konzultantima, računovođama i savjetnicima koji rade s više SME klijenata.",
-      "faqBuyerTrackingQuestion": "Podržavate li buyer-side praćenje dobavljača?",
-      "faqBuyerTrackingAnswer": "Da. Buyer Pilot i Buyer Pro namijenjeni su tvrtkama koje ćele pozivati i pratiti dobavljaće kroz buyer dashboard."
+      ]
     }
   },
   "auth": {
@@ -1721,7 +1604,8 @@
       "openOrganizations": "Otvori organizacije",
       "noNotesTitle": "Nije odabrana admin bilješka",
       "noNotesText": "Interne bilješke ostaju unutar concierge/admin workspacea i nikada se ne prikazuju na buyer-facing share stranicama."
-    }
+    },
+    "currentWorkspacePlan": "Trenutni plan workspacea"
   },
   "activity": {
     "title": "Aktivnost",

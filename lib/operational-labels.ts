@@ -54,6 +54,7 @@ export type AdminLabels = {
   addOrganization: string;
   issues: string;
   company: string;
+  currentWorkspacePlan: string;
   completion: string;
   evidenceStatus: string;
   owner: string;
@@ -296,6 +297,7 @@ export const defaultAdminLabels: AdminLabels = {
   addOrganization: "Add Organization",
   issues: "Issues",
   company: "Company",
+  currentWorkspacePlan: "Current workspace plan",
   completion: "Completion",
   evidenceStatus: "Evidence Status",
   owner: "Owner",

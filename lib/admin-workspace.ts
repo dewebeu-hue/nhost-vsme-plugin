@@ -2,6 +2,7 @@ import "server-only";
 
 import { AuthenticationRequiredError, requireCurrentUser, type AuthenticatedUser } from "@/lib/auth/session";
 import { executeHasuraGraphql } from "@/lib/graphql/client";
+import { formatCommercialPlanLabel, normalizeCommercialPlanKey, type CommercialPlanId } from "@/lib/pricing";
 
 export type AdminTriageStatus = "needs_attention" | "in_progress" | "demo_ready" | "at_risk";
 export type AdminRiskSeverity = "critical" | "warning" | "info";
@@ -64,6 +65,8 @@ export type AdminSectionSummary = {
 export type AdminOrganizationSummary = {
   id: string;
   name: string;
+  commercialPlanKey: CommercialPlanId;
+  commercialPlanLabel: string;
   createdAt: string | null;
   updatedAt: string | null;
   readinessPercent: number;
@@ -145,6 +148,7 @@ export class AdminUnauthorizedError extends Error {
 type OrganizationRecord = {
   id: string;
   name: string;
+  plan_key?: string | null;
   created_at?: string | null;
   updated_at?: string | null;
 };
@@ -233,6 +237,7 @@ const adminOverviewQuery = `
     organizations(order_by: { created_at: desc }) {
       id
       name
+      plan_key
       created_at
       updated_at
     }
@@ -582,6 +587,8 @@ function buildOrganizationSummaries(context: AdminGraphqlData): AdminOrganizatio
     return {
       id: organization.id,
       name: organization.name,
+      commercialPlanKey: normalizeCommercialPlanKey(organization.plan_key),
+      commercialPlanLabel: formatCommercialPlanLabel(organization.plan_key),
       createdAt: organization.created_at ?? null,
       updatedAt: organization.updated_at ?? null,
       readinessPercent: readiness.readinessPercent,

@@ -7,6 +7,7 @@ import {
   getBrowserNhostClient,
   getFreshBrowserNhostSession,
 } from "@/lib/nhost/client";
+import { formatCommercialPlanLabel } from "@/lib/pricing";
 import type { DashboardShellLabels } from "@/lib/dashboard-labels";
 
 type DashboardSidebarWorkspaceCardProps = {
@@ -65,7 +66,7 @@ export function DashboardSidebarWorkspaceCard({
       }
 
       setWorkspaceName(organization.name || labels.workspace);
-      setPlan(formatPlanLabel(organization.plan_key) || labels.account);
+      setPlan(formatCommercialPlanLabel(organization.plan_key));
       setIsVerified(Boolean(organization.is_verified));
     }
 
@@ -112,15 +113,4 @@ function fetchCurrentOrganization(accessToken: string) {
     },
     body: JSON.stringify({}),
   });
-}
-
-function formatPlanLabel(planKey?: string) {
-  if (!planKey) {
-    return "";
-  }
-
-  return planKey
-    .split("_")
-    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-    .join(" ");
 }

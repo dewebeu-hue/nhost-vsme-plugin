@@ -16,7 +16,7 @@
       "startPassport": "Start Supplier Passport",
       "seeSamplePassport": "See Sample Passport",
       "bookDemo": "Book a Demo",
-      "viewFullPricing": "View full pricing"
+      "viewFullPricing": "View plans"
     }
   },
   "navigation": {
@@ -694,10 +694,10 @@
       "role": "Product overview"
     },
     "pricingPreview": {
-      "eyebrow": "Pricing",
-      "title": "Pricing for professional supplier readiness.",
-      "description": "Prepare your Supplier Passport, organize evidence, and present buyer-ready readiness information with confidence.",
-      "note": "Need to manage multiple clients or suppliers? See Partner and Buyer plans."
+      "eyebrow": "Plans",
+      "title": "Plans for supplier readiness",
+      "description": "Clear commercial positioning for suppliers, partners and buyer pilots. No billing or checkout is enabled.",
+      "note": "Need to manage multiple clients or suppliers? See Partner and Buyer plan positioning."
     },
     "finalCta": {
       "eyebrow": "Supplier Passport",
@@ -732,16 +732,16 @@
   },
   "pricing": {
     "hero": {
-      "eyebrow": "Pricing",
-      "title": "Pricing for professional supplier readiness.",
-      "description": "Prepare your Supplier Passport, organize evidence, and present buyer-ready readiness information with confidence.",
-      "annualNote": "Annual plans include around 20% savings and one yearly profile review on Supplier Pro.",
-      "setupNote": "Setup is an assisted onboarding add-on for subscription plans. Sprint is a one-time service package for companies that need to handle one concrete buyer request before committing to a subscription."
+      "eyebrow": "Commercial readiness",
+      "title": "Plans for supplier readiness.",
+      "description": "Use these plan labels for sales and demo conversations. Billing, checkout and hard plan limits are not enabled in this version.",
+      "annualNote": "Commercial plan labels are positioning only; they do not change workspace access.",
+      "setupNote": "Talk to us about Supplier Passport for your suppliers or clients."
     },
     "billing": {
-      "monthly": "Monthly",
-      "annual": "Annual",
-      "save": "Save ~20%"
+      "monthly": "Positioning",
+      "annual": "Future",
+      "save": "No billing enabled"
     },
     "card": {
       "notIncluded": "Not included",
@@ -753,280 +753,163 @@
       "from": "from"
     },
     "founding": {
-      "offer": "Founding offer",
-      "locked": "{price}/month locked price",
-      "description": "Selective program for the first 10 companies from Croatia or the region."
+      "offer": "Commercial note",
+      "locked": "{price}",
+      "description": "Billing is not enabled in this version."
     },
     "sections": {
-      "partnerEyebrow": "Partner and buyer plans",
-      "partnerTitle": "Scale supplier readiness across clients or supplier networks.",
-      "partnerDescription": "Partner and buyer plans are designed for teams managing many companies, shared evidence workflows, and supplier status tracking."
+      "partnerEyebrow": "Buyer plans",
+      "partnerTitle": "Buyer-side plans are future-facing.",
+      "partnerDescription": "Buyer Pilot and Buyer Pro are shown for commercial discovery only. Buyer accounts, buyer login and buyer portal are not implemented yet."
     },
     "plans": {
-      "supplier-passport-setup": {
-        "name": "Supplier Passport Setup",
-        "audience": "Companies that want expert help preparing their first buyer-ready passport.",
-        "description": "Assisted setup for companies that want help preparing their first Supplier Passport.",
-        "features": [
-          "Review of existing documents",
-          "Initial company profile structuring",
-          "Mapping documents to VSME sections",
-          "Missing data checklist",
-          "First Supplier Passport link",
-          "Basic review before sending to buyer"
-        ],
-        "setup": "Can be added to Starter. Required/recommended for Supplier Pro. One-time fee.",
-        "ctaLabel": "Add assisted setup"
-      },
       "starter": {
         "name": "Starter",
-        "audience": "Micro suppliers and companies with one EU buyer.",
-        "description": "For micro suppliers and companies with one EU buyer.",
+        "displayLabel": "Request demo",
+        "audience": "Suppliers preparing a first buyer-ready Supplier Passport.",
+        "description": "A focused workspace for getting the core Supplier Passport flow into shape.",
         "features": [
-          "1 company",
-          "1 user",
-          "1 active Supplier Passport link",
-          "Basic VSME readiness profile",
-          "Up to 15 documents",
-          "Basic PDF export",
-          "Email support"
+          "Supplier Passport workspace",
+          "Questionnaire readiness flow",
+          "Evidence document upload",
+          "Public share link",
+          "PDF draft export"
         ],
-        "limitations": [
-          "No unlimited share links",
-          "No Excel export",
-          "No priority support",
-          "No automatic certificate expiry reminders",
-          "No buyer questionnaire workspace",
-          "No audit trail",
-          "No annual profile review"
-        ],
-        "setup": "Optional assisted setup - 499 EUR.",
-        "ctaLabel": "Start with Starter",
-        "monthlySubtext": "or 950 EUR/year",
-        "annualSubtext": "equivalent to 79 EUR/month, billed annually"
+        "setup": "Commercial label only. Billing and limits are not enabled in this version.",
+        "ctaLabel": "Request a demo"
       },
       "supplier-pro": {
         "name": "Supplier Pro",
-        "audience": "SME exporters, manufacturers, logistics companies, packaging companies, metal/plastic suppliers, automotive suppliers, and serious B2B suppliers.",
-        "description": "Main package for serious B2B suppliers managing buyer readiness, evidence, and recurring compliance requests.",
+        "displayLabel": "Request demo",
+        "audience": "Suppliers managing recurring buyer requests and evidence readiness.",
+        "description": "Positioned for suppliers that need stronger response preparation and operational follow-up.",
         "features": [
-          "Up to 5 users",
-          "Unlimited Supplier Passport links",
-          "Up to 100 documents",
-          "Document Vault",
-          "Link documents to VSME questions",
-          "Certificate expiry reminders",
-          "PDF export",
-          "Excel export",
-          "Buyer questionnaire workspace",
-          "Missing data dashboard",
-          "Audit trail",
-          "Priority support"
+          "Buyer Request Workspace",
+          "Requested-section readiness",
+          "Evidence linking and missing actions",
+          "Certificate expiry tracking",
+          "Response package preparation",
+          "Concierge support positioning"
         ],
-        "setup": "Supplier Passport Setup - 499 EUR one-time.",
-        "badge": "Most popular",
-        "ctaLabel": "Start Supplier Pro",
-        "monthlySubtext": "or 2.390 EUR/year",
-        "annualSubtext": "equivalent to 199 EUR/month, billed annually"
+        "setup": "Commercial label only. No plan limits are enforced.",
+        "badge": "Supplier growth",
+        "ctaLabel": "Request a demo"
       },
-      "vsme-passport-sprint": {
-        "name": "VSME Passport Sprint",
-        "audience": "Companies that do not want a subscription yet, but need to handle one concrete buyer request.",
-        "description": "A focused one-time path to prepare a first Supplier Passport for a specific buyer request.",
+      "partner": {
+        "name": "Partner",
+        "displayLabel": "Request demo",
+        "audience": "Consultants, agencies and partner teams assisting multiple supplier clients.",
+        "description": "Positioned for assisted onboarding, portfolio management and client handoff workflows.",
         "features": [
-          "Profile setup",
-          "Review of existing documents",
-          "Basic VSME readiness profile",
-          "Mapping documents to sections",
-          "Missing data checklist",
-          "First Supplier Passport PDF/link",
-          "Basic review before sending to buyer",
-          "30 days of platform access"
+          "Assisted portfolio grouping",
+          "Multi-client concierge dashboard",
+          "Internal onboarding notes",
+          "Follow-up tracking",
+          "Internal handoff summary",
+          "Admin risk overview"
         ],
-        "setup": "After 30 days, move to Starter - 99 EUR/month or Supplier Pro - 249 EUR/month.",
-        "ctaLabel": "Book Passport Sprint"
-      },
-      "partner-consultant": {
-        "name": "Partner / Consultant",
-        "audience": "ESG consultants, ISO consultants, accountants, advisors, and agencies managing multiple SME clients.",
-        "description": "For advisors and consulting teams managing Supplier Passport workflows across multiple clients.",
-        "features": [
-          "Multiple clients",
-          "Client dashboard",
-          "Status overview by company",
-          "Reusable templates",
-          "Internal notes",
-          "Consultant review workflow",
-          "Basic admin / concierge panel",
-          "Generate Supplier Passports for clients",
-          "White-label option",
-          "Custom branding",
-          "Partner reporting",
-          "Team permissions",
-          "API access"
-        ],
-        "ctaLabel": "Book partner demo",
-        "annualSubtext": "custom annual contract"
+        "setup": "Partner accounts and partner login are deferred.",
+        "ctaLabel": "Request a partner demo"
       },
       "buyer-pilot": {
         "name": "Buyer Pilot",
-        "audience": "Larger buyers who want to monitor up to 25 suppliers.",
-        "description": "Pilot buyer workspace for monitoring supplier readiness and missing data across up to 25 suppliers.",
+        "displayLabel": "Request demo",
+        "audience": "Buyer-side discovery conversations and pilot scoping.",
+        "description": "Positioned for buyers exploring supplier readiness visibility without buyer portal access yet.",
         "features": [
-          "Buyer dashboard",
-          "Invite suppliers",
-          "Supplier completion status",
-          "Basic supplier risk overview",
-          "Missing data status overview",
-          "Data export",
-          "Basic reporting",
-          "Up to 25 suppliers",
-          "Prefer annual contract or at least quarterly commitment"
+          "Buyer request tracking concept",
+          "Supplier readiness summaries",
+          "Evidence-on-request positioning",
+          "Public Supplier Passport review",
+          "Pilot workflow scoping"
         ],
-        "ctaLabel": "Book buyer pilot",
-        "annualSubtext": "annual contract recommended"
+        "setup": "Buyer portal, buyer login and email sending are not included yet.",
+        "ctaLabel": "Request a buyer pilot"
       },
       "buyer-pro": {
         "name": "Buyer Pro",
-        "audience": "Larger buyers with 50+ suppliers.",
-        "description": "Buyer-side supplier tracking for larger procurement teams and supplier networks.",
+        "displayLabel": "Future",
+        "audience": "Future buyer-side supplier network workspace.",
+        "description": "Deferred plan positioning for larger buyer networks and supplier portfolio monitoring.",
         "features": [
-          "50+ suppliers",
-          "Multiple internal teams",
-          "Custom questionnaires",
-          "Supplier reminders",
-          "Buyer reporting",
-          "Supplier status dashboard",
-          "Priority support",
-          "Supplier onboarding",
-          "Custom branding",
-          "For 50-150 suppliers, realistic range is 1.200-2.500 EUR/month",
-          "For larger systems, custom enterprise pricing"
+          "Buyer-side dashboard future",
+          "Supplier list future",
+          "Buyer request coordination future",
+          "Network reporting future"
         ],
-        "ctaLabel": "Contact sales",
-        "annualSubtext": "annual contract recommended"
-      },
-      "founding-partner-program": {
-        "name": "Founding Partner Program",
-        "audience": "First 10 partner companies from Croatia or the region.",
-        "description": "Selective early partner program for companies willing to shape Supplier Passport around real EU buyer requirements.",
-        "features": [
-          "Free setup",
-          "Basic Supplier Pro workflow",
-          "Supplier Passport link",
-          "Document Vault",
-          "Missing data checklist",
-          "Feedback collaboration",
-          "Customer provides concrete feedback",
-          "Customer participates in 2-3 short product calls",
-          "Customer allows the product to be shaped around real EU buyer requirements"
-        ],
-        "badge": "First 10 companies",
-        "ctaLabel": "Apply as founding partner"
+        "setup": "Future/deferred. Not implemented in this version.",
+        "ctaLabel": "Talk to us"
       }
     },
     "comparison": {
-      "title": "Compare the core packages",
-      "description": "A practical view of how setup, subscription, and sprint options differ.",
+      "title": "Compare commercial positioning",
+      "description": "A non-billing view of how the plan labels are positioned for sales conversations.",
       "columns": {
         "feature": "Feature",
         "starter": "Starter",
         "pro": "Supplier Pro",
-        "sprint": "Sprint",
-        "partner": "Partner"
+        "partner": "Partner",
+        "buyer": "Buyer Pilot / Pro"
       },
       "rows": [
         {
-          "feature": "Supplier Passport Setup",
-          "starter": "Optional, 499 EUR",
-          "pro": "Recommended, 499 EUR",
-          "sprint": "Included",
-          "partner": "Client-based"
+          "feature": "Supplier readiness workspace",
+          "starter": "Core",
+          "pro": "Expanded",
+          "partner": "Portfolio",
+          "buyer": "Pilot scope"
         },
         {
-          "feature": "Active Supplier Passport links",
-          "starter": "1",
-          "pro": "Unlimited",
-          "sprint": "First PDF/link",
-          "partner": "Multiple clients"
+          "feature": "Buyer requests",
+          "starter": "Basic review",
+          "pro": "Workspace",
+          "partner": "Client overview",
+          "buyer": "Future buyer-side"
         },
         {
-          "feature": "Document capacity",
-          "starter": "15 documents",
-          "pro": "100 documents",
-          "sprint": "Buyer request package",
-          "partner": "Client-based"
+          "feature": "Evidence readiness",
+          "starter": "Upload and link",
+          "pro": "Missing actions",
+          "partner": "Portfolio triage",
+          "buyer": "Summary review"
         },
         {
-          "feature": "Evidence management",
-          "starter": "Basic",
-          "pro": "Document Vault + linking",
-          "sprint": "Mapped once",
-          "partner": "Reusable templates"
+          "feature": "Assisted onboarding",
+          "starter": "Available",
+          "pro": "Available",
+          "partner": "Primary workflow",
+          "buyer": "Pilot scoping"
         },
         {
-          "feature": "Exports",
-          "starter": "PDF",
-          "pro": "PDF + Excel",
-          "sprint": "PDF/link",
-          "partner": "Client reporting"
-        },
-        {
-          "feature": "Operational controls",
-          "starter": "Email support",
-          "pro": "Reminders + audit trail",
-          "sprint": "30 days access",
-          "partner": "Admin / concierge workflow"
+          "feature": "Billing and limits",
+          "starter": "Not enabled",
+          "pro": "Not enabled",
+          "partner": "Not enabled",
+          "buyer": "Not enabled"
         }
       ]
     },
     "faq": {
       "eyebrow": "FAQ",
-      "title": "Questions buyers and suppliers usually ask.",
+      "title": "Commercial readiness notes.",
       "items": [
         {
-          "question": "Do I need the Supplier Passport Setup?",
-          "answer": "Supplier Passport Setup is an assisted setup add-on for Starter or Supplier Pro subscriptions. It helps structure your company profile, documents, and first Passport workspace."
+          "question": "Is billing enabled?",
+          "answer": "No. These plans are commercial positioning labels for sales and demo conversations. Stripe, billing, checkout and invoices are not implemented."
         },
         {
-          "question": "Can I start with the VSME Passport Sprint only?",
-          "answer": "Yes. The Sprint is a one-time package for companies that need to respond to one concrete buyer request before committing to a subscription."
+          "question": "Are plan limits enforced?",
+          "answer": "No. Starter, Supplier Pro, Partner, Buyer Pilot and Buyer Pro are labels only in this version. They do not change product access or enforce limits."
         },
         {
-          "question": "What is the difference between Starter and Supplier Pro?",
-          "answer": "Starter is limited to one user, one active Passport link and up to 15 documents. Supplier Pro adds up to 5 users, unlimited Passport links, up to 100 documents, Excel export, certificate reminders, buyer questionnaire workspace, audit trail and priority support."
+          "question": "Is Buyer Pro available now?",
+          "answer": "No. Buyer Pro is a future/deferred buyer-side concept. This version does not include buyer accounts, buyer login or a buyer portal."
         },
         {
-          "question": "Is this a certification or assurance report?",
+          "question": "Is Supplier Passport a certification?",
           "answer": "No. Supplier Passport structures supplier-provided sustainability information and supporting evidence. It is not a certification, assurance report, or legal compliance opinion."
-        },
-        {
-          "question": "Can buyers access my documents?",
-          "answer": "Only documents you approve for sharing are shown on buyer-facing share links. Internal notes and unapproved documents remain hidden."
-        },
-        {
-          "question": "Can consultants manage multiple clients?",
-          "answer": "Yes. The Partner / Consultant plan is designed for ESG consultants, ISO consultants, accountants and advisors managing multiple SME clients."
-        },
-        {
-          "question": "Do you support buyer-side supplier tracking?",
-          "answer": "Yes. Buyer Pilot and Buyer Pro are designed for companies that want to invite and monitor suppliers through a buyer dashboard."
         }
-      ],
-      "faqSetupQuestion": "Do I need the Supplier Passport Setup?",
-      "faqSetupAnswer": "Supplier Passport Setup is an assisted setup add-on for Starter or Supplier Pro subscriptions. It helps structure your company profile, documents, and first Passport workspace.",
-      "faqSprintQuestion": "Can I start with the VSME Passport Sprint only?",
-      "faqSprintAnswer": "Yes. The Sprint is a one-time package for companies that need to respond to one concrete buyer request before committing to a subscription.",
-      "faqStarterProQuestion": "What is the difference between Starter and Supplier Pro?",
-      "faqStarterProAnswer": "Starter is limited to one user, one active Passport link and up to 15 documents. Supplier Pro adds up to 5 users, unlimited Passport links, up to 100 documents, Excel export, certificate reminders, buyer questionnaire workspace, audit trail and priority support.",
-      "faqCertificationQuestion": "Is this a certification or assurance report?",
-      "faqCertificationAnswer": "No. Supplier Passport structures supplier-provided sustainability information and supporting evidence. It is not a certification, assurance report, or legal compliance opinion.",
-      "faqBuyerAccessQuestion": "Can buyers access my documents?",
-      "faqBuyerAccessAnswer": "Only documents you approve for sharing are shown on buyer-facing share links. Internal notes and unapproved documents remain hidden.",
-      "faqConsultantsQuestion": "Can consultants manage multiple clients?",
-      "faqConsultantsAnswer": "Yes. The Partner / Consultant plan is designed for ESG consultants, ISO consultants, accountants and advisors managing multiple SME clients.",
-      "faqBuyerTrackingQuestion": "Do you support buyer-side supplier tracking?",
-      "faqBuyerTrackingAnswer": "Yes. Buyer Pilot and Buyer Pro are designed for companies that want to invite and monitor suppliers through a buyer dashboard."
+      ]
     }
   },
   "auth": {
@@ -1721,7 +1604,8 @@
       "openOrganizations": "Open organizations",
       "noNotesTitle": "No admin notes selected",
       "noNotesText": "Internal notes stay inside the concierge/admin workspace and are never shown on buyer-facing share pages."
-    }
+    },
+    "currentWorkspacePlan": "Current workspace plan"
   },
   "activity": {
     "title": "Activity",
