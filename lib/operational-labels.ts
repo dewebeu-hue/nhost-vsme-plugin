@@ -31,10 +31,13 @@ export type AdminLabels = {
   title: string;
   subtitle: string;
   adminWorkspace: string;
+  adminAccount: string;
   conciergeDashboard: string;
   organizations: string;
   risks: string;
   backToDashboard: string;
+  logOut: string;
+  signedInAs: string;
   unauthorizedTitle: string;
   unauthorizedDescription: string;
   loading: string;
@@ -219,10 +222,13 @@ export const defaultAdminLabels: AdminLabels = {
   title: "Organizations",
   subtitle: "Manage and support your client organizations.",
   adminWorkspace: "Admin workspace",
+  adminAccount: "Admin account",
   conciergeDashboard: "Concierge dashboard",
   organizations: "Organizations",
   risks: "Risks",
   backToDashboard: "Back to dashboard",
+  logOut: "Log out",
+  signedInAs: "Signed in as",
   unauthorizedTitle: "You do not have access to this admin workspace.",
   unauthorizedDescription: "Sign in with an allowlisted admin account to use the concierge workspace.",
   loading: "Loading...",

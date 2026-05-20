@@ -1883,6 +1883,14 @@ Final access checklist:
 4. Confirm `ADMIN_EMAIL_ALLOWLIST` is configured only server-side and is not prefixed with `NEXT_PUBLIC_`.
 5. Confirm no JWTs, cookies, share tokens, private file URLs, document contents, or secrets are logged.
 
+Admin account/logout controls:
+
+- Admin layout shows the current account email when available to the signed-in browser session.
+- Admin layout shows an admin account area and localized logout action.
+- `Back to dashboard` remains available from the admin shell.
+- Logout uses the browser Nhost sign-out flow and redirects to the localized login route.
+- After logout, admin APIs should return `401` and admin pages should show a safe unauthorized/login state.
+
 Final workspace checklist:
 
 1. Organizations list shows real organizations, readiness, document count, linked evidence count, buyer request count, certificate warning count, active link state, triage, concierge status, and priority.
