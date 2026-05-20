@@ -2094,6 +2094,50 @@ Manual QA:
 9. Click `Označi kao pregledano`; confirm a PATCH request and internal review state.
 10. Confirm a normal supplier cannot call the PATCH endpoint.
 
+## Faza 3.4 Portfolio Overview and Follow-Up Workflow
+
+The Admin / Concierge organizations page includes a portfolio overview for managing assisted client groups without creating partner accounts.
+
+Behavior:
+
+- `/[locale]/admin/organizations` shows portfolio overview cards using live admin summaries.
+- Summary cards include total portfolios, total organizations, demo-ready organizations, waiting-on-supplier organizations, high-priority organizations, upcoming follow-ups, and organizations without a portfolio.
+- The "Organizations by portfolio" section groups organizations by `portfolio_label`; empty labels are grouped as "No portfolio assigned".
+- Each portfolio group shows organization count, average readiness, high-priority count, waiting-on-supplier count, and upcoming follow-up count.
+- Portfolio group actions filter the organization list to that portfolio.
+- Organization filters are functional for portfolio, triage, concierge status, priority, and organization search.
+- Follow-up labels use `next_follow_up_date`:
+  - overdue when the date is before today
+  - due today when the date is today
+  - due soon when the date is within the next 7 days
+  - no follow-up scheduled when no date is set
+- Completed or paused onboarding/support items are not treated as urgent follow-ups.
+
+Data model:
+
+- Reuses `organization_concierge_notes`.
+- Uses `portfolio_label`, `partner_label`, `priority`, `status`, `onboarding_status`, and `next_follow_up_date`.
+- Requires `nhost/migrations/default/0007_add_admin_portfolio_fields/up.sql` if portfolio fields are not yet in production.
+
+Privacy scope:
+
+- Portfolio labels, assisted-by labels, internal partner notes, concierge status, and follow-up dates are admin-only.
+- They must not appear in supplier dashboards, public Passport pages, public PDFs, share links, or buyer-facing surfaces.
+- No partner accounts, partner login, partner permissions, automated reminders, impersonation, buyer portal, email sending, AI, Stripe, XBRL, plan limits, or Supabase are included.
+
+Manual QA:
+
+1. Login as an allowlisted admin.
+2. Open `/hr/admin/organizations`.
+3. Confirm portfolio overview cards appear.
+4. Assign portfolio labels to at least two organizations from organization detail pages.
+5. Return to `/hr/admin/organizations` and confirm grouping by portfolio.
+6. Click a portfolio group action and confirm the list filters to that portfolio.
+7. Test portfolio, triage, concierge status, priority, and search filters.
+8. Set next follow-up dates for overdue, today, and within 7 days; confirm localized labels.
+9. Confirm supplier dashboard, public Passport, share links, and PDFs do not show portfolio/internal partner notes.
+10. Repeat a quick route/copy check on `/en` and `/de`.
+
 ## Safe Logging Rules
 
 Allowed categories:

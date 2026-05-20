@@ -38,6 +38,8 @@ export function AdminOrganizationsClient({ labels = defaultAdminLabels }: AdminO
   const [query, setQuery] = useState("");
   const [portfolioFilter, setPortfolioFilter] = useState("__all");
   const [triageFilter, setTriageFilter] = useState<AdminTriageStatus | "__all">("__all");
+  const [conciergeStatusFilter, setConciergeStatusFilter] = useState<ConciergeStatus | "__all">("__all");
+  const [priorityFilter, setPriorityFilter] = useState<ConciergePriority | "__all">("__all");
   const [status, setStatus] = useState<"loading" | "ready" | "unauthorized" | "error">("loading");
   const [message, setMessage] = useState<string | null>(null);
 
@@ -54,29 +56,64 @@ export function AdminOrganizationsClient({ labels = defaultAdminLabels }: AdminO
         portfolioFilter === "__all" ||
         (portfolioFilter === "__none" ? !portfolio : portfolio === portfolioFilter);
       const triageMatch = triageFilter === "__all" || organization.triageStatus === triageFilter;
+      const conciergeStatusMatch =
+        conciergeStatusFilter === "__all" ||
+        (organization.concierge?.status ?? "not_started") === conciergeStatusFilter;
+      const priorityMatch = priorityFilter === "__all" || (organization.concierge?.priority ?? "normal") === priorityFilter;
 
-      return searchMatch && portfolioMatch && triageMatch;
+      return searchMatch && portfolioMatch && triageMatch && conciergeStatusMatch && priorityMatch;
     });
-  }, [organizations, portfolioFilter, query, triageFilter]);
+  }, [conciergeStatusFilter, organizations, portfolioFilter, priorityFilter, query, triageFilter]);
   const portfolioOptions = useMemo(() => {
     return Array.from(
       new Set(organizations.map((organization) => organization.concierge?.portfolioLabel).filter(Boolean) as string[]),
     ).sort((a, b) => a.localeCompare(b));
   }, [organizations]);
   const portfolioSummaries = useMemo(() => {
-    const summaries = new Map<string, { label: string; count: number; demoReady: number; waiting: number; atRisk: number }>();
+    const summaries = new Map<
+      string,
+      {
+        label: string;
+        filterValue: string;
+        count: number;
+        readinessSum: number;
+        demoReady: number;
+        waiting: number;
+        atRisk: number;
+        highPriority: number;
+        upcomingFollowUps: number;
+      }
+    >();
     for (const organization of organizations) {
       const label = organization.concierge?.portfolioLabel || labels.noPortfolioAssigned;
-      const current = summaries.get(label) ?? { label, count: 0, demoReady: 0, waiting: 0, atRisk: 0 };
+      const current = summaries.get(label) ?? {
+        label,
+        filterValue: organization.concierge?.portfolioLabel || "__none",
+        count: 0,
+        readinessSum: 0,
+        demoReady: 0,
+        waiting: 0,
+        atRisk: 0,
+        highPriority: 0,
+        upcomingFollowUps: 0,
+      };
       current.count += 1;
+      current.readinessSum += organization.readinessPercent;
       if (organization.triageStatus === "demo_ready") {
         current.demoReady += 1;
       }
       if (organization.concierge?.onboardingStatus === "waiting_on_supplier") {
         current.waiting += 1;
       }
+      if (organization.concierge?.priority === "high") {
+        current.highPriority += 1;
+      }
       if (organization.triageStatus === "at_risk") {
         current.atRisk += 1;
+      }
+      const followUpState = getFollowUpState(organization.concierge?.nextFollowUpDate ?? null, organization.concierge);
+      if (followUpState === "overdue" || followUpState === "today" || followUpState === "soon") {
+        current.upcomingFollowUps += 1;
       }
       summaries.set(label, current);
     }
@@ -157,7 +194,7 @@ export function AdminOrganizationsClient({ labels = defaultAdminLabels }: AdminO
       </div>
 
       <section className="supplier-surface rounded-2xl border-0 p-4">
-        <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_220px_180px]">
+        <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_220px_180px_220px_160px]">
           <div className="relative">
           <Search
             aria-hidden="true"
@@ -194,14 +231,48 @@ export function AdminOrganizationsClient({ labels = defaultAdminLabels }: AdminO
             <option value="demo_ready">{labels.triageDemoReady}</option>
             <option value="at_risk">{labels.triageAtRisk}</option>
           </select>
+          <select
+            value={conciergeStatusFilter}
+            onChange={(event) => setConciergeStatusFilter(event.target.value as ConciergeStatus | "__all")}
+            className="h-11 rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm font-medium text-slate-700"
+          >
+            <option value="__all">{labels.allStatus}</option>
+            <option value="not_started">{labels.statusNotStarted}</option>
+            <option value="onboarding">{labels.statusOnboarding}</option>
+            <option value="waiting_on_supplier">{labels.statusWaitingOnSupplier}</option>
+            <option value="ready_for_review">{labels.statusReadyForReview}</option>
+            <option value="demo_ready">{labels.statusDemoReady}</option>
+            <option value="paused">{labels.statusPaused}</option>
+          </select>
+          <select
+            value={priorityFilter}
+            onChange={(event) => setPriorityFilter(event.target.value as ConciergePriority | "__all")}
+            className="h-11 rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm font-medium text-slate-700"
+          >
+            <option value="__all">{labels.priority}</option>
+            <option value="low">{labels.priorityLow}</option>
+            <option value="normal">{labels.priorityNormal}</option>
+            <option value="high">{labels.priorityHigh}</option>
+          </select>
         </div>
       </section>
 
       {portfolioSummaries.length ? (
-        <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-6">
+          <SummaryCard label={labels.totalPortfolios} value={portfolioOptions.length} />
           <SummaryCard label={labels.totalOrganizations} value={organizations.length} />
           <SummaryCard label={labels.triageDemoReady} value={organizations.filter((item) => item.triageStatus === "demo_ready").length} />
           <SummaryCard label={labels.statusWaitingOnSupplier} value={organizations.filter((item) => item.concierge?.onboardingStatus === "waiting_on_supplier").length} />
+          <SummaryCard label={labels.highPriorityOrganizations} value={organizations.filter((item) => item.concierge?.priority === "high").length} />
+          <SummaryCard
+            label={labels.upcomingFollowUps}
+            value={
+              organizations.filter((item) => {
+                const followUpState = getFollowUpState(item.concierge?.nextFollowUpDate ?? null, item.concierge);
+                return followUpState === "overdue" || followUpState === "today" || followUpState === "soon";
+              }).length
+            }
+          />
           <SummaryCard label={labels.noPortfolioAssigned} value={organizations.filter((item) => !item.concierge?.portfolioLabel).length} />
           {portfolioSummaries.slice(0, 4).map((summary) => (
             <article key={summary.label} className="supplier-surface rounded-2xl border-0 p-4">
@@ -215,6 +286,40 @@ export function AdminOrganizationsClient({ labels = defaultAdminLabels }: AdminO
               </p>
             </article>
           ))}
+        </section>
+      ) : null}
+
+      {portfolioSummaries.length ? (
+        <section className="supplier-surface rounded-2xl border-0 p-5">
+          <div>
+            <h2 className="text-lg font-semibold text-slate-950">{labels.organizationsByPortfolio}</h2>
+            <p className="mt-1 text-sm text-slate-600">{labels.assistedPortfolio}</p>
+          </div>
+          <div className="mt-4 grid gap-4 lg:grid-cols-2 xl:grid-cols-3">
+            {portfolioSummaries.map((summary) => (
+              <article key={summary.label} className="supplier-surface rounded-2xl border-0 p-4">
+                <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">
+                  {labels.portfolio}
+                </p>
+                <p className="mt-2 text-base font-semibold text-slate-950">{summary.label}</p>
+                <div className="mt-3 grid gap-2 text-sm text-slate-600">
+                  <PortfolioMetric label={labels.organizations} value={summary.count} />
+                  <PortfolioMetric label={labels.completion} value={`${Math.round(summary.readinessSum / summary.count)}%`} />
+                  <PortfolioMetric label={labels.highPriorityOrganizations} value={summary.highPriority} />
+                  <PortfolioMetric label={labels.statusWaitingOnSupplier} value={summary.waiting} />
+                  <PortfolioMetric label={labels.upcomingFollowUps} value={summary.upcomingFollowUps} />
+                </div>
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="mt-4 w-fit rounded-xl bg-white"
+                  onClick={() => setPortfolioFilter(summary.filterValue)}
+                >
+                  {labels.viewOrganizations}
+                </Button>
+              </article>
+            ))}
+          </div>
         </section>
       ) : null}
 
@@ -289,7 +394,7 @@ export function AdminOrganizationsClient({ labels = defaultAdminLabels }: AdminO
                   </p>
                   <p className="mt-1 text-xs text-slate-500">
                     {labels.nextFollowUp}:{" "}
-                    {formatDate(organization.concierge?.nextFollowUpDate ?? null, locale, labels.notProvided)}
+                    {formatFollowUpLabel(organization.concierge?.nextFollowUpDate ?? null, organization.concierge, locale, labels)}
                   </p>
                 </div>
 
@@ -377,6 +482,15 @@ function SummaryCard({ label, value }: { label: string; value: number }) {
   );
 }
 
+function PortfolioMetric({ label, value }: { label: string; value: number | string }) {
+  return (
+    <div className="flex items-center justify-between gap-3">
+      <span>{label}</span>
+      <span className="font-semibold text-slate-950">{value}</span>
+    </div>
+  );
+}
+
 function TriageBadge({ status, labels }: { status: AdminTriageStatus; labels: AdminLabels }) {
   const text = {
     needs_attention: labels.triageNeedsAttention,
@@ -449,4 +563,79 @@ function formatDate(value: string | null, locale: string, fallback: string) {
   return Number.isNaN(date.getTime())
     ? fallback
     : new Intl.DateTimeFormat(locale, { year: "numeric", month: "short", day: "numeric" }).format(date);
+}
+
+function getFollowUpState(
+  value: string | null,
+  concierge: AdminOrganizationSummary["concierge"],
+): "none" | "overdue" | "today" | "soon" | "scheduled" {
+  if (!value) {
+    return "none";
+  }
+
+  if (concierge?.onboardingStatus === "completed" || concierge?.onboardingStatus === "paused" || concierge?.status === "paused") {
+    return "scheduled";
+  }
+
+  const due = parseDateOnly(value);
+  if (!due) {
+    return "none";
+  }
+
+  const today = startOfToday();
+  const diffDays = Math.round((due.getTime() - today.getTime()) / 86_400_000);
+
+  if (diffDays < 0) {
+    return "overdue";
+  }
+
+  if (diffDays === 0) {
+    return "today";
+  }
+
+  if (diffDays <= 7) {
+    return "soon";
+  }
+
+  return "scheduled";
+}
+
+function formatFollowUpLabel(
+  value: string | null,
+  concierge: AdminOrganizationSummary["concierge"],
+  locale: string,
+  labels: AdminLabels,
+) {
+  const state = getFollowUpState(value, concierge);
+
+  if (state === "none") {
+    return labels.noFollowUpScheduled;
+  }
+
+  const formattedDate = formatDate(value, locale, labels.notProvided);
+
+  if (state === "overdue") {
+    return `${labels.followUpOverdue} · ${formattedDate}`;
+  }
+
+  if (state === "today") {
+    return `${labels.followUpDueToday} · ${formattedDate}`;
+  }
+
+  if (state === "soon") {
+    return `${labels.followUpDueSoon} · ${formattedDate}`;
+  }
+
+  return formattedDate;
+}
+
+function parseDateOnly(value: string) {
+  const date = new Date(`${value}T00:00:00`);
+  return Number.isNaN(date.getTime()) ? null : date;
+}
+
+function startOfToday() {
+  const date = new Date();
+  date.setHours(0, 0, 0, 0);
+  return date;
 }

@@ -113,6 +113,14 @@ export type AdminLabels = {
   allPortfolios: string;
   allTriage: string;
   portfolioSummary: string;
+  portfolioOverview: string;
+  totalPortfolios: string;
+  upcomingFollowUps: string;
+  highPriorityOrganizations: string;
+  followUpOverdue: string;
+  followUpDueToday: string;
+  followUpDueSoon: string;
+  noFollowUpScheduled: string;
   saveConciergeStatus: string;
   conciergeSaved: string;
   conciergeSaveError: string;
@@ -335,6 +343,14 @@ export const defaultAdminLabels: AdminLabels = {
   allPortfolios: "All portfolios",
   allTriage: "All triage",
   portfolioSummary: "Portfolio summary",
+  portfolioOverview: "Portfolio overview",
+  totalPortfolios: "Total portfolios",
+  upcomingFollowUps: "Upcoming follow-ups",
+  highPriorityOrganizations: "High-priority organizations",
+  followUpOverdue: "Follow-up overdue",
+  followUpDueToday: "Follow-up due today",
+  followUpDueSoon: "Follow-up due soon",
+  noFollowUpScheduled: "No follow-up scheduled",
   saveConciergeStatus: "Save concierge status",
   conciergeSaved: "Concierge status saved.",
   conciergeSaveError: "We could not save concierge status right now.",
