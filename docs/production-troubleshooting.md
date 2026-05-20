@@ -2348,6 +2348,40 @@ Manual QA:
 9. Repeat quick checks on `/en/pricing` and `/de/pricing`.
 10. Confirm `/en`, `/hr`, and `/de` navigation links to the plans/pricing route.
 
+## Faza 3.5 Korak 3 - Demo Request And Sales CTA Flow
+
+Public demo requests use a simple localized route:
+
+- `/en/request-demo`
+- `/hr/request-demo`
+- `/de/request-demo`
+
+Behavior:
+
+- `Start Supplier Passport` routes to localized signup.
+- `Request demo` routes to localized `/request-demo`.
+- The request-demo page explains supplier, consultant/partner, and buyer-team use cases.
+- The final contact CTA is a `mailto:` link to `deweb.eu@gmail.com` with a Supplier Passport demo request subject.
+- No backend email sending, CRM integration, database write, checkout, payment, or billing flow is included.
+- No fake submit form is shown.
+
+Pilot rollout copy:
+
+- Pricing and onboarding are handled manually during pilot rollout.
+- Online billing is not enabled.
+- Plan labels do not block or unlock product features.
+
+Manual QA:
+
+1. Deploy.
+2. Open `/hr`.
+3. Click `Započni Supplier Passport` and confirm localized signup opens.
+4. Click `Zatraži demo` and confirm `/hr/request-demo` opens.
+5. On `/hr/request-demo`, click `Kontaktirajte nas za demo` and confirm the mail client opens.
+6. Open `/hr/pricing` and confirm all plan-card demo CTAs route to `/hr/request-demo`.
+7. Repeat quick checks on `/en` and `/de`.
+8. Confirm there is no fake submit form, checkout, payment flow, backend email sending, or private data on public pages.
+
 ## Safe Logging Rules
 
 Allowed categories:

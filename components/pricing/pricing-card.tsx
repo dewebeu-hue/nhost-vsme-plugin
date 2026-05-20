@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { ArrowRight, CheckCircle2, MinusCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
@@ -15,7 +15,11 @@ export function PricingCard({
   plan,
   compact = false,
 }: PricingCardProps) {
+  const locale = useLocale();
   const t = useTranslations("pricing.card");
+  const ctaHref = plan.ctaHref.startsWith("/")
+    ? `/${locale}${plan.ctaHref}`
+    : plan.ctaHref;
 
   return (
     <article
@@ -71,7 +75,7 @@ export function PricingCard({
       ) : null}
 
       <Link
-        href={plan.ctaHref}
+        href={ctaHref}
         className={cn(
           buttonVariants({
             variant: plan.highlighted ? "default" : "outline",

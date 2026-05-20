@@ -10,13 +10,14 @@
       "pricing": "Plans",
       "resources": "Resources",
       "login": "Login",
-      "bookDemo": "Book a Demo"
+      "bookDemo": "Request demo"
     },
     "cta": {
       "startPassport": "Start Supplier Passport",
       "seeSamplePassport": "See Sample Passport",
-      "bookDemo": "Book a Demo",
-      "viewFullPricing": "View plans"
+      "bookDemo": "Request demo",
+      "viewFullPricing": "View plans",
+      "requestDemo": "Request demo"
     }
   },
   "navigation": {
@@ -1880,5 +1881,19 @@
     "website": "Website",
     "workspace": "Workspace",
     "notProvided": "Not provided yet"
+  },
+  "requestDemo": {
+    "eyebrow": "Pilot rollout",
+    "title": "Request a Supplier Passport demo",
+    "description": "Tell us whether you are a supplier, consultant/partner, or buyer team. We will help you choose the right rollout path.",
+    "pilotNote": "During pilot rollout, pricing and onboarding are handled manually. Online billing is not enabled.",
+    "contactCta": "Contact us about a demo",
+    "whoTitle": "Who this is for",
+    "audiences": [
+      "Suppliers preparing a first Supplier Passport",
+      "Consultants or partners supporting multiple clients",
+      "Buyer teams exploring supplier readiness pilots"
+    ],
+    "noFormNote": "No form data is collected on this page. The demo CTA opens your email client so you can send only the details you choose."
   }
 }

@@ -32,13 +32,13 @@ export function FinalCta() {
             <ArrowRight data-icon="inline-end" />
           </Link>
           <Link
-            href={`/${locale}/login`}
+            href={`/${locale}/request-demo`}
             className={cn(
               buttonVariants({ variant: "outline", size: "lg" }),
               "h-12 border-white/40 bg-white/10 px-5 text-white hover:bg-white/15 hover:text-white",
             )}
           >
-            {t("secondaryCta")}
+            {cta("requestDemo")}
           </Link>
         </div>
       </div>

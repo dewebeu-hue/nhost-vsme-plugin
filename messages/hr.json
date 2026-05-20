@@ -10,13 +10,14 @@
       "pricing": "Paketi",
       "resources": "Resursi",
       "login": "Prijava",
-      "bookDemo": "Rezerviraj demo"
+      "bookDemo": "Zatra?i demo"
     },
     "cta": {
       "startPassport": "Započni Supplier Passport",
       "seeSamplePassport": "Pogledaj primjer Passporta",
-      "bookDemo": "Rezerviraj demo",
-      "viewFullPricing": "Pogledaj planove"
+      "bookDemo": "Zatra?i demo",
+      "viewFullPricing": "Pogledaj planove",
+      "requestDemo": "Zatra?i demo"
     }
   },
   "navigation": {
@@ -1880,5 +1881,19 @@
     "website": "Web stranica",
     "workspace": "Radni prostor",
     "notProvided": "Jo? nije uneseno"
+  },
+  "requestDemo": {
+    "eyebrow": "Pilot uvo?enje",
+    "title": "Zatra?ite Supplier Passport demo",
+    "description": "Recite nam jeste li dobavlja?, konzultant/partner ili buyer tim. Pomo?i ?emo vam odabrati pravi na?in uvo?enja.",
+    "pilotNote": "Tijekom pilot uvo?enja cijene i onboarding dogovaraju se ru?no. Online naplata nije omogu?ena.",
+    "contactCta": "Kontaktirajte nas za demo",
+    "whoTitle": "Za koga je namijenjeno",
+    "audiences": [
+      "Dobavlja?i koji pripremaju prvi Supplier Passport",
+      "Konzultanti/partneri koji podr?avaju vi?e klijenata",
+      "Buyer timovi koji istra?uju pilote spremnosti dobavlja?a"
+    ],
+    "noFormNote": "Na ovoj stranici ne prikupljamo podatke kroz obrazac. Demo CTA otvara va? email klijent kako biste poslali samo podatke koje sami odaberete."
   }
 }

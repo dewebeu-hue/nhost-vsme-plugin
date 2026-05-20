@@ -38,13 +38,21 @@ export function PricingPreview() {
           <p className="text-sm font-medium text-slate-600">
             {t("note")}
           </p>
-          <Link
-            href={`/${locale}/pricing`}
-            className={cn(buttonVariants({ variant: "outline", size: "lg" }), "h-11 rounded-xl")}
-          >
-            {common("viewFullPricing")}
-            <ArrowRight data-icon="inline-end" />
-          </Link>
+          <div className="flex flex-col gap-2 sm:flex-row">
+            <Link
+              href={`/${locale}/pricing`}
+              className={cn(buttonVariants({ variant: "outline", size: "lg" }), "h-11 rounded-xl")}
+            >
+              {common("viewFullPricing")}
+              <ArrowRight data-icon="inline-end" />
+            </Link>
+            <Link
+              href={`/${locale}/request-demo`}
+              className={cn(buttonVariants({ size: "lg" }), "h-11 rounded-xl")}
+            >
+              {common("requestDemo")}
+            </Link>
+          </div>
         </div>
       </div>
     </section>

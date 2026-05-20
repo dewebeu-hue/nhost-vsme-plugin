@@ -33,8 +33,7 @@ export const commercialPlanIds = [
 
 export type CommercialPlanId = (typeof commercialPlanIds)[number];
 
-const demoCtaHref =
-  "mailto:hello@supplierpassport.app?subject=Supplier%20Passport%20demo";
+const demoCtaHref = "/request-demo";
 
 export const pricingPlans: PricingPlan[] = [
   {

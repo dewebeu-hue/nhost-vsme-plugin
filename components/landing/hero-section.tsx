@@ -51,6 +51,15 @@ export function HeroSection() {
               {common("startPassport")}
               <ArrowRight data-icon="inline-end" />
             </Link>
+            <Link
+              href={`/${locale}/request-demo`}
+              className={cn(
+                buttonVariants({ variant: "outline", size: "lg" }),
+                "h-12 border-slate-200 bg-white px-5",
+              )}
+            >
+              {common("requestDemo")}
+            </Link>
           </div>
 
           <div className="flex flex-wrap gap-3">

@@ -10,13 +10,14 @@
       "pricing": "Pakete",
       "resources": "Ressourcen",
       "login": "Login",
-      "bookDemo": "Demo buchen"
+      "bookDemo": "Demo anfragen"
     },
     "cta": {
       "startPassport": "Supplier Passport starten",
       "seeSamplePassport": "See Sample Passport",
-      "bookDemo": "Demo buchen",
-      "viewFullPricing": "Pl?ne ansehen"
+      "bookDemo": "Demo anfragen",
+      "viewFullPricing": "Pl?ne ansehen",
+      "requestDemo": "Demo anfragen"
     }
   },
   "navigation": {
@@ -1903,5 +1904,19 @@
     "website": "Website",
     "workspace": "Arbeitsbereich",
     "notProvided": "Noch nicht angegeben"
+  },
+  "requestDemo": {
+    "eyebrow": "Pilotphase",
+    "title": "Supplier-Passport-Demo anfragen",
+    "description": "Sagen Sie uns, ob Sie Lieferant, Berater/Partner oder Buyer-Team sind. Wir helfen Ihnen, den passenden Einf?hrungsweg zu w?hlen.",
+    "pilotNote": "W?hrend der Pilotphase werden Preise und Onboarding manuell abgestimmt. Online-Abrechnung ist nicht aktiviert.",
+    "contactCta": "Demo anfragen",
+    "whoTitle": "F?r wen dies gedacht ist",
+    "audiences": [
+      "Lieferanten, die einen ersten Supplier Passport vorbereiten",
+      "Berater/Partner, die mehrere Kunden unterst?tzen",
+      "Buyer-Teams, die Piloten zur Lieferantenbereitschaft pr?fen"
+    ],
+    "noFormNote": "Auf dieser Seite werden keine Formulardaten gesammelt. Der Demo-CTA ?ffnet Ihr E-Mail-Programm, damit Sie nur die Angaben senden, die Sie ausw?hlen."
   }
 }

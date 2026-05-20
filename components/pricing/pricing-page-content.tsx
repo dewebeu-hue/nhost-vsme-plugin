@@ -65,7 +65,7 @@ export function PricingPageContent() {
                 <ArrowRight data-icon="inline-end" />
               </Link>
               <Link
-                href="mailto:hello@supplierpassport.app?subject=Supplier%20Passport%20demo"
+                href={`/${locale}/request-demo`}
                 className={cn(buttonVariants({ variant: "outline", size: "lg" }), "h-12 rounded-xl bg-white px-5")}
               >
                 {t("hero.secondaryCta")}
