@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState, type ReactNode } from "react";
 import type { FormEvent } from "react";
 import Link from "next/link";
 import { useLocale } from "next-intl";
-import { ArrowLeft, RefreshCw, Save } from "lucide-react";
+import { ArrowLeft, ClipboardCopy, Download, RefreshCw, Save } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -172,6 +172,49 @@ export function AdminOrganizationDetailClient({
     void saveAdminSupportState(true, labels.reviewedSaved, labels.reviewedSaveError);
   }
 
+  async function handleCopyHandoffSummary() {
+    if (!organization) {
+      setMessage(labels.missingOrganizationContext);
+      return;
+    }
+
+    const handoffText = buildHandoffSummaryText({
+      organization,
+      labels,
+      locale,
+    });
+
+    try {
+      await navigator.clipboard.writeText(handoffText);
+      setMessage(labels.handoffCopied);
+    } catch {
+      setMessage(labels.handoffCopyError);
+    }
+  }
+
+  function handleDownloadHandoffSummary() {
+    if (!organization) {
+      setMessage(labels.missingOrganizationContext);
+      return;
+    }
+
+    const handoffText = buildHandoffSummaryText({
+      organization,
+      labels,
+      locale,
+    });
+    const blob = new Blob([handoffText], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement("a");
+    anchor.href = url;
+    anchor.download = `supplier-passport-handoff-${slugify(organization.name)}.txt`;
+    document.body.append(anchor);
+    anchor.click();
+    anchor.remove();
+    URL.revokeObjectURL(url);
+    setMessage(labels.handoffDownloaded);
+  }
+
   useEffect(() => {
     const timeoutId = window.setTimeout(() => {
       void loadOrganization();
@@ -234,6 +277,10 @@ export function AdminOrganizationDetailClient({
     ];
   }, [labels, organization]);
   const onboardingDoneCount = onboardingChecklist.filter((item) => item.done).length;
+  const handoffStatus = organization
+    ? getHandoffStatus(organization, labels)
+    : { label: labels.needsUpdate, tone: "warning" as const };
+  const topMissingActions = organization?.missingActions.slice(0, 5) ?? [];
 
   if (status === "unauthorized") {
     return <AdminStateCard title={labels.unauthorizedTitle} description={message ?? labels.unauthorizedDescription} />;
@@ -309,6 +356,66 @@ export function AdminOrganizationDetailClient({
           <p className="text-lg font-semibold text-slate-950">{organization.readinessPercent}%</p>
         </div>
         <Progress value={organization.readinessPercent} className="mt-4 h-2" />
+      </section>
+
+      <section className="supplier-surface rounded-2xl border-0 p-5">
+        <div className="flex flex-col justify-between gap-4 xl:flex-row xl:items-start">
+          <div>
+            <div className="flex flex-wrap items-center gap-2">
+              <h2 className="text-lg font-semibold text-slate-950">{labels.internalHandoffSummary}</h2>
+              <Badge
+                variant="outline"
+                className={
+                  handoffStatus.tone === "ready"
+                    ? "rounded-full border-emerald-200 bg-emerald-50 text-emerald-700"
+                    : "rounded-full border-amber-200 bg-amber-50 text-amber-700"
+                }
+              >
+                {handoffStatus.label}
+              </Badge>
+            </div>
+            <p className="mt-1 max-w-3xl text-sm leading-6 text-slate-600">{labels.internalUseOnly}</p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <Button type="button" variant="outline" className="w-fit rounded-xl bg-white" onClick={handleCopyHandoffSummary}>
+              <ClipboardCopy data-icon="inline-start" />
+              {labels.copyHandoffSummary}
+            </Button>
+            <Button type="button" variant="outline" className="w-fit rounded-xl bg-white" onClick={handleDownloadHandoffSummary}>
+              <Download data-icon="inline-start" />
+              {labels.downloadHandoffTxt}
+            </Button>
+          </div>
+        </div>
+        {message ? <p className="mt-3 text-sm text-slate-600">{message}</p> : null}
+        <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+          <HandoffMetric label={labels.portfolio} value={organization.concierge?.portfolioLabel || labels.noPortfolioAssigned} />
+          <HandoffMetric label={labels.conciergeStatus} value={formatConciergeStatus(organization.concierge?.status ?? "not_started", labels)} />
+          <HandoffMetric label={labels.priority} value={formatPriority(organization.concierge?.priority ?? "normal", labels)} />
+          <HandoffMetric label={labels.onboardingStatus} value={formatOnboardingStatus(organization.concierge?.onboardingStatus ?? "not_started", labels)} />
+          <HandoffMetric label={labels.completion} value={`${organization.readinessPercent}%`} />
+          <HandoffMetric label={labels.evidenceSummary} value={`${organization.linkedEvidenceCount}/${organization.documentCount}`} />
+          <HandoffMetric label={labels.buyerRequests} value={String(organization.buyerRequestCount)} />
+          <HandoffMetric label={labels.nextFollowUp} value={formatDate(organization.concierge?.nextFollowUpDate ?? null, locale, labels.notProvided)} />
+        </div>
+        <div className="mt-5 grid gap-4 lg:grid-cols-2">
+          <div className="rounded-xl bg-slate-50 p-4">
+            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">{labels.onboardingNextAction}</p>
+            <p className="mt-2 text-sm font-medium text-slate-700">
+              {organization.concierge?.onboardingNextAction || labels.notProvided}
+            </p>
+          </div>
+          <div className="rounded-xl bg-slate-50 p-4">
+            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">{labels.missingSteps}</p>
+            <ul className="mt-2 grid gap-1 text-sm text-slate-700">
+              {topMissingActions.length ? (
+                topMissingActions.map((action) => <li key={action.id}>{action.label}</li>)
+              ) : (
+                <li>{labels.noMissingSteps}</li>
+              )}
+            </ul>
+          </div>
+        </div>
       </section>
 
       <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
@@ -705,6 +812,96 @@ function formatPriority(priority: ConciergePriority, labels: AdminLabels) {
   };
 
   return priorityLabels[priority];
+}
+
+function HandoffMetric({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-xl bg-slate-50 p-4">
+      <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">{label}</p>
+      <p className="mt-2 text-sm font-semibold text-slate-950">{value}</p>
+    </div>
+  );
+}
+
+function getHandoffStatus(organization: AdminOrganizationDetail, labels: AdminLabels) {
+  if (!organization.concierge?.onboardingNextAction) {
+    return { label: labels.missingNextAction, tone: "warning" as const };
+  }
+
+  if (!organization.concierge?.nextFollowUpDate) {
+    return { label: labels.missingFollowUpDate, tone: "warning" as const };
+  }
+
+  if (organization.triageStatus === "at_risk" || organization.concierge.priority === "high") {
+    return { label: labels.needsUpdate, tone: "warning" as const };
+  }
+
+  return { label: labels.handoffReady, tone: "ready" as const };
+}
+
+function buildHandoffSummaryText({
+  organization,
+  labels,
+  locale,
+}: {
+  organization: AdminOrganizationDetail;
+  labels: AdminLabels;
+  locale: string;
+}) {
+  const concierge = organization.concierge;
+  const missingActions = organization.missingActions.slice(0, 5).map((action) => `- ${action.label}`);
+  const internalNoteExcerpt = truncateText(concierge?.internalNote ?? concierge?.onboardingOwnerNote ?? "", 500);
+
+  return [
+    `${labels.internalHandoffSummary} — Supplier Passport`,
+    `${labels.organization}: ${organization.name}`,
+    `${labels.portfolio}: ${concierge?.portfolioLabel || labels.noPortfolioAssigned}`,
+    `${labels.assistedBy}: ${concierge?.partnerLabel || labels.notProvided}`,
+    `${labels.conciergeStatus}: ${formatConciergeStatus(concierge?.status ?? "not_started", labels)}`,
+    `${labels.priority}: ${formatPriority(concierge?.priority ?? "normal", labels)}`,
+    `${labels.onboardingStatus}: ${formatOnboardingStatus(concierge?.onboardingStatus ?? "not_started", labels)}`,
+    `${labels.onboardingProgress}: ${organization.onboardingChecklistDone}/${organization.onboardingChecklistTotal}`,
+    `${labels.completion}: ${organization.readinessPercent}%`,
+    `${labels.evidenceSummary}: ${organization.linkedEvidenceCount} ${labels.linkedEvidence.toLowerCase()} / ${organization.documentCount} ${labels.documents.toLowerCase()}`,
+    `${labels.certificateExpiryWarnings}: ${organization.certificateWarningCount}`,
+    `${labels.buyerRequests}: ${organization.buyerRequestCount}`,
+    `${labels.shareLinkStatus}: ${organization.activeShareLink ? labels.activePublicLink : labels.noActivePublicLink}`,
+    `${labels.onboardingNextAction}: ${concierge?.onboardingNextAction || labels.notProvided}`,
+    `${labels.nextFollowUp}: ${formatDate(concierge?.nextFollowUpDate ?? null, locale, labels.notProvided)}`,
+    `${labels.missingSteps}:`,
+    ...(missingActions.length ? missingActions : [`- ${labels.noMissingSteps}`]),
+    `${labels.internalNote}: ${internalNoteExcerpt || labels.notProvided}`,
+    `${labels.notes}: ${labels.internalUseOnly}`,
+  ].join("\n");
+}
+
+function truncateText(value: string, maxLength: number) {
+  const trimmed = value.trim();
+  if (trimmed.length <= maxLength) {
+    return trimmed;
+  }
+
+  return `${trimmed.slice(0, maxLength - 3)}...`;
+}
+
+function slugify(value: string) {
+  const slug = value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+
+  return slug || "organization";
+}
+
+function formatDate(value: string | null, locale: string, fallback: string) {
+  if (!value) {
+    return fallback;
+  }
+
+  const date = new Date(value);
+  return Number.isNaN(date.getTime())
+    ? fallback
+    : new Intl.DateTimeFormat(locale, { year: "numeric", month: "short", day: "numeric" }).format(date);
 }
 
 function AdminStateCard({

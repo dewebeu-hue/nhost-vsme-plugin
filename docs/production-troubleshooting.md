@@ -2138,6 +2138,42 @@ Manual QA:
 9. Confirm supplier dashboard, public Passport, share links, and PDFs do not show portfolio/internal partner notes.
 10. Repeat a quick route/copy check on `/en` and `/de`.
 
+## Faza 3.4 Assisted Onboarding Handoff Package
+
+Admin organization detail pages include an internal handoff summary for assisted onboarding and future partner/consultant handoff.
+
+Routes:
+
+- `/en/admin/organizations/[id]`
+- `/hr/admin/organizations/[id]`
+- `/de/admin/organizations/[id]`
+
+Behavior:
+
+- The handoff panel is admin-only and generated client-side from already-loaded admin summary data.
+- It includes organization name, portfolio label, assisted-by label, concierge status, priority, onboarding status, onboarding progress, readiness percentage, evidence counts, certificate warning count, buyer request count, public link status, next action, next follow-up date, top missing actions, and a shortened internal note excerpt.
+- It excludes private document URLs, storage IDs, raw sensitive answers, user/member data, and share token values.
+- Handoff readiness is derived from current admin fields:
+  - `Handoff ready` when next action and follow-up date are present and the organization is not high-risk/high-priority.
+  - `Missing next action` when the next action is empty.
+  - `Missing follow-up date` when no follow-up date is set.
+  - `Needs update` when the organization is at risk or marked high priority.
+- `Copy handoff summary` writes plain text to the admin clipboard only.
+- `Download handoff .txt` creates a local text file in the browser from the same safe text.
+- No email sending, partner account, partner login, buyer portal, impersonation, AI, Stripe, XBRL, plan limits, Supabase, or public handoff route is included.
+
+Manual QA:
+
+1. Login as an allowlisted admin.
+2. Open `/hr/admin/organizations/[id]`.
+3. Confirm `Interni handoff sažetak` appears.
+4. Confirm the panel shows portfolio, onboarding, readiness, evidence, buyer request, next action, follow-up, and missing-action data.
+5. Click `Kopiraj handoff sažetak`, paste into a text editor, and confirm the text is marked internal and contains no private URLs, storage IDs, raw answers, user/member data, or share token values.
+6. Click `Preuzmi handoff .txt` and inspect the downloaded text file.
+7. Clear next action or follow-up date and confirm the handoff readiness label changes after saving/refreshing.
+8. Confirm supplier dashboard, public Passport, share links, and PDFs do not show handoff data.
+9. Repeat a quick route/copy check on `/en` and `/de`.
+
 ## Safe Logging Rules
 
 Allowed categories:

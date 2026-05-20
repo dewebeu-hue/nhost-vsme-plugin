@@ -34,6 +34,7 @@ export type AdminLabels = {
   adminAccount: string;
   conciergeDashboard: string;
   organizations: string;
+  organization: string;
   risks: string;
   backToDashboard: string;
   logOut: string;
@@ -91,6 +92,7 @@ export type AdminLabels = {
   conciergeStatus: string;
   priority: string;
   internalNote: string;
+  notes: string;
   nextFollowUp: string;
   assistedOnboarding: string;
   onboardingStatus: string;
@@ -121,6 +123,17 @@ export type AdminLabels = {
   followUpDueToday: string;
   followUpDueSoon: string;
   noFollowUpScheduled: string;
+  internalHandoffSummary: string;
+  copyHandoffSummary: string;
+  handoffCopied: string;
+  handoffCopyError: string;
+  downloadHandoffTxt: string;
+  handoffDownloaded: string;
+  internalUseOnly: string;
+  handoffReady: string;
+  needsUpdate: string;
+  missingNextAction: string;
+  missingFollowUpDate: string;
   saveConciergeStatus: string;
   conciergeSaved: string;
   conciergeSaveError: string;
@@ -263,6 +276,7 @@ export const defaultAdminLabels: AdminLabels = {
   adminAccount: "Admin account",
   conciergeDashboard: "Concierge dashboard",
   organizations: "Organizations",
+  organization: "Organization",
   risks: "Risks",
   backToDashboard: "Back to dashboard",
   logOut: "Log out",
@@ -320,6 +334,7 @@ export const defaultAdminLabels: AdminLabels = {
   conciergeStatus: "Concierge status",
   priority: "Priority",
   internalNote: "Internal note",
+  notes: "Notes",
   nextFollowUp: "Next follow-up",
   assistedOnboarding: "Assisted onboarding",
   onboardingStatus: "Onboarding status",
@@ -351,6 +366,17 @@ export const defaultAdminLabels: AdminLabels = {
   followUpDueToday: "Follow-up due today",
   followUpDueSoon: "Follow-up due soon",
   noFollowUpScheduled: "No follow-up scheduled",
+  internalHandoffSummary: "Internal handoff summary",
+  copyHandoffSummary: "Copy handoff summary",
+  handoffCopied: "Handoff summary copied.",
+  handoffCopyError: "We could not copy the handoff summary right now.",
+  downloadHandoffTxt: "Download handoff .txt",
+  handoffDownloaded: "Handoff text file prepared.",
+  internalUseOnly: "Internal use only.",
+  handoffReady: "Handoff ready",
+  needsUpdate: "Needs update",
+  missingNextAction: "Missing next action",
+  missingFollowUpDate: "Missing follow-up date",
   saveConciergeStatus: "Save concierge status",
   conciergeSaved: "Concierge status saved.",
   conciergeSaveError: "We could not save concierge status right now.",
