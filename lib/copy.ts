@@ -8,7 +8,7 @@ export const landingPageCopy = {
   trustChips: [
     "EU-aligned & VSME-ready",
     "Secure & permissioned",
-    "Audit-ready evidence",
+    "Organized evidence",
   ],
 } as const;
 
@@ -46,7 +46,7 @@ export const howItWorksSteps = [
   },
   {
     title: "Generate passport",
-    description: "Turn completed answers and approved evidence into a polished buyer view.",
+    description: "Turn completed answers and selected evidence into a polished buyer view.",
   },
   {
     title: "Share with buyer",

@@ -2455,6 +2455,57 @@ Manual QA:
 8. Test plan, segment, and commercial status filters.
 9. Confirm supplier dashboard, public Passport, public PDF, and buyer-facing share pages do not show commercial metadata.
 
+## Faza 3.5 Korak 5 - Commercial Readiness Final QA
+
+Faza 3.5 closes commercial readiness as positioning and admin metadata only. It does not add billing, checkout, Stripe, invoices, subscriptions, plan limits, feature gating, payment collection, AI, XBRL, or Supabase.
+
+Public routes to verify:
+
+- `/en`, `/hr`, `/de`
+- `/en/pricing`, `/hr/pricing`, `/de/pricing`
+- `/en/request-demo`, `/hr/request-demo`, `/de/request-demo`
+- `/en/signup`, `/hr/signup`, `/de/signup`
+
+Public commercial QA:
+
+1. Landing pages load in all three locales.
+2. Pricing pages show Starter, Supplier Pro, Partner, Buyer Pilot, and Buyer Pro future/deferred positioning.
+3. Feature matrix is visible and marks buyer-side dashboard and online billing as future/not enabled where applicable.
+4. Buyer Pro is clearly future/deferred.
+5. Pricing copy states pilot rollout and manual commercial handling. It must not imply online checkout, active payment collection, invoices, paid subscription state, upgrade flow, or renewal dates.
+6. `Start Supplier Passport` routes to localized signup.
+7. `Request demo` routes to localized `/request-demo`.
+8. Request-demo contact CTA uses the safe mail link and does not submit a fake form or send backend email.
+9. Public pages do not load organization data, documents, storage IDs, share tokens, user/member data, or admin metadata.
+
+Admin commercial QA:
+
+1. Apply and track migration `nhost/migrations/default/0008_add_admin_commercial_fields/up.sql` after `0007_add_admin_portfolio_fields`.
+2. Login as an allowlisted admin.
+3. Open `/hr/admin/organizations`, then an organization detail page.
+4. Set commercial plan, segment, commercial status, pilot start date, pilot target date, and commercial note.
+5. Save and refresh to confirm persistence.
+6. Return to the organization list and confirm compact plan, segment, status, and pilot target labels appear.
+7. Test visible plan, segment, and commercial status filters.
+8. Confirm commercial metadata is not visible in supplier dashboard, public Passport, public PDF, buyer request response notes, or share pages.
+9. Confirm normal supplier users and logged-out users cannot access admin commercial APIs or pages.
+
+Privacy and scope:
+
+- Commercial notes, pilot dates, commercial status, and internal segment labels are admin-only.
+- Public plans use generic commercial package positioning only.
+- No private document URLs, storage file IDs, raw answers, secrets, cookies, JWTs, share tokens, or admin allowlists should be exposed or logged.
+- Avoid public claims such as `Certified`, `VSME certified`, `Audit-ready`, `Approved`, `Verified supplier`, legally compliant, or guaranteed compliance unless the copy is explicitly a disclaimer saying the product is not that.
+
+Deferred after Faza 3.5:
+
+- Billing.
+- Stripe.
+- Checkout.
+- Invoices.
+- Plan enforcement.
+- Buyer Pro platform.
+
 ## Safe Logging Rules
 
 Allowed categories:
