@@ -23,7 +23,7 @@ export function PricingComparisonTable() {
       <div className="mx-auto max-w-7xl">
         <div className="mb-8 max-w-3xl">
           <p className="text-sm font-semibold uppercase tracking-[0.18em] text-blue-600">
-            {t("title")}
+            {t("eyebrow")}
           </p>
           <h2 className="mt-3 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">
             {t("title")}

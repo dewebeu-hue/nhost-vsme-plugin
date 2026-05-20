@@ -7,7 +7,7 @@
     "navigation": {
       "product": "Product",
       "solutions": "Solutions",
-      "pricing": "Pricing",
+      "pricing": "Plans",
       "resources": "Resources",
       "login": "Login",
       "bookDemo": "Book a Demo"
@@ -732,11 +732,14 @@
   },
   "pricing": {
     "hero": {
-      "eyebrow": "Commercial readiness",
-      "title": "Plans for supplier readiness.",
-      "description": "Use these plan labels for sales and demo conversations. Billing, checkout and hard plan limits are not enabled in this version.",
-      "annualNote": "Commercial plan labels are positioning only; they do not change workspace access.",
-      "setupNote": "Talk to us about Supplier Passport for your suppliers or clients."
+      "eyebrow": "Plans for demo and sales conversations",
+      "title": "Supplier Passport plans",
+      "description": "Choose the right commercial package for supplier readiness, assisted onboarding or buyer-side pilots. Online billing is not enabled in this version.",
+      "annualNote": "These are commercial packages for rollout discussions, not active paid subscriptions.",
+      "setupNote": "Billing is not enabled in this version. Plan labels do not block or unlock features.",
+      "pricingStance": "Pricing is handled manually during pilot rollout. Online checkout is not enabled.",
+      "primaryCta": "Start Supplier Passport",
+      "secondaryCta": "Request demo"
     },
     "billing": {
       "monthly": "Positioning",
@@ -842,8 +845,9 @@
       }
     },
     "comparison": {
-      "title": "Compare commercial positioning",
-      "description": "A non-billing view of how the plan labels are positioned for sales conversations.",
+      "eyebrow": "Feature matrix",
+      "title": "Feature matrix for rollout conversations",
+      "description": "A public, non-billing view of what is available now, what is positioned for assisted rollout, and what is future/deferred.",
       "columns": {
         "feature": "Feature",
         "starter": "Starter",
@@ -853,35 +857,98 @@
       },
       "rows": [
         {
-          "feature": "Supplier readiness workspace",
-          "starter": "Core",
-          "pro": "Expanded",
-          "partner": "Portfolio",
-          "buyer": "Pilot scope"
-        },
-        {
-          "feature": "Buyer requests",
-          "starter": "Basic review",
-          "pro": "Workspace",
+          "feature": "Supplier Passport profile",
+          "starter": "Included",
+          "pro": "Included",
           "partner": "Client overview",
-          "buyer": "Future buyer-side"
+          "buyer": "Public review"
         },
         {
-          "feature": "Evidence readiness",
-          "starter": "Upload and link",
-          "pro": "Missing actions",
+          "feature": "VSME-aligned questionnaire",
+          "starter": "Included",
+          "pro": "Included",
+          "partner": "Client overview",
+          "buyer": "Standardized summary"
+        },
+        {
+          "feature": "Evidence Data Room",
+          "starter": "Included",
+          "pro": "Included",
+          "partner": "Client overview",
+          "buyer": "Evidence on request"
+        },
+        {
+          "feature": "Document evidence linking",
+          "starter": "Available",
+          "pro": "Included",
+          "partner": "Client overview",
+          "buyer": "Summary only"
+        },
+        {
+          "feature": "Certificate expiry tracking",
+          "starter": "Available",
+          "pro": "Included",
           "partner": "Portfolio triage",
-          "buyer": "Summary review"
+          "buyer": "Summary only"
+        },
+        {
+          "feature": "Public Passport link",
+          "starter": "Included",
+          "pro": "Included",
+          "partner": "Client overview",
+          "buyer": "Review link"
+        },
+        {
+          "feature": "PDF draft export",
+          "starter": "Included",
+          "pro": "Included",
+          "partner": "Client overview",
+          "buyer": "Supplier-provided"
+        },
+        {
+          "feature": "Buyer Request Workspace",
+          "starter": "Available",
+          "pro": "Included",
+          "partner": "Client overview",
+          "buyer": "Pilot workflow"
+        },
+        {
+          "feature": "Admin/Concierge Workspace",
+          "starter": "Not included",
+          "pro": "Assisted option",
+          "partner": "Included",
+          "buyer": "Not included"
         },
         {
           "feature": "Assisted onboarding",
-          "starter": "Available",
-          "pro": "Available",
-          "partner": "Primary workflow",
+          "starter": "Contact us",
+          "pro": "Contact us",
+          "partner": "Included",
           "buyer": "Pilot scoping"
         },
         {
-          "feature": "Billing and limits",
+          "feature": "Portfolio grouping",
+          "starter": "Not included",
+          "pro": "Not included",
+          "partner": "Included",
+          "buyer": "Future"
+        },
+        {
+          "feature": "Internal handoff summaries",
+          "starter": "Not included",
+          "pro": "Assisted option",
+          "partner": "Included",
+          "buyer": "Not included"
+        },
+        {
+          "feature": "Buyer-side dashboard",
+          "starter": "Not included",
+          "pro": "Not included",
+          "partner": "Not included",
+          "buyer": "Future"
+        },
+        {
+          "feature": "Online billing",
           "starter": "Not enabled",
           "pro": "Not enabled",
           "partner": "Not enabled",

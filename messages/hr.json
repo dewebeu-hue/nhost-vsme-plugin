@@ -7,7 +7,7 @@
     "navigation": {
       "product": "Proizvod",
       "solutions": "Rjesenja",
-      "pricing": "Cijene",
+      "pricing": "Paketi",
       "resources": "Resursi",
       "login": "Prijava",
       "bookDemo": "Rezerviraj demo"
@@ -732,11 +732,14 @@
   },
   "pricing": {
     "hero": {
-      "eyebrow": "Komercijalna spremnost",
-      "title": "Planovi za spremnost dobavlja?a.",
-      "description": "Koristite ove oznake planova za prodajne i demo razgovore. Naplata, checkout i tvrda ograni?enja planova nisu omogu?eni u ovoj verziji.",
-      "annualNote": "Oznake komercijalnih planova slu?e samo za pozicioniranje; ne mijenjaju pristup workspaceu.",
-      "setupNote": "Razgovarajte s nama o Supplier Passportu za va?e dobavlja?e ili klijente."
+      "eyebrow": "Paketi za demo i prodajne razgovore",
+      "title": "Supplier Passport paketi",
+      "description": "Odaberite paket za spremnost dobavlja?a, asistirani onboarding ili buyer-side pilot. Online naplata nije omogu?ena u ovoj verziji.",
+      "annualNote": "Ovo su komercijalni paketi za razgovore o uvo?enju, a ne aktivne pla?ene pretplate.",
+      "setupNote": "Online naplata nije omogu?ena. Oznake planova ne blokiraju i ne otklju?avaju zna?ajke.",
+      "pricingStance": "Cijene se dogovaraju ru?no tijekom pilot uvo?enja. Online checkout nije omogu?en.",
+      "primaryCta": "Zapo?ni Supplier Passport",
+      "secondaryCta": "Zatra?i demo"
     },
     "billing": {
       "monthly": "Pozicioniranje",
@@ -842,10 +845,11 @@
       }
     },
     "comparison": {
-      "title": "Usporedba komercijalnog pozicioniranja",
-      "description": "Pregled oznaka planova bez naplate, za prodajne razgovore.",
+      "eyebrow": "Matrica zna?ajki",
+      "title": "Matrica zna?ajki za razgovore o uvo?enju",
+      "description": "Javni pregled bez naplate: ?to je dostupno sada, ?to je pozicionirano za asistirano uvo?enje i ?to je budu?e/odgo?eno.",
       "columns": {
-        "feature": "Stavka",
+        "feature": "Zna?ajka",
         "starter": "Starter",
         "pro": "Supplier Pro",
         "partner": "Partner",
@@ -853,39 +857,102 @@
       },
       "rows": [
         {
-          "feature": "Workspace za spremnost dobavlja?a",
-          "starter": "Osnovno",
-          "pro": "Pro?ireno",
-          "partner": "Portfelj",
-          "buyer": "Pilot opseg"
-        },
-        {
-          "feature": "Zahtjevi kupaca",
-          "starter": "Osnovni pregled",
-          "pro": "Workspace",
+          "feature": "Supplier Passport profil",
+          "starter": "Uklju?eno",
+          "pro": "Uklju?eno",
           "partner": "Pregled klijenata",
-          "buyer": "Budu?i buyer-side"
+          "buyer": "Javni pregled"
         },
         {
-          "feature": "Spremnost dokaza",
-          "starter": "U?itavanje i povezivanje",
-          "pro": "Nedostaju?i koraci",
+          "feature": "VSME-aligned upitnik",
+          "starter": "Uklju?eno",
+          "pro": "Uklju?eno",
+          "partner": "Pregled klijenata",
+          "buyer": "Standardizirani sa?etak"
+        },
+        {
+          "feature": "Evidence Data Room",
+          "starter": "Uklju?eno",
+          "pro": "Uklju?eno",
+          "partner": "Pregled klijenata",
+          "buyer": "Dokazi na zahtjev"
+        },
+        {
+          "feature": "Povezivanje dokumenata s dokazima",
+          "starter": "Dostupno",
+          "pro": "Uklju?eno",
+          "partner": "Pregled klijenata",
+          "buyer": "Samo sa?etak"
+        },
+        {
+          "feature": "Pra?enje isteka certifikata",
+          "starter": "Dostupno",
+          "pro": "Uklju?eno",
           "partner": "Triage portfelja",
-          "buyer": "Pregled sa?etka"
+          "buyer": "Samo sa?etak"
+        },
+        {
+          "feature": "Javni Passport link",
+          "starter": "Uklju?eno",
+          "pro": "Uklju?eno",
+          "partner": "Pregled klijenata",
+          "buyer": "Pregled linka"
+        },
+        {
+          "feature": "Izvoz PDF nacrta",
+          "starter": "Uklju?eno",
+          "pro": "Uklju?eno",
+          "partner": "Pregled klijenata",
+          "buyer": "Dostavlja dobavlja?"
+        },
+        {
+          "feature": "Buyer Request Workspace",
+          "starter": "Dostupno",
+          "pro": "Uklju?eno",
+          "partner": "Pregled klijenata",
+          "buyer": "Pilot workflow"
+        },
+        {
+          "feature": "Admin/Concierge Workspace",
+          "starter": "Nije uklju?eno",
+          "pro": "Asistirana opcija",
+          "partner": "Uklju?eno",
+          "buyer": "Nije uklju?eno"
         },
         {
           "feature": "Asistirani onboarding",
-          "starter": "Dostupno",
-          "pro": "Dostupno",
-          "partner": "Glavni workflow",
+          "starter": "Kontaktirajte nas",
+          "pro": "Kontaktirajte nas",
+          "partner": "Uklju?eno",
           "buyer": "Definiranje pilota"
         },
         {
-          "feature": "Naplata i ograni?enja",
-          "starter": "Nije omogu?eno",
-          "pro": "Nije omogu?eno",
-          "partner": "Nije omogu?eno",
-          "buyer": "Nije omogu?eno"
+          "feature": "Grupiranje portfelja",
+          "starter": "Nije uklju?eno",
+          "pro": "Nije uklju?eno",
+          "partner": "Uklju?eno",
+          "buyer": "Budu?e"
+        },
+        {
+          "feature": "Interni handoff sa?eci",
+          "starter": "Nije uklju?eno",
+          "pro": "Asistirana opcija",
+          "partner": "Uklju?eno",
+          "buyer": "Nije uklju?eno"
+        },
+        {
+          "feature": "Buyer-side dashboard",
+          "starter": "Nije uklju?eno",
+          "pro": "Nije uklju?eno",
+          "partner": "Nije uklju?eno",
+          "buyer": "Budu?e"
+        },
+        {
+          "feature": "Online naplata",
+          "starter": "Nije omogu?ena",
+          "pro": "Nije omogu?ena",
+          "partner": "Nije omogu?ena",
+          "buyer": "Nije omogu?ena"
         }
       ]
     },

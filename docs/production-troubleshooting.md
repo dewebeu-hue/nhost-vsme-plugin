@@ -2313,6 +2313,41 @@ Deferred scope:
 - Plan enforcement.
 - Buyer Pro product behavior.
 
+## Faza 3.5 Korak 2 - Plans Page And Feature Matrix
+
+The public commercial page uses the existing localized pricing route:
+
+- `/en/pricing`
+- `/hr/pricing`
+- `/de/pricing`
+
+This route now functions as a plans page for sales/demo conversations. It includes:
+
+- Starter, Supplier Pro, Partner, Buyer Pilot, and Buyer Pro future/deferred plan cards.
+- A feature matrix covering Supplier Passport profile, questionnaire, Evidence Data Room, document evidence linking, certificate expiry tracking, public Passport link, PDF draft export, Buyer Request Workspace, Admin/Concierge Workspace, assisted onboarding, portfolio grouping, internal handoff summaries, buyer-side dashboard, and online billing.
+- A clear pricing stance: pricing is handled manually during pilot rollout and online checkout is not enabled.
+- Real CTAs only: localized signup for starting Supplier Passport and a `mailto:` demo request link.
+
+Safety rules:
+
+- Do not add Stripe, checkout, payment, invoices, online billing, or plan enforcement.
+- Do not gate or block product features by plan label.
+- Do not expose organization data, documents, storage IDs, share tokens, admin data, or user/member data on the public plans page.
+- Buyer Pro must remain marked as future/deferred until a real buyer-side product exists.
+
+Manual QA:
+
+1. Deploy.
+2. Open `/hr/pricing`.
+3. Confirm plan cards appear for Starter, Supplier Pro, Partner, Buyer Pilot, and Buyer Pro.
+4. Confirm Buyer Pro is marked future/deferred.
+5. Confirm the feature matrix appears and includes online billing as not enabled.
+6. Confirm there are no fake prices, checkout buttons, payment references, renewal dates, or billed-monthly claims.
+7. Click `Započni Supplier Passport` and confirm it routes to localized signup.
+8. Click `Zatraži demo` and confirm it opens a real mail link.
+9. Repeat quick checks on `/en/pricing` and `/de/pricing`.
+10. Confirm `/en`, `/hr`, and `/de` navigation links to the plans/pricing route.
+
 ## Safe Logging Rules
 
 Allowed categories:

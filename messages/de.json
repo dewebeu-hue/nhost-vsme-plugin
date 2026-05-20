@@ -7,7 +7,7 @@
     "navigation": {
       "product": "Produkt",
       "solutions": "Loesungen",
-      "pricing": "Preise",
+      "pricing": "Pakete",
       "resources": "Ressourcen",
       "login": "Login",
       "bookDemo": "Demo buchen"
@@ -732,11 +732,14 @@
   },
   "pricing": {
     "hero": {
-      "eyebrow": "Kommerzielle Bereitschaft",
-      "title": "Pl?ne f?r Lieferantenbereitschaft.",
-      "description": "Diese Planlabels dienen Verkaufs- und Demo-Gespr?chen. Abrechnung, Checkout und harte Planlimits sind in dieser Version nicht aktiviert.",
-      "annualNote": "Kommerzielle Planlabels dienen nur der Positionierung; sie ?ndern keinen Workspace-Zugriff.",
-      "setupNote": "Sprechen Sie mit uns ?ber Supplier Passport f?r Ihre Lieferanten oder Kunden."
+      "eyebrow": "Pakete f?r Demo- und Verkaufsgespr?che",
+      "title": "Supplier-Passport-Pakete",
+      "description": "W?hlen Sie das passende Paket f?r Lieferantenbereitschaft, begleitetes Onboarding oder Buyer-Pilots. Online-Abrechnung ist in dieser Version nicht aktiviert.",
+      "annualNote": "Dies sind kommerzielle Pakete f?r Rollout-Gespr?che, keine aktiven bezahlten Abonnements.",
+      "setupNote": "Online-Abrechnung ist nicht aktiviert. Planlabels sperren oder entsperren keine Funktionen.",
+      "pricingStance": "Preise werden w?hrend der Pilotphase manuell vereinbart. Online-Checkout ist nicht aktiviert.",
+      "primaryCta": "Supplier Passport starten",
+      "secondaryCta": "Demo anfragen"
     },
     "billing": {
       "monthly": "Positionierung",
@@ -842,8 +845,9 @@
       }
     },
     "comparison": {
-      "title": "Kommerzielle Positionierung vergleichen",
-      "description": "Eine nicht abrechnungsbezogene Sicht auf die Planlabels f?r Verkaufsgespr?che.",
+      "eyebrow": "Funktionsmatrix",
+      "title": "Funktionsmatrix f?r Rollout-Gespr?che",
+      "description": "Eine ?ffentliche Ansicht ohne Abrechnung: was jetzt verf?gbar ist, was f?r begleiteten Rollout positioniert ist und was zuk?nftig/zur?ckgestellt ist.",
       "columns": {
         "feature": "Funktion",
         "starter": "Starter",
@@ -853,35 +857,98 @@
       },
       "rows": [
         {
-          "feature": "Workspace f?r Lieferantenbereitschaft",
-          "starter": "Kern",
-          "pro": "Erweitert",
-          "partner": "Portfolio",
-          "buyer": "Pilotumfang"
-        },
-        {
-          "feature": "K?uferanfragen",
-          "starter": "Basispr?fung",
-          "pro": "Workspace",
+          "feature": "Supplier-Passport-Profil",
+          "starter": "Enthalten",
+          "pro": "Enthalten",
           "partner": "Kunden?bersicht",
-          "buyer": "Zuk?nftig buyer-seitig"
+          "buyer": "?ffentliche Pr?fung"
         },
         {
-          "feature": "Nachweisbereitschaft",
-          "starter": "Hochladen und verkn?pfen",
-          "pro": "Fehlende Schritte",
+          "feature": "VSME-orientierter Fragebogen",
+          "starter": "Enthalten",
+          "pro": "Enthalten",
+          "partner": "Kunden?bersicht",
+          "buyer": "Standardisierte Zusammenfassung"
+        },
+        {
+          "feature": "Evidence Data Room",
+          "starter": "Enthalten",
+          "pro": "Enthalten",
+          "partner": "Kunden?bersicht",
+          "buyer": "Nachweise auf Anfrage"
+        },
+        {
+          "feature": "Dokumente als Nachweise verkn?pfen",
+          "starter": "Verf?gbar",
+          "pro": "Enthalten",
+          "partner": "Kunden?bersicht",
+          "buyer": "Nur Zusammenfassung"
+        },
+        {
+          "feature": "Zertifikatsabl?ufe verfolgen",
+          "starter": "Verf?gbar",
+          "pro": "Enthalten",
           "partner": "Portfolio-Triage",
-          "buyer": "Zusammenfassung pr?fen"
+          "buyer": "Nur Zusammenfassung"
+        },
+        {
+          "feature": "?ffentlicher Passport-Link",
+          "starter": "Enthalten",
+          "pro": "Enthalten",
+          "partner": "Kunden?bersicht",
+          "buyer": "Linkpr?fung"
+        },
+        {
+          "feature": "PDF-Entwurf exportieren",
+          "starter": "Enthalten",
+          "pro": "Enthalten",
+          "partner": "Kunden?bersicht",
+          "buyer": "Vom Lieferanten bereitgestellt"
+        },
+        {
+          "feature": "Buyer Request Workspace",
+          "starter": "Verf?gbar",
+          "pro": "Enthalten",
+          "partner": "Kunden?bersicht",
+          "buyer": "Pilot-Workflow"
+        },
+        {
+          "feature": "Admin/Concierge Workspace",
+          "starter": "Nicht enthalten",
+          "pro": "Begleitete Option",
+          "partner": "Enthalten",
+          "buyer": "Nicht enthalten"
         },
         {
           "feature": "Begleitetes Onboarding",
-          "starter": "Verf?gbar",
-          "pro": "Verf?gbar",
-          "partner": "Prim?rer Workflow",
+          "starter": "Kontaktieren Sie uns",
+          "pro": "Kontaktieren Sie uns",
+          "partner": "Enthalten",
           "buyer": "Pilotdefinition"
         },
         {
-          "feature": "Abrechnung und Limits",
+          "feature": "Portfolio-Gruppierung",
+          "starter": "Nicht enthalten",
+          "pro": "Nicht enthalten",
+          "partner": "Enthalten",
+          "buyer": "Zuk?nftig"
+        },
+        {
+          "feature": "Interne ?bergabezusammenfassungen",
+          "starter": "Nicht enthalten",
+          "pro": "Begleitete Option",
+          "partner": "Enthalten",
+          "buyer": "Nicht enthalten"
+        },
+        {
+          "feature": "Buyer-seitiges Dashboard",
+          "starter": "Nicht enthalten",
+          "pro": "Nicht enthalten",
+          "partner": "Nicht enthalten",
+          "buyer": "Zuk?nftig"
+        },
+        {
+          "feature": "Online-Abrechnung",
           "starter": "Nicht aktiviert",
           "pro": "Nicht aktiviert",
           "partner": "Nicht aktiviert",
