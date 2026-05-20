@@ -35,6 +35,9 @@ export type AdminConciergeNote = {
   onboardingOwnerNote: string | null;
   onboardingChecklist: string[];
   onboardingCompletedAt: string | null;
+  portfolioLabel: string | null;
+  partnerLabel: string | null;
+  assignedConsultantNote: string | null;
   updatedAt: string | null;
 };
 
@@ -207,6 +210,9 @@ type ConciergeRecord = {
   onboarding_checklist?: unknown;
   onboarding_owner_note?: string | null;
   onboarding_completed_at?: string | null;
+  portfolio_label?: string | null;
+  partner_label?: string | null;
+  assigned_consultant_note?: string | null;
   updated_at?: string | null;
 };
 
@@ -284,6 +290,9 @@ const adminOverviewQuery = `
       onboarding_checklist
       onboarding_owner_note
       onboarding_completed_at
+      portfolio_label
+      partner_label
+      assigned_consultant_note
       updated_at
     }
   }
@@ -293,6 +302,11 @@ const organizationExistsQuery = `
   query AdminOrganizationExists($id: uuid!) {
     organizations_by_pk(id: $id) {
       id
+    }
+    organization_concierge_notes(where: { organization_id: { _eq: $id } }, limit: 1) {
+      reviewed_at
+      reviewed_by_user_id
+      onboarding_completed_at
     }
   }
 `;
@@ -315,6 +329,9 @@ const upsertConciergeNoteMutation = `
           onboarding_checklist
           onboarding_owner_note
           onboarding_completed_at
+          portfolio_label
+          partner_label
+          assigned_consultant_note
           updated_by_user_id
           updated_at
         ]
@@ -332,6 +349,9 @@ const upsertConciergeNoteMutation = `
       onboarding_checklist
       onboarding_owner_note
       onboarding_completed_at
+      portfolio_label
+      partner_label
+      assigned_consultant_note
       updated_at
     }
   }
@@ -456,10 +476,20 @@ export async function updateAdminConciergeNote(
     onboardingStatus?: unknown;
     onboardingNextAction?: unknown;
     onboardingOwnerNote?: unknown;
+    portfolioLabel?: unknown;
+    partnerLabel?: unknown;
+    assignedConsultantNote?: unknown;
   },
 ) {
   const user = await requireAdminUser(request);
-  const exists = await executeHasuraGraphql<{ organizations_by_pk: { id: string } | null }>(
+  const exists = await executeHasuraGraphql<{
+    organizations_by_pk: { id: string } | null;
+    organization_concierge_notes: Array<{
+      reviewed_at?: string | null;
+      reviewed_by_user_id?: string | null;
+      onboarding_completed_at?: string | null;
+    }>;
+  }>(
     organizationExistsQuery,
     { id: organizationId },
     { useAdminSecret: true },
@@ -469,9 +499,11 @@ export async function updateAdminConciergeNote(
     return null;
   }
 
+  const currentNote = exists.organization_concierge_notes[0] ?? null;
   const reviewedAt = input.markReviewed === true ? new Date().toISOString() : undefined;
   const onboardingStatus = normalizeOnboardingStatus(input.onboardingStatus);
-  const onboardingCompletedAt = onboardingStatus === "completed" ? new Date().toISOString() : null;
+  const onboardingCompletedAt =
+    onboardingStatus === "completed" ? currentNote?.onboarding_completed_at ?? new Date().toISOString() : null;
   const result = await executeHasuraGraphql<{
     insert_organization_concierge_notes_one: ConciergeRecord | null;
   }>(
@@ -483,11 +515,15 @@ export async function updateAdminConciergeNote(
         priority: normalizeConciergePriority(input.priority),
         internal_note: normalizeOptionalText(input.internalNote, 5000),
         next_follow_up_date: normalizeDate(input.nextFollowUpDate),
-        ...(reviewedAt ? { reviewed_at: reviewedAt, reviewed_by_user_id: user.id } : {}),
+        reviewed_at: reviewedAt ?? currentNote?.reviewed_at ?? null,
+        reviewed_by_user_id: reviewedAt ? user.id : currentNote?.reviewed_by_user_id ?? null,
         onboarding_status: onboardingStatus,
         onboarding_next_action: normalizeOptionalText(input.onboardingNextAction, 1000),
         onboarding_owner_note: normalizeOptionalText(input.onboardingOwnerNote, 5000),
         onboarding_completed_at: onboardingCompletedAt,
+        portfolio_label: normalizeOptionalText(input.portfolioLabel, 200),
+        partner_label: normalizeOptionalText(input.partnerLabel, 200),
+        assigned_consultant_note: normalizeOptionalText(input.assignedConsultantNote, 5000),
         updated_by_user_id: user.id,
         updated_at: new Date().toISOString(),
       },
@@ -867,6 +903,9 @@ function normalizeConcierge(record: ConciergeRecord): AdminConciergeNote {
     onboardingOwnerNote: record.onboarding_owner_note ?? null,
     onboardingChecklist: normalizeOnboardingChecklist(record.onboarding_checklist),
     onboardingCompletedAt: record.onboarding_completed_at ?? null,
+    portfolioLabel: record.portfolio_label ?? null,
+    partnerLabel: record.partner_label ?? null,
+    assignedConsultantNote: record.assigned_consultant_note ?? null,
     updatedAt: record.updated_at ?? null,
   };
 }

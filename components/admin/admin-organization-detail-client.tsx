@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState, type ReactNode } from "react";
+import type { FormEvent } from "react";
 import Link from "next/link";
 import { useLocale } from "next-intl";
 import { ArrowLeft, RefreshCw, Save } from "lucide-react";
@@ -54,6 +55,9 @@ export function AdminOrganizationDetailClient({
   const [onboardingStatus, setOnboardingStatus] = useState<OnboardingStatus>("not_started");
   const [onboardingNextAction, setOnboardingNextAction] = useState("");
   const [onboardingOwnerNote, setOnboardingOwnerNote] = useState("");
+  const [portfolioLabel, setPortfolioLabel] = useState("");
+  const [partnerLabel, setPartnerLabel] = useState("");
+  const [assignedConsultantNote, setAssignedConsultantNote] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const [status, setStatus] = useState<"loading" | "ready" | "unauthorized" | "error">("loading");
   const [message, setMessage] = useState<string | null>(null);
@@ -66,6 +70,9 @@ export function AdminOrganizationDetailClient({
     setOnboardingStatus(concierge?.onboardingStatus ?? "not_started");
     setOnboardingNextAction(concierge?.onboardingNextAction ?? "");
     setOnboardingOwnerNote(concierge?.onboardingOwnerNote ?? "");
+    setPortfolioLabel(concierge?.portfolioLabel ?? "");
+    setPartnerLabel(concierge?.partnerLabel ?? "");
+    setAssignedConsultantNote(concierge?.assignedConsultantNote ?? "");
   }
 
   async function loadOrganization() {
@@ -98,27 +105,42 @@ export function AdminOrganizationDetailClient({
     successMessage = labels.conciergeSaved,
     errorMessage = labels.conciergeSaveError,
   ) {
+    if (!organizationId) {
+      setMessage(labels.missingOrganizationContext);
+      return;
+    }
+
     setIsSaving(true);
     setMessage(null);
 
-    const response = await fetchWithAuth(`/api/admin/organizations/${organizationId}/concierge`, {
-      method: "PATCH",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({
-        status: conciergeStatus,
-        priority,
-        internalNote,
-        nextFollowUpDate,
-        markReviewed,
-        onboardingStatus,
-        onboardingNextAction,
-        onboardingOwnerNote,
-      }),
-    });
+    let response: Response;
 
-    setIsSaving(false);
+    try {
+      response = await fetchWithAuth(`/api/admin/organizations/${organizationId}/concierge`, {
+        method: "PATCH",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          status: conciergeStatus,
+          priority,
+          internalNote,
+          nextFollowUpDate,
+          markReviewed,
+          onboardingStatus,
+          onboardingNextAction,
+          onboardingOwnerNote,
+          portfolioLabel,
+          partnerLabel,
+          assignedConsultantNote,
+        }),
+      });
+    } catch {
+      setIsSaving(false);
+      setMessage(errorMessage);
+      return;
+    }
 
     if (!response.ok) {
+      setIsSaving(false);
       setMessage(errorMessage);
       return;
     }
@@ -127,7 +149,27 @@ export function AdminOrganizationDetailClient({
     const concierge = payload.concierge ?? null;
     setOrganization((current) => (current ? { ...current, concierge } : current));
     hydrateConciergeForm(concierge);
+    setIsSaving(false);
     setMessage(successMessage);
+  }
+
+  function handlePortfolioSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    void saveAdminSupportState(false, labels.conciergeSaved, labels.conciergeSaveError);
+  }
+
+  function handleOnboardingSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    void saveAdminSupportState(false, labels.onboardingSaved, labels.onboardingSaveError);
+  }
+
+  function handleConciergeSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    void saveAdminSupportState(false, labels.conciergeSaved, labels.conciergeSaveError);
+  }
+
+  function handleReviewedClick() {
+    void saveAdminSupportState(true, labels.reviewedSaved, labels.reviewedSaveError);
   }
 
   useEffect(() => {
@@ -293,8 +335,54 @@ export function AdminOrganizationDetailClient({
 
         <aside className="flex flex-col gap-6">
           <section className="supplier-surface rounded-2xl border-0 p-5">
+            <h2 className="text-lg font-semibold text-slate-950">{labels.assistedPortfolio}</h2>
+            <form className="mt-4 grid gap-4" onSubmit={handlePortfolioSubmit}>
+              <label htmlFor="admin-portfolio-label" className="grid gap-2 text-sm font-medium text-slate-700">
+                {labels.portfolioLabel}
+                <Input
+                  id="admin-portfolio-label"
+                  name="portfolioLabel"
+                  value={portfolioLabel}
+                  onChange={(event) => setPortfolioLabel(event.target.value)}
+                  className="h-10 rounded-xl bg-white"
+                />
+              </label>
+              <label htmlFor="admin-partner-label" className="grid gap-2 text-sm font-medium text-slate-700">
+                {labels.partnerLabel}
+                <Input
+                  id="admin-partner-label"
+                  name="partnerLabel"
+                  value={partnerLabel}
+                  onChange={(event) => setPartnerLabel(event.target.value)}
+                  className="h-10 rounded-xl bg-white"
+                />
+              </label>
+              <label htmlFor="admin-assigned-consultant-note" className="grid gap-2 text-sm font-medium text-slate-700">
+                {labels.internalPartnerNote}
+                <Textarea
+                  id="admin-assigned-consultant-note"
+                  name="assignedConsultantNote"
+                  value={assignedConsultantNote}
+                  onChange={(event) => setAssignedConsultantNote(event.target.value)}
+                  rows={3}
+                  className="rounded-xl bg-white"
+                />
+              </label>
+              <Button
+                type="submit"
+                disabled={isSaving}
+                className="w-fit rounded-xl"
+              >
+                <Save data-icon="inline-start" />
+                {labels.assistedPortfolio}
+              </Button>
+              {message ? <p className="text-sm text-slate-600">{message}</p> : null}
+            </form>
+          </section>
+
+          <section className="supplier-surface rounded-2xl border-0 p-5">
             <h2 className="text-lg font-semibold text-slate-950">{labels.assistedOnboarding}</h2>
-            <div className="mt-4 grid gap-4">
+            <form className="mt-4 grid gap-4" onSubmit={handleOnboardingSubmit}>
               <div>
                 <div className="flex items-center justify-between gap-3 text-sm font-semibold text-slate-950">
                   <span>{labels.onboardingProgress}</span>
@@ -311,13 +399,14 @@ export function AdminOrganizationDetailClient({
                   className="mt-2 h-2"
                 />
               </div>
-              <label className="grid gap-2 text-sm font-medium text-slate-700">
+              <div className="grid gap-2 text-sm font-medium text-slate-700">
                 {labels.onboardingStatus}
                 <Select
+                  name="onboardingStatus"
                   value={onboardingStatus}
                   onValueChange={(value) => setOnboardingStatus(value as OnboardingStatus)}
                 >
-                  <SelectTrigger className="h-10 rounded-xl bg-white">
+                  <SelectTrigger id="admin-onboarding-status" className="h-10 rounded-xl bg-white">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -339,18 +428,22 @@ export function AdminOrganizationDetailClient({
                     </SelectGroup>
                   </SelectContent>
                 </Select>
-              </label>
-              <label className="grid gap-2 text-sm font-medium text-slate-700">
+              </div>
+              <label htmlFor="admin-onboarding-next-action" className="grid gap-2 text-sm font-medium text-slate-700">
                 {labels.onboardingNextAction}
                 <Input
+                  id="admin-onboarding-next-action"
+                  name="onboardingNextAction"
                   value={onboardingNextAction}
                   onChange={(event) => setOnboardingNextAction(event.target.value)}
                   className="h-10 rounded-xl bg-white"
                 />
               </label>
-              <label className="grid gap-2 text-sm font-medium text-slate-700">
+              <label htmlFor="admin-onboarding-owner-note" className="grid gap-2 text-sm font-medium text-slate-700">
                 {labels.onboardingOwnerNote}
                 <Textarea
+                  id="admin-onboarding-owner-note"
+                  name="onboardingOwnerNote"
                   value={onboardingOwnerNote}
                   onChange={(event) => setOnboardingOwnerNote(event.target.value)}
                   rows={3}
@@ -358,17 +451,15 @@ export function AdminOrganizationDetailClient({
                 />
               </label>
               <Button
-                type="button"
-                onClick={() =>
-                  void saveAdminSupportState(false, labels.onboardingSaved, labels.onboardingSaveError)
-                }
+                type="submit"
                 disabled={isSaving}
                 className="w-fit rounded-xl"
               >
                 <Save data-icon="inline-start" />
                 {labels.saveOnboardingDetails}
               </Button>
-            </div>
+              {message ? <p className="text-sm text-slate-600">{message}</p> : null}
+            </form>
           </section>
 
           <section className="supplier-surface rounded-2xl border-0 p-5">
@@ -395,14 +486,15 @@ export function AdminOrganizationDetailClient({
 
           <section className="supplier-surface rounded-2xl border-0 p-5">
             <h2 className="text-lg font-semibold text-slate-950">{labels.conciergeStatus}</h2>
-            <div className="mt-4 grid gap-4">
-              <label className="grid gap-2 text-sm font-medium text-slate-700">
+            <form className="mt-4 grid gap-4" onSubmit={handleConciergeSubmit}>
+              <div className="grid gap-2 text-sm font-medium text-slate-700">
                 {labels.conciergeStatus}
                 <Select
+                  name="conciergeStatus"
                   value={conciergeStatus}
                   onValueChange={(value) => setConciergeStatus(value as ConciergeStatus)}
                 >
-                  <SelectTrigger className="h-10 rounded-xl bg-white">
+                  <SelectTrigger id="admin-concierge-status" className="h-10 rounded-xl bg-white">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -415,11 +507,11 @@ export function AdminOrganizationDetailClient({
                     </SelectGroup>
                   </SelectContent>
                 </Select>
-              </label>
-              <label className="grid gap-2 text-sm font-medium text-slate-700">
+              </div>
+              <div className="grid gap-2 text-sm font-medium text-slate-700">
                 {labels.priority}
-                <Select value={priority} onValueChange={(value) => setPriority(value as ConciergePriority)}>
-                  <SelectTrigger className="h-10 rounded-xl bg-white">
+                <Select name="priority" value={priority} onValueChange={(value) => setPriority(value as ConciergePriority)}>
+                  <SelectTrigger id="admin-concierge-priority" className="h-10 rounded-xl bg-white">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -432,19 +524,23 @@ export function AdminOrganizationDetailClient({
                     </SelectGroup>
                   </SelectContent>
                 </Select>
-              </label>
-              <label className="grid gap-2 text-sm font-medium text-slate-700">
+              </div>
+              <label htmlFor="admin-next-follow-up-date" className="grid gap-2 text-sm font-medium text-slate-700">
                 {labels.nextFollowUp}
                 <Input
+                  id="admin-next-follow-up-date"
+                  name="nextFollowUpDate"
                   type="date"
                   value={nextFollowUpDate}
                   onChange={(event) => setNextFollowUpDate(event.target.value)}
                   className="h-10 rounded-xl bg-white"
                 />
               </label>
-              <label className="grid gap-2 text-sm font-medium text-slate-700">
+              <label htmlFor="admin-internal-note" className="grid gap-2 text-sm font-medium text-slate-700">
                 {labels.internalNote}
                 <Textarea
+                  id="admin-internal-note"
+                  name="internalNote"
                   value={internalNote}
                   onChange={(event) => setInternalNote(event.target.value)}
                   rows={4}
@@ -454,8 +550,7 @@ export function AdminOrganizationDetailClient({
               {message ? <p className="text-sm text-slate-600">{message}</p> : null}
               <div className="flex flex-wrap gap-2">
                 <Button
-                  type="button"
-                  onClick={() => void saveAdminSupportState(false, labels.conciergeSaved)}
+                  type="submit"
                   disabled={isSaving}
                   className="w-fit rounded-xl"
                 >
@@ -464,7 +559,7 @@ export function AdminOrganizationDetailClient({
                 </Button>
                 <Button
                   type="button"
-                  onClick={() => void saveAdminSupportState(true, labels.conciergeSaved)}
+                  onClick={handleReviewedClick}
                   disabled={isSaving}
                   variant="outline"
                   className="w-fit rounded-xl bg-white"
@@ -478,7 +573,7 @@ export function AdminOrganizationDetailClient({
                 </p>
                 <p className="mt-1 text-xs leading-5 text-slate-500">{labels.internalReviewDisclaimer}</p>
               </div>
-            </div>
+            </form>
           </section>
 
           <section className="supplier-surface rounded-2xl border-0 p-5">

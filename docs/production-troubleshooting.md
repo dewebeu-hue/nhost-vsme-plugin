@@ -1989,6 +1989,111 @@ Manual QA:
 9. Confirm supplier dashboard, public Passport, share links, and PDFs do not show onboarding notes.
 10. Repeat a quick route/copy check on `/en` and `/de`.
 
+## Faza 3.4 Partner-Ready Portfolio Grouping
+
+The Admin / Concierge organization list and detail pages support internal grouping of organizations into assisted portfolios.
+
+Admin routes:
+
+- `/en/admin/organizations`
+- `/hr/admin/organizations`
+- `/de/admin/organizations`
+- `/en/admin/organizations/[id]`
+- `/hr/admin/organizations/[id]`
+- `/de/admin/organizations/[id]`
+
+Data model:
+
+- Reuses `organization_concierge_notes`.
+- Migration: `nhost/migrations/default/0007_add_admin_portfolio_fields/up.sql`
+- Added fields:
+  - `portfolio_label`
+  - `partner_label`
+  - `assigned_consultant_note`
+
+Behavior:
+
+- Organization detail lets an allowlisted admin set a portfolio label, assisted-by label, and internal partner note.
+- Organization list shows portfolio and assisted-by labels.
+- Organization list search includes organization name, portfolio label, and assisted-by label.
+- Organization list has working portfolio and triage filters.
+- Organization list shows safe portfolio summary counts, including unassigned portfolio count.
+
+Privacy scope:
+
+- Portfolio labels and internal partner notes are admin-only.
+- They must not appear in supplier dashboard pages, public Passport pages, PDF exports, buyer request public surfaces, or share links.
+- No partner accounts, partner login, partner permissions, buyer portal, impersonation, email sending, AI, Stripe, XBRL, plan limits, or Supabase are included.
+
+Production action:
+
+1. Apply and track `nhost/migrations/default/0007_add_admin_portfolio_fields/up.sql` after the concierge/onboarding migrations.
+2. Confirm `organization_concierge_notes` remains admin-only.
+3. Redeploy or refresh Hasura schema metadata if needed.
+
+Manual QA:
+
+1. Login as an allowlisted admin.
+2. Open `/hr/admin/organizations`.
+3. Open an organization detail page.
+4. Set `Oznaka portfelja`, `Podržava`, and `Interna partnerska bilješka`.
+5. Save, refresh, and confirm persistence.
+6. Return to `/hr/admin/organizations` and confirm portfolio label appears.
+7. Test the portfolio filter and triage filter.
+8. Confirm supplier dashboard, public Passport, share links, and PDFs do not show portfolio/internal partner notes.
+9. Repeat a quick route/copy check on `/en` and `/de`.
+
+## Faza 3.4.1 Admin Detail Save Actions
+
+The admin organization detail page uses the existing admin-only concierge endpoint for these internal actions:
+
+- Assisted onboarding save.
+- Concierge status save.
+- Internal review marker.
+- Assisted portfolio fields.
+
+Endpoint:
+
+- `PATCH /api/admin/organizations/[id]/concierge`
+
+Expected behavior:
+
+- Each active save/review button sends a PATCH request.
+- The route requires an allowlisted admin user through the server-side admin gate.
+- The organization id comes from the admin route context.
+- The route upserts `organization_concierge_notes`.
+- Successful saves return the updated concierge object.
+- Failed saves show localized safe errors in the admin UI.
+
+Fields updated by the shared admin support save:
+
+- `status`
+- `priority`
+- `internal_note`
+- `next_follow_up_date`
+- `reviewed_at`
+- `reviewed_by_user_id`
+- `onboarding_status`
+- `onboarding_next_action`
+- `onboarding_owner_note`
+- `onboarding_completed_at`
+- `portfolio_label`
+- `partner_label`
+- `assigned_consultant_note`
+
+Manual QA:
+
+1. Login as an allowlisted admin.
+2. Open `/hr/admin/organizations/[id]`.
+3. Edit onboarding status, next action, and onboarding note.
+4. Click `Spremi onboarding podatke`; confirm a PATCH request and success message.
+5. Refresh and confirm persistence.
+6. Edit concierge status, priority, next contact, and internal note.
+7. Click `Spremi concierge status`; confirm a PATCH request and success message.
+8. Refresh and confirm persistence.
+9. Click `Označi kao pregledano`; confirm a PATCH request and internal review state.
+10. Confirm a normal supplier cannot call the PATCH endpoint.
+
 ## Safe Logging Rules
 
 Allowed categories:

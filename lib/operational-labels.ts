@@ -102,9 +102,23 @@ export type AdminLabels = {
   onboardingSaved: string;
   onboardingSaveError: string;
   onboardingChecklistAutoNote: string;
+  portfolio: string;
+  portfolioLabel: string;
+  partnerLabel: string;
+  assistedBy: string;
+  internalPartnerNote: string;
+  noPortfolioAssigned: string;
+  organizationsByPortfolio: string;
+  assistedPortfolio: string;
+  allPortfolios: string;
+  allTriage: string;
+  portfolioSummary: string;
   saveConciergeStatus: string;
   conciergeSaved: string;
   conciergeSaveError: string;
+  reviewedSaved: string;
+  reviewedSaveError: string;
+  missingOrganizationContext: string;
   reviewedInternally: string;
   internalReviewDisclaimer: string;
   support: string;
@@ -310,9 +324,23 @@ export const defaultAdminLabels: AdminLabels = {
   onboardingSaveError: "We could not save onboarding details right now.",
   onboardingChecklistAutoNote:
     "Checklist status is derived from supplier workspace data where possible. Manual overrides are not included in this step.",
+  portfolio: "Portfolio",
+  portfolioLabel: "Portfolio label",
+  partnerLabel: "Assisted by",
+  assistedBy: "Assisted by",
+  internalPartnerNote: "Internal partner note",
+  noPortfolioAssigned: "No portfolio assigned",
+  organizationsByPortfolio: "Organizations by portfolio",
+  assistedPortfolio: "Assisted portfolio",
+  allPortfolios: "All portfolios",
+  allTriage: "All triage",
+  portfolioSummary: "Portfolio summary",
   saveConciergeStatus: "Save concierge status",
   conciergeSaved: "Concierge status saved.",
   conciergeSaveError: "We could not save concierge status right now.",
+  reviewedSaved: "Organization marked as internally reviewed.",
+  reviewedSaveError: "We could not mark this organization as reviewed right now.",
+  missingOrganizationContext: "We could not identify this organization. Please refresh and try again.",
   reviewedInternally: "Reviewed internally",
   internalReviewDisclaimer: "Internal review only. This is not a certification or approval.",
   support: "Support",

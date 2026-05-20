@@ -36,17 +36,53 @@ export function AdminOrganizationsClient({ labels = defaultAdminLabels }: AdminO
   const locale = useLocale();
   const [organizations, setOrganizations] = useState<AdminOrganizationSummary[]>([]);
   const [query, setQuery] = useState("");
+  const [portfolioFilter, setPortfolioFilter] = useState("__all");
+  const [triageFilter, setTriageFilter] = useState<AdminTriageStatus | "__all">("__all");
   const [status, setStatus] = useState<"loading" | "ready" | "unauthorized" | "error">("loading");
   const [message, setMessage] = useState<string | null>(null);
 
   const filteredOrganizations = useMemo(() => {
     const normalized = query.trim().toLowerCase();
-    if (!normalized) {
-      return organizations;
+    return organizations.filter((organization) => {
+      const portfolio = organization.concierge?.portfolioLabel ?? "";
+      const searchMatch =
+        !normalized ||
+        organization.name.toLowerCase().includes(normalized) ||
+        portfolio.toLowerCase().includes(normalized) ||
+        (organization.concierge?.partnerLabel ?? "").toLowerCase().includes(normalized);
+      const portfolioMatch =
+        portfolioFilter === "__all" ||
+        (portfolioFilter === "__none" ? !portfolio : portfolio === portfolioFilter);
+      const triageMatch = triageFilter === "__all" || organization.triageStatus === triageFilter;
+
+      return searchMatch && portfolioMatch && triageMatch;
+    });
+  }, [organizations, portfolioFilter, query, triageFilter]);
+  const portfolioOptions = useMemo(() => {
+    return Array.from(
+      new Set(organizations.map((organization) => organization.concierge?.portfolioLabel).filter(Boolean) as string[]),
+    ).sort((a, b) => a.localeCompare(b));
+  }, [organizations]);
+  const portfolioSummaries = useMemo(() => {
+    const summaries = new Map<string, { label: string; count: number; demoReady: number; waiting: number; atRisk: number }>();
+    for (const organization of organizations) {
+      const label = organization.concierge?.portfolioLabel || labels.noPortfolioAssigned;
+      const current = summaries.get(label) ?? { label, count: 0, demoReady: 0, waiting: 0, atRisk: 0 };
+      current.count += 1;
+      if (organization.triageStatus === "demo_ready") {
+        current.demoReady += 1;
+      }
+      if (organization.concierge?.onboardingStatus === "waiting_on_supplier") {
+        current.waiting += 1;
+      }
+      if (organization.triageStatus === "at_risk") {
+        current.atRisk += 1;
+      }
+      summaries.set(label, current);
     }
 
-    return organizations.filter((organization) => organization.name.toLowerCase().includes(normalized));
-  }, [organizations, query]);
+    return Array.from(summaries.values()).sort((a, b) => b.count - a.count || a.label.localeCompare(b.label));
+  }, [labels.noPortfolioAssigned, organizations]);
 
   async function loadOrganizations() {
     setStatus("loading");
@@ -121,7 +157,8 @@ export function AdminOrganizationsClient({ labels = defaultAdminLabels }: AdminO
       </div>
 
       <section className="supplier-surface rounded-2xl border-0 p-4">
-        <div className="relative">
+        <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_220px_180px]">
+          <div className="relative">
           <Search
             aria-hidden="true"
             className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
@@ -132,8 +169,54 @@ export function AdminOrganizationsClient({ labels = defaultAdminLabels }: AdminO
             placeholder={labels.searchOrganizations}
             className="h-11 rounded-xl bg-slate-50 pl-10"
           />
+          </div>
+          <select
+            value={portfolioFilter}
+            onChange={(event) => setPortfolioFilter(event.target.value)}
+            className="h-11 rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm font-medium text-slate-700"
+          >
+            <option value="__all">{labels.allPortfolios}</option>
+            <option value="__none">{labels.noPortfolioAssigned}</option>
+            {portfolioOptions.map((portfolio) => (
+              <option key={portfolio} value={portfolio}>
+                {portfolio}
+              </option>
+            ))}
+          </select>
+          <select
+            value={triageFilter}
+            onChange={(event) => setTriageFilter(event.target.value as AdminTriageStatus | "__all")}
+            className="h-11 rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm font-medium text-slate-700"
+          >
+            <option value="__all">{labels.allTriage}</option>
+            <option value="needs_attention">{labels.triageNeedsAttention}</option>
+            <option value="in_progress">{labels.triageInProgress}</option>
+            <option value="demo_ready">{labels.triageDemoReady}</option>
+            <option value="at_risk">{labels.triageAtRisk}</option>
+          </select>
         </div>
       </section>
+
+      {portfolioSummaries.length ? (
+        <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          <SummaryCard label={labels.totalOrganizations} value={organizations.length} />
+          <SummaryCard label={labels.triageDemoReady} value={organizations.filter((item) => item.triageStatus === "demo_ready").length} />
+          <SummaryCard label={labels.statusWaitingOnSupplier} value={organizations.filter((item) => item.concierge?.onboardingStatus === "waiting_on_supplier").length} />
+          <SummaryCard label={labels.noPortfolioAssigned} value={organizations.filter((item) => !item.concierge?.portfolioLabel).length} />
+          {portfolioSummaries.slice(0, 4).map((summary) => (
+            <article key={summary.label} className="supplier-surface rounded-2xl border-0 p-4">
+              <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">
+                {labels.portfolioSummary}
+              </p>
+              <p className="mt-2 text-base font-semibold text-slate-950">{summary.label}</p>
+              <p className="mt-1 text-sm text-slate-600">
+                {summary.count} {labels.organizations.toLowerCase()} · {summary.demoReady}{" "}
+                {labels.triageDemoReady.toLowerCase()} · {summary.atRisk} {labels.triageAtRisk.toLowerCase()}
+              </p>
+            </article>
+          ))}
+        </section>
+      ) : null}
 
       {status === "loading" ? (
         <AdminStateCard title={labels.loading} description={labels.loading} />
@@ -156,6 +239,17 @@ export function AdminOrganizationsClient({ labels = defaultAdminLabels }: AdminO
                       formatDate(organization.createdAt, locale, labels.notProvided),
                     )}
                   </p>
+                  <p className="mt-2 text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">
+                    {labels.portfolio}
+                  </p>
+                  <p className="mt-1 text-sm text-slate-600">
+                    {organization.concierge?.portfolioLabel || labels.noPortfolioAssigned}
+                  </p>
+                  {organization.concierge?.partnerLabel ? (
+                    <p className="mt-1 text-xs text-slate-500">
+                      {labels.assistedBy}: {organization.concierge.partnerLabel}
+                    </p>
+                  ) : null}
                 </div>
 
                 <div>
@@ -271,6 +365,15 @@ function Metric({ label, value }: { label: string; value: number }) {
       <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">{label}</p>
       <p className="mt-1 text-lg font-semibold text-slate-950">{value}</p>
     </div>
+  );
+}
+
+function SummaryCard({ label, value }: { label: string; value: number }) {
+  return (
+    <article className="supplier-surface rounded-2xl border-0 p-4">
+      <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">{label}</p>
+      <p className="mt-2 text-2xl font-semibold text-slate-950">{value}</p>
+    </article>
   );
 }
 
