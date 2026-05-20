@@ -11,11 +11,13 @@ import { ProgressRing } from "@/components/shared/progress-ring";
 import { StateCard } from "@/components/shared/state-card";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
+import { extractSupplierToken } from "@/lib/buyer-token";
 import { cn } from "@/lib/utils";
 import type { publicSharePassport } from "@/lib/mock-data";
 
 type BuyerSupplierSummaryProps = {
   passport: typeof publicSharePassport;
+  token?: string;
 };
 
 export function BuyerPortalLanding() {
@@ -148,6 +150,13 @@ export function BuyerSuppliersNeutralPage() {
               {t("openSharedSupplier")}
               <ArrowRight data-icon="inline-end" />
             </button>
+            <Link
+              href={`/${locale}/buyer/compare`}
+              className={cn(buttonVariants({ variant: "outline", size: "lg" }), "h-12 rounded-xl bg-white px-5")}
+            >
+              {t("compareSuppliers")}
+              <ArrowRight data-icon="inline-end" />
+            </Link>
           </form>
         </section>
       </main>
@@ -179,7 +188,7 @@ export function BuyerSupplierUnavailable() {
   );
 }
 
-export function BuyerSupplierSummary({ passport }: BuyerSupplierSummaryProps) {
+export function BuyerSupplierSummary({ passport, token }: BuyerSupplierSummaryProps) {
   const locale = useLocale();
   const t = useTranslations("buyerPortal");
   const evidenceSection = passport.sections.find((section) => section.title === "Evidence summary");
@@ -201,6 +210,14 @@ export function BuyerSupplierSummary({ passport }: BuyerSupplierSummaryProps) {
           >
             {t("backToSupplierLinks")}
           </Link>
+          {token ? (
+            <Link
+              href={`/${locale}/buyer/compare?token=${encodeURIComponent(token)}`}
+              className={cn(buttonVariants(), "rounded-xl")}
+            >
+              {t("addToComparison")}
+            </Link>
+          ) : null}
         </nav>
 
         <section className="overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-xl shadow-slate-200/70">
@@ -306,60 +323,6 @@ function MetricCard({ icon: Icon, label, value }: { icon: LucideIcon; label: str
       <p className="mt-2 text-3xl font-semibold tracking-tight text-slate-950">{value}</p>
     </article>
   );
-}
-
-function extractSupplierToken(input: string) {
-  const value = input.trim();
-
-  if (!value) {
-    return null;
-  }
-
-  const fromPath = (pathname: string) => {
-    const segments = pathname.split("/").filter(Boolean);
-    const passportIndex = segments.indexOf("passport");
-    const suppliersIndex = segments.indexOf("suppliers");
-    const token =
-      passportIndex >= 0
-        ? segments[passportIndex + 1]
-        : suppliersIndex >= 0
-          ? segments[suppliersIndex + 1]
-          : null;
-
-    return token ? normalizeSupplierToken(token) : null;
-  };
-
-  try {
-    const url = new URL(value);
-    const token = fromPath(url.pathname);
-    if (token) {
-      return token;
-    }
-  } catch {
-    if (value.startsWith("/")) {
-      try {
-        const url = new URL(value, "https://supplier-passport.local");
-        const token = fromPath(url.pathname);
-        if (token) {
-          return token;
-        }
-      } catch {
-        return null;
-      }
-    }
-  }
-
-  return normalizeSupplierToken(value);
-}
-
-function normalizeSupplierToken(token: string) {
-  const trimmed = decodeURIComponent(token).trim();
-
-  if (!/^[A-Za-z0-9._~-]{4,512}$/.test(trimmed)) {
-    return null;
-  }
-
-  return trimmed;
 }
 
 function translateSectionTitle(title: string, t: ReturnType<typeof useTranslations<"buyerPortal">>) {

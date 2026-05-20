@@ -2594,6 +2594,56 @@ Manual QA:
 8. Confirm no private URLs, storage IDs, raw answers, admin/internal notes, or full token values are visible.
 9. Repeat quick checks on `/en/buyer/suppliers` and `/de/buyer/suppliers`.
 
+## Faza 4.0 Korak 3 - Buyer Supplier Comparison
+
+Buyer comparison is a token-based, browser-local shortlist. It does not create buyer accounts, buyer login, buyer organizations, server-side saved buyer lists, email sending, billing, Stripe, AI, XBRL, or Supabase.
+
+Routes and API:
+
+- `/en/buyer/compare`, `/hr/buyer/compare`, `/de/buyer/compare`
+- `POST /api/buyer/compare`
+
+Storage model:
+
+- The compare page stores supplier share tokens only in browser `localStorage` under `supplier-passport:buyer-compare:v1`.
+- No buyer shortlist or comparison list is persisted in the database.
+- Buyers can remove individual suppliers or clear the full local comparison.
+- The compare page accepts `/passport/[token]`, `/buyer/suppliers/[token]`, or a plain token.
+- The supplier summary page can open `/buyer/compare?token=...`; the compare page stores it locally and then removes the token query from the visible URL.
+- Maximum comparison size is 10 suppliers.
+
+Safe compare API behavior:
+
+- Accepts up to 10 normalized tokens.
+- Does not echo full tokens in the response.
+- Returns indexed buyer-safe summaries only: organization name, readiness percentage, last updated date, evidence count, certificate status, and section completion/status.
+- Invalid, inactive, expired, mock, or unavailable tokens return an unavailable item.
+- Password-protected links return a password-required item unless already verified through the existing token-scoped share cookie.
+- Logs only stage/index/error message metadata, not token values.
+
+Excluded from comparison:
+
+- Private document URLs.
+- Storage file IDs.
+- Raw sensitive questionnaire answers.
+- User/member data.
+- Buyer request notes.
+- Admin, concierge, onboarding, portfolio, handoff, or commercial notes.
+- Full share token values in UI, API responses, or logs.
+
+Manual QA:
+
+1. Deploy.
+2. Open `/hr/buyer/compare`.
+3. Add a valid supplier link or token and confirm the summary appears.
+4. Add a second valid supplier link if available and confirm side-by-side cards/table rows.
+5. Add an invalid token and confirm the unavailable state.
+6. Remove one supplier and confirm it disappears from the browser-local list.
+7. Clear the comparison and confirm the list is empty.
+8. Open `/hr/buyer/suppliers/[token]`, click `Dodaj u usporedbu`, and confirm it lands on comparison without showing the token in the URL afterward.
+9. Confirm no private URLs, storage IDs, raw answers, user/member data, admin/internal notes, or full token values are visible.
+10. Repeat quick checks on `/en/buyer/compare` and `/de/buyer/compare`.
+
 ## Safe Logging Rules
 
 Allowed categories:

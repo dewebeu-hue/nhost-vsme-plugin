@@ -51,5 +51,5 @@ export default async function BuyerSupplierTokenPage({ params }: BuyerSupplierTo
     return <SharePasswordForm token={token} />;
   }
 
-  return <BuyerSupplierSummary passport={result.share} />;
+  return <BuyerSupplierSummary passport={result.share} token={token} />;
 }

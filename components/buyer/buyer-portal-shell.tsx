@@ -33,6 +33,12 @@ export function BuyerPortalShell({ children, locale }: BuyerPortalShellProps) {
               {t("title")}
             </Link>
             <Link
+              href={`/${locale}/buyer/compare`}
+              className="text-sm font-semibold text-slate-600 transition hover:text-slate-950"
+            >
+              {t("compareSuppliers")}
+            </Link>
+            <Link
               href={`/${locale}/pricing`}
               className="text-sm font-semibold text-slate-600 transition hover:text-slate-950"
             >
