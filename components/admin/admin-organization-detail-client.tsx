@@ -28,6 +28,7 @@ import type {
   AdminTriageStatus,
   ConciergePriority,
   ConciergeStatus,
+  OnboardingStatus,
 } from "@/lib/admin-workspace";
 import { cn } from "@/lib/utils";
 
@@ -50,6 +51,9 @@ export function AdminOrganizationDetailClient({
   const [priority, setPriority] = useState<ConciergePriority>("normal");
   const [internalNote, setInternalNote] = useState("");
   const [nextFollowUpDate, setNextFollowUpDate] = useState("");
+  const [onboardingStatus, setOnboardingStatus] = useState<OnboardingStatus>("not_started");
+  const [onboardingNextAction, setOnboardingNextAction] = useState("");
+  const [onboardingOwnerNote, setOnboardingOwnerNote] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const [status, setStatus] = useState<"loading" | "ready" | "unauthorized" | "error">("loading");
   const [message, setMessage] = useState<string | null>(null);
@@ -59,6 +63,9 @@ export function AdminOrganizationDetailClient({
     setPriority(concierge?.priority ?? "normal");
     setInternalNote(concierge?.internalNote ?? "");
     setNextFollowUpDate(concierge?.nextFollowUpDate ?? "");
+    setOnboardingStatus(concierge?.onboardingStatus ?? "not_started");
+    setOnboardingNextAction(concierge?.onboardingNextAction ?? "");
+    setOnboardingOwnerNote(concierge?.onboardingOwnerNote ?? "");
   }
 
   async function loadOrganization() {
@@ -86,7 +93,11 @@ export function AdminOrganizationDetailClient({
     setStatus("ready");
   }
 
-  async function saveConciergeStatus(markReviewed = false) {
+  async function saveAdminSupportState(
+    markReviewed = false,
+    successMessage = labels.conciergeSaved,
+    errorMessage = labels.conciergeSaveError,
+  ) {
     setIsSaving(true);
     setMessage(null);
 
@@ -99,13 +110,16 @@ export function AdminOrganizationDetailClient({
         internalNote,
         nextFollowUpDate,
         markReviewed,
+        onboardingStatus,
+        onboardingNextAction,
+        onboardingOwnerNote,
       }),
     });
 
     setIsSaving(false);
 
     if (!response.ok) {
-      setMessage(labels.conciergeSaveError);
+      setMessage(errorMessage);
       return;
     }
 
@@ -113,7 +127,7 @@ export function AdminOrganizationDetailClient({
     const concierge = payload.concierge ?? null;
     setOrganization((current) => (current ? { ...current, concierge } : current));
     hydrateConciergeForm(concierge);
-    setMessage(labels.conciergeSaved);
+    setMessage(successMessage);
   }
 
   useEffect(() => {
@@ -155,6 +169,29 @@ export function AdminOrganizationDetailClient({
       { label: labels.checklistPdfExportAvailable, done: true },
     ];
   }, [labels, organization]);
+  const onboardingChecklist = useMemo(() => {
+    if (!organization) {
+      return [];
+    }
+
+    return [
+      { label: labels.checklistWorkspaceCreated, done: Boolean(organization.createdAt) },
+      { label: labels.checklistCompanyProfileReviewed, done: organization.answeredQuestions > 0 },
+      { label: labels.checklistQuestionnaireStarted, done: organization.answeredQuestions > 0 },
+      { label: labels.checklistCoreQuestionnaireCompleted, done: organization.readinessPercent >= 70 },
+      { label: labels.checklistEvidenceUploaded, done: organization.documentCount > 0 },
+      { label: labels.checklistEvidenceLinked, done: organization.linkedEvidenceCount > 0 },
+      {
+        label: labels.checklistCertificateExpiryChecked,
+        done: organization.documentCount > 0 && organization.certificateWarningCount === 0,
+      },
+      { label: labels.checklistPassportReviewed, done: organization.readinessPercent > 0 },
+      { label: labels.checklistPublicLinkActive, done: organization.activeShareLink },
+      { label: labels.checklistPdfExportAvailable, done: true },
+      { label: labels.checklistBuyerRequestsReviewed, done: organization.buyerRequestCount > 0 },
+    ];
+  }, [labels, organization]);
+  const onboardingDoneCount = onboardingChecklist.filter((item) => item.done).length;
 
   if (status === "unauthorized") {
     return <AdminStateCard title={labels.unauthorizedTitle} description={message ?? labels.unauthorizedDescription} />;
@@ -256,6 +293,107 @@ export function AdminOrganizationDetailClient({
 
         <aside className="flex flex-col gap-6">
           <section className="supplier-surface rounded-2xl border-0 p-5">
+            <h2 className="text-lg font-semibold text-slate-950">{labels.assistedOnboarding}</h2>
+            <div className="mt-4 grid gap-4">
+              <div>
+                <div className="flex items-center justify-between gap-3 text-sm font-semibold text-slate-950">
+                  <span>{labels.onboardingProgress}</span>
+                  <span>
+                    {onboardingDoneCount}/{onboardingChecklist.length}
+                  </span>
+                </div>
+                <Progress
+                  value={
+                    onboardingChecklist.length
+                      ? Math.round((onboardingDoneCount / onboardingChecklist.length) * 100)
+                      : 0
+                  }
+                  className="mt-2 h-2"
+                />
+              </div>
+              <label className="grid gap-2 text-sm font-medium text-slate-700">
+                {labels.onboardingStatus}
+                <Select
+                  value={onboardingStatus}
+                  onValueChange={(value) => setOnboardingStatus(value as OnboardingStatus)}
+                >
+                  <SelectTrigger className="h-10 rounded-xl bg-white">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      {([
+                        "not_started",
+                        "invited",
+                        "setup_in_progress",
+                        "waiting_on_supplier",
+                        "ready_for_review",
+                        "demo_ready",
+                        "completed",
+                        "paused",
+                      ] as const).map((value) => (
+                        <SelectItem key={value} value={value}>
+                          {formatOnboardingStatus(value, labels)}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </label>
+              <label className="grid gap-2 text-sm font-medium text-slate-700">
+                {labels.onboardingNextAction}
+                <Input
+                  value={onboardingNextAction}
+                  onChange={(event) => setOnboardingNextAction(event.target.value)}
+                  className="h-10 rounded-xl bg-white"
+                />
+              </label>
+              <label className="grid gap-2 text-sm font-medium text-slate-700">
+                {labels.onboardingOwnerNote}
+                <Textarea
+                  value={onboardingOwnerNote}
+                  onChange={(event) => setOnboardingOwnerNote(event.target.value)}
+                  rows={3}
+                  className="rounded-xl bg-white"
+                />
+              </label>
+              <Button
+                type="button"
+                onClick={() =>
+                  void saveAdminSupportState(false, labels.onboardingSaved, labels.onboardingSaveError)
+                }
+                disabled={isSaving}
+                className="w-fit rounded-xl"
+              >
+                <Save data-icon="inline-start" />
+                {labels.saveOnboardingDetails}
+              </Button>
+            </div>
+          </section>
+
+          <section className="supplier-surface rounded-2xl border-0 p-5">
+            <h2 className="text-lg font-semibold text-slate-950">{labels.onboardingChecklist}</h2>
+            <div className="mt-4 flex flex-col gap-2">
+              {onboardingChecklist.map((item) => (
+                <div key={item.label} className="flex items-center justify-between gap-3 rounded-xl bg-slate-50 p-3">
+                  <p className="text-sm font-medium text-slate-700">{item.label}</p>
+                  <Badge
+                    variant="outline"
+                    className={
+                      item.done
+                        ? "rounded-full border-emerald-200 bg-emerald-50 text-emerald-700"
+                        : "rounded-full border-amber-200 bg-amber-50 text-amber-700"
+                    }
+                  >
+                    {item.done ? labels.statusCompleted : labels.triageNeedsAttention}
+                  </Badge>
+                </div>
+              ))}
+            </div>
+            <p className="mt-4 text-xs leading-5 text-slate-500">{labels.onboardingChecklistAutoNote}</p>
+          </section>
+
+          <section className="supplier-surface rounded-2xl border-0 p-5">
             <h2 className="text-lg font-semibold text-slate-950">{labels.conciergeStatus}</h2>
             <div className="mt-4 grid gap-4">
               <label className="grid gap-2 text-sm font-medium text-slate-700">
@@ -317,7 +455,7 @@ export function AdminOrganizationDetailClient({
               <div className="flex flex-wrap gap-2">
                 <Button
                   type="button"
-                  onClick={() => void saveConciergeStatus(false)}
+                  onClick={() => void saveAdminSupportState(false, labels.conciergeSaved)}
                   disabled={isSaving}
                   className="w-fit rounded-xl"
                 >
@@ -326,7 +464,7 @@ export function AdminOrganizationDetailClient({
                 </Button>
                 <Button
                   type="button"
-                  onClick={() => void saveConciergeStatus(true)}
+                  onClick={() => void saveAdminSupportState(true, labels.conciergeSaved)}
                   disabled={isSaving}
                   variant="outline"
                   className="w-fit rounded-xl bg-white"
@@ -443,6 +581,21 @@ function formatConciergeStatus(status: ConciergeStatus, labels: AdminLabels) {
     waiting_on_supplier: labels.statusWaitingOnSupplier,
     ready_for_review: labels.statusReadyForReview,
     demo_ready: labels.statusDemoReady,
+    paused: labels.statusPaused,
+  };
+
+  return statusLabels[status];
+}
+
+function formatOnboardingStatus(status: OnboardingStatus, labels: AdminLabels) {
+  const statusLabels: Record<OnboardingStatus, string> = {
+    not_started: labels.statusNotStarted,
+    invited: labels.statusInvited,
+    setup_in_progress: labels.statusSetupInProgress,
+    waiting_on_supplier: labels.statusWaitingOnSupplier,
+    ready_for_review: labels.statusReadyForReview,
+    demo_ready: labels.statusDemoReady,
+    completed: labels.statusCompleted,
     paused: labels.statusPaused,
   };
 

@@ -92,6 +92,16 @@ export type AdminLabels = {
   priority: string;
   internalNote: string;
   nextFollowUp: string;
+  assistedOnboarding: string;
+  onboardingStatus: string;
+  onboardingChecklist: string;
+  onboardingNextAction: string;
+  onboardingOwnerNote: string;
+  onboardingProgress: string;
+  saveOnboardingDetails: string;
+  onboardingSaved: string;
+  onboardingSaveError: string;
+  onboardingChecklistAutoNote: string;
   saveConciergeStatus: string;
   conciergeSaved: string;
   conciergeSaveError: string;
@@ -116,15 +126,21 @@ export type AdminLabels = {
   viewRisks: string;
   viewOrganizations: string;
   statusNotStarted: string;
+  statusInvited: string;
+  statusSetupInProgress: string;
   statusOnboarding: string;
   statusWaitingOnSupplier: string;
   statusReadyForReview: string;
   statusDemoReady: string;
+  statusCompleted: string;
   statusPaused: string;
   priorityLow: string;
   priorityNormal: string;
   priorityHigh: string;
   checklistQuestionnaireStarted: string;
+  checklistWorkspaceCreated: string;
+  checklistCompanyProfileReviewed: string;
+  checklistCoreQuestionnaireCompleted: string;
   checklistEvidenceUploaded: string;
   checklistEvidenceLinked: string;
   checklistPassportReviewed: string;
@@ -283,6 +299,17 @@ export const defaultAdminLabels: AdminLabels = {
   priority: "Priority",
   internalNote: "Internal note",
   nextFollowUp: "Next follow-up",
+  assistedOnboarding: "Assisted onboarding",
+  onboardingStatus: "Onboarding status",
+  onboardingChecklist: "Onboarding checklist",
+  onboardingNextAction: "Next action",
+  onboardingOwnerNote: "Onboarding owner note",
+  onboardingProgress: "Onboarding progress",
+  saveOnboardingDetails: "Save onboarding details",
+  onboardingSaved: "Onboarding details saved.",
+  onboardingSaveError: "We could not save onboarding details right now.",
+  onboardingChecklistAutoNote:
+    "Checklist status is derived from supplier workspace data where possible. Manual overrides are not included in this step.",
   saveConciergeStatus: "Save concierge status",
   conciergeSaved: "Concierge status saved.",
   conciergeSaveError: "We could not save concierge status right now.",
@@ -308,15 +335,21 @@ export const defaultAdminLabels: AdminLabels = {
   viewRisks: "View risks",
   viewOrganizations: "View organizations",
   statusNotStarted: "Not started",
+  statusInvited: "Invited",
+  statusSetupInProgress: "Setup in progress",
   statusOnboarding: "Onboarding",
   statusWaitingOnSupplier: "Waiting on supplier",
   statusReadyForReview: "Ready for review",
   statusDemoReady: "Demo-ready",
+  statusCompleted: "Completed",
   statusPaused: "Paused",
   priorityLow: "Low",
   priorityNormal: "Normal",
   priorityHigh: "High",
+  checklistWorkspaceCreated: "Workspace created",
+  checklistCompanyProfileReviewed: "Company profile reviewed",
   checklistQuestionnaireStarted: "Questionnaire started",
+  checklistCoreQuestionnaireCompleted: "Core questionnaire sections completed",
   checklistEvidenceUploaded: "Evidence documents uploaded",
   checklistEvidenceLinked: "Evidence linked",
   checklistPassportReviewed: "Passport reviewed",

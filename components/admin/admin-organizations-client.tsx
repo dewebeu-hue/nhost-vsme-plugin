@@ -18,6 +18,7 @@ import type {
   AdminTriageStatus,
   ConciergePriority,
   ConciergeStatus,
+  OnboardingStatus,
 } from "@/lib/admin-workspace";
 import { cn } from "@/lib/utils";
 
@@ -182,6 +183,20 @@ export function AdminOrganizationsClient({ labels = defaultAdminLabels }: AdminO
                   <p className="mt-1 text-xs text-slate-500">
                     {labels.priority}: {formatPriority(organization.concierge?.priority, labels)}
                   </p>
+                  <p className="mt-2 text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">
+                    {labels.onboardingStatus}
+                  </p>
+                  <p className="mt-1 text-sm font-semibold text-slate-950">
+                    {formatOnboardingStatus(organization.concierge?.onboardingStatus, labels)}
+                  </p>
+                  <p className="mt-1 text-xs text-slate-500">
+                    {labels.onboardingProgress}: {organization.onboardingChecklistDone}/
+                    {organization.onboardingChecklistTotal}
+                  </p>
+                  <p className="mt-1 text-xs text-slate-500">
+                    {labels.nextFollowUp}:{" "}
+                    {formatDate(organization.concierge?.nextFollowUpDate ?? null, locale, labels.notProvided)}
+                  </p>
                 </div>
 
                 <div className="flex flex-col gap-2 xl:items-end">
@@ -233,6 +248,21 @@ function formatPriority(priority: ConciergePriority | undefined, labels: AdminLa
   };
 
   return priority ? priorityLabels[priority] : labels.priorityNormal;
+}
+
+function formatOnboardingStatus(status: OnboardingStatus | undefined, labels: AdminLabels) {
+  const statusLabels: Record<OnboardingStatus, string> = {
+    not_started: labels.statusNotStarted,
+    invited: labels.statusInvited,
+    setup_in_progress: labels.statusSetupInProgress,
+    waiting_on_supplier: labels.statusWaitingOnSupplier,
+    ready_for_review: labels.statusReadyForReview,
+    demo_ready: labels.statusDemoReady,
+    completed: labels.statusCompleted,
+    paused: labels.statusPaused,
+  };
+
+  return status ? statusLabels[status] : labels.statusNotStarted;
 }
 
 function Metric({ label, value }: { label: string; value: number }) {

@@ -13,6 +13,15 @@ export type ConciergeStatus =
   | "demo_ready"
   | "paused";
 export type ConciergePriority = "low" | "normal" | "high";
+export type OnboardingStatus =
+  | "not_started"
+  | "invited"
+  | "setup_in_progress"
+  | "waiting_on_supplier"
+  | "ready_for_review"
+  | "demo_ready"
+  | "completed"
+  | "paused";
 
 export type AdminConciergeNote = {
   status: ConciergeStatus;
@@ -21,6 +30,11 @@ export type AdminConciergeNote = {
   nextFollowUpDate: string | null;
   reviewedAt: string | null;
   reviewedByUserId: string | null;
+  onboardingStatus: OnboardingStatus;
+  onboardingNextAction: string | null;
+  onboardingOwnerNote: string | null;
+  onboardingChecklist: string[];
+  onboardingCompletedAt: string | null;
   updatedAt: string | null;
 };
 
@@ -64,6 +78,8 @@ export type AdminOrganizationSummary = {
   missingActionCount: number;
   triageStatus: AdminTriageStatus;
   concierge: AdminConciergeNote | null;
+  onboardingChecklistDone: number;
+  onboardingChecklistTotal: number;
 };
 
 export type AdminOrganizationDetail = AdminOrganizationSummary & {
@@ -186,6 +202,11 @@ type ConciergeRecord = {
   next_follow_up_date?: string | null;
   reviewed_at?: string | null;
   reviewed_by_user_id?: string | null;
+  onboarding_status?: string | null;
+  onboarding_next_action?: string | null;
+  onboarding_checklist?: unknown;
+  onboarding_owner_note?: string | null;
+  onboarding_completed_at?: string | null;
   updated_at?: string | null;
 };
 
@@ -258,6 +279,11 @@ const adminOverviewQuery = `
       next_follow_up_date
       reviewed_at
       reviewed_by_user_id
+      onboarding_status
+      onboarding_next_action
+      onboarding_checklist
+      onboarding_owner_note
+      onboarding_completed_at
       updated_at
     }
   }
@@ -284,6 +310,11 @@ const upsertConciergeNoteMutation = `
           next_follow_up_date
           reviewed_at
           reviewed_by_user_id
+          onboarding_status
+          onboarding_next_action
+          onboarding_checklist
+          onboarding_owner_note
+          onboarding_completed_at
           updated_by_user_id
           updated_at
         ]
@@ -296,6 +327,11 @@ const upsertConciergeNoteMutation = `
       next_follow_up_date
       reviewed_at
       reviewed_by_user_id
+      onboarding_status
+      onboarding_next_action
+      onboarding_checklist
+      onboarding_owner_note
+      onboarding_completed_at
       updated_at
     }
   }
@@ -417,6 +453,9 @@ export async function updateAdminConciergeNote(
     internalNote?: unknown;
     nextFollowUpDate?: unknown;
     markReviewed?: unknown;
+    onboardingStatus?: unknown;
+    onboardingNextAction?: unknown;
+    onboardingOwnerNote?: unknown;
   },
 ) {
   const user = await requireAdminUser(request);
@@ -431,6 +470,8 @@ export async function updateAdminConciergeNote(
   }
 
   const reviewedAt = input.markReviewed === true ? new Date().toISOString() : undefined;
+  const onboardingStatus = normalizeOnboardingStatus(input.onboardingStatus);
+  const onboardingCompletedAt = onboardingStatus === "completed" ? new Date().toISOString() : null;
   const result = await executeHasuraGraphql<{
     insert_organization_concierge_notes_one: ConciergeRecord | null;
   }>(
@@ -443,6 +484,10 @@ export async function updateAdminConciergeNote(
         internal_note: normalizeOptionalText(input.internalNote, 5000),
         next_follow_up_date: normalizeDate(input.nextFollowUpDate),
         ...(reviewedAt ? { reviewed_at: reviewedAt, reviewed_by_user_id: user.id } : {}),
+        onboarding_status: onboardingStatus,
+        onboarding_next_action: normalizeOptionalText(input.onboardingNextAction, 1000),
+        onboarding_owner_note: normalizeOptionalText(input.onboardingOwnerNote, 5000),
+        onboarding_completed_at: onboardingCompletedAt,
         updated_by_user_id: user.id,
         updated_at: new Date().toISOString(),
       },
@@ -477,6 +522,17 @@ function buildOrganizationSummaries(context: AdminGraphqlData): AdminOrganizatio
       .length;
     const activeShareLink = data.shareLinks.some((link) => isActiveShareLink(link));
     const missingActions = buildMissingActions(context, organization, data, readiness, certificateWarnings);
+    const onboardingChecklist = buildOnboardingChecklist({
+      createdAt: organization.created_at ?? null,
+      answeredQuestions: readiness.answeredQuestions,
+      readinessPercent: readiness.readinessPercent,
+      documentCount: data.documents.length,
+      linkedEvidenceCount: data.linkedEvidenceCount,
+      certificateWarningCount:
+        certificateWarnings.expiredCount + certificateWarnings.expiring30Count + certificateWarnings.expiring90Count,
+      activeShareLink,
+      buyerRequestCount: data.buyerRequests.length,
+    });
     const triageStatus = calculateTriageStatus({
       readinessPercent: readiness.readinessPercent,
       documentCount: data.documents.length,
@@ -508,6 +564,8 @@ function buildOrganizationSummaries(context: AdminGraphqlData): AdminOrganizatio
       missingActionCount: missingActions.length,
       triageStatus,
       concierge: data.concierge ? normalizeConcierge(data.concierge) : null,
+      onboardingChecklistDone: onboardingChecklist.filter((item) => item.done).length,
+      onboardingChecklistTotal: onboardingChecklist.length,
     };
   });
 }
@@ -804,6 +862,11 @@ function normalizeConcierge(record: ConciergeRecord): AdminConciergeNote {
     nextFollowUpDate: record.next_follow_up_date ?? null,
     reviewedAt: record.reviewed_at ?? null,
     reviewedByUserId: record.reviewed_by_user_id ?? null,
+    onboardingStatus: normalizeOnboardingStatus(record.onboarding_status),
+    onboardingNextAction: record.onboarding_next_action ?? null,
+    onboardingOwnerNote: record.onboarding_owner_note ?? null,
+    onboardingChecklist: normalizeOnboardingChecklist(record.onboarding_checklist),
+    onboardingCompletedAt: record.onboarding_completed_at ?? null,
     updatedAt: record.updated_at ?? null,
   };
 }
@@ -819,6 +882,55 @@ function normalizeConciergePriority(value: unknown): ConciergePriority {
   return typeof value === "string" && ["low", "normal", "high"].includes(value)
     ? (value as ConciergePriority)
     : "normal";
+}
+
+function normalizeOnboardingStatus(value: unknown): OnboardingStatus {
+  return typeof value === "string" &&
+    [
+      "not_started",
+      "invited",
+      "setup_in_progress",
+      "waiting_on_supplier",
+      "ready_for_review",
+      "demo_ready",
+      "completed",
+      "paused",
+    ].includes(value)
+    ? (value as OnboardingStatus)
+    : "not_started";
+}
+
+function normalizeOnboardingChecklist(value: unknown) {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return value.filter((item): item is string => typeof item === "string").slice(0, 50);
+}
+
+function buildOnboardingChecklist(input: {
+  createdAt: string | null;
+  answeredQuestions: number;
+  readinessPercent: number;
+  documentCount: number;
+  linkedEvidenceCount: number;
+  certificateWarningCount: number;
+  activeShareLink: boolean;
+  buyerRequestCount: number;
+}) {
+  return [
+    { id: "workspace_created", done: Boolean(input.createdAt) },
+    { id: "company_profile_reviewed", done: input.answeredQuestions > 0 },
+    { id: "questionnaire_started", done: input.answeredQuestions > 0 },
+    { id: "core_questionnaire_completed", done: input.readinessPercent >= 70 },
+    { id: "evidence_documents_uploaded", done: input.documentCount > 0 },
+    { id: "evidence_linked_to_answers", done: input.linkedEvidenceCount > 0 },
+    { id: "certificate_expiry_checked", done: input.documentCount > 0 && input.certificateWarningCount === 0 },
+    { id: "supplier_passport_reviewed", done: input.readinessPercent > 0 },
+    { id: "public_share_link_created", done: input.activeShareLink },
+    { id: "pdf_draft_generated", done: true },
+    { id: "buyer_request_created", done: input.buyerRequestCount > 0 },
+  ];
 }
 
 function normalizeOptionalText(value: unknown, maxLength: number) {

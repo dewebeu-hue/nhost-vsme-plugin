@@ -1891,6 +1891,12 @@ Admin account/logout controls:
 - Logout uses the browser Nhost sign-out flow and redirects to the localized login route.
 - After logout, admin APIs should return `401` and admin pages should show a safe unauthorized/login state.
 
+Production setup required before final demo:
+
+- `ADMIN_EMAIL_ALLOWLIST` must be configured as a server-only Vercel environment variable.
+- Migration `nhost/migrations/default/0005_add_organization_concierge_notes/up.sql` must be applied and tracked if concierge status, priority, notes, follow-up, or internal review are used.
+- Re-run a deployment after env or migration changes.
+
 Final workspace checklist:
 
 1. Organizations list shows real organizations, readiness, document count, linked evidence count, buyer request count, certificate warning count, active link state, triage, concierge status, and priority.
@@ -1919,6 +1925,69 @@ Faza 3.3 deferred items:
 - Buyer portal/login.
 - Email sending.
 - AI, Stripe, XBRL, plan limits, or Supabase.
+
+## Faza 3.4 Assisted Onboarding Foundation
+
+The Admin / Concierge organization detail page includes an assisted onboarding panel for internal customer setup tracking.
+
+Admin routes:
+
+- `/en/admin/organizations/[id]`
+- `/hr/admin/organizations/[id]`
+- `/de/admin/organizations/[id]`
+
+Data model:
+
+- Reuses `organization_concierge_notes`.
+- Migration: `nhost/migrations/default/0006_add_assisted_onboarding_fields/up.sql`
+- Added fields:
+  - `onboarding_status`
+  - `onboarding_next_action`
+  - `onboarding_checklist`
+  - `onboarding_owner_note`
+  - `onboarding_completed_at`
+
+Supported onboarding statuses:
+
+- `not_started`
+- `invited`
+- `setup_in_progress`
+- `waiting_on_supplier`
+- `ready_for_review`
+- `demo_ready`
+- `completed`
+- `paused`
+
+Production action:
+
+1. Apply and track `nhost/migrations/default/0006_add_assisted_onboarding_fields/up.sql` after `0005_add_organization_concierge_notes`.
+2. Confirm `organization_concierge_notes` remains admin-only and is not exposed to supplier/public routes.
+3. Redeploy after migration tracking if Hasura metadata or schema cache requires refresh.
+
+Checklist behavior:
+
+- The onboarding checklist is derived from existing organization data where possible.
+- Current derived items include workspace creation, company profile signal, questionnaire progress, core readiness, evidence upload/linking, certificate warning state, Passport review signal, active public link, PDF availability, and buyer request presence.
+- The checklist does not fake completed work and does not modify supplier questionnaire, document, Passport, or buyer request data.
+
+Privacy scope:
+
+- Onboarding status, next action, owner note, checklist storage, and completion timestamp are internal admin/concierge data.
+- They must not appear in supplier dashboard pages, public Passport pages, public PDF exports, buyer request public surfaces, or share links.
+- No partner accounts, buyer portal, impersonation, email sending, AI, Stripe, XBRL, plan limits, or Supabase are included in this step.
+
+Manual QA:
+
+1. Deploy and apply migration `0006_add_assisted_onboarding_fields`.
+2. Login as an allowlisted admin.
+3. Open `/hr/admin/organizations`.
+4. Confirm the list shows onboarding status and checklist progress.
+5. Open an organization detail page.
+6. Update onboarding status, next action, owner note, and next follow-up date.
+7. Save, refresh, and confirm persistence.
+8. Confirm the onboarding checklist reflects real supplier progress.
+9. Confirm supplier dashboard, public Passport, share links, and PDFs do not show onboarding notes.
+10. Repeat a quick route/copy check on `/en` and `/de`.
 
 ## Safe Logging Rules
 
