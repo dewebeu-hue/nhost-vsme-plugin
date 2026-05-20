@@ -23,6 +23,9 @@ export type OnboardingStatus =
   | "demo_ready"
   | "completed"
   | "paused";
+export type CommercialPlan = "starter" | "supplier_pro" | "partner" | "buyer_pilot" | "buyer_pro_future";
+export type CommercialSegment = "supplier" | "partner" | "buyer" | "consultant" | "internal_demo";
+export type CommercialStatus = "lead" | "pilot" | "active" | "paused" | "churn_risk" | "closed";
 
 export type AdminConciergeNote = {
   status: ConciergeStatus;
@@ -39,6 +42,12 @@ export type AdminConciergeNote = {
   portfolioLabel: string | null;
   partnerLabel: string | null;
   assignedConsultantNote: string | null;
+  commercialPlan: CommercialPlan | null;
+  commercialSegment: CommercialSegment | null;
+  commercialStatus: CommercialStatus | null;
+  commercialNote: string | null;
+  pilotStartDate: string | null;
+  pilotTargetDate: string | null;
   updatedAt: string | null;
 };
 
@@ -217,6 +226,12 @@ type ConciergeRecord = {
   portfolio_label?: string | null;
   partner_label?: string | null;
   assigned_consultant_note?: string | null;
+  commercial_plan?: string | null;
+  commercial_segment?: string | null;
+  commercial_status?: string | null;
+  commercial_note?: string | null;
+  pilot_start_date?: string | null;
+  pilot_target_date?: string | null;
   updated_at?: string | null;
 };
 
@@ -298,6 +313,12 @@ const adminOverviewQuery = `
       portfolio_label
       partner_label
       assigned_consultant_note
+      commercial_plan
+      commercial_segment
+      commercial_status
+      commercial_note
+      pilot_start_date
+      pilot_target_date
       updated_at
     }
   }
@@ -337,6 +358,12 @@ const upsertConciergeNoteMutation = `
           portfolio_label
           partner_label
           assigned_consultant_note
+          commercial_plan
+          commercial_segment
+          commercial_status
+          commercial_note
+          pilot_start_date
+          pilot_target_date
           updated_by_user_id
           updated_at
         ]
@@ -357,6 +384,12 @@ const upsertConciergeNoteMutation = `
       portfolio_label
       partner_label
       assigned_consultant_note
+      commercial_plan
+      commercial_segment
+      commercial_status
+      commercial_note
+      pilot_start_date
+      pilot_target_date
       updated_at
     }
   }
@@ -484,6 +517,12 @@ export async function updateAdminConciergeNote(
     portfolioLabel?: unknown;
     partnerLabel?: unknown;
     assignedConsultantNote?: unknown;
+    commercialPlan?: unknown;
+    commercialSegment?: unknown;
+    commercialStatus?: unknown;
+    commercialNote?: unknown;
+    pilotStartDate?: unknown;
+    pilotTargetDate?: unknown;
   },
 ) {
   const user = await requireAdminUser(request);
@@ -529,6 +568,12 @@ export async function updateAdminConciergeNote(
         portfolio_label: normalizeOptionalText(input.portfolioLabel, 200),
         partner_label: normalizeOptionalText(input.partnerLabel, 200),
         assigned_consultant_note: normalizeOptionalText(input.assignedConsultantNote, 5000),
+        commercial_plan: normalizeCommercialPlan(input.commercialPlan),
+        commercial_segment: normalizeCommercialSegment(input.commercialSegment),
+        commercial_status: normalizeCommercialStatus(input.commercialStatus),
+        commercial_note: normalizeOptionalText(input.commercialNote, 5000),
+        pilot_start_date: normalizeDate(input.pilotStartDate),
+        pilot_target_date: normalizeDate(input.pilotTargetDate),
         updated_by_user_id: user.id,
         updated_at: new Date().toISOString(),
       },
@@ -913,6 +958,12 @@ function normalizeConcierge(record: ConciergeRecord): AdminConciergeNote {
     portfolioLabel: record.portfolio_label ?? null,
     partnerLabel: record.partner_label ?? null,
     assignedConsultantNote: record.assigned_consultant_note ?? null,
+    commercialPlan: normalizeCommercialPlan(record.commercial_plan),
+    commercialSegment: normalizeCommercialSegment(record.commercial_segment),
+    commercialStatus: normalizeCommercialStatus(record.commercial_status),
+    commercialNote: record.commercial_note ?? null,
+    pilotStartDate: record.pilot_start_date ?? null,
+    pilotTargetDate: record.pilot_target_date ?? null,
     updatedAt: record.updated_at ?? null,
   };
 }
@@ -944,6 +995,25 @@ function normalizeOnboardingStatus(value: unknown): OnboardingStatus {
     ].includes(value)
     ? (value as OnboardingStatus)
     : "not_started";
+}
+
+function normalizeCommercialPlan(value: unknown): CommercialPlan | null {
+  return typeof value === "string" &&
+    ["starter", "supplier_pro", "partner", "buyer_pilot", "buyer_pro_future"].includes(value)
+    ? (value as CommercialPlan)
+    : null;
+}
+
+function normalizeCommercialSegment(value: unknown): CommercialSegment | null {
+  return typeof value === "string" && ["supplier", "partner", "buyer", "consultant", "internal_demo"].includes(value)
+    ? (value as CommercialSegment)
+    : null;
+}
+
+function normalizeCommercialStatus(value: unknown): CommercialStatus | null {
+  return typeof value === "string" && ["lead", "pilot", "active", "paused", "churn_risk", "closed"].includes(value)
+    ? (value as CommercialStatus)
+    : null;
 }
 
 function normalizeOnboardingChecklist(value: unknown) {

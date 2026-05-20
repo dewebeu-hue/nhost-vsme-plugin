@@ -27,6 +27,9 @@ import type {
   AdminConciergeNote,
   AdminOrganizationDetail,
   AdminTriageStatus,
+  CommercialPlan,
+  CommercialSegment,
+  CommercialStatus,
   ConciergePriority,
   ConciergeStatus,
   OnboardingStatus,
@@ -58,6 +61,12 @@ export function AdminOrganizationDetailClient({
   const [portfolioLabel, setPortfolioLabel] = useState("");
   const [partnerLabel, setPartnerLabel] = useState("");
   const [assignedConsultantNote, setAssignedConsultantNote] = useState("");
+  const [commercialPlan, setCommercialPlan] = useState<CommercialPlan | "">("");
+  const [commercialSegment, setCommercialSegment] = useState<CommercialSegment | "">("");
+  const [commercialStatus, setCommercialStatus] = useState<CommercialStatus | "">("");
+  const [commercialNote, setCommercialNote] = useState("");
+  const [pilotStartDate, setPilotStartDate] = useState("");
+  const [pilotTargetDate, setPilotTargetDate] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const [status, setStatus] = useState<"loading" | "ready" | "unauthorized" | "error">("loading");
   const [message, setMessage] = useState<string | null>(null);
@@ -73,6 +82,12 @@ export function AdminOrganizationDetailClient({
     setPortfolioLabel(concierge?.portfolioLabel ?? "");
     setPartnerLabel(concierge?.partnerLabel ?? "");
     setAssignedConsultantNote(concierge?.assignedConsultantNote ?? "");
+    setCommercialPlan(concierge?.commercialPlan ?? "");
+    setCommercialSegment(concierge?.commercialSegment ?? "");
+    setCommercialStatus(concierge?.commercialStatus ?? "");
+    setCommercialNote(concierge?.commercialNote ?? "");
+    setPilotStartDate(concierge?.pilotStartDate ?? "");
+    setPilotTargetDate(concierge?.pilotTargetDate ?? "");
   }
 
   async function loadOrganization() {
@@ -131,6 +146,12 @@ export function AdminOrganizationDetailClient({
           portfolioLabel,
           partnerLabel,
           assignedConsultantNote,
+          commercialPlan: commercialPlan || null,
+          commercialSegment: commercialSegment || null,
+          commercialStatus: commercialStatus || null,
+          commercialNote,
+          pilotStartDate,
+          pilotTargetDate,
         }),
       });
     } catch {
@@ -166,6 +187,15 @@ export function AdminOrganizationDetailClient({
   function handleConciergeSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     void saveAdminSupportState(false, labels.conciergeSaved, labels.conciergeSaveError);
+  }
+
+  function handleCommercialSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    void saveAdminSupportState(
+      false,
+      labels.commercialClassificationSaved,
+      labels.commercialClassificationSaveError,
+    );
   }
 
   function handleReviewedClick() {
@@ -401,6 +431,9 @@ export function AdminOrganizationDetailClient({
         <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
           <HandoffMetric label={labels.portfolio} value={organization.concierge?.portfolioLabel || labels.noPortfolioAssigned} />
           <HandoffMetric label={labels.currentWorkspacePlan} value={organization.commercialPlanLabel} />
+          <HandoffMetric label={labels.planPackage} value={formatCommercialPlan(organization.concierge?.commercialPlan ?? null, labels)} />
+          <HandoffMetric label={labels.segment} value={formatCommercialSegment(organization.concierge?.commercialSegment ?? null, labels)} />
+          <HandoffMetric label={labels.commercialStatus} value={formatCommercialStatus(organization.concierge?.commercialStatus ?? null, labels)} />
           <HandoffMetric label={labels.conciergeStatus} value={formatConciergeStatus(organization.concierge?.status ?? "not_started", labels)} />
           <HandoffMetric label={labels.priority} value={formatPriority(organization.concierge?.priority ?? "normal", labels)} />
           <HandoffMetric label={labels.onboardingStatus} value={formatOnboardingStatus(organization.concierge?.onboardingStatus ?? "not_started", labels)} />
@@ -452,6 +485,103 @@ export function AdminOrganizationDetailClient({
         </section>
 
         <aside className="flex flex-col gap-6">
+          <section className="supplier-surface rounded-2xl border-0 p-5">
+            <h2 className="text-lg font-semibold text-slate-950">{labels.commercialClassification}</h2>
+            <p className="mt-1 text-xs leading-5 text-slate-500">{labels.commercialLabelsInternalNote}</p>
+            <form className="mt-4 grid gap-4" onSubmit={handleCommercialSubmit}>
+              <label htmlFor="admin-commercial-plan" className="grid gap-2 text-sm font-medium text-slate-700">
+                {labels.planPackage}
+                <select
+                  id="admin-commercial-plan"
+                  name="commercialPlan"
+                  value={commercialPlan}
+                  onChange={(event) => setCommercialPlan(event.target.value as CommercialPlan | "")}
+                  className="h-10 rounded-xl border border-slate-200 bg-white px-3 text-sm font-medium text-slate-700"
+                >
+                  <option value="">{labels.notProvided}</option>
+                  <option value="starter">{labels.commercialPlanStarter}</option>
+                  <option value="supplier_pro">{labels.commercialPlanSupplierPro}</option>
+                  <option value="partner">{labels.commercialPlanPartner}</option>
+                  <option value="buyer_pilot">{labels.commercialPlanBuyerPilot}</option>
+                  <option value="buyer_pro_future">{labels.commercialPlanBuyerProFuture}</option>
+                </select>
+              </label>
+              <label htmlFor="admin-commercial-segment" className="grid gap-2 text-sm font-medium text-slate-700">
+                {labels.segment}
+                <select
+                  id="admin-commercial-segment"
+                  name="commercialSegment"
+                  value={commercialSegment}
+                  onChange={(event) => setCommercialSegment(event.target.value as CommercialSegment | "")}
+                  className="h-10 rounded-xl border border-slate-200 bg-white px-3 text-sm font-medium text-slate-700"
+                >
+                  <option value="">{labels.notProvided}</option>
+                  <option value="supplier">{labels.commercialSegmentSupplier}</option>
+                  <option value="partner">{labels.commercialSegmentPartner}</option>
+                  <option value="buyer">{labels.commercialSegmentBuyer}</option>
+                  <option value="consultant">{labels.commercialSegmentConsultant}</option>
+                  <option value="internal_demo">{labels.commercialSegmentInternalDemo}</option>
+                </select>
+              </label>
+              <label htmlFor="admin-commercial-status" className="grid gap-2 text-sm font-medium text-slate-700">
+                {labels.commercialStatus}
+                <select
+                  id="admin-commercial-status"
+                  name="commercialStatus"
+                  value={commercialStatus}
+                  onChange={(event) => setCommercialStatus(event.target.value as CommercialStatus | "")}
+                  className="h-10 rounded-xl border border-slate-200 bg-white px-3 text-sm font-medium text-slate-700"
+                >
+                  <option value="">{labels.notProvided}</option>
+                  <option value="lead">{labels.commercialStatusLead}</option>
+                  <option value="pilot">{labels.commercialStatusPilot}</option>
+                  <option value="active">{labels.commercialStatusActive}</option>
+                  <option value="paused">{labels.commercialStatusPaused}</option>
+                  <option value="churn_risk">{labels.commercialStatusChurnRisk}</option>
+                  <option value="closed">{labels.commercialStatusClosed}</option>
+                </select>
+              </label>
+              <label htmlFor="admin-pilot-start-date" className="grid gap-2 text-sm font-medium text-slate-700">
+                {labels.pilotStartDate}
+                <Input
+                  id="admin-pilot-start-date"
+                  name="pilotStartDate"
+                  type="date"
+                  value={pilotStartDate}
+                  onChange={(event) => setPilotStartDate(event.target.value)}
+                  className="h-10 rounded-xl bg-white"
+                />
+              </label>
+              <label htmlFor="admin-pilot-target-date" className="grid gap-2 text-sm font-medium text-slate-700">
+                {labels.pilotTargetDate}
+                <Input
+                  id="admin-pilot-target-date"
+                  name="pilotTargetDate"
+                  type="date"
+                  value={pilotTargetDate}
+                  onChange={(event) => setPilotTargetDate(event.target.value)}
+                  className="h-10 rounded-xl bg-white"
+                />
+              </label>
+              <label htmlFor="admin-commercial-note" className="grid gap-2 text-sm font-medium text-slate-700">
+                {labels.commercialNote}
+                <Textarea
+                  id="admin-commercial-note"
+                  name="commercialNote"
+                  value={commercialNote}
+                  onChange={(event) => setCommercialNote(event.target.value)}
+                  rows={4}
+                  className="rounded-xl bg-white"
+                />
+              </label>
+              <Button type="submit" disabled={isSaving} className="w-fit rounded-xl">
+                <Save data-icon="inline-start" />
+                {labels.saveCommercialClassification}
+              </Button>
+              {message ? <p className="text-sm text-slate-600">{message}</p> : null}
+            </form>
+          </section>
+
           <section className="supplier-surface rounded-2xl border-0 p-5">
             <h2 className="text-lg font-semibold text-slate-950">{labels.assistedPortfolio}</h2>
             <form className="mt-4 grid gap-4" onSubmit={handlePortfolioSubmit}>
@@ -823,6 +953,55 @@ function formatPriority(priority: ConciergePriority, labels: AdminLabels) {
   };
 
   return priorityLabels[priority];
+}
+
+function formatCommercialPlan(plan: CommercialPlan | null, labels: AdminLabels) {
+  if (!plan) {
+    return labels.notProvided;
+  }
+
+  const planLabels: Record<CommercialPlan, string> = {
+    starter: labels.commercialPlanStarter,
+    supplier_pro: labels.commercialPlanSupplierPro,
+    partner: labels.commercialPlanPartner,
+    buyer_pilot: labels.commercialPlanBuyerPilot,
+    buyer_pro_future: labels.commercialPlanBuyerProFuture,
+  };
+
+  return planLabels[plan];
+}
+
+function formatCommercialSegment(segment: CommercialSegment | null, labels: AdminLabels) {
+  if (!segment) {
+    return labels.notProvided;
+  }
+
+  const segmentLabels: Record<CommercialSegment, string> = {
+    supplier: labels.commercialSegmentSupplier,
+    partner: labels.commercialSegmentPartner,
+    buyer: labels.commercialSegmentBuyer,
+    consultant: labels.commercialSegmentConsultant,
+    internal_demo: labels.commercialSegmentInternalDemo,
+  };
+
+  return segmentLabels[segment];
+}
+
+function formatCommercialStatus(status: CommercialStatus | null, labels: AdminLabels) {
+  if (!status) {
+    return labels.notProvided;
+  }
+
+  const statusLabels: Record<CommercialStatus, string> = {
+    lead: labels.commercialStatusLead,
+    pilot: labels.commercialStatusPilot,
+    active: labels.commercialStatusActive,
+    paused: labels.commercialStatusPaused,
+    churn_risk: labels.commercialStatusChurnRisk,
+    closed: labels.commercialStatusClosed,
+  };
+
+  return statusLabels[status];
 }
 
 function HandoffMetric({ label, value }: { label: string; value: string }) {

@@ -2382,6 +2382,79 @@ Manual QA:
 7. Repeat quick checks on `/en` and `/de`.
 8. Confirm there is no fake submit form, checkout, payment flow, backend email sending, or private data on public pages.
 
+## Faza 3.5 Korak 4 - Admin Commercial Segmentation
+
+Commercial classification is admin-only metadata for sales, demos, onboarding, and pilot tracking. It does not add billing, checkout, Stripe, invoices, plan limits, or feature gating.
+
+Data model:
+
+- Reuses `organization_concierge_notes`.
+- Migration: `nhost/migrations/default/0008_add_admin_commercial_fields/up.sql`.
+- New nullable fields:
+  - `commercial_plan`
+  - `commercial_segment`
+  - `commercial_status`
+  - `commercial_note`
+  - `pilot_start_date`
+  - `pilot_target_date`
+
+Allowed values:
+
+- `commercial_plan`: `starter`, `supplier_pro`, `partner`, `buyer_pilot`, `buyer_pro_future`
+- `commercial_segment`: `supplier`, `partner`, `buyer`, `consultant`, `internal_demo`
+- `commercial_status`: `lead`, `pilot`, `active`, `paused`, `churn_risk`, `closed`
+
+Admin UI behavior:
+
+- Organization detail shows a `Commercial classification` panel.
+- Admin can save plan/package, segment, commercial status, pilot start date, pilot target date, and commercial note through the existing admin concierge PATCH endpoint.
+- Organization list shows compact commercial labels and pilot target date.
+- Organization list filters include plan, segment, and commercial status.
+- Organization list summary cards include active pilots, leads, churn risk, and partner prospects.
+
+Privacy and scope:
+
+- Commercial metadata is internal/admin-only.
+- Commercial notes, pilot dates, commercial status, and internal segment labels must not appear on supplier dashboard routes, public Passport pages, public PDFs, buyer request response notes, or share links.
+- Commercial labels do not enforce billing or feature limits.
+- Buyer Pro remains future/deferred positioning.
+
+Production action:
+
+1. Apply and track `nhost/migrations/default/0008_add_admin_commercial_fields/up.sql` after migration `0007_add_admin_portfolio_fields`.
+2. Refresh Hasura/Nhost metadata or schema cache if the new columns are not immediately visible.
+3. Confirm admin routes remain protected by `ADMIN_EMAIL_ALLOWLIST`.
+
+SQL QA checklist:
+
+```sql
+select
+  id,
+  organization_id,
+  commercial_plan,
+  commercial_segment,
+  commercial_status,
+  commercial_note,
+  pilot_start_date,
+  pilot_target_date,
+  updated_at
+from organization_concierge_notes
+order by updated_at desc
+limit 20;
+```
+
+Manual QA:
+
+1. Deploy and apply migration `0008_add_admin_commercial_fields`.
+2. Login as admin.
+3. Open `/hr/admin/organizations`.
+4. Open organization detail.
+5. Set commercial plan, segment, status, pilot dates, and commercial note.
+6. Save and refresh to confirm persistence.
+7. Return to organization list and confirm labels appear.
+8. Test plan, segment, and commercial status filters.
+9. Confirm supplier dashboard, public Passport, public PDF, and buyer-facing share pages do not show commercial metadata.
+
 ## Safe Logging Rules
 
 Allowed categories:

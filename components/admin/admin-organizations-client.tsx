@@ -16,6 +16,9 @@ import { defaultAdminLabels, type AdminLabels } from "@/lib/operational-labels";
 import type {
   AdminOrganizationSummary,
   AdminTriageStatus,
+  CommercialPlan,
+  CommercialSegment,
+  CommercialStatus,
   ConciergePriority,
   ConciergeStatus,
   OnboardingStatus,
@@ -37,6 +40,9 @@ export function AdminOrganizationsClient({ labels = defaultAdminLabels }: AdminO
   const [organizations, setOrganizations] = useState<AdminOrganizationSummary[]>([]);
   const [query, setQuery] = useState("");
   const [portfolioFilter, setPortfolioFilter] = useState("__all");
+  const [commercialPlanFilter, setCommercialPlanFilter] = useState<CommercialPlan | "__all">("__all");
+  const [commercialSegmentFilter, setCommercialSegmentFilter] = useState<CommercialSegment | "__all">("__all");
+  const [commercialStatusFilter, setCommercialStatusFilter] = useState<CommercialStatus | "__all">("__all");
   const [triageFilter, setTriageFilter] = useState<AdminTriageStatus | "__all">("__all");
   const [conciergeStatusFilter, setConciergeStatusFilter] = useState<ConciergeStatus | "__all">("__all");
   const [priorityFilter, setPriorityFilter] = useState<ConciergePriority | "__all">("__all");
@@ -56,14 +62,39 @@ export function AdminOrganizationsClient({ labels = defaultAdminLabels }: AdminO
         portfolioFilter === "__all" ||
         (portfolioFilter === "__none" ? !portfolio : portfolio === portfolioFilter);
       const triageMatch = triageFilter === "__all" || organization.triageStatus === triageFilter;
+      const commercialPlanMatch =
+        commercialPlanFilter === "__all" || organization.concierge?.commercialPlan === commercialPlanFilter;
+      const commercialSegmentMatch =
+        commercialSegmentFilter === "__all" || organization.concierge?.commercialSegment === commercialSegmentFilter;
+      const commercialStatusMatch =
+        commercialStatusFilter === "__all" || organization.concierge?.commercialStatus === commercialStatusFilter;
       const conciergeStatusMatch =
         conciergeStatusFilter === "__all" ||
         (organization.concierge?.status ?? "not_started") === conciergeStatusFilter;
       const priorityMatch = priorityFilter === "__all" || (organization.concierge?.priority ?? "normal") === priorityFilter;
 
-      return searchMatch && portfolioMatch && triageMatch && conciergeStatusMatch && priorityMatch;
+      return (
+        searchMatch &&
+        portfolioMatch &&
+        triageMatch &&
+        commercialPlanMatch &&
+        commercialSegmentMatch &&
+        commercialStatusMatch &&
+        conciergeStatusMatch &&
+        priorityMatch
+      );
     });
-  }, [conciergeStatusFilter, organizations, portfolioFilter, priorityFilter, query, triageFilter]);
+  }, [
+    commercialPlanFilter,
+    commercialSegmentFilter,
+    commercialStatusFilter,
+    conciergeStatusFilter,
+    organizations,
+    portfolioFilter,
+    priorityFilter,
+    query,
+    triageFilter,
+  ]);
   const portfolioOptions = useMemo(() => {
     return Array.from(
       new Set(organizations.map((organization) => organization.concierge?.portfolioLabel).filter(Boolean) as string[]),
@@ -194,7 +225,7 @@ export function AdminOrganizationsClient({ labels = defaultAdminLabels }: AdminO
       </div>
 
       <section className="supplier-surface rounded-2xl border-0 p-4">
-        <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_220px_180px_220px_160px]">
+        <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_180px_180px_180px_180px_180px_160px]">
           <div className="relative">
           <Search
             aria-hidden="true"
@@ -232,6 +263,43 @@ export function AdminOrganizationsClient({ labels = defaultAdminLabels }: AdminO
             <option value="at_risk">{labels.triageAtRisk}</option>
           </select>
           <select
+            value={commercialPlanFilter}
+            onChange={(event) => setCommercialPlanFilter(event.target.value as CommercialPlan | "__all")}
+            className="h-11 rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm font-medium text-slate-700"
+          >
+            <option value="__all">{labels.allPlans}</option>
+            <option value="starter">{labels.commercialPlanStarter}</option>
+            <option value="supplier_pro">{labels.commercialPlanSupplierPro}</option>
+            <option value="partner">{labels.commercialPlanPartner}</option>
+            <option value="buyer_pilot">{labels.commercialPlanBuyerPilot}</option>
+            <option value="buyer_pro_future">{labels.commercialPlanBuyerProFuture}</option>
+          </select>
+          <select
+            value={commercialSegmentFilter}
+            onChange={(event) => setCommercialSegmentFilter(event.target.value as CommercialSegment | "__all")}
+            className="h-11 rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm font-medium text-slate-700"
+          >
+            <option value="__all">{labels.allSegments}</option>
+            <option value="supplier">{labels.commercialSegmentSupplier}</option>
+            <option value="partner">{labels.commercialSegmentPartner}</option>
+            <option value="buyer">{labels.commercialSegmentBuyer}</option>
+            <option value="consultant">{labels.commercialSegmentConsultant}</option>
+            <option value="internal_demo">{labels.commercialSegmentInternalDemo}</option>
+          </select>
+          <select
+            value={commercialStatusFilter}
+            onChange={(event) => setCommercialStatusFilter(event.target.value as CommercialStatus | "__all")}
+            className="h-11 rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm font-medium text-slate-700"
+          >
+            <option value="__all">{labels.commercialStatus}</option>
+            <option value="lead">{labels.commercialStatusLead}</option>
+            <option value="pilot">{labels.commercialStatusPilot}</option>
+            <option value="active">{labels.commercialStatusActive}</option>
+            <option value="paused">{labels.commercialStatusPaused}</option>
+            <option value="churn_risk">{labels.commercialStatusChurnRisk}</option>
+            <option value="closed">{labels.commercialStatusClosed}</option>
+          </select>
+          <select
             value={conciergeStatusFilter}
             onChange={(event) => setConciergeStatusFilter(event.target.value as ConciergeStatus | "__all")}
             className="h-11 rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm font-medium text-slate-700"
@@ -264,6 +332,10 @@ export function AdminOrganizationsClient({ labels = defaultAdminLabels }: AdminO
           <SummaryCard label={labels.triageDemoReady} value={organizations.filter((item) => item.triageStatus === "demo_ready").length} />
           <SummaryCard label={labels.statusWaitingOnSupplier} value={organizations.filter((item) => item.concierge?.onboardingStatus === "waiting_on_supplier").length} />
           <SummaryCard label={labels.highPriorityOrganizations} value={organizations.filter((item) => item.concierge?.priority === "high").length} />
+          <SummaryCard label={labels.activePilots} value={organizations.filter((item) => item.concierge?.commercialStatus === "pilot").length} />
+          <SummaryCard label={labels.leads} value={organizations.filter((item) => item.concierge?.commercialStatus === "lead").length} />
+          <SummaryCard label={labels.churnRisk} value={organizations.filter((item) => item.concierge?.commercialStatus === "churn_risk").length} />
+          <SummaryCard label={labels.partnerProspects} value={organizations.filter((item) => item.concierge?.commercialSegment === "partner" || item.concierge?.commercialSegment === "consultant").length} />
           <SummaryCard
             label={labels.upcomingFollowUps}
             value={
@@ -361,6 +433,20 @@ export function AdminOrganizationsClient({ labels = defaultAdminLabels }: AdminO
                   <p className="mt-1 text-sm text-slate-600">
                     {organization.commercialPlanLabel}
                   </p>
+                  <p className="mt-2 text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">
+                    {labels.commercialClassification}
+                  </p>
+                  <p className="mt-1 text-sm text-slate-600">
+                    {formatCommercialPlan(organization.concierge?.commercialPlan ?? null, labels)} ·{" "}
+                    {formatCommercialSegment(organization.concierge?.commercialSegment ?? null, labels)} ·{" "}
+                    {formatCommercialStatus(organization.concierge?.commercialStatus ?? null, labels)}
+                  </p>
+                  {organization.concierge?.pilotTargetDate ? (
+                    <p className="mt-1 text-xs text-slate-500">
+                      {labels.pilotTargetDate}:{" "}
+                      {formatDate(organization.concierge.pilotTargetDate, locale, labels.notProvided)}
+                    </p>
+                  ) : null}
                 </div>
 
                 <div>
@@ -468,6 +554,55 @@ function formatOnboardingStatus(status: OnboardingStatus | undefined, labels: Ad
   };
 
   return status ? statusLabels[status] : labels.statusNotStarted;
+}
+
+function formatCommercialPlan(plan: CommercialPlan | null, labels: AdminLabels) {
+  if (!plan) {
+    return labels.notProvided;
+  }
+
+  const planLabels: Record<CommercialPlan, string> = {
+    starter: labels.commercialPlanStarter,
+    supplier_pro: labels.commercialPlanSupplierPro,
+    partner: labels.commercialPlanPartner,
+    buyer_pilot: labels.commercialPlanBuyerPilot,
+    buyer_pro_future: labels.commercialPlanBuyerProFuture,
+  };
+
+  return planLabels[plan];
+}
+
+function formatCommercialSegment(segment: CommercialSegment | null, labels: AdminLabels) {
+  if (!segment) {
+    return labels.notProvided;
+  }
+
+  const segmentLabels: Record<CommercialSegment, string> = {
+    supplier: labels.commercialSegmentSupplier,
+    partner: labels.commercialSegmentPartner,
+    buyer: labels.commercialSegmentBuyer,
+    consultant: labels.commercialSegmentConsultant,
+    internal_demo: labels.commercialSegmentInternalDemo,
+  };
+
+  return segmentLabels[segment];
+}
+
+function formatCommercialStatus(status: CommercialStatus | null, labels: AdminLabels) {
+  if (!status) {
+    return labels.notProvided;
+  }
+
+  const statusLabels: Record<CommercialStatus, string> = {
+    lead: labels.commercialStatusLead,
+    pilot: labels.commercialStatusPilot,
+    active: labels.commercialStatusActive,
+    paused: labels.commercialStatusPaused,
+    churn_risk: labels.commercialStatusChurnRisk,
+    closed: labels.commercialStatusClosed,
+  };
+
+  return statusLabels[status];
 }
 
 function Metric({ label, value }: { label: string; value: number }) {

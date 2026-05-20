@@ -55,6 +55,39 @@ export type AdminLabels = {
   issues: string;
   company: string;
   currentWorkspacePlan: string;
+  commercialClassification: string;
+  commercialLabelsInternalNote: string;
+  planPackage: string;
+  segment: string;
+  commercialStatus: string;
+  pilotStartDate: string;
+  pilotTargetDate: string;
+  commercialNote: string;
+  saveCommercialClassification: string;
+  commercialClassificationSaved: string;
+  commercialClassificationSaveError: string;
+  commercialPlanStarter: string;
+  commercialPlanSupplierPro: string;
+  commercialPlanPartner: string;
+  commercialPlanBuyerPilot: string;
+  commercialPlanBuyerProFuture: string;
+  commercialSegmentSupplier: string;
+  commercialSegmentPartner: string;
+  commercialSegmentBuyer: string;
+  commercialSegmentConsultant: string;
+  commercialSegmentInternalDemo: string;
+  commercialStatusLead: string;
+  commercialStatusPilot: string;
+  commercialStatusActive: string;
+  commercialStatusPaused: string;
+  commercialStatusChurnRisk: string;
+  commercialStatusClosed: string;
+  allPlans: string;
+  allSegments: string;
+  activePilots: string;
+  leads: string;
+  churnRisk: string;
+  partnerProspects: string;
   completion: string;
   evidenceStatus: string;
   owner: string;
@@ -298,6 +331,39 @@ export const defaultAdminLabels: AdminLabels = {
   issues: "Issues",
   company: "Company",
   currentWorkspacePlan: "Current workspace plan",
+  commercialClassification: "Commercial classification",
+  commercialLabelsInternalNote: "Commercial labels are internal and do not enforce billing or feature limits.",
+  planPackage: "Plan/package",
+  segment: "Segment",
+  commercialStatus: "Commercial status",
+  pilotStartDate: "Pilot start date",
+  pilotTargetDate: "Pilot target date",
+  commercialNote: "Commercial note",
+  saveCommercialClassification: "Save commercial classification",
+  commercialClassificationSaved: "Commercial classification saved.",
+  commercialClassificationSaveError: "We could not save commercial classification right now.",
+  commercialPlanStarter: "Starter",
+  commercialPlanSupplierPro: "Supplier Pro",
+  commercialPlanPartner: "Partner",
+  commercialPlanBuyerPilot: "Buyer Pilot",
+  commercialPlanBuyerProFuture: "Buyer Pro future",
+  commercialSegmentSupplier: "Supplier",
+  commercialSegmentPartner: "Partner",
+  commercialSegmentBuyer: "Buyer",
+  commercialSegmentConsultant: "Consultant",
+  commercialSegmentInternalDemo: "Internal demo",
+  commercialStatusLead: "Lead",
+  commercialStatusPilot: "Pilot",
+  commercialStatusActive: "Active",
+  commercialStatusPaused: "Paused",
+  commercialStatusChurnRisk: "Churn risk",
+  commercialStatusClosed: "Closed",
+  allPlans: "All plans",
+  allSegments: "All segments",
+  activePilots: "Active pilots",
+  leads: "Leads",
+  churnRisk: "Churn risk",
+  partnerProspects: "Partner prospects",
   completion: "Completion",
   evidenceStatus: "Evidence Status",
   owner: "Owner",
