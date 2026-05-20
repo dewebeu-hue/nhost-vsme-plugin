@@ -1938,16 +1938,16 @@
   "buyerPortal": {
     "title": "Buyer Portal",
     "eyebrow": "Buyer Portal",
-    "description": "Review Supplier Passport summaries shared by suppliers.",
-    "privateEvidence": "Private evidence files are not publicly downloadable.",
+    "description": "Review Supplier Passport summaries shared with you by suppliers.",
+    "privateEvidence": "Open a supplier link to view a buyer-safe readiness summary. Private evidence files are not publicly downloadable.",
     "openSupplierLink": "Open supplier link",
     "requestDemo": "Request demo",
     "accessModelTitle": "Safe buyer access model",
     "accessTokenOnly": "Access is currently based on supplier share links.",
     "noBuyerLogin": "Buyer accounts and buyer login are deferred.",
     "supplierControlsSharing": "Suppliers control sharing through existing active link settings.",
-    "supplierListTitle": "Open a supplier link to view a shared Supplier Passport.",
-    "supplierListDescription": "A personalized buyer supplier list is not available yet. Use a valid supplier share link to review a buyer-safe summary.",
+    "supplierListTitle": "No saved suppliers yet.",
+    "supplierListDescription": "Buyer accounts are not enabled in this version. Open a supplier's shared link to view their Supplier Passport summary.",
     "unavailableTitle": "This supplier summary is unavailable.",
     "unavailableText": "The link may be invalid, expired, or no longer active.",
     "sharedSupplierPassport": "Shared Supplier Passport",
@@ -1979,6 +1979,16 @@
     "certificateExpired": "Expired certificate warning",
     "certificateExpiresSoon": "Certificate expiring soon",
     "certificateEvidenceAvailable": "Certificate evidence available",
-    "noCertificateWarnings": "No certificate expiry warnings"
+    "noCertificateWarnings": "No certificate expiry warnings",
+    "savedSuppliers": "Saved suppliers",
+    "pasteSupplierLinkLabel": "Supplier link or token",
+    "pasteSupplierLinkPlaceholder": "Paste /passport/[token], /buyer/suppliers/[token], or token",
+    "openSharedSupplier": "Open shared supplier",
+    "supplierLinkRequired": "Enter a supplier link or token first.",
+    "supplierLinkInvalid": "Enter a valid supplier link or token.",
+    "supplierLinkHelp": "Tokens are used only to open the shared summary and are not saved.",
+    "backToBuyerPortal": "Back to Buyer Portal",
+    "backToSupplierLinks": "Back to supplier links",
+    "plans": "Plans"
   }
 }

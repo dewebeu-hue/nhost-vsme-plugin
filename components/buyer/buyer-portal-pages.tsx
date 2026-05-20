@@ -1,6 +1,8 @@
 "use client";
 
+import { useState, type FormEvent } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { ArrowRight, Building2, FileText, LockKeyhole, ShieldCheck } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
@@ -74,17 +76,80 @@ export function BuyerPortalLanding() {
 
 export function BuyerSuppliersNeutralPage() {
   const locale = useLocale();
+  const router = useRouter();
   const t = useTranslations("buyerPortal");
+  const [supplierLink, setSupplierLink] = useState("");
+  const [error, setError] = useState<string | null>(null);
+
+  function handleOpenSupplier(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    const token = extractSupplierToken(supplierLink);
+
+    if (!supplierLink.trim()) {
+      setError(t("supplierLinkRequired"));
+      return;
+    }
+
+    if (!token) {
+      setError(t("supplierLinkInvalid"));
+      return;
+    }
+
+    setError(null);
+    router.push(`/${locale}/buyer/suppliers/${encodeURIComponent(token)}`);
+  }
 
   return (
     <BuyerPortalShell locale={locale}>
       <main className="mx-auto flex min-h-[70vh] max-w-3xl items-center px-5 py-12 lg:px-8">
-        <StateCard
-          title={t("supplierListTitle")}
-          description={t("supplierListDescription")}
-          tone="info"
-          className="w-full"
-        />
+        <section className="w-full rounded-[2rem] border border-blue-100 bg-white p-6 shadow-xl shadow-slate-200/70 sm:p-8">
+          <Badge className="rounded-full border-blue-100 bg-blue-50 px-3 py-1 text-blue-700">
+            {t("savedSuppliers")}
+          </Badge>
+          <h1 className="mt-5 text-3xl font-semibold tracking-tight text-slate-950">
+            {t("supplierListTitle")}
+          </h1>
+          <p className="mt-3 text-sm leading-7 text-slate-600">
+            {t("supplierListDescription")}
+          </p>
+
+          <form className="mt-8 grid gap-3" onSubmit={handleOpenSupplier}>
+            <label htmlFor="buyer-supplier-link" className="text-sm font-semibold text-slate-800">
+              {t("pasteSupplierLinkLabel")}
+            </label>
+            <input
+              id="buyer-supplier-link"
+              name="supplierLink"
+              value={supplierLink}
+              onChange={(event) => {
+                setSupplierLink(event.target.value);
+                if (error) {
+                  setError(null);
+                }
+              }}
+              placeholder={t("pasteSupplierLinkPlaceholder")}
+              className="h-12 rounded-xl border border-slate-200 bg-white px-4 text-sm text-slate-950 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-blue-400 focus:ring-4 focus:ring-blue-100"
+              aria-describedby="buyer-supplier-link-help buyer-supplier-link-error"
+              aria-invalid={Boolean(error)}
+            />
+            <p id="buyer-supplier-link-help" className="text-xs leading-5 text-slate-500">
+              {t("supplierLinkHelp")}
+            </p>
+            {error ? (
+              <p id="buyer-supplier-link-error" className="text-sm font-medium text-red-700">
+                {error}
+              </p>
+            ) : null}
+            <button
+              type="submit"
+              className={cn(buttonVariants({ size: "lg" }), "mt-2 h-12 rounded-xl px-5")}
+            >
+              {t("openSharedSupplier")}
+              <ArrowRight data-icon="inline-end" />
+            </button>
+          </form>
+        </section>
       </main>
     </BuyerPortalShell>
   );
@@ -96,13 +161,19 @@ export function BuyerSupplierUnavailable() {
 
   return (
     <BuyerPortalShell locale={locale}>
-      <main className="mx-auto flex min-h-[70vh] max-w-3xl items-center px-5 py-12 lg:px-8">
-        <StateCard
-          title={t("unavailableTitle")}
-          description={t("unavailableText")}
-          tone="warning"
-          className="w-full"
-        />
+      <main className="mx-auto flex min-h-[70vh] max-w-3xl flex-col items-stretch justify-center gap-4 px-5 py-12 lg:px-8">
+        <StateCard title={t("unavailableTitle")} description={t("unavailableText")} tone="warning" />
+        <div className="flex flex-wrap justify-center gap-3">
+          <Link
+            href={`/${locale}/buyer`}
+            className={cn(buttonVariants({ variant: "outline" }), "rounded-xl bg-white")}
+          >
+            {t("backToBuyerPortal")}
+          </Link>
+          <Link href={`/${locale}/buyer/suppliers`} className={cn(buttonVariants(), "rounded-xl")}>
+            {t("backToSupplierLinks")}
+          </Link>
+        </div>
       </main>
     </BuyerPortalShell>
   );
@@ -117,6 +188,21 @@ export function BuyerSupplierSummary({ passport }: BuyerSupplierSummaryProps) {
   return (
     <BuyerPortalShell locale={locale}>
       <main className="mx-auto flex max-w-7xl flex-col gap-8 px-5 py-8 lg:px-8 lg:py-10">
+        <nav className="flex flex-wrap gap-3" aria-label={t("sharedSupplierPassport")}>
+          <Link
+            href={`/${locale}/buyer`}
+            className={cn(buttonVariants({ variant: "outline" }), "rounded-xl bg-white")}
+          >
+            {t("backToBuyerPortal")}
+          </Link>
+          <Link
+            href={`/${locale}/buyer/suppliers`}
+            className={cn(buttonVariants({ variant: "outline" }), "rounded-xl bg-white")}
+          >
+            {t("backToSupplierLinks")}
+          </Link>
+        </nav>
+
         <section className="overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-xl shadow-slate-200/70">
           <div className="grid gap-8 p-6 lg:grid-cols-[minmax(0,1fr)_320px] lg:p-8">
             <div>
@@ -220,6 +306,60 @@ function MetricCard({ icon: Icon, label, value }: { icon: LucideIcon; label: str
       <p className="mt-2 text-3xl font-semibold tracking-tight text-slate-950">{value}</p>
     </article>
   );
+}
+
+function extractSupplierToken(input: string) {
+  const value = input.trim();
+
+  if (!value) {
+    return null;
+  }
+
+  const fromPath = (pathname: string) => {
+    const segments = pathname.split("/").filter(Boolean);
+    const passportIndex = segments.indexOf("passport");
+    const suppliersIndex = segments.indexOf("suppliers");
+    const token =
+      passportIndex >= 0
+        ? segments[passportIndex + 1]
+        : suppliersIndex >= 0
+          ? segments[suppliersIndex + 1]
+          : null;
+
+    return token ? normalizeSupplierToken(token) : null;
+  };
+
+  try {
+    const url = new URL(value);
+    const token = fromPath(url.pathname);
+    if (token) {
+      return token;
+    }
+  } catch {
+    if (value.startsWith("/")) {
+      try {
+        const url = new URL(value, "https://supplier-passport.local");
+        const token = fromPath(url.pathname);
+        if (token) {
+          return token;
+        }
+      } catch {
+        return null;
+      }
+    }
+  }
+
+  return normalizeSupplierToken(value);
+}
+
+function normalizeSupplierToken(token: string) {
+  const trimmed = decodeURIComponent(token).trim();
+
+  if (!/^[A-Za-z0-9._~-]{4,512}$/.test(trimmed)) {
+    return null;
+  }
+
+  return trimmed;
 }
 
 function translateSectionTitle(title: string, t: ReturnType<typeof useTranslations<"buyerPortal">>) {

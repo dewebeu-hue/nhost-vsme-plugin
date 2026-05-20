@@ -1961,16 +1961,16 @@
   "buyerPortal": {
     "title": "Buyer Portal",
     "eyebrow": "Buyer Portal",
-    "description": "Prüfen Sie Supplier-Passport-Zusammenfassungen, die von Lieferanten geteilt wurden.",
-    "privateEvidence": "Private Nachweisdokumente sind nicht öffentlich herunterladbar.",
+    "description": "Prüfen Sie Supplier-Passport-Zusammenfassungen, die Lieferanten mit Ihnen geteilt haben.",
+    "privateEvidence": "Öffnen Sie einen Lieferantenlink, um eine käufersichere Bereitschaftszusammenfassung zu sehen. Private Nachweisdokumente sind nicht öffentlich herunterladbar.",
     "openSupplierLink": "Lieferantenlink öffnen",
     "requestDemo": "Demo anfragen",
     "accessModelTitle": "Sicheres Zugriffsmodell für Buyer",
     "accessTokenOnly": "Der Zugriff basiert derzeit auf Freigabelinks von Lieferanten.",
     "noBuyerLogin": "Buyer-Konten und Buyer-Login sind zurückgestellt.",
     "supplierControlsSharing": "Lieferanten steuern die Freigabe über bestehende aktive Link-Einstellungen.",
-    "supplierListTitle": "Öffnen Sie einen Lieferantenlink, um einen geteilten Supplier Passport zu prüfen.",
-    "supplierListDescription": "Eine personalisierte Buyer-Lieferantenliste ist noch nicht verfügbar. Verwenden Sie einen gültigen Lieferantenlink, um eine buyer-sichere Zusammenfassung zu prüfen.",
+    "supplierListTitle": "Noch keine gespeicherten Lieferanten.",
+    "supplierListDescription": "Käuferkonten sind in dieser Version nicht aktiviert. Öffnen Sie den geteilten Link eines Lieferanten, um die Supplier-Passport-Zusammenfassung zu sehen.",
     "unavailableTitle": "Diese Lieferantenzusammenfassung ist nicht verfügbar.",
     "unavailableText": "Der Link ist möglicherweise ungültig, abgelaufen oder nicht mehr aktiv.",
     "sharedSupplierPassport": "Geteilter Supplier Passport",
@@ -2002,6 +2002,16 @@
     "certificateExpired": "Warnung zu abgelaufenem Zertifikat",
     "certificateExpiresSoon": "Zertifikat läuft bald ab",
     "certificateEvidenceAvailable": "Zertifikatsnachweis verfügbar",
-    "noCertificateWarnings": "Keine Warnungen zu Zertifikatsabläufen"
+    "noCertificateWarnings": "Keine Warnungen zu Zertifikatsabläufen",
+    "savedSuppliers": "Gespeicherte Lieferanten",
+    "pasteSupplierLinkLabel": "Lieferantenlink oder Token",
+    "pasteSupplierLinkPlaceholder": "Fügen Sie /passport/[token], /buyer/suppliers/[token] oder ein Token ein",
+    "openSharedSupplier": "Geteilten Lieferanten öffnen",
+    "supplierLinkRequired": "Geben Sie zuerst einen Lieferantenlink oder ein Token ein.",
+    "supplierLinkInvalid": "Geben Sie einen gültigen Lieferantenlink oder ein gültiges Token ein.",
+    "supplierLinkHelp": "Tokens werden nur zum Öffnen der geteilten Zusammenfassung verwendet und nicht gespeichert.",
+    "backToBuyerPortal": "Zurück zum Buyer Portal",
+    "backToSupplierLinks": "Zurück zu Lieferantenlinks",
+    "plans": "Pakete"
   }
 }

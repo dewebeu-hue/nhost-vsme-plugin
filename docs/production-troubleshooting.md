@@ -2561,6 +2561,39 @@ Manual QA:
 8. Open `/hr/buyer/suppliers/invalid-token-test` and confirm the safe unavailable state.
 9. Repeat quick checks on `/en/buyer` and `/de/buyer`.
 
+## Faza 4.0 Korak 2 - Buyer Portal Supplier Navigation
+
+The buyer supplier navigation remains token-only. `/buyer/suppliers` does not show saved suppliers, mock suppliers, buyer accounts, buyer organizations, or buyer login. It shows neutral instructions and a local link/token opener for supplier-shared Passport links.
+
+Supplier list behavior:
+
+- `/[locale]/buyer` explains that buyers review summaries shared with them by suppliers.
+- `/[locale]/buyer/suppliers` says saved suppliers are not available without buyer accounts.
+- Buyers can paste a full `/passport/[token]` URL, a `/buyer/suppliers/[token]` URL, or a plain token to open `/[locale]/buyer/suppliers/[token]`.
+- The opener routes client-side only. It does not store the token, create an account, or call an API until the token route loads.
+- Empty or malformed input shows a localized validation message.
+- `/[locale]/buyer/suppliers/[token]` includes back links to Buyer Portal and supplier-link instructions.
+
+Privacy checklist:
+
+- No fake saved supplier list.
+- No token persistence.
+- No full share token value in UI or logs.
+- No private document URLs, storage file IDs, raw sensitive answers, user/member data, internal notes, admin/concierge data, onboarding/portfolio/handoff data, or commercial metadata.
+- No email sending, buyer login, buyer organization management, AI, Stripe, XBRL, Supabase, or billing changes.
+
+Manual QA:
+
+1. Deploy.
+2. Open `/hr/buyer`.
+3. Open `/hr/buyer/suppliers` and confirm there is no fake supplier list.
+4. Paste a valid `/passport/[token]`, `/buyer/suppliers/[token]`, or plain token and confirm it routes to `/hr/buyer/suppliers/[token]`.
+5. Confirm the valid token page shows only the buyer-safe summary and back navigation.
+6. Test an empty/malformed token and confirm localized validation.
+7. Open an invalid token route and confirm the safe unavailable state.
+8. Confirm no private URLs, storage IDs, raw answers, admin/internal notes, or full token values are visible.
+9. Repeat quick checks on `/en/buyer/suppliers` and `/de/buyer/suppliers`.
+
 ## Safe Logging Rules
 
 Allowed categories:

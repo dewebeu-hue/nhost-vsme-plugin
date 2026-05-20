@@ -1938,16 +1938,16 @@
   "buyerPortal": {
     "title": "Buyer Portal",
     "eyebrow": "Buyer Portal",
-    "description": "Pregledajte Supplier Passport sažetke koje su podijelili dobavljači.",
-    "privateEvidence": "Privatni dokazni dokumenti nisu javno dostupni za preuzimanje.",
+    "description": "Pregledajte Supplier Passport sažetke koje su dobavljači podijelili s vama.",
+    "privateEvidence": "Otvorite link dobavljača kako biste vidjeli buyer-safe sažetak spremnosti. Privatni dokazni dokumenti nisu javno dostupni za preuzimanje.",
     "openSupplierLink": "Otvori link dobavljača",
     "requestDemo": "Zatraži demo",
     "accessModelTitle": "Siguran model pristupa za kupce",
     "accessTokenOnly": "Pristup se trenutačno temelji na linkovima koje dijele dobavljači.",
     "noBuyerLogin": "Buyer računi i buyer login su odgođeni.",
     "supplierControlsSharing": "Dobavljači upravljaju dijeljenjem kroz postojeće postavke aktivnog linka.",
-    "supplierListTitle": "Otvorite link dobavljača za pregled dijeljenog Supplier Passporta.",
-    "supplierListDescription": "Personalizirani popis dobavljača za kupce još nije dostupan. Upotrijebite važeći link dobavljača za pregled buyer-safe sažetka.",
+    "supplierListTitle": "Još nema spremljenih dobavljača.",
+    "supplierListDescription": "Buyer računi nisu omogućeni u ovoj verziji. Otvorite dijeljeni link dobavljača kako biste vidjeli njegov Supplier Passport sažetak.",
     "unavailableTitle": "Ovaj sažetak dobavljača nije dostupan.",
     "unavailableText": "Link je možda neispravan, istekao ili više nije aktivan.",
     "sharedSupplierPassport": "Dijeljeni Supplier Passport",
@@ -1979,6 +1979,16 @@
     "certificateExpired": "Upozorenje o isteklom certifikatu",
     "certificateExpiresSoon": "Certifikat uskoro ističe",
     "certificateEvidenceAvailable": "Dokaz certifikata je dostupan",
-    "noCertificateWarnings": "Nema upozorenja o isteku certifikata"
+    "noCertificateWarnings": "Nema upozorenja o isteku certifikata",
+    "savedSuppliers": "Spremljeni dobavljači",
+    "pasteSupplierLinkLabel": "Link ili token dobavljača",
+    "pasteSupplierLinkPlaceholder": "Zalijepite /passport/[token], /buyer/suppliers/[token] ili token",
+    "openSharedSupplier": "Otvori dijeljenog dobavljača",
+    "supplierLinkRequired": "Najprije unesite link ili token dobavljača.",
+    "supplierLinkInvalid": "Unesite važeći link ili token dobavljača.",
+    "supplierLinkHelp": "Tokeni se koriste samo za otvaranje dijeljenog sažetka i ne spremaju se.",
+    "backToBuyerPortal": "Natrag na Buyer Portal",
+    "backToSupplierLinks": "Natrag na linkove dobavljača",
+    "plans": "Paketi"
   }
 }
