@@ -12,16 +12,10 @@ import {
   vsmeModules,
 } from "@/lib/mock-data";
 
-const moduleLabels: Record<string, string> = {
-  "Company profile": "Basic Information",
-  Environment: "Environment",
-  "Social and workforce": "Social",
-  Governance: "Governance",
-};
-
 export function ProductPreview() {
   const t = useTranslations("landing.preview");
   const passportSections = t.raw("sections") as string[];
+  const moduleLabels = t.raw("moduleLabels") as Record<string, string>;
   const basicModule = vsmeModules.find((module) => module.id === "module-company");
   const evidenceFileCount = documents.length + 124;
   const missingDataPoints = missingDataSummary.reduce(

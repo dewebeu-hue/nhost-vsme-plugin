@@ -695,10 +695,10 @@
       "role": "Produktübersicht"
     },
     "pricingPreview": {
-      "eyebrow": "Pl?ne",
-      "title": "Pl?ne f?r Lieferantenbereitschaft",
-      "description": "Klare kommerzielle Positionierung f?r Lieferanten, Partner und Buyer-Piloten. Abrechnung und Checkout sind nicht aktiviert.",
-      "note": "M?ssen Sie mehrere Kunden oder Lieferanten verwalten? Sehen Sie sich Partner- und Buyer-Positionierung an."
+      "eyebrow": "Pläne",
+      "title": "Pläne für Lieferantenbereitschaft",
+      "description": "Klare kommerzielle Positionierung für Lieferanten, Partner und Buyer-Piloten. Abrechnung und Checkout sind nicht aktiviert.",
+      "note": "Müssen Sie mehrere Kunden oder Lieferanten verwalten? Sehen Sie sich Partner- und Buyer-Positionierung an."
     },
     "finalCta": {
       "eyebrow": "Supplier Passport",
@@ -728,23 +728,29 @@
         "Governance",
         "Nachweiszusammenfassung"
       ],
-      "secureLine": "Private Dateien sind nicht öffentlich herunterladbar"
+      "secureLine": "Private Dateien sind nicht öffentlich herunterladbar",
+      "moduleLabels": {
+        "Company profile": "Unternehmensdaten",
+        "Environment": "Umwelt",
+        "Social and workforce": "Soziales",
+        "Governance": "Governance"
+      }
     }
   },
   "pricing": {
     "hero": {
-      "eyebrow": "Pakete f?r Demo- und Verkaufsgespr?che",
+      "eyebrow": "Pakete für Demo- und Verkaufsgespräche",
       "title": "Supplier-Passport-Pakete",
-      "description": "W?hlen Sie das passende Paket f?r Lieferantenbereitschaft, begleitetes Onboarding oder Buyer-Pilots. Online-Abrechnung ist in dieser Version nicht aktiviert.",
-      "annualNote": "Dies sind kommerzielle Pakete f?r Rollout-Gespr?che, keine aktiven bezahlten Abonnements.",
-      "setupNote": "Online-Abrechnung ist nicht aktiviert. Planlabels sperren oder entsperren keine Funktionen.",
-      "pricingStance": "Preise werden w?hrend der Pilotphase manuell vereinbart. Online-Checkout ist nicht aktiviert.",
+      "description": "Wählen Sie das passende Paket für Lieferantenbereitschaft, begleitetes Onboarding oder Buyer-Pilots. Online-Abrechnung ist in dieser Version nicht aktiviert.",
+      "annualNote": "Dies sind kommerzielle Pakete für Rollout-Gespräche, keine aktiven bezahlten Abonnements.",
+      "setupNote": "Online-Abrechnung ist nicht aktiviert. Planlabels blockieren oder entsperren keine Funktionen.",
+      "pricingStance": "Preise werden während der Pilotphase manuell vereinbart. Online-Checkout ist nicht aktiviert.",
       "primaryCta": "Supplier Passport starten",
       "secondaryCta": "Demo anfragen"
     },
     "billing": {
       "monthly": "Positionierung",
-      "annual": "Zuk?nftig",
+      "annual": "Zukünftig",
       "save": "Keine Abrechnung aktiviert"
     },
     "card": {
@@ -762,21 +768,21 @@
       "description": "Abrechnung ist in dieser Version nicht aktiviert."
     },
     "sections": {
-      "partnerEyebrow": "Buyer-Pl?ne",
-      "partnerTitle": "Buyer-seitige Pl?ne sind zukunftsorientiert.",
-      "partnerDescription": "Buyer Pilot und Buyer Pro werden nur f?r kommerzielle Discovery gezeigt. Buyer-Konten, Buyer-Login und Buyer-Portal sind noch nicht implementiert."
+      "partnerEyebrow": "Buyer-Pläne",
+      "partnerTitle": "Buyer-seitige Pläne sind zukunftsorientiert.",
+      "partnerDescription": "Buyer Pilot und Buyer Pro werden nur für kommerzielle Discovery gezeigt. Buyer-Konten, Buyer-Login und Buyer-Portal sind noch nicht implementiert."
     },
     "plans": {
       "starter": {
         "name": "Starter",
         "displayLabel": "Demo anfragen",
-        "audience": "Lieferanten, die einen ersten k?uferbereiten Supplier Passport vorbereiten.",
+        "audience": "Lieferanten, die einen ersten käuferbereiten Supplier Passport vorbereiten.",
         "description": "Ein fokussierter Workspace, um den zentralen Supplier-Passport-Ablauf vorzubereiten.",
         "features": [
-          "Supplier-Passport-Workspace",
-          "Fragebogen-Bereitschaftsflow",
-          "Nachweisdokumente hochladen",
-          "?ffentlicher Freigabelink",
+          "Supplier Passport Workspace",
+          "Fragebogen-Bereitschaftsfluss",
+          "Nachweise hochladen",
+          "Öffentlicher Freigabelink",
           "PDF-Entwurf exportieren"
         ],
         "setup": "Nur kommerzielles Label. Abrechnung und Limits sind in dieser Version nicht aktiviert.",
@@ -785,13 +791,13 @@
       "supplier-pro": {
         "name": "Supplier Pro",
         "displayLabel": "Demo anfragen",
-        "audience": "Lieferanten, die wiederkehrende K?uferanfragen und Nachweisbereitschaft verwalten.",
-        "description": "Positioniert f?r Lieferanten, die st?rkere Antwortvorbereitung und operative Nachverfolgung ben?tigen.",
+        "audience": "Lieferanten, die wiederkehrende Käuferanfragen und Nachweisbereitschaft verwalten.",
+        "description": "Positioniert für Lieferanten, die stärkere Antwortvorbereitung und operative Nachverfolgung benötigen.",
         "features": [
           "Buyer Request Workspace",
           "Bereitschaft angefragter Abschnitte",
-          "Nachweisverkn?pfung und fehlende Schritte",
-          "Zertifikatsabl?ufe verfolgen",
+          "Nachweisverknüpfung und fehlende Schritte",
+          "Zertifikatsabläufe verfolgen",
           "Antwortpaket vorbereiten",
           "Concierge-Support als Positionierung"
         ],
@@ -802,29 +808,29 @@
       "partner": {
         "name": "Partner",
         "displayLabel": "Demo anfragen",
-        "audience": "Berater, Agenturen und Partnerteams, die mehrere Lieferantenkunden unterst?tzen.",
-        "description": "Positioniert f?r begleitetes Onboarding, Portfoliomanagement und Kunden?bergaben.",
+        "audience": "Berater, Agenturen und Partnerteams, die mehrere Lieferantenkunden unterstützen.",
+        "description": "Positioniert für begleitetes Onboarding, Portfoliomanagement und Kundenübergaben.",
         "features": [
-          "Betreute Portfolio-Gruppierung",
-          "Concierge-Dashboard f?r mehrere Kunden",
+          "Gruppierung betreuter Portfolios",
+          "Concierge-Dashboard für mehrere Kunden",
           "Interne Onboarding-Notizen",
-          "Nachverfolgung",
-          "Interne ?bergabezusammenfassung",
-          "Admin-Risiko?bersicht"
+          "Nachverfolgung von Kontakten",
+          "Interne Übergabezusammenfassung",
+          "Admin-Risikoübersicht"
         ],
-        "setup": "Partnerkonten und Partner-Login sind zur?ckgestellt.",
+        "setup": "Partnerkonten und Partner-Login sind zurückgestellt.",
         "ctaLabel": "Partner-Demo anfragen"
       },
       "buyer-pilot": {
         "name": "Buyer Pilot",
         "displayLabel": "Demo anfragen",
-        "audience": "Buyer-seitige Discovery-Gespr?che und Pilotumfang.",
-        "description": "Positioniert f?r K?ufer, die Lieferantenbereitschaft ohne Buyer-Portal pr?fen m?chten.",
+        "audience": "Buyer-seitige Discovery-Gespräche und Pilotumfang.",
+        "description": "Positioniert für Käufer, die Lieferantenbereitschaft ohne Buyer-Portal prüfen möchten.",
         "features": [
-          "Konzept zur Nachverfolgung von K?uferanfragen",
-          "Supplier-Readiness-Zusammenfassungen",
-          "Nachweise auf Anfrage",
-          "?ffentlichen Supplier Passport pr?fen",
+          "Konzept zur Nachverfolgung von Käuferanfragen",
+          "Zusammenfassungen der Lieferantenbereitschaft",
+          "Nachweise auf Anfrage verfügbar",
+          "Öffentlichen Supplier Passport prüfen",
           "Pilot-Workflow definieren"
         ],
         "setup": "Buyer-Portal, Buyer-Login und E-Mail-Versand sind noch nicht enthalten.",
@@ -832,23 +838,23 @@
       },
       "buyer-pro": {
         "name": "Buyer Pro",
-        "displayLabel": "Zuk?nftig",
-        "audience": "Zuk?nftiger buyer-seitiger Workspace f?r Lieferantennetzwerke.",
-        "description": "Zur?ckgestellte Planpositionierung f?r gr??ere Buyer-Netzwerke und Lieferantenportfolios.",
+        "displayLabel": "Zukünftig",
+        "audience": "Zukünftiger buyer-seitiger Workspace für Lieferantennetzwerke.",
+        "description": "Zurückgestellte Planpositionierung für größere Buyer-Netzwerke und Lieferantenportfolios.",
         "features": [
-          "Buyer-seitiges Dashboard zuk?nftig",
-          "Lieferantenliste zuk?nftig",
-          "Koordination von K?uferanfragen zuk?nftig",
-          "Netzwerkreporting zuk?nftig"
+          "Buyer-seitiges Dashboard zukünftig",
+          "Lieferantenliste zukünftig",
+          "Koordination von Käuferanfragen zukünftig",
+          "Netzwerkreporting zukünftig"
         ],
-        "setup": "Zuk?nftig/zur?ckgestellt. In dieser Version nicht implementiert.",
+        "setup": "Zukünftig/zurückgestellt. In dieser Version nicht implementiert.",
         "ctaLabel": "Sprechen Sie mit uns"
       }
     },
     "comparison": {
       "eyebrow": "Funktionsmatrix",
-      "title": "Funktionsmatrix f?r Rollout-Gespr?che",
-      "description": "Eine ?ffentliche Ansicht ohne Abrechnung: was jetzt verf?gbar ist, was f?r begleiteten Rollout positioniert ist und was zuk?nftig/zur?ckgestellt ist.",
+      "title": "Funktionsmatrix für Rollout-Gespräche",
+      "description": "Eine öffentliche Ansicht ohne Abrechnung: was jetzt verfügbar ist, was für begleiteten Rollout positioniert ist und was zukünftig/zurückgestellt ist.",
       "columns": {
         "feature": "Funktion",
         "starter": "Starter",
@@ -861,56 +867,56 @@
           "feature": "Supplier-Passport-Profil",
           "starter": "Enthalten",
           "pro": "Enthalten",
-          "partner": "Kunden?bersicht",
-          "buyer": "?ffentliche Pr?fung"
+          "partner": "Kundenübersicht",
+          "buyer": "Öffentliche Prüfung"
         },
         {
           "feature": "VSME-orientierter Fragebogen",
           "starter": "Enthalten",
           "pro": "Enthalten",
-          "partner": "Kunden?bersicht",
+          "partner": "Kundenübersicht",
           "buyer": "Standardisierte Zusammenfassung"
         },
         {
           "feature": "Evidence Data Room",
           "starter": "Enthalten",
           "pro": "Enthalten",
-          "partner": "Kunden?bersicht",
+          "partner": "Kundenübersicht",
           "buyer": "Nachweise auf Anfrage"
         },
         {
-          "feature": "Dokumente als Nachweise verkn?pfen",
-          "starter": "Verf?gbar",
+          "feature": "Dokumente als Nachweise verknüpfen",
+          "starter": "Verfügbar",
           "pro": "Enthalten",
-          "partner": "Kunden?bersicht",
+          "partner": "Kundenübersicht",
           "buyer": "Nur Zusammenfassung"
         },
         {
-          "feature": "Zertifikatsabl?ufe verfolgen",
-          "starter": "Verf?gbar",
+          "feature": "Zertifikatsabläufe verfolgen",
+          "starter": "Verfügbar",
           "pro": "Enthalten",
           "partner": "Portfolio-Triage",
           "buyer": "Nur Zusammenfassung"
         },
         {
-          "feature": "?ffentlicher Passport-Link",
+          "feature": "Öffentlicher Passport-Link",
           "starter": "Enthalten",
           "pro": "Enthalten",
-          "partner": "Kunden?bersicht",
-          "buyer": "Linkpr?fung"
+          "partner": "Kundenübersicht",
+          "buyer": "Linkprüfung"
         },
         {
           "feature": "PDF-Entwurf exportieren",
           "starter": "Enthalten",
           "pro": "Enthalten",
-          "partner": "Kunden?bersicht",
+          "partner": "Kundenübersicht",
           "buyer": "Vom Lieferanten bereitgestellt"
         },
         {
           "feature": "Buyer Request Workspace",
-          "starter": "Verf?gbar",
+          "starter": "Verfügbar",
           "pro": "Enthalten",
-          "partner": "Kunden?bersicht",
+          "partner": "Kundenübersicht",
           "buyer": "Pilot-Workflow"
         },
         {
@@ -932,10 +938,10 @@
           "starter": "Nicht enthalten",
           "pro": "Nicht enthalten",
           "partner": "Enthalten",
-          "buyer": "Zuk?nftig"
+          "buyer": "Zukünftig"
         },
         {
-          "feature": "Interne ?bergabezusammenfassungen",
+          "feature": "Interne Übergabezusammenfassungen",
           "starter": "Nicht enthalten",
           "pro": "Begleitete Option",
           "partner": "Enthalten",
@@ -946,7 +952,7 @@
           "starter": "Nicht enthalten",
           "pro": "Nicht enthalten",
           "partner": "Nicht enthalten",
-          "buyer": "Zuk?nftig"
+          "buyer": "Zukünftig"
         },
         {
           "feature": "Online-Abrechnung",
@@ -963,19 +969,19 @@
       "items": [
         {
           "question": "Ist Abrechnung aktiviert?",
-          "answer": "Nein. Diese Pl?ne sind kommerzielle Positionierungslabels f?r Verkaufs- und Demo-Gespr?che. Stripe, Abrechnung, Checkout und Rechnungen sind nicht implementiert."
+          "answer": "Nein. Diese Pläne sind kommerzielle Positionierungslabels für Verkaufs- und Demo-Gespräche. Stripe, Abrechnung, Checkout und Rechnungen sind nicht implementiert."
         },
         {
           "question": "Werden Planlimits durchgesetzt?",
-          "answer": "Nein. Starter, Supplier Pro, Partner, Buyer Pilot und Buyer Pro sind in dieser Version nur Labels. Sie ?ndern keinen Produktzugriff und setzen keine Limits durch."
+          "answer": "Nein. Starter, Supplier Pro, Partner, Buyer Pilot und Buyer Pro sind in dieser Version nur Labels. Sie ändern keinen Produktzugriff und setzen keine Limits durch."
         },
         {
-          "question": "Ist Buyer Pro jetzt verf?gbar?",
-          "answer": "Nein. Buyer Pro ist ein zuk?nftiges/zur?ckgestelltes buyer-seitiges Konzept. Diese Version enth?lt keine Buyer-Konten, keinen Buyer-Login und kein Buyer-Portal."
+          "question": "Ist Buyer Pro jetzt verfügbar?",
+          "answer": "Nein. Buyer Pro ist ein zukünftiges/zurückgestelltes buyer-seitiges Konzept. Diese Version enthält keine Buyer-Konten, keinen Buyer-Login und kein Buyer-Portal."
         },
         {
           "question": "Ist Supplier Passport eine Zertifizierung?",
-          "answer": "Nein. Supplier Passport strukturiert vom Lieferanten bereitgestellte Nachhaltigkeitsinformationen und Nachweise. Es ist keine Zertifizierung, kein Assurance-Bericht und keine rechtliche Compliance-Einsch?tzung."
+          "answer": "Nein. Supplier Passport strukturiert vom Lieferanten bereitgestellte Nachhaltigkeitsinformationen und Nachweise. Es ist keine Zertifizierung, kein Assurance-Bericht und keine rechtliche Compliance-Einschätzung."
         }
       ]
     }
@@ -1941,15 +1947,15 @@
   "requestDemo": {
     "eyebrow": "Pilotphase",
     "title": "Supplier-Passport-Demo anfragen",
-    "description": "Sagen Sie uns, ob Sie Lieferant, Berater/Partner oder Buyer-Team sind. Wir helfen Ihnen, den passenden Einf?hrungsweg zu w?hlen.",
-    "pilotNote": "W?hrend der Pilotphase werden Preise und Onboarding manuell abgestimmt. Online-Abrechnung ist nicht aktiviert.",
+    "description": "Sagen Sie uns, ob Sie Lieferant, Berater/Partner oder Buyer-Team sind. Wir helfen Ihnen, den passenden Einführungsweg zu wählen.",
+    "pilotNote": "Während der Pilotphase werden Preise und Onboarding manuell abgestimmt. Online-Abrechnung ist nicht aktiviert.",
     "contactCta": "Demo anfragen",
-    "whoTitle": "F?r wen dies gedacht ist",
+    "whoTitle": "Für wen dies gedacht ist",
     "audiences": [
       "Lieferanten, die einen ersten Supplier Passport vorbereiten",
-      "Berater/Partner, die mehrere Kunden unterst?tzen",
-      "Buyer-Teams, die Piloten zur Lieferantenbereitschaft pr?fen"
+      "Berater/Partner, die mehrere Kunden unterstützen",
+      "Buyer-Teams, die Piloten zur Lieferantenbereitschaft prüfen"
     ],
-    "noFormNote": "Auf dieser Seite werden keine Formulardaten gesammelt. Der Demo-CTA ?ffnet Ihr E-Mail-Programm, damit Sie nur die Angaben senden, die Sie ausw?hlen."
+    "noFormNote": "Auf dieser Seite werden keine Formulardaten gesammelt. Der Demo-CTA öffnet Ihr E-Mail-Programm, damit Sie nur die Angaben senden, die Sie auswählen."
   }
 }

@@ -728,7 +728,13 @@
         "Governance",
         "Evidence summary"
       ],
-      "secureLine": "Private files are not publicly downloadable"
+      "secureLine": "Private files are not publicly downloadable",
+      "moduleLabels": {
+        "Company profile": "Basic information",
+        "Environment": "Environment",
+        "Social and workforce": "Social",
+        "Governance": "Governance"
+      }
     }
   },
   "pricing": {
