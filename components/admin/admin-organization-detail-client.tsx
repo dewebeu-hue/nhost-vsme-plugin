@@ -337,12 +337,21 @@ export function AdminOrganizationDetailClient({
       </div>
 
       <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-        {summaryCards.map((card) => (
-          <div key={card.label} className="supplier-surface rounded-2xl border-0 p-5">
-            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">{card.label}</p>
-            <p className="mt-2 text-2xl font-semibold text-slate-950">{card.value}</p>
-          </div>
-        ))}
+        {summaryCards.map((card, index) =>
+          index === 0 ? (
+            <ReadinessSummaryCard
+              key={card.label}
+              label={card.label}
+              value={card.value}
+              percentage={organization.readinessPercent}
+            />
+          ) : (
+            <div key={card.label} className="supplier-surface rounded-2xl border-0 p-5">
+              <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">{card.label}</p>
+              <p className="mt-2 text-2xl font-semibold text-slate-950">{card.value}</p>
+            </div>
+          ),
+        )}
       </section>
 
       <section className="supplier-surface rounded-2xl border-0 p-5">
@@ -821,6 +830,70 @@ function HandoffMetric({ label, value }: { label: string; value: string }) {
       <p className="mt-2 text-sm font-semibold text-slate-950">{value}</p>
     </div>
   );
+}
+
+function ReadinessSummaryCard({
+  label,
+  value,
+  percentage,
+}: {
+  label: string;
+  value: string;
+  percentage: number;
+}) {
+  const style = getReadinessStyle(percentage);
+
+  return (
+    <div
+      className={cn(
+        "rounded-2xl border p-5 transition-shadow",
+        style.cardClassName,
+        percentage === 100 ? "shadow-[0_0_24px_rgba(34,197,94,0.22)]" : "shadow-sm",
+      )}
+    >
+      <div className="flex items-center justify-between gap-3">
+        <p className={cn("text-xs font-semibold uppercase tracking-[0.12em]", style.labelClassName)}>{label}</p>
+        <span className={cn("h-3 w-3 rounded-full", style.dotClassName)} aria-hidden="true" />
+      </div>
+      <p className={cn("mt-3 text-4xl font-semibold leading-none", style.valueClassName)}>{value}</p>
+      <div className={cn("mt-4 h-2 overflow-hidden rounded-full", style.trackClassName)}>
+        <div className={cn("h-full rounded-full", style.fillClassName)} style={{ width: `${Math.min(100, Math.max(0, percentage))}%` }} />
+      </div>
+    </div>
+  );
+}
+
+function getReadinessStyle(percentage: number) {
+  if (percentage > 66.66) {
+    return {
+      cardClassName: "border-emerald-200 bg-emerald-50/80",
+      labelClassName: "text-emerald-700",
+      valueClassName: "text-emerald-800",
+      dotClassName: "bg-emerald-500",
+      trackClassName: "bg-emerald-100",
+      fillClassName: "bg-emerald-500",
+    };
+  }
+
+  if (percentage >= 33.34) {
+    return {
+      cardClassName: "border-amber-200 bg-amber-50/80",
+      labelClassName: "text-amber-700",
+      valueClassName: "text-amber-800",
+      dotClassName: "bg-amber-500",
+      trackClassName: "bg-amber-100",
+      fillClassName: "bg-amber-500",
+    };
+  }
+
+  return {
+    cardClassName: "border-red-200 bg-red-50/80",
+    labelClassName: "text-red-700",
+    valueClassName: "text-red-800",
+    dotClassName: "bg-red-500",
+    trackClassName: "bg-red-100",
+    fillClassName: "bg-red-500",
+  };
 }
 
 function getHandoffStatus(organization: AdminOrganizationDetail, labels: AdminLabels) {
