@@ -770,7 +770,7 @@
     "sections": {
       "partnerEyebrow": "Buyer plans",
       "partnerTitle": "Buyer-side plans are future-facing.",
-      "partnerDescription": "Buyer Pilot and Buyer Pro are shown for commercial discovery only. Buyer accounts, buyer login and buyer portal are not implemented yet."
+      "partnerDescription": "Buyer Pilot and Buyer Pro are shown for commercial discovery only. Buyer accounts, buyer login and buyer organization management are not implemented yet."
     },
     "plans": {
       "starter": {
@@ -825,7 +825,7 @@
         "name": "Buyer Pilot",
         "displayLabel": "Request demo",
         "audience": "Buyer-side discovery conversations and pilot scoping.",
-        "description": "Positioned for buyers exploring supplier readiness visibility without buyer portal access yet.",
+        "description": "Positioned for buyers exploring supplier readiness visibility before authenticated buyer workspaces.",
         "features": [
           "Buyer request tracking concept",
           "Supplier readiness summaries",
@@ -833,7 +833,7 @@
           "Public Supplier Passport review",
           "Pilot workflow scoping"
         ],
-        "setup": "Buyer portal, buyer login and email sending are not included yet.",
+        "setup": "Buyer accounts, buyer login and email sending are not included yet.",
         "ctaLabel": "Request a buyer pilot"
       },
       "buyer-pro": {
@@ -977,7 +977,7 @@
         },
         {
           "question": "Is Buyer Pro available now?",
-          "answer": "No. Buyer Pro is a future/deferred buyer-side concept. This version does not include buyer accounts, buyer login or a buyer portal."
+          "answer": "No. Buyer Pro is a future/deferred buyer-side concept. This version does not include buyer accounts, buyer login or buyer organization management."
         },
         {
           "question": "Is Supplier Passport a certification?",
@@ -1934,5 +1934,51 @@
       "Buyer teams exploring supplier readiness pilots"
     ],
     "noFormNote": "No form data is collected on this page. The demo CTA opens your email client so you can send only the details you choose."
+  },
+  "buyerPortal": {
+    "title": "Buyer Portal",
+    "eyebrow": "Buyer Portal",
+    "description": "Review Supplier Passport summaries shared by suppliers.",
+    "privateEvidence": "Private evidence files are not publicly downloadable.",
+    "openSupplierLink": "Open supplier link",
+    "requestDemo": "Request demo",
+    "accessModelTitle": "Safe buyer access model",
+    "accessTokenOnly": "Access is currently based on supplier share links.",
+    "noBuyerLogin": "Buyer accounts and buyer login are deferred.",
+    "supplierControlsSharing": "Suppliers control sharing through existing active link settings.",
+    "supplierListTitle": "Open a supplier link to view a shared Supplier Passport.",
+    "supplierListDescription": "A personalized buyer supplier list is not available yet. Use a valid supplier share link to review a buyer-safe summary.",
+    "unavailableTitle": "This supplier summary is unavailable.",
+    "unavailableText": "The link may be invalid, expired, or no longer active.",
+    "sharedSupplierPassport": "Shared Supplier Passport",
+    "buyerSafeSummary": "Buyer-safe summary",
+    "summaryIntro": "{companyName} shared a Supplier Passport summary for buyer review.",
+    "supportingEvidence": "Evidence documents are available on request directly from the supplier.",
+    "readiness": "Readiness",
+    "supplierSummary": "Supplier summary",
+    "evidenceOnRequest": "Evidence available on request",
+    "certificateSummary": "Certificate expiry summary",
+    "sectionReadiness": "Section readiness",
+    "completion": "Completion",
+    "buyerNextStepTitle": "Request supporting evidence directly from supplier",
+    "buyerNextStepText": "This portal does not send emails or expose private files. Contact the supplier through your existing procurement channel if you need supporting evidence documents.",
+    "notCertificationDisclaimer": "Supplier Passport is a supplier readiness summary. It is not an audit opinion, certification, legal assessment, or assurance report.",
+    "companyOverview": "Company overview",
+    "companyBasics": "Company basics",
+    "employees": "Employees",
+    "energy": "Energy",
+    "fuel": "Fuel",
+    "waste": "Waste",
+    "environmentalPolicies": "Environmental policies",
+    "healthSafety": "Health and safety",
+    "certifications": "Certifications",
+    "environment": "Environment",
+    "social": "Social",
+    "governance": "Governance",
+    "supplierInformation": "Supplier information",
+    "certificateExpired": "Expired certificate warning",
+    "certificateExpiresSoon": "Certificate expiring soon",
+    "certificateEvidenceAvailable": "Certificate evidence available",
+    "noCertificateWarnings": "No certificate expiry warnings"
   }
 }

@@ -107,7 +107,7 @@ export const pricingPlans: PricingPlan[] = [
     audience: "Buyer-side discovery conversations and pilot scoping.",
     billingType: "positioning",
     description:
-      "Positioned for buyers exploring supplier readiness visibility without buyer portal access yet.",
+      "Positioned for buyers exploring supplier readiness visibility before authenticated buyer workspaces.",
     features: [
       "Buyer request tracking concept",
       "Supplier readiness summaries",
@@ -115,7 +115,7 @@ export const pricingPlans: PricingPlan[] = [
       "Public Supplier Passport review",
       "Pilot workflow scoping",
     ],
-    setup: "Buyer portal, buyer login and email sending are not included yet.",
+    setup: "Buyer accounts, buyer login and email sending are not included yet.",
     ctaLabel: "Request a buyer pilot",
     ctaHref: demoCtaHref,
     category: "buyer",
@@ -161,7 +161,7 @@ export const pricingFaqItems = [
   {
     question: "Is Buyer Pro available now?",
     answer:
-      "No. Buyer Pro is a future/deferred buyer-side concept. This version does not include buyer accounts, buyer login or a buyer portal.",
+      "No. Buyer Pro is a future/deferred buyer-side concept. This version does not include buyer accounts, buyer login or buyer organization management.",
   },
   {
     question: "Is Supplier Passport a certification?",

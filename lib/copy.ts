@@ -64,8 +64,8 @@ export const socialProofCopy = {
   ],
   quote:
     "Supplier Passport helped us prepare our VSME profile in weeks, not months. Buyers love the clarity and the secure access.",
-  person: "Anna Müller",
-  role: "Sustainability Manager",
+  person: "Supplier team",
+  role: "Product example",
 } as const;
 
 export const ctaLabels = {

@@ -2506,6 +2506,61 @@ Deferred after Faza 3.5:
 - Plan enforcement.
 - Buyer Pro platform.
 
+## Faza 4.0 Korak 1 - Buyer Portal Foundation
+
+Buyer Portal starts with a token-only access model. It reuses supplier-controlled share links and does not add buyer accounts, buyer login, buyer organizations, invitations, email sending, billing, Stripe, AI, XBRL, or Supabase.
+
+Routes:
+
+- `/en/buyer`, `/hr/buyer`, `/de/buyer`
+- `/en/buyer/suppliers`, `/hr/buyer/suppliers`, `/de/buyer/suppliers`
+- `/en/buyer/suppliers/[token]`, `/hr/buyer/suppliers/[token]`, `/de/buyer/suppliers/[token]`
+
+Access model:
+
+- Buyer access is based on an active supplier share token.
+- Suppliers control the lifecycle through existing share link activation and expiry.
+- `/buyer/suppliers` is intentionally neutral because personalized buyer supplier lists require authenticated buyer accounts, which are deferred.
+- Password-protected share links still use the existing token-scoped password verification flow.
+
+Buyer-safe data:
+
+- Organization/supplier name.
+- Supplier Passport readiness percentage.
+- Section-level completion summary.
+- High-level evidence availability count.
+- Certificate expiry summary.
+- Static guidance that supporting evidence is available on request.
+
+Excluded from buyer portal:
+
+- Private document URLs.
+- Storage file IDs.
+- Raw sensitive questionnaire answers.
+- User/member data.
+- Internal buyer request notes.
+- Admin, concierge, onboarding, portfolio, handoff, or commercial notes.
+- Full share token values in UI or logs.
+- Email sending or automated requests.
+
+Unavailable state:
+
+- Invalid, inactive, expired, or missing live share data shows a neutral unavailable page.
+- No mock supplier list is shown on buyer portal routes.
+- No supplier dashboard/sidebar/admin navigation appears in buyer portal routes.
+
+Manual QA:
+
+1. Deploy.
+2. Open `/hr/buyer`.
+3. Confirm the access-model copy says buyer access uses supplier links and private evidence files are not publicly downloadable.
+4. Open `/hr/buyer/suppliers` and confirm it shows neutral guidance, not a fake supplier list.
+5. Open a valid `/hr/buyer/suppliers/[token]` in incognito.
+6. Confirm the buyer-safe supplier summary loads without buyer login.
+7. Confirm no private file URL, storage ID, raw answer dump, user/member data, admin note, commercial note, or full share token is visible.
+8. Open `/hr/buyer/suppliers/invalid-token-test` and confirm the safe unavailable state.
+9. Repeat quick checks on `/en/buyer` and `/de/buyer`.
+
 ## Safe Logging Rules
 
 Allowed categories:

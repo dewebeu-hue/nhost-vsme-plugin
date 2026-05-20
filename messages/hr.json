@@ -770,7 +770,7 @@
     "sections": {
       "partnerEyebrow": "Buyer planovi",
       "partnerTitle": "Buyer-side planovi su buduće pozicioniranje.",
-      "partnerDescription": "Buyer Pilot i Buyer Pro prikazani su samo za komercijalno istraživanje. Buyer računi, buyer login i buyer portal još nisu implementirani."
+      "partnerDescription": "Buyer Pilot i Buyer Pro prikazani su samo za komercijalno istraživanje. Buyer računi, buyer login i upravljanje buyer organizacijama još nisu implementirani."
     },
     "plans": {
       "starter": {
@@ -825,7 +825,7 @@
         "name": "Buyer Pilot",
         "displayLabel": "Zatražite demo",
         "audience": "Buyer-side discovery razgovori i definiranje pilota.",
-        "description": "Pozicionirano za kupce koji istražuju pregled spremnosti dobavljača bez buyer portala.",
+        "description": "Pozicionirano za kupce koji istražuju pregled spremnosti dobavljača prije autentificiranih buyer workspaceova.",
         "features": [
           "Koncept praćenja zahtjeva kupaca",
           "Sažeci spremnosti dobavljača",
@@ -833,7 +833,7 @@
           "Pregled javnog Supplier Passporta",
           "Definiranje pilot workflowa"
         ],
-        "setup": "Buyer portal, buyer login i slanje emailova još nisu uključeni.",
+        "setup": "Buyer računi, buyer login i slanje emailova još nisu uključeni.",
         "ctaLabel": "Zatražite buyer pilot"
       },
       "buyer-pro": {
@@ -977,7 +977,7 @@
         },
         {
           "question": "Je li Buyer Pro sada dostupan?",
-          "answer": "Ne. Buyer Pro je budući/odgođeni buyer-side koncept. Ova verzija ne uključuje buyer račune, buyer login ni buyer portal."
+          "answer": "Ne. Buyer Pro je budući/odgođeni buyer-side koncept. Ova verzija ne uključuje buyer račune, buyer login ni upravljanje buyer organizacijama."
         },
         {
           "question": "Je li Supplier Passport certifikacija?",
@@ -1934,5 +1934,51 @@
       "Buyer timovi koji istražuju pilote spremnosti dobavljača"
     ],
     "noFormNote": "Na ovoj stranici ne prikupljamo podatke kroz obrazac. Demo CTA otvara vaš email klijent kako biste poslali samo podatke koje sami odaberete."
+  },
+  "buyerPortal": {
+    "title": "Buyer Portal",
+    "eyebrow": "Buyer Portal",
+    "description": "Pregledajte Supplier Passport sažetke koje su podijelili dobavljači.",
+    "privateEvidence": "Privatni dokazni dokumenti nisu javno dostupni za preuzimanje.",
+    "openSupplierLink": "Otvori link dobavljača",
+    "requestDemo": "Zatraži demo",
+    "accessModelTitle": "Siguran model pristupa za kupce",
+    "accessTokenOnly": "Pristup se trenutačno temelji na linkovima koje dijele dobavljači.",
+    "noBuyerLogin": "Buyer računi i buyer login su odgođeni.",
+    "supplierControlsSharing": "Dobavljači upravljaju dijeljenjem kroz postojeće postavke aktivnog linka.",
+    "supplierListTitle": "Otvorite link dobavljača za pregled dijeljenog Supplier Passporta.",
+    "supplierListDescription": "Personalizirani popis dobavljača za kupce još nije dostupan. Upotrijebite važeći link dobavljača za pregled buyer-safe sažetka.",
+    "unavailableTitle": "Ovaj sažetak dobavljača nije dostupan.",
+    "unavailableText": "Link je možda neispravan, istekao ili više nije aktivan.",
+    "sharedSupplierPassport": "Dijeljeni Supplier Passport",
+    "buyerSafeSummary": "Sažetak siguran za kupce",
+    "summaryIntro": "{companyName} je podijelio Supplier Passport sažetak za pregled kupca.",
+    "supportingEvidence": "Dokazna dokumentacija dostupna je na zahtjev izravno od dobavljača.",
+    "readiness": "Spremnost",
+    "supplierSummary": "Sažetak dobavljača",
+    "evidenceOnRequest": "Dokazna dokumentacija dostupna je na zahtjev",
+    "certificateSummary": "Sažetak isteka certifikata",
+    "sectionReadiness": "Spremnost sekcija",
+    "completion": "Dovršenost",
+    "buyerNextStepTitle": "Zatražite dokaznu dokumentaciju izravno od dobavljača",
+    "buyerNextStepText": "Ovaj portal ne šalje emailove i ne izlaže privatne datoteke. Kontaktirajte dobavljača kroz postojeći nabavni kanal ako trebate dokazne dokumente.",
+    "notCertificationDisclaimer": "Supplier Passport je sažetak spremnosti dobavljača. Nije revizijsko mišljenje, certifikacija, pravna procjena niti assurance izvještaj.",
+    "companyOverview": "Pregled tvrtke",
+    "companyBasics": "Osnovni podaci",
+    "employees": "Zaposlenici",
+    "energy": "Energija",
+    "fuel": "Gorivo",
+    "waste": "Otpad",
+    "environmentalPolicies": "Okolišne politike",
+    "healthSafety": "Zdravlje i sigurnost",
+    "certifications": "Certifikati",
+    "environment": "Okoliš",
+    "social": "Društvo",
+    "governance": "Upravljanje",
+    "supplierInformation": "Podaci o dobavljaču",
+    "certificateExpired": "Upozorenje o isteklom certifikatu",
+    "certificateExpiresSoon": "Certifikat uskoro ističe",
+    "certificateEvidenceAvailable": "Dokaz certifikata je dostupan",
+    "noCertificateWarnings": "Nema upozorenja o isteku certifikata"
   }
 }

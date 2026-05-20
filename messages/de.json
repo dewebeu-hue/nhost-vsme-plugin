@@ -770,7 +770,7 @@
     "sections": {
       "partnerEyebrow": "Buyer-Pläne",
       "partnerTitle": "Buyer-seitige Pläne sind zukunftsorientiert.",
-      "partnerDescription": "Buyer Pilot und Buyer Pro werden nur für kommerzielle Discovery gezeigt. Buyer-Konten, Buyer-Login und Buyer-Portal sind noch nicht implementiert."
+      "partnerDescription": "Buyer Pilot und Buyer Pro werden nur für kommerzielle Discovery gezeigt. Buyer-Konten, Buyer-Login und die Verwaltung von Buyer-Organisationen sind noch nicht implementiert."
     },
     "plans": {
       "starter": {
@@ -825,7 +825,7 @@
         "name": "Buyer Pilot",
         "displayLabel": "Demo anfragen",
         "audience": "Buyer-seitige Discovery-Gespräche und Pilotumfang.",
-        "description": "Positioniert für Käufer, die Lieferantenbereitschaft ohne Buyer-Portal prüfen möchten.",
+        "description": "Positioniert für Käufer, die Lieferantenbereitschaft vor authentifizierten Buyer-Workspaces prüfen möchten.",
         "features": [
           "Konzept zur Nachverfolgung von Käuferanfragen",
           "Zusammenfassungen der Lieferantenbereitschaft",
@@ -833,7 +833,7 @@
           "Öffentlichen Supplier Passport prüfen",
           "Pilot-Workflow definieren"
         ],
-        "setup": "Buyer-Portal, Buyer-Login und E-Mail-Versand sind noch nicht enthalten.",
+        "setup": "Buyer-Konten, Buyer-Login und E-Mail-Versand sind noch nicht enthalten.",
         "ctaLabel": "Buyer Pilot anfragen"
       },
       "buyer-pro": {
@@ -977,7 +977,7 @@
         },
         {
           "question": "Ist Buyer Pro jetzt verfügbar?",
-          "answer": "Nein. Buyer Pro ist ein zukünftiges/zurückgestelltes buyer-seitiges Konzept. Diese Version enthält keine Buyer-Konten, keinen Buyer-Login und kein Buyer-Portal."
+          "answer": "Nein. Buyer Pro ist ein zukünftiges/zurückgestelltes buyer-seitiges Konzept. Diese Version enthält keine Buyer-Konten, keinen Buyer-Login und keine Verwaltung von Buyer-Organisationen."
         },
         {
           "question": "Ist Supplier Passport eine Zertifizierung?",
@@ -1957,5 +1957,51 @@
       "Buyer-Teams, die Piloten zur Lieferantenbereitschaft prüfen"
     ],
     "noFormNote": "Auf dieser Seite werden keine Formulardaten gesammelt. Der Demo-CTA öffnet Ihr E-Mail-Programm, damit Sie nur die Angaben senden, die Sie auswählen."
+  },
+  "buyerPortal": {
+    "title": "Buyer Portal",
+    "eyebrow": "Buyer Portal",
+    "description": "Prüfen Sie Supplier-Passport-Zusammenfassungen, die von Lieferanten geteilt wurden.",
+    "privateEvidence": "Private Nachweisdokumente sind nicht öffentlich herunterladbar.",
+    "openSupplierLink": "Lieferantenlink öffnen",
+    "requestDemo": "Demo anfragen",
+    "accessModelTitle": "Sicheres Zugriffsmodell für Buyer",
+    "accessTokenOnly": "Der Zugriff basiert derzeit auf Freigabelinks von Lieferanten.",
+    "noBuyerLogin": "Buyer-Konten und Buyer-Login sind zurückgestellt.",
+    "supplierControlsSharing": "Lieferanten steuern die Freigabe über bestehende aktive Link-Einstellungen.",
+    "supplierListTitle": "Öffnen Sie einen Lieferantenlink, um einen geteilten Supplier Passport zu prüfen.",
+    "supplierListDescription": "Eine personalisierte Buyer-Lieferantenliste ist noch nicht verfügbar. Verwenden Sie einen gültigen Lieferantenlink, um eine buyer-sichere Zusammenfassung zu prüfen.",
+    "unavailableTitle": "Diese Lieferantenzusammenfassung ist nicht verfügbar.",
+    "unavailableText": "Der Link ist möglicherweise ungültig, abgelaufen oder nicht mehr aktiv.",
+    "sharedSupplierPassport": "Geteilter Supplier Passport",
+    "buyerSafeSummary": "Buyer-sichere Zusammenfassung",
+    "summaryIntro": "{companyName} hat eine Supplier-Passport-Zusammenfassung für die Buyer-Prüfung geteilt.",
+    "supportingEvidence": "Nachweisdokumente sind auf Anfrage direkt beim Lieferanten verfügbar.",
+    "readiness": "Bereitschaft",
+    "supplierSummary": "Lieferantenzusammenfassung",
+    "evidenceOnRequest": "Nachweisdokumente sind auf Anfrage verfügbar",
+    "certificateSummary": "Zusammenfassung der Zertifikatsabläufe",
+    "sectionReadiness": "Abschnittsbereitschaft",
+    "completion": "Fertigstellung",
+    "buyerNextStepTitle": "Fordern Sie Nachweise direkt beim Lieferanten an",
+    "buyerNextStepText": "Dieses Portal sendet keine E-Mails und legt keine privaten Dateien offen. Kontaktieren Sie den Lieferanten über Ihren bestehenden Beschaffungskanal, wenn Sie Nachweisdokumente benötigen.",
+    "notCertificationDisclaimer": "Supplier Passport ist eine Zusammenfassung der Lieferantenbereitschaft. Es ist kein Prüfungsurteil, keine Zertifizierung, keine rechtliche Bewertung und kein Assurance-Bericht.",
+    "companyOverview": "Unternehmensübersicht",
+    "companyBasics": "Unternehmensdaten",
+    "employees": "Mitarbeitende",
+    "energy": "Energie",
+    "fuel": "Kraftstoff",
+    "waste": "Abfall",
+    "environmentalPolicies": "Umweltrichtlinien",
+    "healthSafety": "Gesundheit und Sicherheit",
+    "certifications": "Zertifizierungen",
+    "environment": "Umwelt",
+    "social": "Soziales",
+    "governance": "Governance",
+    "supplierInformation": "Lieferanteninformationen",
+    "certificateExpired": "Warnung zu abgelaufenem Zertifikat",
+    "certificateExpiresSoon": "Zertifikat läuft bald ab",
+    "certificateEvidenceAvailable": "Zertifikatsnachweis verfügbar",
+    "noCertificateWarnings": "Keine Warnungen zu Zertifikatsabläufen"
   }
 }
