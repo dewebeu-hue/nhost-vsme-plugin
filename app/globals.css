@@ -97,7 +97,8 @@
   }
 
   .tour-spotlight-glow {
-    opacity: 0.86;
+    --tour-glow-angle: 0deg;
+    opacity: 0.94;
   }
 
   .tour-spotlight-glow::before,
@@ -110,14 +111,13 @@
   }
 
   .tour-spotlight-glow::before {
-    padding: 2px;
+    padding: 3px;
     background: conic-gradient(
-      from 0deg,
-      rgb(37 99 235 / 0),
-      rgb(37 99 235 / 0.72),
-      rgb(20 184 166 / 0.68),
-      rgb(255 255 255 / 0.5),
-      rgb(37 99 235 / 0)
+      from var(--tour-glow-angle),
+      rgb(110 168 255 / 0.95),
+      rgb(124 240 210 / 0.86),
+      rgb(184 216 255 / 0.84),
+      rgb(110 168 255 / 0.95)
     );
     mask:
       linear-gradient(#000 0 0) content-box,
@@ -127,22 +127,22 @@
       linear-gradient(#000 0 0) content-box,
       linear-gradient(#000 0 0);
     -webkit-mask-composite: xor;
-    animation: tour-spotlight-glow-rotate 4.5s linear infinite;
+    animation: tour-spotlight-glow-angle 4.8s linear infinite;
   }
 
   .tour-spotlight-glow::after {
-    inset: -8px;
-    padding: 10px;
+    padding: 3px;
     background: conic-gradient(
-      from 0deg,
-      rgb(37 99 235 / 0),
-      rgb(37 99 235 / 0.48),
-      rgb(20 184 166 / 0.42),
-      rgb(255 255 255 / 0.28),
-      rgb(37 99 235 / 0)
+      from var(--tour-glow-angle),
+      rgb(110 168 255 / 0.88),
+      rgb(124 240 210 / 0.76),
+      rgb(184 216 255 / 0.78),
+      rgb(110 168 255 / 0.88)
     );
-    filter: blur(10px);
-    opacity: 0.58;
+    filter:
+      drop-shadow(0 0 7px rgb(110 168 255 / 0.42))
+      drop-shadow(0 0 14px rgb(124 240 210 / 0.18));
+    opacity: 0.78;
     mask:
       linear-gradient(#000 0 0) content-box,
       linear-gradient(#000 0 0);
@@ -151,7 +151,7 @@
       linear-gradient(#000 0 0) content-box,
       linear-gradient(#000 0 0);
     -webkit-mask-composite: xor;
-    animation: tour-spotlight-glow-rotate 6s linear infinite;
+    animation: tour-spotlight-glow-angle 4.8s linear infinite;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -161,9 +161,15 @@
     }
   }
 
-  @keyframes tour-spotlight-glow-rotate {
+  @property --tour-glow-angle {
+    syntax: "<angle>";
+    inherits: false;
+    initial-value: 0deg;
+  }
+
+  @keyframes tour-spotlight-glow-angle {
     to {
-      transform: rotate(1turn);
+      --tour-glow-angle: 360deg;
     }
   }
 

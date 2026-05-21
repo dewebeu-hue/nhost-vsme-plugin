@@ -296,7 +296,7 @@ export function SupplierOnboardingTour({ locale, labels }: SupplierOnboardingTou
               />
               <div
                 aria-hidden="true"
-                className="pointer-events-none fixed z-[62] border-2 border-blue-300 shadow-[0_0_0_6px_rgba(37,99,235,0.18),0_0_35px_rgba(37,99,235,0.28)]"
+                className="pointer-events-none fixed z-[62] border border-blue-200/90 shadow-[0_0_0_4px_rgba(37,99,235,0.12)]"
                 style={{
                   top: targetRect.top,
                   left: targetRect.left,
