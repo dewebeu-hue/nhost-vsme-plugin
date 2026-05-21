@@ -3816,3 +3816,61 @@ Manual QA:
 7. Use documents/admin/buyer-request filters before and after actions and confirm they remain stable.
 8. Add/remove buyer compare items and confirm local browser-only state remains removable.
 9. Run the guided tour across routes and confirm its non-sensitive localStorage keys are stable.
+
+## Faza 4.3 Final Perceived Performance QA
+
+Use this final QA checklist before closing Faza 4.3 or after any production deployment that touches navigation, loading, client actions, or guided onboarding.
+
+Navigation smoothness:
+
+- Supplier dashboard, admin, buyer, and public routes should navigate through Next.js routing without full document reloads.
+- Dashboard and admin shells should remain stable while child route content changes.
+- Internal CTAs should use `Link` or router navigation and preserve the active locale.
+- Only external destinations, sign-out/session boundaries, and protected-share password verification may trigger broader reload/refresh behavior.
+
+Loading and skeleton behavior:
+
+- Data-heavy pages should show route skeletons or preserve previous content instead of flashing blank.
+- Skeletons must not show fake `0%`, fake counts, mock supplier names, private URLs, storage IDs, or `No data` before the real request finishes.
+- Admin skeletons must remain readable in #002B36 dark mode.
+
+Async action behavior:
+
+- Save, upload, link, copy, PDF, share-link, buyer-request, compare, and admin actions should show pending feedback, prevent duplicate submissions, and keep the current page visible.
+- Success/error feedback should be localized and safe. Do not render raw errors, stack traces, tokens, private URLs, storage IDs, raw answers, or document contents.
+- On failure, keep user input intact so the user can retry.
+
+State preservation and refetch:
+
+- Do not clear lists/cards during transient refetches. Keep previous data visible until the server confirms new state.
+- Preserve documents filters, admin search/filter state, buyer-request detail state, questionnaire active section, buyer compare items, admin theme, and guided-tour progress.
+- Use mutation responses or targeted refetches where possible. Keep `router.refresh()` reserved for sign-out and cookie/session re-read flows.
+
+Privacy and local storage:
+
+- `localStorage` may contain only non-sensitive UI state such as guided-tour keys, admin theme preference, and buyer compare token list.
+- Do not store access tokens, JWTs, cookies, private document URLs, storage IDs, raw answers, document contents, admin notes, or secrets in browser storage.
+- Public and buyer routes must not expose private document URLs, storage file IDs, raw sensitive answers, admin/concierge/commercial notes, or full share-token logs.
+
+Guided tour stability:
+
+- Route-aware steps should keep tour state stable across dashboard, questionnaire, documents, Passport, and share routes.
+- Targets should align after route changes and async renders without requiring user scroll.
+- Tooltip placement should avoid covering the highlighted target when space is available.
+- Spotlight should remain a clean border-only rounded ring with no filled glow over target content.
+
+Manual production smoke:
+
+1. Deploy and open `/hr/dashboard`, then navigate dashboard, questionnaire, documents, Passport, share, company profile, buyer requests, and missing-data if present.
+2. Save questionnaire answers, upload/link a document, create/copy a share link, and download a PDF; confirm pending states and no page-wide blanking.
+3. Update buyer-request status/notes and confirm filters/details do not reset unexpectedly.
+4. Open `/hr/admin/organizations`, organization detail, and risks; save admin forms and toggle dark mode.
+5. Open valid and invalid `/hr/passport/[token]` and `/hr/buyer/suppliers/[token]`; confirm public skeletons/unavailable states are safe.
+6. Use buyer compare add/remove/clear and confirm local state remains stable.
+7. Clear guided-tour browser keys, run the tour across route steps, and confirm Back/Next/Skip/Finish and target alignment remain stable.
+8. Repeat a quick `/en` smoke and confirm Croatian text does not leak into English routes.
+9. Confirm no private URLs, storage IDs, raw answers, secrets, mock/demo identities, broken Croatian characters, or dead controls are visible.
+
+Phase close:
+
+- Faza 4.3 can close when lint/build pass and production smoke confirms no accidental hard reloads, blank loading flashes, list clearing during refetch, duplicate submissions, or privacy regressions.
