@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { ArrowLeft, ArrowRight, HelpCircle, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -78,9 +78,15 @@ export function SupplierOnboardingTour({ locale, labels }: SupplierOnboardingTou
   const [isRunning, setIsRunning] = useState(false);
   const [stepIndex, setStepIndex] = useState(0);
   const [targetRect, setTargetRect] = useState<TargetRect | null>(null);
+  const targetRectRef = useRef<TargetRect | null>(null);
   const currentStep = tourSteps[stepIndex] ?? tourSteps[0];
   const currentCopy = labels.steps[stepIndex] ?? labels.steps[0];
   const isLastStep = stepIndex === tourSteps.length - 1;
+
+  const updateTargetRect = useCallback((rect: TargetRect | null) => {
+    targetRectRef.current = rect;
+    setTargetRect(rect);
+  }, []);
 
   const localizedRoute = useCallback(
     (route: string) => `/${locale}${route}`,
@@ -164,7 +170,9 @@ export function SupplierOnboardingTour({ locale, labels }: SupplierOnboardingTou
     let cancelled = false;
     let retryTimeoutId: number | null = null;
     let animationFrameId: number | null = null;
+    let mutationTimeoutId: number | null = null;
     let resizeObserver: ResizeObserver | null = null;
+    let mutationObserver: MutationObserver | null = null;
 
     function clearRetryTimeout() {
       if (retryTimeoutId !== null) {
@@ -180,8 +188,20 @@ export function SupplierOnboardingTour({ locale, labels }: SupplierOnboardingTou
       }
     }
 
+    function clearMutationTimeout() {
+      if (mutationTimeoutId !== null) {
+        window.clearTimeout(mutationTimeoutId);
+        mutationTimeoutId = null;
+      }
+    }
+
     function measureElementAfterLayout(element: HTMLElement, shouldScrollIntoView = false) {
       if (cancelled) {
+        return;
+      }
+
+      if (!element.isConnected) {
+        findTargetAndMeasure(performance.now(), shouldScrollIntoView);
         return;
       }
 
@@ -196,8 +216,20 @@ export function SupplierOnboardingTour({ locale, labels }: SupplierOnboardingTou
             return;
           }
 
+          if (!element.isConnected) {
+            findTargetAndMeasure(performance.now(), shouldScrollIntoView);
+            return;
+          }
+
           const rect = element.getBoundingClientRect();
-          setTargetRect(createSpotlightRect(element, rect));
+          if (rect.width < 1 || rect.height < 1) {
+            if (!targetRectRef.current) {
+              findTargetAndMeasure(performance.now(), shouldScrollIntoView);
+            }
+            return;
+          }
+
+          updateTargetRect(createSpotlightRect(element, rect));
         });
       });
     }
@@ -215,30 +247,56 @@ export function SupplierOnboardingTour({ locale, labels }: SupplierOnboardingTou
       resizeObserver.observe(element);
     }
 
-    function findTargetAndMeasure(startedAt = performance.now()) {
+    function scheduleTargetRefresh() {
+      if (cancelled || !currentStep.target) {
+        return;
+      }
+
+      clearMutationTimeout();
+      mutationTimeoutId = window.setTimeout(() => {
+        findTargetAndMeasure(performance.now());
+      }, 60);
+    }
+
+    function observeDocumentChanges() {
+      if (!("MutationObserver" in window) || !document.body) {
+        return;
+      }
+
+      mutationObserver = new MutationObserver(() => {
+        scheduleTargetRefresh();
+      });
+      mutationObserver.observe(document.body, { childList: true, subtree: true });
+    }
+
+    function findTargetAndMeasure(startedAt = performance.now(), shouldScrollIntoView = false) {
       if (cancelled) {
         return;
       }
 
       if (!currentStep.target) {
-        setTargetRect(null);
+        updateTargetRect(null);
         return;
       }
 
       const element = document.querySelector<HTMLElement>(`[data-tour="${currentStep.target}"]`);
 
       if (!element) {
-        if (performance.now() - startedAt < 2000) {
-          retryTimeoutId = window.setTimeout(() => findTargetAndMeasure(startedAt), 50);
+        if (performance.now() - startedAt < 2500) {
+          clearRetryTimeout();
+          retryTimeoutId = window.setTimeout(
+            () => findTargetAndMeasure(startedAt, shouldScrollIntoView),
+            50,
+          );
         } else {
-          setTargetRect(null);
+          updateTargetRect(null);
         }
         return;
       }
 
       clearRetryTimeout();
       observeTarget(element);
-      measureElementAfterLayout(element, true);
+      measureElementAfterLayout(element, shouldScrollIntoView);
     }
 
     function remeasureVisibleTarget() {
@@ -250,10 +308,13 @@ export function SupplierOnboardingTour({ locale, labels }: SupplierOnboardingTou
 
       if (element) {
         measureElementAfterLayout(element);
+      } else {
+        findTargetAndMeasure(performance.now());
       }
     }
 
-    findTargetAndMeasure();
+    observeDocumentChanges();
+    findTargetAndMeasure(performance.now(), true);
     window.addEventListener("resize", remeasureVisibleTarget);
     window.addEventListener("scroll", remeasureVisibleTarget, { passive: true });
 
@@ -261,11 +322,13 @@ export function SupplierOnboardingTour({ locale, labels }: SupplierOnboardingTou
       cancelled = true;
       clearRetryTimeout();
       clearAnimationFrame();
+      clearMutationTimeout();
       resizeObserver?.disconnect();
+      mutationObserver?.disconnect();
       window.removeEventListener("resize", remeasureVisibleTarget);
       window.removeEventListener("scroll", remeasureVisibleTarget);
     };
-  }, [currentStep, isRunning, localizedRoute, pathname, router]);
+  }, [currentStep, isRunning, localizedRoute, pathname, router, updateTargetRect]);
 
   useEffect(() => {
     if (!isRunning) {
