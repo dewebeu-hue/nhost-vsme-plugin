@@ -113,13 +113,15 @@ export function DashboardOverviewPage({
       />
 
       <section className="grid gap-6 xl:grid-cols-[1.15fr_0.95fr_0.8fr]">
-        <OverallReadinessCard
-          readiness={summary?.readinessPercent ?? 0}
-          label={getReadinessLabel(summary?.readinessPercent ?? 0, labels)}
-          lastUpdated={formatDate(summary?.lastUpdated, labels)}
-          modules={moduleCompletion}
-          labels={labels}
-        />
+        <div data-tour="dashboard-readiness">
+          <OverallReadinessCard
+            readiness={summary?.readinessPercent ?? 0}
+            label={getReadinessLabel(summary?.readinessPercent ?? 0, labels)}
+            lastUpdated={formatDate(summary?.lastUpdated, labels)}
+            modules={moduleCompletion}
+            labels={labels}
+          />
+        </div>
         <ModuleCompletionCard
           modules={moduleCompletion}
           labels={labels}

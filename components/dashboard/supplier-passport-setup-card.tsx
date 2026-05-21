@@ -52,7 +52,7 @@ export function SupplierPassportSetupCard({
       contentClassName="flex flex-col gap-5"
     >
       <div className="grid gap-4 lg:grid-cols-[1fr_0.72fr]">
-        <div className="rounded-xl border border-slate-200 bg-white p-4">
+        <div data-tour="dashboard-next-step" className="rounded-xl border border-slate-200 bg-white p-4">
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-blue-700">
             {setup.nextRecommendedStep}
           </p>

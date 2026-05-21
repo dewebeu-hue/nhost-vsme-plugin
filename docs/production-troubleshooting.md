@@ -3416,6 +3416,51 @@ Use this checklist to close Faza 4.1 before the first-customer smoke test. It is
 - AI and XBRL.
 - Destructive reset tooling; production cleanup remains manual, backed up, and narrowly scoped.
 
+## Faza 4.2 Korak 1 - Guided Supplier Onboarding Tour
+
+The supplier dashboard includes a guided onboarding tour for first-customer onboarding. The tour is browser-local only and does not create database records, send emails, expose private files, or store sensitive values.
+
+### Behavior
+
+- First supplier dashboard visit shows a `Start guided tour` / `Skip for now` prompt.
+- The guide dims the page, highlights the current target when available, and shows a compact explanation card.
+- The user can go back, continue, skip, finish, or restart the guide later.
+- Route-aware steps navigate through dashboard, questionnaire, documents, Passport, and share pages.
+- If a target is missing because the page state differs, the guide shows a safe centered fallback instead of crashing.
+
+### Local storage keys
+
+These keys are stored only in the user's browser and contain no organization IDs, share tokens, document IDs, answers, cookies, or secrets:
+
+- `supplierPassportTour:v1:completed`
+- `supplierPassportTour:v1:dismissed`
+- `supplierPassportTour:v1:step`
+
+For manual QA, clear those keys in the browser console or clear site data, then reopen `/hr/dashboard` or `/en/dashboard`.
+
+### Supplier tour route checklist
+
+1. `/[locale]/dashboard` - welcome, readiness score, next recommended step.
+2. `/[locale]/dashboard/questionnaire?section=company_basics` - Company Basics.
+3. `/[locale]/dashboard/questionnaire` - questionnaire sections and save button.
+4. `/[locale]/dashboard/documents` - Evidence Data Room, upload, and link evidence.
+5. `/[locale]/dashboard/passport` - Passport summary and PDF draft.
+6. `/[locale]/dashboard/share` - public share link explanation.
+
+### Manual QA checklist
+
+1. Clear the three tour localStorage keys.
+2. Log in as a supplier and open `/hr/dashboard`.
+3. Confirm the start prompt appears in Croatian.
+4. Start the guide and confirm the readiness card is highlighted.
+5. Continue through questionnaire, documents, Passport, share, and PDF steps.
+6. Confirm cross-route navigation preserves the active step.
+7. Finish the guide, refresh, and confirm it does not auto-start again.
+8. Use `Ponovno pokreni vodič` / `Restart onboarding guide` and confirm restart works.
+9. Confirm Skip closes the guide and prevents auto-start until manually restarted.
+10. Repeat a quick check on `/en/dashboard`.
+11. Confirm the tour does not reveal private document URLs, storage IDs, raw answers, tokens, cookies, JWTs, or admin/internal notes.
+
 ## Safe Logging Rules
 
 Allowed categories:

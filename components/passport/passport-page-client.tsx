@@ -426,6 +426,7 @@ export function PassportPageClient({
             className="h-11 rounded-xl bg-white px-5"
             disabled={isExportingPdf}
             onClick={handleExportPdf}
+            data-tour="passport-pdf"
           >
             <Download data-icon="inline-start" />
             {isExportingPdf ? labels.exportPdfGenerating : labels.exportPdf}
@@ -448,11 +449,13 @@ export function PassportPageClient({
       <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
         <main className="flex min-w-0 flex-col gap-6">
           <PassportCompanySummary profile={companyProfile} labels={labels} />
-          <PassportReadinessSummary
-            score={readinessView.score}
-            modules={readinessView.modules}
-            labels={labels}
-          />
+          <div data-tour="passport-summary">
+            <PassportReadinessSummary
+              score={readinessView.score}
+              modules={readinessView.modules}
+              labels={labels}
+            />
+          </div>
           <SectionCard
             title={labels.passportSections}
             description={labels.passportSectionsDescription}

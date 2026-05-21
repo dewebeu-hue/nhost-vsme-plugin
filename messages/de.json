@@ -93,6 +93,69 @@
     "shared": "Geteilt",
     "archived": "Archiviert"
   },
+  "onboardingTour": {
+    "startGuide": "Gefuehrte Tour starten",
+    "skipForNow": "Vorerst ueberspringen",
+    "restartGuide": "Onboarding-Tour neu starten",
+    "next": "Weiter",
+    "back": "Zurueck",
+    "skip": "Ueberspringen",
+    "finish": "Fertig",
+    "stepLabel": "Schritt {current} von {total}",
+    "promptTitle": "Gefuehrte Tour starten?",
+    "promptText": "Eine kurze Tour fuehrt Sie durch den wichtigsten Supplier-Passport-Ablauf.",
+    "missingTargetText": "Dieser Schritt hat auf dieser Seite keinen sichtbaren hervorgehobenen Bereich, aber Sie koennen die Tour fortsetzen.",
+    "steps": {
+      "1": {
+        "title": "Willkommen bei Supplier Passport",
+        "text": "Diese Tour zeigt Ihnen, wie Sie einen kaeuferbereiten Supplier Passport erstellen."
+      },
+      "2": {
+        "title": "Bereitschaftswert",
+        "text": "Dieser Wert zeigt, wie vollstaendig Ihr Fragebogen und Ihre Nachweisbereitschaft sind."
+      },
+      "3": {
+        "title": "Naechster empfohlener Schritt",
+        "text": "Nutzen Sie diese Empfehlung, um dort weiterzumachen, wo die groesste Luecke besteht."
+      },
+      "4": {
+        "title": "Unternehmensdaten",
+        "text": "Beginnen Sie mit den Unternehmensdaten. Diese Felder erscheinen in Ihrer Supplier-Passport-Zusammenfassung."
+      },
+      "5": {
+        "title": "Fragebogenabschnitte",
+        "text": "Jeder Abschnitt wirkt sich auf Ihren Bereitschaftswert aus."
+      },
+      "6": {
+        "title": "Antworten speichern",
+        "text": "Speichern Sie Ihre Antworten regelmaessig. Gespeicherte Antworten bleiben nach dem Aktualisieren erhalten."
+      },
+      "7": {
+        "title": "Evidence Data Room",
+        "text": "Laden Sie Nachweisdokumente wie Zertifikate, Richtlinien und Rechnungen hoch."
+      },
+      "8": {
+        "title": "Dokumente hochladen",
+        "text": "Hochgeladene Dokumente bleiben privat und sind standardmaessig nicht oeffentlich herunterladbar."
+      },
+      "9": {
+        "title": "Nachweise verknuepfen",
+        "text": "Verknuepfen Sie Dokumente mit Fragebogenantworten, um vorhandene Nachweise sichtbar zu machen."
+      },
+      "10": {
+        "title": "Supplier Passport pruefen",
+        "text": "Pruefen Sie Ihren Supplier Passport, bevor Sie ihn mit Kaeufern teilen."
+      },
+      "11": {
+        "title": "Oeffentlichen Link teilen",
+        "text": "Teilen Sie diesen oeffentlichen Link mit Kaeufern. Er zeigt eine kaeufergeeignete Zusammenfassung, keine privaten Dateien."
+      },
+      "12": {
+        "title": "PDF-Entwurf herunterladen",
+        "text": "Laden Sie einen PDF-Entwurf zur Pruefung oder manuellen Weitergabe herunter."
+      }
+    }
+  },
   "dashboard": {
     "shell": {
       "plan": "Plan",

@@ -572,7 +572,7 @@ export function DocumentsPageClient({
   }
 
   return (
-    <div className="flex flex-col gap-6">
+    <div data-tour="documents-page" className="flex flex-col gap-6">
       <div className="flex flex-col justify-between gap-4 xl:flex-row xl:items-end">
         <div>
           <nav className="mb-3 flex items-center gap-2 text-sm font-medium text-slate-500">
@@ -597,6 +597,7 @@ export function DocumentsPageClient({
             onUpload={handleUpload}
             trigger={
               <button
+                data-tour="documents-upload"
                 type="button"
                 className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 text-sm font-semibold text-white shadow-lg shadow-blue-600/15 transition hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-blue-600/20"
               >
@@ -634,34 +635,36 @@ export function DocumentsPageClient({
       {isLoading ? (
         <DocumentsSkeleton />
       ) : (
-        <EvidenceDataRoom
-          key={visibleSelectedDocumentId}
-          documents={filteredDocuments}
-          initialSelectedDocumentId={visibleSelectedDocumentId}
-          linkedQuestions={liveMode ? [] : evidenceRoomLinkedQuestions}
-          linkedQuestionsByDocument={linkedQuestionsByDocument}
-          onLinkToAnswer={(document) => {
-            const documentId = resolveEvidenceDocumentId(document);
+        <div data-tour="documents-link-evidence">
+          <EvidenceDataRoom
+            key={visibleSelectedDocumentId}
+            documents={filteredDocuments}
+            initialSelectedDocumentId={visibleSelectedDocumentId}
+            linkedQuestions={liveMode ? [] : evidenceRoomLinkedQuestions}
+            linkedQuestionsByDocument={linkedQuestionsByDocument}
+            onLinkToAnswer={(document) => {
+              const documentId = resolveEvidenceDocumentId(document);
 
-            if (!documentId) {
-              if (process.env.NODE_ENV !== "production") {
-                console.warn("[documents] evidence link dialog blocked", {
-                  flow: "documents_page",
-                  hasDocumentId: false,
-                  dialogOpen: false,
-                });
+              if (!documentId) {
+                if (process.env.NODE_ENV !== "production") {
+                  console.warn("[documents] evidence link dialog blocked", {
+                    flow: "documents_page",
+                    hasDocumentId: false,
+                    dialogOpen: false,
+                  });
+                }
+
+                setMessage({ tone: "error", text: labels.linkMissingDocumentId });
+                return;
               }
 
-              setMessage({ tone: "error", text: labels.linkMissingDocumentId });
-              return;
-            }
-
-            setDocumentToLink({ ...document, id: documentId });
-            setSelectedDocumentId(documentId);
-            setIsLinkDialogOpen(true);
-          }}
-          labels={labels}
-        />
+              setDocumentToLink({ ...document, id: documentId });
+              setSelectedDocumentId(documentId);
+              setIsLinkDialogOpen(true);
+            }}
+            labels={labels}
+          />
+        </div>
       )}
 
       <LinkAnswerDialog

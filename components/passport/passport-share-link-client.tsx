@@ -205,7 +205,7 @@ export function PassportShareLinkClient({
         <StateCard title={message.text} description="" tone={message.tone === "error" ? "warning" : message.tone} />
       ) : null}
 
-      <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm shadow-slate-950/5">
+      <section data-tour="share-public-link" className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm shadow-slate-950/5">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
           <div className="max-w-2xl">
             <div className="mb-4 flex size-11 items-center justify-center rounded-xl bg-blue-50 text-blue-700">

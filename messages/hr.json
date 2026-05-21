@@ -93,6 +93,69 @@
     "shared": "Podijeljeno",
     "archived": "Arhivirano"
   },
+  "onboardingTour": {
+    "startGuide": "Pokreni vodič",
+    "skipForNow": "Preskoči za sada",
+    "restartGuide": "Ponovno pokreni vodič",
+    "next": "Dalje",
+    "back": "Natrag",
+    "skip": "Preskoči",
+    "finish": "Završi",
+    "stepLabel": "Korak {current} od {total}",
+    "promptTitle": "Pokrenuti vodič?",
+    "promptText": "Kratki vodič može vas provesti kroz glavni Supplier Passport tijek.",
+    "missingTargetText": "Ovaj korak nema vidljivo označeno područje na ovoj stranici, ali možete nastaviti vodič.",
+    "steps": {
+      "1": {
+        "title": "Dobrodošli u Supplier Passport",
+        "text": "Ovaj vodič pokazat će vam kako pripremiti Supplier Passport spreman za kupce."
+      },
+      "2": {
+        "title": "Postotak spremnosti",
+        "text": "Ovaj postotak pokazuje koliko su upitnik i dokazna dokumentacija dovršeni."
+      },
+      "3": {
+        "title": "Sljedeći preporučeni korak",
+        "text": "Koristite ovu preporuku kako biste nastavili tamo gdje je najveći nedostatak."
+      },
+      "4": {
+        "title": "Osnovni podaci",
+        "text": "Započnite s Osnovnim podacima. Ti se podaci prikazuju u Supplier Passport sažetku."
+      },
+      "5": {
+        "title": "Sekcije upitnika",
+        "text": "Svaka sekcija utječe na postotak spremnosti."
+      },
+      "6": {
+        "title": "Spremanje odgovora",
+        "text": "Redovito spremite odgovore. Spremljeni odgovori ostaju nakon osvježavanja stranice."
+      },
+      "7": {
+        "title": "Dokumentacijski Data Room",
+        "text": "Učitajte dokazne dokumente poput certifikata, politika i računa."
+      },
+      "8": {
+        "title": "Učitavanje dokumenata",
+        "text": "Učitani dokumenti ostaju privatni i nisu javno dostupni za preuzimanje prema zadanim postavkama."
+      },
+      "9": {
+        "title": "Povezivanje dokaza",
+        "text": "Povežite dokumente s odgovorima iz upitnika kako biste pokazali gdje postoje dokazi."
+      },
+      "10": {
+        "title": "Pregled Supplier Passporta",
+        "text": "Pregledajte Supplier Passport prije dijeljenja s kupcima."
+      },
+      "11": {
+        "title": "Dijeljenje javnog linka",
+        "text": "Podijelite ovaj javni link s kupcima. Prikazuje buyer-safe sažetak, a ne privatne dokumente."
+      },
+      "12": {
+        "title": "Preuzimanje PDF nacrta",
+        "text": "Preuzmite PDF nacrt za pregled ili ručno dijeljenje."
+      }
+    }
+  },
   "dashboard": {
     "shell": {
       "plan": "Plan",

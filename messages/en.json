@@ -93,6 +93,69 @@
     "shared": "Shared",
     "archived": "Archived"
   },
+  "onboardingTour": {
+    "startGuide": "Start guided tour",
+    "skipForNow": "Skip for now",
+    "restartGuide": "Restart onboarding guide",
+    "next": "Next",
+    "back": "Back",
+    "skip": "Skip",
+    "finish": "Finish",
+    "stepLabel": "Step {current} of {total}",
+    "promptTitle": "Start guided tour?",
+    "promptText": "A short walkthrough can guide you through the main Supplier Passport workflow.",
+    "missingTargetText": "This step does not have a visible highlighted area on this page, but you can continue the guide.",
+    "steps": {
+      "1": {
+        "title": "Welcome to Supplier Passport",
+        "text": "This guide will show you how to create a buyer-ready Supplier Passport."
+      },
+      "2": {
+        "title": "Readiness score",
+        "text": "This score shows how complete your questionnaire and evidence readiness are."
+      },
+      "3": {
+        "title": "Next recommended step",
+        "text": "Use this recommendation to continue where the biggest gap remains."
+      },
+      "4": {
+        "title": "Company Basics",
+        "text": "Start with Company Basics. These fields appear in your Supplier Passport summary."
+      },
+      "5": {
+        "title": "Questionnaire sections",
+        "text": "Each section contributes to your readiness score."
+      },
+      "6": {
+        "title": "Save answers",
+        "text": "Save your answers regularly. Saved answers remain after refresh."
+      },
+      "7": {
+        "title": "Evidence Data Room",
+        "text": "Upload evidence documents such as certificates, policies and invoices."
+      },
+      "8": {
+        "title": "Upload documents",
+        "text": "Uploaded documents stay private and are not publicly downloadable by default."
+      },
+      "9": {
+        "title": "Link evidence",
+        "text": "Link documents to questionnaire answers to show where evidence exists."
+      },
+      "10": {
+        "title": "Review Supplier Passport",
+        "text": "Review your Supplier Passport before sharing it with buyers."
+      },
+      "11": {
+        "title": "Share public link",
+        "text": "Share this public link with buyers. It shows a buyer-safe summary, not private files."
+      },
+      "12": {
+        "title": "Download PDF draft",
+        "text": "Download a PDF draft for review or manual sharing."
+      }
+    }
+  },
   "dashboard": {
     "shell": {
       "plan": "Plan",

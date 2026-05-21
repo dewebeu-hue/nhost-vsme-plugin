@@ -772,6 +772,7 @@ export function QuestionnairePageClient({
             {labels.shareProgress}
           </Button>
           <Button
+            data-tour="questionnaire-save"
             className="shadow-lg shadow-blue-600/15"
             disabled={isSaving}
             onClick={handleSave}
@@ -785,17 +786,19 @@ export function QuestionnairePageClient({
       {message ? <QuestionnaireMessage message={message} /> : null}
 
       <div className="grid gap-6 xl:grid-cols-[280px_minmax(0,1fr)_340px]">
-        <QuestionnaireSectionList
-          completion={overall.completion}
-          completedQuestions={overall.completedQuestions}
-          totalQuestions={overall.totalQuestions}
-          sections={sections}
-          onSelectSection={setSelectedSectionCode}
-          labels={labels}
-        />
+        <div data-tour="questionnaire-sections">
+          <QuestionnaireSectionList
+            completion={overall.completion}
+            completedQuestions={overall.completedQuestions}
+            totalQuestions={overall.totalQuestions}
+            sections={sections}
+            onSelectSection={setSelectedSectionCode}
+            labels={labels}
+          />
+        </div>
 
         <main className="flex min-w-0 flex-col gap-5">
-          <section className="supplier-surface rounded-2xl border-0 p-6">
+          <section data-tour="questionnaire-company-basics" className="supplier-surface rounded-2xl border-0 p-6">
             <div className="flex flex-col justify-between gap-5 md:flex-row md:items-start">
               <div>
                 <p className="text-sm font-semibold uppercase tracking-[0.18em] text-blue-600">
