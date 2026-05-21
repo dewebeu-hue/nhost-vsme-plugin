@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
 import { UploadCloud } from "lucide-react";
@@ -15,6 +15,7 @@ import {
   UploadDocumentDialog,
   type UploadDocumentValues,
 } from "@/components/documents/upload-document-dialog";
+import { ContextualHelpCard, TerminologyTooltip } from "@/components/onboarding/contextual-help";
 import { Button } from "@/components/ui/button";
 import {
   linkDocumentToQuestionItems,
@@ -621,6 +622,32 @@ export function DocumentsPageClient({
 
       {message ? <DocumentsMessage message={message} /> : null}
 
+      <ContextualHelpCard
+        title={labels.contextualHelp.title}
+        text={labels.contextualHelp.text}
+      />
+
+      <section className="flex flex-wrap gap-3">
+        <HelpChip label={labels.contextualHelp.documentTypeLabel}>
+          <TerminologyTooltip
+            label={labels.contextualHelp.documentTypeLabel}
+            text={labels.contextualHelp.documentTypeText}
+          />
+        </HelpChip>
+        <HelpChip label={labels.contextualHelp.linkedToAnswerLabel}>
+          <TerminologyTooltip
+            label={labels.contextualHelp.linkedToAnswerLabel}
+            text={labels.contextualHelp.linkedToAnswerText}
+          />
+        </HelpChip>
+        <HelpChip label={labels.contextualHelp.expiringSoonLabel}>
+          <TerminologyTooltip
+            label={labels.contextualHelp.expiringSoonLabel}
+            text={labels.contextualHelp.expiringSoonText}
+          />
+        </HelpChip>
+      </section>
+
       <DocumentsMetricCards metrics={metrics} labels={labels} />
       <DocumentsToolbar
         filters={evidenceRoomFilters}
@@ -708,6 +735,15 @@ function DocumentsSkeleton() {
       <div className="h-[520px] animate-pulse rounded-2xl border border-slate-200 bg-white shadow-sm" />
       <div className="h-[520px] animate-pulse rounded-2xl border border-slate-200 bg-white shadow-sm" />
     </div>
+  );
+}
+
+function HelpChip({ label, children }: { label: string; children: ReactNode }) {
+  return (
+    <span className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 shadow-sm shadow-slate-950/5">
+      {label}
+      {children}
+    </span>
   );
 }
 

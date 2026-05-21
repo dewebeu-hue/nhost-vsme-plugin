@@ -209,6 +209,11 @@
       "noReadinessTrend": "Trend spremnosti prikazat će se nakon više spremljenog napretka.",
       "publicSupplierPassport": "Javni Supplier Passport",
       "noExpiry": "Bez isteka",
+      "contextualHelp": {
+        "title": "Kako dovršiti Supplier Passport",
+        "text": "Slijedite korake u nastavku kako biste ispunili upitnik, dodali dokaze i pripremili buyer-safe sažetak Passporta.",
+        "restartGuide": "Ponovno pokreni vodič"
+      },
       "setupChecklist": {
         "title": "Postavljanje Supplier Passporta",
         "description": "Dovršite ove korake kako biste pripremili VSME-aligned profil dobavljača za kupce.",
@@ -350,6 +355,16 @@
     "attachSuccess": "Dokument je povezan s odgovorom iz upitnika.",
     "noAnswersSaved": "Još nema spremljenih odgovora.",
     "startFirstSection": "Započnite s prvom sekcijom kako biste izradili svoj Supplier Passport.",
+    "contextualHelp": {
+      "title": "Pomoć za upitnik",
+      "text": "Vaši odgovori grade postotak spremnosti i sažetke sekcija koji se prikazuju u Supplier Passportu. Započnite s Osnovnim podacima, zatim nastavite kroz nedovršene sekcije.",
+      "readinessScoreLabel": "Postotak spremnosti",
+      "readinessScoreText": "Pokazatelj napretka temeljen na dovršenim stavkama upitnika i metapodacima dokazne dokumentacije.",
+      "evidenceRequiredLabel": "Potreban dokaz",
+      "evidenceRequiredText": "Ovaj odgovor treba podržati učitanim dokazom, primjerice certifikatom, politikom, računom ili izvještajem.",
+      "sectionCompletionLabel": "Dovršenost sekcije",
+      "sectionCompletionText": "Prikazuje koliko pitanja u trenutačnoj sekciji ima spremljene odgovore."
+    },
     "sections": {
       "Company Basics": "Osnovni podaci",
       "Employees": "Zaposlenici",
@@ -632,6 +647,16 @@
     "unknownSize": "Nepoznata veličina",
     "recently": "Nedavno",
     "notLinked": "Još nije povezano",
+    "contextualHelp": {
+      "title": "Što ide u Evidence Data Room?",
+      "text": "Učitajte certifikate, politike, račune, izvještaje i druge dokumente koji podržavaju vaše odgovore u upitniku. Datoteke ostaju privatne osim ako ih izričito ne podijelite.",
+      "documentTypeLabel": "Vrsta dokumenta",
+      "documentTypeText": "Vrsta dokumenta pomaže klasificirati dokaze kako bi se lakše pregledali i povezali.",
+      "linkedToAnswerLabel": "Povezano s odgovorom",
+      "linkedToAnswerText": "Povezani dokument podržava konkretan odgovor iz upitnika.",
+      "expiringSoonLabel": "Uskoro istječe",
+      "expiringSoonText": "Dokumenti s datumom isteka, poput certifikata, istaknuti su prije isteka."
+    },
     "documentTypes": {
       "Certificate": "Certifikati",
       "Utility Bill": "Energija",
@@ -1382,6 +1407,11 @@
     "shareLinkSuccess": "Share link je uspješno kreiran.",
     "shareLinkError": "Trenutno ne možemo kreirati share link.",
     "cancel": "Odustani",
+    "contextualHelp": {
+      "title": "Što kupci mogu vidjeti",
+      "text": "Javni Supplier Passport prikazuje buyer-safe sažetak: spremnost, status sekcija i dostupnost dokaza. Privatne datoteke nisu javno dostupne za preuzimanje.",
+      "disclaimer": "Ovo nije revizija, certifikacija niti izvješće s neovisnim uvjerenjem."
+    },
     "modules": {
       "Basic Information": "Osnovni podaci",
       "Environment": "Okoliš",
@@ -1465,7 +1495,15 @@
     "linkRegenerated": "Novi link je generiran",
     "noLinkTitle": "Još nema aktivnog javnog linka.",
     "noLinkText": "Izradite javni link kada budete spremni podijeliti Supplier Passport s kupcima.",
-    "signInRequired": "Prijavite se kako biste upravljali linkom za dijeljenje Supplier Passporta."
+    "signInRequired": "Prijavite se kako biste upravljali linkom za dijeljenje Supplier Passporta.",
+    "contextualHelp": {
+      "title": "Granica javnog dijeljenja",
+      "text": "Svatko tko ima ovaj link može vidjeti javni Supplier Passport sažetak. Privatni dokazni dokumenti nisu dostupni za preuzimanje s javne stranice.",
+      "publicLinkLabel": "Javni link",
+      "publicLinkText": "Svatko s aktivnim linkom može otvoriti buyer-safe Supplier Passport sažetak.",
+      "regenerateLabel": "Deaktivacija ili regeneriranje",
+      "regenerateText": "Regeneriranje kreira novi javni link i onemogućuje stari."
+    }
   },
   "onboarding": {
     "eyebrow": "Supplier setup",
@@ -1910,6 +1948,9 @@
     "shared": "Podijeljeno",
     "noRequestedSections": "Još nisu odabrane konkretne sekcije.",
     "notProvidedYet": "Još nije uneseno",
+    "contextualHelpTitle": "Kako koristiti Zahtjeve kupaca",
+    "contextualHelpText": "Koristite Zahtjeve kupaca kako biste pratili što kupac traži i pripremili odgovor koristeći Supplier Passport, dokaze i PDF nacrt.",
+    "noEmailHelpText": "Slanje e-maila nije omogućeno. Kopirajte tekst odgovora i pošaljite ga kroz svoj uobičajeni nabavni kanal.",
     "statuses": {
       "draft": "Nacrt",
       "in_progress": "U tijeku",
@@ -2003,7 +2044,9 @@
     "website": "Web stranica",
     "workspace": "Radni prostor",
     "notProvided": "Još nije uneseno",
-    "loadFailed": "Podatke nije moguće učitati."
+    "loadFailed": "Podatke nije moguće učitati.",
+    "contextualHelpTitle": "Kako se popunjava Profil tvrtke",
+    "contextualHelpText": "Profil tvrtke koristi odabrane odgovore iz Osnovnih podataka i povezanih sekcija upitnika. Ove vrijednosti ažurirajte u upitniku."
   },
   "requestDemo": {
     "eyebrow": "Pilot uvođenje",

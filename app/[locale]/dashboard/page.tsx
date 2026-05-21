@@ -63,6 +63,11 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
     noReadinessTrend: t("noReadinessTrend"),
     publicSupplierPassport: t("publicSupplierPassport"),
     noExpiry: t("noExpiry"),
+    contextualHelp: {
+      title: t("contextualHelp.title"),
+      text: t("contextualHelp.text"),
+      restartGuide: t("contextualHelp.restartGuide"),
+    },
     setupChecklist: {
       title: t("setupChecklist.title"),
       description: t("setupChecklist.description"),

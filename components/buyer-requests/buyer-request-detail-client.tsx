@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useLocale } from "next-intl";
 import { ArrowLeft, Copy, ExternalLink, Save } from "lucide-react";
+import { ContextualHelpCard } from "@/components/onboarding/contextual-help";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -252,6 +253,11 @@ export function BuyerRequestDetailClient({
       </Button>
 
       {message ? <BuyerRequestMessage message={message} /> : null}
+
+      <ContextualHelpCard
+        title={labels.contextualHelpTitle}
+        text={`${labels.contextualHelpText} ${labels.noEmailHelpText}`}
+      />
 
       <header className="supplier-surface rounded-2xl border-0 p-6">
         <div className="flex flex-col justify-between gap-4 lg:flex-row lg:items-start">

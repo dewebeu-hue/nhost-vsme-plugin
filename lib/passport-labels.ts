@@ -79,6 +79,11 @@ export type PassportLabels = {
   shareLinkSuccess: string;
   shareLinkError: string;
   cancel: string;
+  contextualHelp: {
+    title: string;
+    text: string;
+    disclaimer: string;
+  };
   modules: Record<string, string>;
   settings: Record<string, string>;
   settingValues: Record<string, string>;
@@ -175,6 +180,11 @@ export const defaultPassportLabels: PassportLabels = {
   shareLinkSuccess: "Share link created successfully.",
   shareLinkError: "We could not create the share link right now.",
   cancel: "Cancel",
+  contextualHelp: {
+    title: "What buyers can see",
+    text: "The public Supplier Passport shows a buyer-safe summary: readiness, section status and evidence availability. Private files are not publicly downloadable.",
+    disclaimer: "This is not an audit, certification or assurance report.",
+  },
   modules: {
     "Basic Information": "Basic Information",
     Environment: "Environment",

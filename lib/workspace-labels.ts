@@ -68,6 +68,16 @@ export type QuestionnaireLabels = {
   attachSuccess: string;
   noAnswersSaved: string;
   startFirstSection: string;
+  contextualHelp: {
+    title: string;
+    text: string;
+    readinessScoreLabel: string;
+    readinessScoreText: string;
+    evidenceRequiredLabel: string;
+    evidenceRequiredText: string;
+    sectionCompletionLabel: string;
+    sectionCompletionText: string;
+  };
   sections: Record<string, string>;
   questionPrompts: Record<string, string>;
   questionOptions: Record<string, string>;
@@ -174,6 +184,16 @@ export type DocumentsLabels = {
   unknownSize: string;
   recently: string;
   notLinked: string;
+  contextualHelp: {
+    title: string;
+    text: string;
+    documentTypeLabel: string;
+    documentTypeText: string;
+    linkedToAnswerLabel: string;
+    linkedToAnswerText: string;
+    expiringSoonLabel: string;
+    expiringSoonText: string;
+  };
   statuses: Record<EvidenceRoomStatus, string>;
   answerStatuses: Record<QuestionnaireAnswerStatus, string>;
   documentTypes: Record<EvidenceRoomDocument["type"], string>;
@@ -249,6 +269,16 @@ export const defaultQuestionnaireLabels: QuestionnaireLabels = {
   attachSuccess: "Evidence attached to questionnaire answer.",
   noAnswersSaved: "No answers saved yet.",
   startFirstSection: "Start with the first section to build your Supplier Passport.",
+  contextualHelp: {
+    title: "Questionnaire guidance",
+    text: "Your answers build the readiness score and section summaries shown in Supplier Passport. Start with Company Basics, then continue through each incomplete section.",
+    readinessScoreLabel: "Readiness score",
+    readinessScoreText: "A progress indicator based on completed questionnaire items and evidence metadata.",
+    evidenceRequiredLabel: "Evidence required",
+    evidenceRequiredText: "This answer should be supported by uploaded evidence, such as a certificate, policy, invoice or report.",
+    sectionCompletionLabel: "Section completion",
+    sectionCompletionText: "Shows how many questions in the current section have saved answers.",
+  },
   sections: {
     "Company Basics": "Company Basics",
     Employees: "Employees",
@@ -423,6 +453,16 @@ export const defaultDocumentsLabels: DocumentsLabels = {
   unknownSize: "Unknown size",
   recently: "Recently",
   notLinked: "Not linked yet",
+  contextualHelp: {
+    title: "What belongs in the Evidence Data Room?",
+    text: "Upload certificates, policies, invoices, audit reports and other files that support your questionnaire answers. Files stay private unless you explicitly share them.",
+    documentTypeLabel: "Document type",
+    documentTypeText: "Use document type to classify evidence so it can be reviewed and linked more easily.",
+    linkedToAnswerLabel: "Linked to answer",
+    linkedToAnswerText: "A linked document supports a specific questionnaire answer.",
+    expiringSoonLabel: "Expiring soon",
+    expiringSoonText: "Documents with expiry dates, such as certificates, are highlighted before they expire.",
+  },
   statuses: {
     Reviewed: "Reviewed",
     Linked: "Linked",

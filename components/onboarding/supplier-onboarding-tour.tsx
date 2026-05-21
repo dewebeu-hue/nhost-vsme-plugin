@@ -130,6 +130,18 @@ export function SupplierOnboardingTour({ locale, labels }: SupplierOnboardingTou
   }, []);
 
   useEffect(() => {
+    function handleRestart() {
+      startTour();
+    }
+
+    window.addEventListener("supplier-passport-tour:restart", handleRestart);
+
+    return () => {
+      window.removeEventListener("supplier-passport-tour:restart", handleRestart);
+    };
+  }, [startTour]);
+
+  useEffect(() => {
     if (!isRunning) {
       return;
     }

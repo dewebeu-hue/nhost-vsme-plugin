@@ -18,6 +18,7 @@ export default async function PassportPage({ params }: PassportPageProps) {
     settings: { ...defaultPassportLabels.settings, ...source.settings },
     settingValues: { ...defaultPassportLabels.settingValues, ...source.settingValues },
     checklist: { ...defaultPassportLabels.checklist, ...source.checklist },
+    contextualHelp: { ...defaultPassportLabels.contextualHelp, ...source.contextualHelp },
     documentCategories: {
       ...defaultPassportLabels.documentCategories,
       ...source.documentCategories,

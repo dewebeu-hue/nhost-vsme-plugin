@@ -16,6 +16,10 @@ export default async function DashboardSharePage({ params }: DashboardSharePageP
   const labels = {
     ...defaultPassportShareLabels,
     ...messages.passportShare,
+    contextualHelp: {
+      ...defaultPassportShareLabels.contextualHelp,
+      ...(messages.passportShare?.contextualHelp ?? {}),
+    },
   };
 
   return <PassportShareLinkClient labels={labels} />;

@@ -209,6 +209,11 @@
       "noReadinessTrend": "Readiness trend will appear after more saved progress.",
       "publicSupplierPassport": "Public Supplier Passport",
       "noExpiry": "No expiry",
+      "contextualHelp": {
+        "title": "How to complete your Supplier Passport",
+        "text": "Follow the steps below to complete the questionnaire, add evidence and prepare a buyer-safe Passport summary.",
+        "restartGuide": "Restart onboarding guide"
+      },
       "setupChecklist": {
         "title": "Supplier Passport setup",
         "description": "Complete these steps to prepare a buyer-ready, VSME-aligned supplier profile.",
@@ -350,6 +355,16 @@
     "attachSuccess": "Document linked to questionnaire answer.",
     "noAnswersSaved": "No answers saved yet.",
     "startFirstSection": "Start with the first section to build your Supplier Passport.",
+    "contextualHelp": {
+      "title": "Questionnaire guidance",
+      "text": "Your answers build the readiness score and section summaries shown in Supplier Passport. Start with Company Basics, then continue through each incomplete section.",
+      "readinessScoreLabel": "Readiness score",
+      "readinessScoreText": "A progress indicator based on completed questionnaire items and evidence metadata.",
+      "evidenceRequiredLabel": "Evidence required",
+      "evidenceRequiredText": "This answer should be supported by uploaded evidence, such as a certificate, policy, invoice or report.",
+      "sectionCompletionLabel": "Section completion",
+      "sectionCompletionText": "Shows how many questions in the current section have saved answers."
+    },
     "sections": {
       "Company Basics": "Company Basics",
       "Employees": "Employees",
@@ -643,6 +658,16 @@
     "recently": "Recently",
     "notLinked": "Not linked yet",
     "mockModeMessage": "Evidence Data Room is running in mock mode until Nhost is configured and you are signed in.",
+    "contextualHelp": {
+      "title": "What belongs in the Evidence Data Room?",
+      "text": "Upload certificates, policies, invoices, audit reports and other files that support your questionnaire answers. Files stay private unless you explicitly share them.",
+      "documentTypeLabel": "Document type",
+      "documentTypeText": "Use document type to classify evidence so it can be reviewed and linked more easily.",
+      "linkedToAnswerLabel": "Linked to answer",
+      "linkedToAnswerText": "A linked document supports a specific questionnaire answer.",
+      "expiringSoonLabel": "Expiring soon",
+      "expiringSoonText": "Documents with expiry dates, such as certificates, are highlighted before they expire."
+    },
     "statuses": {
       "Reviewed": "Reviewed",
       "Linked": "Linked",
@@ -1382,6 +1407,11 @@
     "shareLinkSuccess": "Share link created successfully.",
     "shareLinkError": "We could not create the share link right now.",
     "cancel": "Cancel",
+    "contextualHelp": {
+      "title": "What buyers can see",
+      "text": "The public Supplier Passport shows a buyer-safe summary: readiness, section status and evidence availability. Private files are not publicly downloadable.",
+      "disclaimer": "This is not an audit, certification or assurance report."
+    },
     "modules": {
       "Basic Information": "Basic Information",
       "Environment": "Environment",
@@ -1465,7 +1495,15 @@
     "linkRegenerated": "Link regenerated",
     "noLinkTitle": "No active public link yet.",
     "noLinkText": "Create a public link when you are ready to share your Supplier Passport with buyers.",
-    "signInRequired": "Please sign in to manage your Supplier Passport share link."
+    "signInRequired": "Please sign in to manage your Supplier Passport share link.",
+    "contextualHelp": {
+      "title": "Public sharing boundary",
+      "text": "Anyone with this link can view the public Supplier Passport summary. Private evidence files are not downloadable from the public page.",
+      "publicLinkLabel": "Public link",
+      "publicLinkText": "Anyone with the active link can open the buyer-safe Supplier Passport summary.",
+      "regenerateLabel": "Deactivate or regenerate",
+      "regenerateText": "Regenerating creates a new public link and disables the old one."
+    }
   },
   "onboarding": {
     "eyebrow": "Supplier setup",
@@ -1910,6 +1948,9 @@
     "shared": "Shared",
     "noRequestedSections": "No specific sections selected yet.",
     "notProvidedYet": "Not provided yet",
+    "contextualHelpTitle": "How to use Buyer Requests",
+    "contextualHelpText": "Use Buyer Requests to track what a buyer is asking for and prepare a response using your Supplier Passport, evidence and PDF draft.",
+    "noEmailHelpText": "Email sending is not enabled. Copy the response note and send it through your usual procurement channel.",
     "statuses": {
       "draft": "Draft",
       "in_progress": "In progress",
@@ -2003,7 +2044,9 @@
     "website": "Website",
     "workspace": "Workspace",
     "notProvided": "Not provided yet",
-    "loadFailed": "We could not load company profile data."
+    "loadFailed": "We could not load company profile data.",
+    "contextualHelpTitle": "How Company Profile is filled",
+    "contextualHelpText": "Company Profile uses selected answers from Company Basics and related questionnaire sections. Update these values in the questionnaire."
   },
   "requestDemo": {
     "eyebrow": "Pilot rollout",

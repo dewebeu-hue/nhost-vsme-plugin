@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { AttachEvidenceDialog } from "@/components/questionnaire/attach-evidence-dialog";
+import { ContextualHelpCard, TerminologyTooltip } from "@/components/onboarding/contextual-help";
 import { QuestionnaireHelperPanel } from "@/components/questionnaire/questionnaire-helper-panel";
 import { QuestionnaireQuestionCard } from "@/components/questionnaire/questionnaire-question-card";
 import { QuestionnaireSectionList } from "@/components/questionnaire/questionnaire-section-list";
@@ -785,6 +786,32 @@ export function QuestionnairePageClient({
 
       {message ? <QuestionnaireMessage message={message} /> : null}
 
+      <ContextualHelpCard
+        title={labels.contextualHelp.title}
+        text={labels.contextualHelp.text}
+      />
+
+      <section className="flex flex-wrap gap-3">
+        <HelpChip label={labels.contextualHelp.readinessScoreLabel}>
+          <TerminologyTooltip
+            label={labels.contextualHelp.readinessScoreLabel}
+            text={labels.contextualHelp.readinessScoreText}
+          />
+        </HelpChip>
+        <HelpChip label={labels.contextualHelp.evidenceRequiredLabel}>
+          <TerminologyTooltip
+            label={labels.contextualHelp.evidenceRequiredLabel}
+            text={labels.contextualHelp.evidenceRequiredText}
+          />
+        </HelpChip>
+        <HelpChip label={labels.contextualHelp.sectionCompletionLabel}>
+          <TerminologyTooltip
+            label={labels.contextualHelp.sectionCompletionLabel}
+            text={labels.contextualHelp.sectionCompletionText}
+          />
+        </HelpChip>
+      </section>
+
       <div className="grid gap-6 xl:grid-cols-[280px_minmax(0,1fr)_340px]">
         <div data-tour="questionnaire-sections">
           <QuestionnaireSectionList
@@ -958,6 +985,15 @@ function QuestionnaireMessage({ message }: { message: MessageState }) {
     <div className={`rounded-2xl border px-4 py-3 text-sm font-medium ${styles[message.tone]}`}>
       {message.text}
     </div>
+  );
+}
+
+function HelpChip({ label, children }: { label: string; children: ReactNode }) {
+  return (
+    <span className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 shadow-sm shadow-slate-950/5">
+      {label}
+      {children}
+    </span>
   );
 }
 

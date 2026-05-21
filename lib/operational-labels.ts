@@ -272,6 +272,8 @@ export type CompanyProfileLabels = {
   workspace: string;
   notProvided: string;
   loadFailed: string;
+  contextualHelpTitle: string;
+  contextualHelpText: string;
 };
 
 export const defaultOnboardingLabels: OnboardingLabels = {
@@ -576,6 +578,8 @@ export const defaultCompanyProfileLabels: CompanyProfileLabels = {
   workspace: "Workspace",
   notProvided: "Not provided yet",
   loadFailed: "We could not load company profile data.",
+  contextualHelpTitle: "How Company Profile is filled",
+  contextualHelpText: "Company Profile uses selected answers from Company Basics and related questionnaire sections. Update these values in the questionnaire.",
 };
 
 export function interpolate(template: string, values: Record<string, string | number>) {

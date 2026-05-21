@@ -18,6 +18,7 @@ export default async function DocumentsPage({ params }: DocumentsPageProps) {
     statuses: { ...defaultDocumentsLabels.statuses, ...source.statuses },
     answerStatuses: { ...defaultDocumentsLabels.answerStatuses, ...source.answerStatuses },
     documentTypes: { ...defaultDocumentsLabels.documentTypes, ...source.documentTypes },
+    contextualHelp: { ...defaultDocumentsLabels.contextualHelp, ...source.contextualHelp },
     sections: { ...defaultDocumentsLabels.sections, ...source.sections },
     questionTitles: { ...defaultDocumentsLabels.questionTitles, ...source.questionTitles },
   };

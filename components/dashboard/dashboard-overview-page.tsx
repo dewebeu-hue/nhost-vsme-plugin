@@ -12,6 +12,7 @@ import { RecentUploadsCard } from "@/components/dashboard/recent-uploads-card";
 import { SupplierPassportSetupCard } from "@/components/dashboard/supplier-passport-setup-card";
 import { TasksCard } from "@/components/dashboard/tasks-card";
 import { PageHeader } from "@/components/layout/page-header";
+import { ContextualHelpCard } from "@/components/onboarding/contextual-help";
 import {
   defaultDashboardOverviewLabels,
   type DashboardOverviewLabels,
@@ -139,6 +140,12 @@ export function DashboardOverviewPage({
         summary={summary}
         labels={labels}
         localePrefix={localePrefix}
+      />
+      <ContextualHelpCard
+        title={labels.contextualHelp.title}
+        text={labels.contextualHelp.text}
+        actionLabel={labels.contextualHelp.restartGuide}
+        onAction={() => window.dispatchEvent(new CustomEvent("supplier-passport-tour:restart"))}
       />
 
       <section className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">

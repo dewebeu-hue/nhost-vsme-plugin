@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Building2, Globe2, MapPin, Users } from "lucide-react";
 import { PageHeader } from "@/components/layout/page-header";
+import { ContextualHelpCard } from "@/components/onboarding/contextual-help";
 import { buttonVariants } from "@/components/ui/button";
 import {
   Card,
@@ -101,6 +102,12 @@ export function CompanyProfileClient({
       <div className="mb-6 rounded-2xl border border-blue-100 bg-blue-50 px-5 py-4 text-sm leading-6 text-blue-900">
         {labels.editUnavailable}
       </div>
+
+      <ContextualHelpCard
+        title={labels.contextualHelpTitle}
+        text={labels.contextualHelpText}
+        className="mb-6"
+      />
 
       {loadFailed ? (
         <div className="mb-6 rounded-2xl border border-amber-100 bg-amber-50 px-5 py-4 text-sm font-medium text-amber-900">

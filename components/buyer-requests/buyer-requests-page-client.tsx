@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useLocale } from "next-intl";
 import { CalendarDays, Plus, Send } from "lucide-react";
+import { ContextualHelpCard } from "@/components/onboarding/contextual-help";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
@@ -175,6 +176,11 @@ export function BuyerRequestsPageClient({
       </header>
 
       {message ? <BuyerRequestMessage message={message} /> : null}
+
+      <ContextualHelpCard
+        title={labels.contextualHelpTitle}
+        text={`${labels.contextualHelpText} ${labels.noEmailHelpText}`}
+      />
 
       <section className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_420px]">
         <div className="supplier-surface overflow-hidden rounded-2xl border-0">

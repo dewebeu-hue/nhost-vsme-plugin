@@ -10,6 +10,7 @@ import { PassportDisclaimer } from "@/components/passport/passport-disclaimer";
 import { PassportReadinessSummary } from "@/components/passport/passport-readiness-summary";
 import { PassportSectionCard } from "@/components/passport/passport-section-card";
 import { ShareSettingsPreview } from "@/components/passport/share-settings-preview";
+import { ContextualHelpCard } from "@/components/onboarding/contextual-help";
 import { SectionCard } from "@/components/shared/section-card";
 import { StateCard } from "@/components/shared/state-card";
 import { Button } from "@/components/ui/button";
@@ -445,6 +446,11 @@ export function PassportPageClient({
       ) : (
         <StateCard title={labels.noPassportTitle} description={labels.noPassportText} tone="info" />
       )}
+
+      <ContextualHelpCard
+        title={labels.contextualHelp.title}
+        text={`${labels.contextualHelp.text} ${labels.contextualHelp.disclaimer}`}
+      />
 
       <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
         <main className="flex min-w-0 flex-col gap-6">

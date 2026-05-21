@@ -96,6 +96,9 @@ export type BuyerRequestLabels = {
   shared: string;
   noRequestedSections: string;
   notProvidedYet: string;
+  contextualHelpTitle: string;
+  contextualHelpText: string;
+  noEmailHelpText: string;
   statuses: Record<BuyerRequestStatus, string>;
   sections: Record<BuyerRequestSectionCode, string>;
 };
@@ -205,6 +208,9 @@ export const defaultBuyerRequestLabels: BuyerRequestLabels = {
   shared: "Shared",
   noRequestedSections: "No specific sections selected yet.",
   notProvidedYet: "Not provided yet",
+  contextualHelpTitle: "How to use Buyer Requests",
+  contextualHelpText: "Use Buyer Requests to track what a buyer is asking for and prepare a response using your Supplier Passport, evidence and PDF draft.",
+  noEmailHelpText: "Email sending is not enabled. Copy the response note and send it through your usual procurement channel.",
   statuses: {
     draft: "Draft",
     in_progress: "In progress",

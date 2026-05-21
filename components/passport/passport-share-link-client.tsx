@@ -3,6 +3,7 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { useLocale } from "next-intl";
 import { Copy, ExternalLink, Link2, Power, RefreshCw, RotateCcw } from "lucide-react";
+import { ContextualHelpCard, TerminologyTooltip } from "@/components/onboarding/contextual-help";
 import { StateCard } from "@/components/shared/state-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -39,6 +40,14 @@ export type PassportShareLabels = {
   noLinkTitle: string;
   noLinkText: string;
   signInRequired: string;
+  contextualHelp: {
+    title: string;
+    text: string;
+    publicLinkLabel: string;
+    publicLinkText: string;
+    regenerateLabel: string;
+    regenerateText: string;
+  };
 };
 
 export const defaultPassportShareLabels: PassportShareLabels = {
@@ -72,6 +81,14 @@ export const defaultPassportShareLabels: PassportShareLabels = {
   noLinkTitle: "No share link yet",
   noLinkText: "Generate a secure public link when you are ready to share your Supplier Passport summary.",
   signInRequired: "Please sign in to manage your Supplier Passport share link.",
+  contextualHelp: {
+    title: "Public sharing boundary",
+    text: "Anyone with this link can view the public Supplier Passport summary. Private evidence files are not downloadable from the public page.",
+    publicLinkLabel: "Public link",
+    publicLinkText: "Anyone with the active link can open the buyer-safe Supplier Passport summary.",
+    regenerateLabel: "Deactivate or regenerate",
+    regenerateText: "Regenerating creates a new public link and disables the old one.",
+  },
 };
 
 type ShareLinkPayload = {
@@ -205,6 +222,11 @@ export function PassportShareLinkClient({
         <StateCard title={message.text} description="" tone={message.tone === "error" ? "warning" : message.tone} />
       ) : null}
 
+      <ContextualHelpCard
+        title={labels.contextualHelp.title}
+        text={labels.contextualHelp.text}
+      />
+
       <section data-tour="share-public-link" className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm shadow-slate-950/5">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
           <div className="max-w-2xl">
@@ -242,7 +264,12 @@ export function PassportShareLinkClient({
         </div>
 
         <div className="mt-6 grid gap-3 md:grid-cols-3">
-          <InfoPill label={labels.linkStatus} value={shareLink?.is_active ? labels.activeLink : labels.inactiveLink}>
+          <InfoPill
+            label={labels.linkStatus}
+            value={shareLink?.is_active ? labels.activeLink : labels.inactiveLink}
+            tooltipLabel={labels.contextualHelp.publicLinkLabel}
+            tooltipText={labels.contextualHelp.publicLinkText}
+          >
             <Badge
               variant="outline"
               className={
@@ -258,7 +285,12 @@ export function PassportShareLinkClient({
             label={labels.createdAt}
             value={shareLink?.created_at ? formatDate(shareLink.created_at, locale) : "-"}
           />
-          <InfoPill label={labels.expiresAt} value={expiryLabel} />
+          <InfoPill
+            label={labels.expiresAt}
+            value={expiryLabel}
+            tooltipLabel={labels.contextualHelp.regenerateLabel}
+            tooltipText={labels.contextualHelp.regenerateText}
+          />
         </div>
 
         <div className="mt-6 rounded-xl border border-slate-200 bg-slate-50 p-3">
@@ -337,16 +369,25 @@ function InfoPill({
   label,
   value,
   children,
+  tooltipLabel,
+  tooltipText,
 }: {
   label: string;
   value: string;
   children?: ReactNode;
+  tooltipLabel?: string;
+  tooltipText?: string;
 }) {
   return (
     <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
-      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">
-        {label}
-      </p>
+      <div className="flex items-center gap-2">
+        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">
+          {label}
+        </p>
+        {tooltipLabel && tooltipText ? (
+          <TerminologyTooltip label={tooltipLabel} text={tooltipText} />
+        ) : null}
+      </div>
       <div className="mt-2 text-sm font-semibold text-slate-900">
         {children ?? value}
       </div>

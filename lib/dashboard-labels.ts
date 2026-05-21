@@ -97,6 +97,11 @@ export type DashboardOverviewLabels = {
   noReadinessTrend: string;
   publicSupplierPassport: string;
   noExpiry: string;
+  contextualHelp: {
+    title: string;
+    text: string;
+    restartGuide: string;
+  };
   setupChecklist: {
     title: string;
     description: string;
@@ -191,6 +196,11 @@ export const defaultDashboardOverviewLabels: DashboardOverviewLabels = {
   noReadinessTrend: "Readiness trend will appear after more saved progress.",
   publicSupplierPassport: "Public Supplier Passport",
   noExpiry: "No expiry",
+  contextualHelp: {
+    title: "How to complete your Supplier Passport",
+    text: "Follow the steps below to complete the questionnaire, add evidence and prepare a buyer-safe Passport summary.",
+    restartGuide: "Restart onboarding guide",
+  },
   setupChecklist: {
     title: "Supplier Passport setup",
     description: "Complete these steps to prepare a buyer-ready, VSME-aligned supplier profile.",

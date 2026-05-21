@@ -29,6 +29,10 @@ export default async function QuestionnairePage({ params, searchParams }: Questi
       ...defaultQuestionnaireLabels.questionOptions,
       ...source.questionOptions,
     },
+    contextualHelp: {
+      ...defaultQuestionnaireLabels.contextualHelp,
+      ...source.contextualHelp,
+    },
     helperTexts: { ...defaultQuestionnaireLabels.helperTexts, ...source.helperTexts },
     statuses: { ...defaultQuestionnaireLabels.statuses, ...source.statuses },
     documentStatuses: {

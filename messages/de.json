@@ -209,6 +209,11 @@
       "noReadinessTrend": "Der Bereitschaftstrend erscheint nach weiterem gespeichertem Fortschritt.",
       "publicSupplierPassport": "Oeffentlicher Supplier Passport",
       "noExpiry": "Kein Ablaufdatum",
+      "contextualHelp": {
+        "title": "So vervollstaendigen Sie Ihren Supplier Passport",
+        "text": "Folgen Sie den Schritten unten, um den Fragebogen auszufuellen, Nachweise hinzuzufuegen und eine kaeufergeeignete Passport-Zusammenfassung vorzubereiten.",
+        "restartGuide": "Onboarding-Tour neu starten"
+      },
       "setupChecklist": {
         "title": "Supplier-Passport-Einrichtung",
         "description": "Schliessen Sie diese Schritte ab, um ein VSME-orientiertes Lieferantenprofil fuer Kaeufer vorzubereiten.",

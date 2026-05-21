@@ -3461,6 +3461,33 @@ For manual QA, clear those keys in the browser console or clear site data, then 
 10. Repeat a quick check on `/en/dashboard`.
 11. Confirm the tour does not reveal private document URLs, storage IDs, raw answers, tokens, cookies, JWTs, or admin/internal notes.
 
+## Faza 4.2 Korak 2 - Contextual Help and Terminology Tooltips
+
+Contextual help cards are available after the guided tour is skipped or completed. They explain the main supplier workflow without adding feature scope, email sending, billing, AI, XBRL, or public document access.
+
+### Help pattern
+
+- Use short page-level help cards for guidance that users should always be able to read.
+- Use terminology tooltips only for short definitions such as readiness score, evidence required, linked answer, expiring soon, and public link.
+- Tooltips open on hover, focus, and click so they work on desktop, keyboard, and touch devices.
+- Do not place critical instructions only inside a tooltip.
+
+### Page checklist
+
+1. `/hr/dashboard` shows `Kako dovršiti Supplier Passport` and the restart-guide CTA works.
+2. `/hr/dashboard/questionnaire` explains how answers build readiness and includes tooltips for readiness score, evidence required, and section completion.
+3. `/hr/dashboard/documents` explains what belongs in the Evidence Data Room and includes tooltips for document type, linked answer, and expiring soon.
+4. `/hr/dashboard/passport` explains what buyers can see and repeats that the Passport is not an audit, certification, or assurance report.
+5. `/hr/dashboard/share` explains that anyone with the active link can view the public summary and private files are not downloadable.
+6. `/hr/dashboard/company-profile` explains that values come from Company Basics and related questionnaire sections.
+7. `/hr/dashboard/buyer-requests` and request detail pages explain buyer-request tracking and that email sending is not enabled.
+
+### Privacy checklist
+
+- Help copy must not include private file URLs, storage IDs, raw answer values, share tokens, cookies, JWTs, admin notes, commercial notes, or internal concierge notes.
+- Public/private boundaries should remain explicit: public Passport shows a buyer-safe summary; private evidence files are not publicly downloadable.
+- No help button should be active-looking and dead.
+
 ## Safe Logging Rules
 
 Allowed categories:
