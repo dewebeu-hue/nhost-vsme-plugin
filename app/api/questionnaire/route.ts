@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { logSafeDiagnostic } from "@/lib/diagnostics/server-env";
 import { getNhostAuthUrl, getNhostGraphqlUrl } from "@/lib/nhost/config";
 import type { GraphqlJson } from "@/lib/data/questionnaire";
+import { calculateSectionCompletion } from "@/lib/questionnaire-completion";
 import type { QuestionAnswerStatus } from "@/lib/types";
 
 type Membership = {
@@ -263,7 +264,7 @@ export async function GET(request: Request) {
   }
 
   const url = new URL(request.url);
-  const requestedSectionCode = url.searchParams.get("sectionCode")?.trim() || "energy";
+  const requestedSectionCode = url.searchParams.get("sectionCode")?.trim() || null;
 
   logSafeDiagnostic("organization_id_resolved", {
     organizationIdResolved: true,
@@ -320,9 +321,13 @@ export async function GET(request: Request) {
     ...link,
     document: documentMap.get(link.document_id) ?? null,
   }));
-  const activeSection =
-    sections.find((section) => section.code === requestedSectionCode) ?? sections[0];
-  const activeSectionCode = activeSection?.code ?? requestedSectionCode;
+  const activeSection = resolveActiveQuestionnaireSection(
+    sections,
+    items,
+    answers,
+    requestedSectionCode,
+  );
+  const activeSectionCode = activeSection?.code ?? requestedSectionCode ?? "company_basics";
   const questions = activeSection
     ? items.filter((item) => item.section_id === activeSection.id)
     : items;
@@ -348,6 +353,34 @@ export async function GET(request: Request) {
     documentLinks,
     isMock: false,
   });
+}
+
+function resolveActiveQuestionnaireSection(
+  sections: QuestionSectionRecord[],
+  items: QuestionItemRecord[],
+  answers: QuestionAnswerRecord[],
+  requestedSectionCode: string | null,
+) {
+  if (requestedSectionCode) {
+    const requestedSection = sections.find((section) => section.code === requestedSectionCode);
+
+    if (requestedSection) {
+      return requestedSection;
+    }
+  }
+
+  const firstIncompleteSection = sections.find((section) => {
+    const completion = calculateSectionCompletion(section, items, answers);
+
+    return completion.totalCount > 0 && completion.answeredCount < completion.totalCount;
+  });
+
+  return (
+    firstIncompleteSection ??
+    sections.find((section) => section.code === "company_basics") ??
+    sections[0] ??
+    null
+  );
 }
 
 export async function POST(request: Request) {

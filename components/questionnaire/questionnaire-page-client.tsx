@@ -185,7 +185,7 @@ type QuestionnairePageClientProps = {
   initialSectionCode?: string;
 };
 
-const defaultActiveSectionCode = "energy";
+const defaultActiveSectionCode = "company_basics";
 const documentStatusLabels: Record<LiveDocumentStatus, EvidenceRoomStatus> = {
   uploaded: "Uploaded",
   linked: "Linked",
@@ -216,15 +216,15 @@ export function QuestionnairePageClient({
   const [message, setMessage] = useState<MessageState | null>(null);
   const [organizationId, setOrganizationId] = useState<string | null>(null);
   const [selectedSectionCode, setSelectedSectionCode] = useState(
-    () => normalizeSectionCode(initialSectionCode) ?? defaultActiveSectionCode,
+    () => normalizeSectionCode(initialSectionCode) ?? "",
   );
   const [sections, setSections] = useState<QuestionnaireSectionProgress[]>(
     questionnaireSectionProgress,
   );
   const [liveSections, setLiveSections] = useState<QuestionSectionRecord[]>([]);
   const [activeSection, setActiveSection] = useState<ActiveSectionState>({
-    name: labels.sectionEnergyTitle,
-    subtitle: labels.sectionEnergyDescription,
+    name: labels.sections["Company Basics"] ?? "Company Basics",
+    subtitle: labels.startFirstSection,
     completion: questionnaireOverviewMock.activeSection.completion,
     completedQuestions: questionnaireOverviewMock.activeSection.completedQuestions,
     totalQuestions: questionnaireOverviewMock.activeSection.totalQuestions,
@@ -266,7 +266,7 @@ export function QuestionnairePageClient({
       }
 
       try {
-        let response = await fetch(`/api/questionnaire?sectionCode=${selectedSectionCode}`, {
+        let response = await fetch(createQuestionnaireUrl(selectedSectionCode), {
           method: "GET",
           headers: {
             authorization: `Bearer ${session.accessToken}`,
@@ -277,7 +277,7 @@ export function QuestionnairePageClient({
           const refreshedSession = await forceRefreshBrowserNhostSession();
 
           if (refreshedSession?.accessToken) {
-            response = await fetch(`/api/questionnaire?sectionCode=${selectedSectionCode}`, {
+            response = await fetch(createQuestionnaireUrl(selectedSectionCode), {
               method: "GET",
               headers: {
                 authorization: `Bearer ${refreshedSession.accessToken}`,
@@ -328,7 +328,8 @@ export function QuestionnairePageClient({
           nextDocumentLinks,
           labels,
         );
-        const activePayloadSectionCode = payload.activeSectionCode || selectedSectionCode;
+        const activePayloadSectionCode =
+          payload.activeSectionCode || selectedSectionCode || defaultActiveSectionCode;
         const nextSections = mapLiveSections(
           payload.sections ?? [],
           allLiveItems,
@@ -1319,6 +1320,16 @@ function normalizeSectionCode(value: string | undefined) {
   const trimmed = value.trim();
 
   return /^[a-z0-9_ -]+$/i.test(trimmed) ? trimmed : null;
+}
+
+function createQuestionnaireUrl(sectionCode: string) {
+  const normalizedSectionCode = normalizeSectionCode(sectionCode);
+
+  if (!normalizedSectionCode) {
+    return "/api/questionnaire";
+  }
+
+  return `/api/questionnaire?sectionCode=${encodeURIComponent(normalizedSectionCode)}`;
 }
 
 function normalizeDateInputValue(value: string) {
