@@ -162,9 +162,60 @@ export function SupplierOnboardingTour({ locale, labels }: SupplierOnboardingTou
     }
 
     let cancelled = false;
-    let timeoutId = window.setTimeout(updateTargetRect, 140);
+    let retryTimeoutId: number | null = null;
+    let animationFrameId: number | null = null;
+    let resizeObserver: ResizeObserver | null = null;
 
-    function updateTargetRect() {
+    function clearRetryTimeout() {
+      if (retryTimeoutId !== null) {
+        window.clearTimeout(retryTimeoutId);
+        retryTimeoutId = null;
+      }
+    }
+
+    function clearAnimationFrame() {
+      if (animationFrameId !== null) {
+        window.cancelAnimationFrame(animationFrameId);
+        animationFrameId = null;
+      }
+    }
+
+    function measureElementAfterLayout(element: HTMLElement, shouldScrollIntoView = false) {
+      if (cancelled) {
+        return;
+      }
+
+      if (shouldScrollIntoView) {
+        element.scrollIntoView({ block: "center", inline: "nearest", behavior: "smooth" });
+      }
+
+      clearAnimationFrame();
+      animationFrameId = window.requestAnimationFrame(() => {
+        animationFrameId = window.requestAnimationFrame(() => {
+          if (cancelled) {
+            return;
+          }
+
+          const rect = element.getBoundingClientRect();
+          setTargetRect(createSpotlightRect(element, rect));
+        });
+      });
+    }
+
+    function observeTarget(element: HTMLElement) {
+      resizeObserver?.disconnect();
+
+      if (!("ResizeObserver" in window)) {
+        return;
+      }
+
+      resizeObserver = new ResizeObserver(() => {
+        measureElementAfterLayout(element);
+      });
+      resizeObserver.observe(element);
+    }
+
+    function findTargetAndMeasure(startedAt = performance.now()) {
       if (cancelled) {
         return;
       }
@@ -177,31 +228,42 @@ export function SupplierOnboardingTour({ locale, labels }: SupplierOnboardingTou
       const element = document.querySelector<HTMLElement>(`[data-tour="${currentStep.target}"]`);
 
       if (!element) {
-        setTargetRect(null);
+        if (performance.now() - startedAt < 2000) {
+          retryTimeoutId = window.setTimeout(() => findTargetAndMeasure(startedAt), 50);
+        } else {
+          setTargetRect(null);
+        }
         return;
       }
 
-      element.scrollIntoView({ block: "center", inline: "nearest", behavior: "smooth" });
-
-      window.clearTimeout(timeoutId);
-      timeoutId = window.setTimeout(() => {
-        if (cancelled) {
-          return;
-        }
-
-        const rect = element.getBoundingClientRect();
-        setTargetRect(createSpotlightRect(element, rect));
-      }, 260);
+      clearRetryTimeout();
+      observeTarget(element);
+      measureElementAfterLayout(element, true);
     }
 
-    window.addEventListener("resize", updateTargetRect);
-    window.addEventListener("scroll", updateTargetRect, { passive: true });
+    function remeasureVisibleTarget() {
+      if (!currentStep.target) {
+        return;
+      }
+
+      const element = document.querySelector<HTMLElement>(`[data-tour="${currentStep.target}"]`);
+
+      if (element) {
+        measureElementAfterLayout(element);
+      }
+    }
+
+    findTargetAndMeasure();
+    window.addEventListener("resize", remeasureVisibleTarget);
+    window.addEventListener("scroll", remeasureVisibleTarget, { passive: true });
 
     return () => {
       cancelled = true;
-      window.clearTimeout(timeoutId);
-      window.removeEventListener("resize", updateTargetRect);
-      window.removeEventListener("scroll", updateTargetRect);
+      clearRetryTimeout();
+      clearAnimationFrame();
+      resizeObserver?.disconnect();
+      window.removeEventListener("resize", remeasureVisibleTarget);
+      window.removeEventListener("scroll", remeasureVisibleTarget);
     };
   }, [currentStep, isRunning, localizedRoute, pathname, router]);
 
@@ -291,9 +353,60 @@ export function SupplierOnboardingTour({ locale, labels }: SupplierOnboardingTou
             <>
               <div
                 aria-hidden="true"
-                className="tour-spotlight-glow pointer-events-none fixed z-[61]"
+                className="pointer-events-none fixed z-[61]"
                 style={getSpotlightGlowStyle(targetRect)}
-              />
+              >
+                <svg
+                  className="tour-spotlight-svg size-full overflow-visible"
+                  width="100%"
+                  height="100%"
+                  viewBox={`0 0 ${targetRect.width + 20} ${targetRect.height + 20}`}
+                  preserveAspectRatio="none"
+                >
+                  <defs>
+                    <linearGradient id="tour-spotlight-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#6EA8FF" />
+                      <stop offset="45%" stopColor="#7CF0D2" />
+                      <stop offset="72%" stopColor="#B8D8FF" />
+                      <stop offset="100%" stopColor="#6EA8FF" />
+                      <animateTransform
+                        attributeName="gradientTransform"
+                        type="rotate"
+                        from={`0 ${(targetRect.width + 20) / 2} ${(targetRect.height + 20) / 2}`}
+                        to={`360 ${(targetRect.width + 20) / 2} ${(targetRect.height + 20) / 2}`}
+                        dur="4.8s"
+                        repeatCount="indefinite"
+                      />
+                    </linearGradient>
+                  </defs>
+                  <rect
+                    x="10"
+                    y="10"
+                    width={Math.max(0, targetRect.width)}
+                    height={Math.max(0, targetRect.height)}
+                    rx={getSvgBorderRadius(targetRect.borderRadius)}
+                    ry={getSvgBorderRadius(targetRect.borderRadius)}
+                    fill="none"
+                    stroke="url(#tour-spotlight-gradient)"
+                    strokeWidth="3"
+                    vectorEffect="non-scaling-stroke"
+                    className="tour-spotlight-ring"
+                  />
+                  <rect
+                    x="10"
+                    y="10"
+                    width={Math.max(0, targetRect.width)}
+                    height={Math.max(0, targetRect.height)}
+                    rx={getSvgBorderRadius(targetRect.borderRadius)}
+                    ry={getSvgBorderRadius(targetRect.borderRadius)}
+                    fill="none"
+                    stroke="#DBEAFE"
+                    strokeOpacity="0.75"
+                    strokeWidth="1"
+                    vectorEffect="non-scaling-stroke"
+                  />
+                </svg>
+              </div>
               <div
                 aria-hidden="true"
                 className="pointer-events-none fixed z-[62] border border-blue-200/90 shadow-[0_0_0_4px_rgba(37,99,235,0.12)]"
@@ -426,6 +539,11 @@ function getSpotlightGlowStyle(targetRect: TargetRect) {
     height: targetRect.height + padding * 2,
     borderRadius: `calc(${targetRect.borderRadius} + ${padding}px)`,
   };
+}
+
+function getSvgBorderRadius(borderRadius: string) {
+  const radius = Number.parseFloat(borderRadius);
+  return Number.isFinite(radius) ? radius : 18;
 }
 
 function getSpotlightBorderRadius(

@@ -96,80 +96,15 @@
     @apply border border-border/80 bg-card shadow-[0_18px_45px_rgba(15,23,42,0.07)];
   }
 
-  .tour-spotlight-glow {
-    --tour-glow-angle: 0deg;
-    opacity: 0.94;
-  }
-
-  .tour-spotlight-glow::before,
-  .tour-spotlight-glow::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    pointer-events: none;
-  }
-
-  .tour-spotlight-glow::before {
-    padding: 3px;
-    background: conic-gradient(
-      from var(--tour-glow-angle),
-      rgb(110 168 255 / 0.95),
-      rgb(124 240 210 / 0.86),
-      rgb(184 216 255 / 0.84),
-      rgb(110 168 255 / 0.95)
-    );
-    mask:
-      linear-gradient(#000 0 0) content-box,
-      linear-gradient(#000 0 0);
-    mask-composite: exclude;
-    -webkit-mask:
-      linear-gradient(#000 0 0) content-box,
-      linear-gradient(#000 0 0);
-    -webkit-mask-composite: xor;
-    animation: tour-spotlight-glow-angle 4.8s linear infinite;
-  }
-
-  .tour-spotlight-glow::after {
-    padding: 3px;
-    background: conic-gradient(
-      from var(--tour-glow-angle),
-      rgb(110 168 255 / 0.88),
-      rgb(124 240 210 / 0.76),
-      rgb(184 216 255 / 0.78),
-      rgb(110 168 255 / 0.88)
-    );
+  .tour-spotlight-ring {
     filter:
-      drop-shadow(0 0 7px rgb(110 168 255 / 0.42))
-      drop-shadow(0 0 14px rgb(124 240 210 / 0.18));
-    opacity: 0.78;
-    mask:
-      linear-gradient(#000 0 0) content-box,
-      linear-gradient(#000 0 0);
-    mask-composite: exclude;
-    -webkit-mask:
-      linear-gradient(#000 0 0) content-box,
-      linear-gradient(#000 0 0);
-    -webkit-mask-composite: xor;
-    animation: tour-spotlight-glow-angle 4.8s linear infinite;
+      drop-shadow(0 0 6px rgb(110 168 255 / 0.45))
+      drop-shadow(0 0 12px rgb(124 240 210 / 0.2));
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .tour-spotlight-glow::before,
-    .tour-spotlight-glow::after {
-      animation: none;
-    }
-  }
-
-  @property --tour-glow-angle {
-    syntax: "<angle>";
-    inherits: false;
-    initial-value: 0deg;
-  }
-
-  @keyframes tour-spotlight-glow-angle {
-    to {
-      --tour-glow-angle: 360deg;
+    .tour-spotlight-svg animateTransform {
+      display: none;
     }
   }
 
