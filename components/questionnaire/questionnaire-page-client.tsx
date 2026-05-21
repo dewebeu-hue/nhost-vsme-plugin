@@ -312,8 +312,6 @@ export function QuestionnairePageClient({
             tone: "error",
             text: payload.error ?? labels.loadFallbackError,
           });
-          setQuestions([]);
-          setSections([]);
           return;
         }
 
@@ -387,8 +385,6 @@ export function QuestionnairePageClient({
           console.error("Questionnaire live load failed", error);
         }
         if (!cancelled) {
-          setQuestions([]);
-          setSections([]);
           setMessage({
             tone: "error",
             text: labels.loadFallbackError,

@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { AdminThemeToggle } from "@/components/admin/admin-theme-provider";
+import { clearCurrentOrganizationCache } from "@/lib/current-organization-client";
 import { getBrowserNhostClient, getFreshBrowserNhostSession } from "@/lib/nhost/client";
 import { defaultAdminLabels, type AdminLabels } from "@/lib/operational-labels";
 import { cn } from "@/lib/utils";
@@ -69,6 +70,7 @@ export function AdminAccountControls({ labels = defaultAdminLabels }: { labels?:
       }
     }
 
+    clearCurrentOrganizationCache();
     router.push(`/${locale}/login`);
     router.refresh();
   }

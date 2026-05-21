@@ -7,20 +7,12 @@ import {
   getBrowserNhostClient,
   getFreshBrowserNhostSession,
 } from "@/lib/nhost/client";
+import { fetchCurrentOrganizationCached } from "@/lib/current-organization-client";
 import { formatCommercialPlanLabel } from "@/lib/pricing";
 import type { DashboardShellLabels } from "@/lib/dashboard-labels";
 
 type DashboardSidebarWorkspaceCardProps = {
   labels: DashboardShellLabels;
-};
-
-type OrganizationResponse = {
-  configured?: boolean;
-  organization?: {
-    name: string;
-    plan_key?: string;
-    is_verified?: boolean;
-  } | null;
 };
 
 export function DashboardSidebarWorkspaceCard({
@@ -41,25 +33,24 @@ export function DashboardSidebarWorkspaceCard({
         return;
       }
 
-      let response = await fetchCurrentOrganization(session.accessToken);
+      let result = await fetchCurrentOrganizationCached(session.accessToken);
 
-      if (response.status === 401) {
+      if (result.status === 401) {
         const refreshedSession = await forceRefreshBrowserNhostSession();
 
         if (refreshedSession?.accessToken) {
-          response = await fetchCurrentOrganization(refreshedSession.accessToken);
+          result = await fetchCurrentOrganizationCached(refreshedSession.accessToken, true);
         }
       }
 
-      if (!response.ok || cancelled) {
+      if (!result.ok || cancelled) {
         setWorkspaceName(labels.workspace);
         setPlan(labels.account);
         setIsVerified(false);
         return;
       }
 
-      const payload = (await response.json()) as OrganizationResponse;
-      const organization = payload.organization;
+      const organization = result.payload.organization;
 
       if (!organization || cancelled) {
         return;
@@ -102,15 +93,4 @@ export function DashboardSidebarWorkspaceCard({
       </p>
     </section>
   );
-}
-
-function fetchCurrentOrganization(accessToken: string) {
-  return fetch("/api/organizations/current", {
-    method: "POST",
-    headers: {
-      "content-type": "application/json",
-      authorization: `Bearer ${accessToken}`,
-    },
-    body: JSON.stringify({}),
-  });
 }

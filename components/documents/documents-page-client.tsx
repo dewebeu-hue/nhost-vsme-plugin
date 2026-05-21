@@ -238,8 +238,6 @@ export function DocumentsPageClient({
               tone: "error",
               text: labels.linkSignInError,
             });
-            setDocuments([]);
-            setSelectedDocumentId("");
             setLiveMode(true);
             router.push(`/${locale}/login`);
             return;
@@ -249,8 +247,6 @@ export function DocumentsPageClient({
             tone: "error",
             text: payload.error ?? labels.liveUnavailableMessage,
           });
-          setDocuments([]);
-          setSelectedDocumentId("");
           setLiveMode(true);
           return;
         }
@@ -285,8 +281,6 @@ export function DocumentsPageClient({
           console.error("Documents load failed", error);
         }
         if (!cancelled) {
-          setDocuments([]);
-          setSelectedDocumentId("");
           setLiveMode(true);
           setMessage({
             tone: "error",

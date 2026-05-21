@@ -5,6 +5,7 @@ import { LogOut } from "lucide-react";
 import { useLocale } from "next-intl";
 import { useRouter } from "next/navigation";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { clearCurrentOrganizationCache } from "@/lib/current-organization-client";
 import { getBrowserNhostClient, getFreshBrowserNhostSession } from "@/lib/nhost/client";
 
 type DashboardUserAvatarProps = {
@@ -69,6 +70,7 @@ export function DashboardUserAvatar({ fallbackLabel, logoutLabel }: DashboardUse
       }
     }
 
+    clearCurrentOrganizationCache();
     setIsOpen(false);
     router.push(`/${locale}/login`);
     router.refresh();

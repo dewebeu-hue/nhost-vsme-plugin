@@ -185,7 +185,7 @@ export function BuyerRequestsPageClient({
       <section className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_420px]">
         <div className="supplier-surface overflow-hidden rounded-2xl border-0">
           {isLoading ? (
-            <div className="p-6 text-sm font-medium text-slate-500">{labels.loadError}</div>
+            <div className="p-6 text-sm font-medium text-slate-500">{labels.loading}</div>
           ) : sortedRequests.length ? (
             <div className="divide-y divide-slate-100">
               {sortedRequests.map((request) => (

@@ -229,13 +229,15 @@ export function BuyerRequestDetailClient({
 
     setRequest(payload.request);
     setStatus(payload.request.status);
+    setNotes(payload.request.notes ?? "");
+    setSelectedSections(payload.request.requested_sections);
     setSectionReadiness(payload.sectionReadiness ?? sectionReadiness);
     setResponsePackage(payload.responsePackage ?? responsePackage);
     setMessage({ tone: "success", text: successMessage });
   }
 
   if (isLoading) {
-    return <div className="text-sm font-medium text-slate-500">{labels.loadError}</div>;
+    return <div className="text-sm font-medium text-slate-500">{labels.loading}</div>;
   }
 
   if (!request) {

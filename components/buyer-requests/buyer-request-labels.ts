@@ -7,6 +7,7 @@ export type BuyerRequestLabels = {
   creating: string;
   saveRequest: string;
   saving: string;
+  loading: string;
   buyerName: string;
   buyerContactName: string;
   buyerContactEmail: string;
@@ -111,6 +112,7 @@ export const defaultBuyerRequestLabels: BuyerRequestLabels = {
   creating: "Creating...",
   saveRequest: "Save request",
   saving: "Saving...",
+  loading: "Loading...",
   buyerName: "Buyer",
   buyerContactName: "Contact person",
   buyerContactEmail: "Contact email",

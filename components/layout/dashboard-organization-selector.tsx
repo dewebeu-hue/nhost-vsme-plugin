@@ -10,21 +10,10 @@ import {
   getFreshBrowserNhostSession,
   logAuthInfo,
 } from "@/lib/nhost/client";
+import { fetchCurrentOrganizationCached } from "@/lib/current-organization-client";
 
 type DashboardOrganizationSelectorProps = {
   fallbackName: string;
-};
-
-type OrganizationResponse = {
-  configured?: boolean;
-  organization?: {
-    id: string;
-    name: string;
-    slug: string;
-    is_verified: boolean;
-  } | null;
-  error?: string;
-  category?: string;
 };
 
 export function DashboardOrganizationSelector({
@@ -47,34 +36,31 @@ export function DashboardOrganizationSelector({
       }
 
       try {
-        setOrganizationName(session.user.id ? "Loading workspace..." : fallbackName);
-
-        const response = await fetchCurrentOrganization(session.accessToken);
-
-        const payload = (await response.json()) as OrganizationResponse;
+        const result = await fetchCurrentOrganizationCached(session.accessToken);
+        const payload = result.payload;
 
         if (cancelled || payload.configured === false) {
           return;
         }
 
-        if (response.status === 401) {
+        if (result.status === 401) {
           logAuthInfo("current org request unauthorized");
           logAuthInfo("retrying after refresh");
 
           const refreshedSession = await forceRefreshBrowserNhostSession();
 
           if (refreshedSession?.accessToken) {
-            const retryResponse = await fetchCurrentOrganization(refreshedSession.accessToken);
-            const retryPayload = (await retryResponse.json()) as OrganizationResponse;
+            const retryResult = await fetchCurrentOrganizationCached(refreshedSession.accessToken, true);
+            const retryPayload = retryResult.payload;
 
-            if (retryResponse.ok && retryPayload.organization?.name) {
+            if (retryResult.ok && retryPayload.organization?.name) {
               setOrganizationName(retryPayload.organization.name);
               return;
             }
 
-            if (retryResponse.status !== 401) {
+            if (retryResult.status !== 401) {
               setOrganizationName(
-                getOrganizationErrorLabel(retryPayload.category, retryResponse.status),
+                getOrganizationErrorLabel(retryPayload.category, retryResult.status),
               );
               return;
             }
@@ -86,19 +72,19 @@ export function DashboardOrganizationSelector({
           return;
         }
 
-        if (response.status === 404) {
+        if (result.status === 404) {
           const locale = getLocaleFromPath(pathname);
           router.push(`/${locale}/onboarding`);
           return;
         }
 
-        if (response.ok && payload.organization?.name) {
+        if (result.ok && payload.organization?.name) {
           setOrganizationName(payload.organization.name);
           return;
         }
 
-        if (!response.ok) {
-          setOrganizationName(getOrganizationErrorLabel(payload.category, response.status));
+        if (!result.ok) {
+          setOrganizationName(getOrganizationErrorLabel(payload.category, result.status));
         }
       } catch (error) {
         if (process.env.NODE_ENV !== "production") {
@@ -126,17 +112,6 @@ export function DashboardOrganizationSelector({
       <ChevronDown aria-hidden="true" className="shrink-0 text-slate-400" />
     </button>
   );
-}
-
-function fetchCurrentOrganization(accessToken: string) {
-  return fetch("/api/organizations/current", {
-    method: "POST",
-    headers: {
-      "content-type": "application/json",
-      authorization: `Bearer ${accessToken}`,
-    },
-    body: JSON.stringify({}),
-  });
 }
 
 function getOrganizationErrorLabel(category: string | undefined, status: number) {

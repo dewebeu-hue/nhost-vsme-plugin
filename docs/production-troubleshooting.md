@@ -3782,3 +3782,37 @@ Manual QA:
 4. Open `/hr/buyer/suppliers`, a valid `/hr/buyer/suppliers/[token]`, and `/hr/passport/[token]`; confirm public skeletons contain no fake supplier data.
 5. Test an invalid token and confirm the safe unavailable state appears after loading.
 6. Confirm dynamic list rows do not aggressively prefetch every private detail page.
+
+## Faza 4.3 State Preservation And Refetch Checklist
+
+Small client-side actions should update only the affected state and should not make the page feel rebuilt.
+
+State preservation rules:
+
+- Keep previous list/card data visible during transient refetch failures.
+- Clear lists only when the server successfully confirms a truly empty result, or when the user intentionally clears local browser state.
+- Do not show loading/error copy as a replacement for known-good data unless access is unauthorized or the route is redirecting.
+- Keep search, filter, active section, local comparison, admin theme, and guided-tour state in local component state or non-sensitive browser storage.
+- Use mutation responses to update local state when the API returns updated records.
+
+`router.refresh()` guidance:
+
+- Acceptable after sign-out or password verification where server cookies/session state must be re-read.
+- Avoid it for document upload/link, buyer-request updates, admin saves, share-link actions, or copy buttons when local response data is enough.
+
+Duplicate fetch guidance:
+
+- Persistent shell widgets should share client-side in-memory requests when they need the same authenticated endpoint.
+- Do not persist access tokens, private URLs, storage IDs, raw answers, or admin notes in `localStorage`.
+
+Manual QA:
+
+1. Navigate dashboard routes and confirm the shell does not rebuild on small actions.
+2. Upload a document and confirm the existing document list stays visible until the new row is appended.
+3. Link evidence and confirm the row/link state updates without flashing empty.
+4. Save questionnaire answers and confirm the active section remains stable unless Save & Continue intentionally moves it.
+5. Update a buyer request and confirm notes/sections/status remain in place and sync from the response.
+6. Save admin fields and confirm the organization detail page does not fully flicker.
+7. Use documents/admin/buyer-request filters before and after actions and confirm they remain stable.
+8. Add/remove buyer compare items and confirm local browser-only state remains removable.
+9. Run the guided tour across routes and confirm its non-sensitive localStorage keys are stable.
