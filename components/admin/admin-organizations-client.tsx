@@ -503,6 +503,7 @@ export function AdminOrganizationsClient({ labels = defaultAdminLabels }: AdminO
                   </Badge>
                   <Link
                     href={`/${locale}/admin/organizations/${organization.id}`}
+                    prefetch={false}
                     className={cn(buttonVariants({ variant: "outline" }), "admin-secondary-action w-fit rounded-xl bg-white")}
                   >
                     {labels.openDetail}

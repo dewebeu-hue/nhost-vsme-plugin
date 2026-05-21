@@ -226,7 +226,7 @@ export function BuyerRequestsPageClient({
                   <Button
                     variant="outline"
                     className="w-fit bg-white"
-                    render={<Link href={`/${locale}/dashboard/buyer-requests/${request.id}`} />}
+                    render={<Link href={`/${locale}/dashboard/buyer-requests/${request.id}`} prefetch={false} />}
                   >
                     {labels.openRequest}
                   </Button>

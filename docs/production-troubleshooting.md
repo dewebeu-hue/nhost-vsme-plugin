@@ -3755,3 +3755,30 @@ Manual QA:
 5. Copy the public request-information message and buyer request response note; confirm copied feedback and no private URL/storage ID in copied text.
 6. Save admin commercial, portfolio, onboarding, concierge, and reviewed fields; confirm the active button shows saving feedback.
 7. Toggle admin dark mode and use local filters/search; confirm local UI updates without a page-wide reload.
+
+## Faza 4.3 Skeleton And Prefetch Checklist
+
+Route-level loading UI should preserve the shape of the destination page without showing fake values.
+
+Skeleton coverage:
+
+- Supplier dashboard routes use page-content skeletons inside the persistent dashboard shell.
+- Supplier buyer-request detail uses a detail skeleton so the request workspace does not flash blank during navigation.
+- Admin organization list, organization detail, and risks use skeletons inside the persistent admin shell.
+- Buyer/public token pages use a public summary skeleton with a header-shaped placeholder, not fake supplier data.
+- Skeletons should never show fake `0%`, fake company names, mock suppliers, storage IDs, private file URLs, or `No data` while the real request is still loading.
+
+Prefetch policy:
+
+- Stable sidebar/header navigation may use safe Next.js prefetching.
+- Large dynamic/private detail lists should avoid aggressive prefetching for every row; navigate on click instead.
+- Public token routes remain dynamic and should use skeletons/unavailable states rather than public caching of private scoped data.
+
+Manual QA:
+
+1. Navigate supplier dashboard routes and confirm the sidebar/topbar stay visible while only page content changes.
+2. Open questionnaire, documents, Passport, share, and buyer-request detail routes; confirm skeletons appear instead of blank white flashes when loading is visible.
+3. Open admin organizations, an organization detail, and risks in light and dark mode; confirm skeleton blocks are visible and not harsh on the #002B36 theme.
+4. Open `/hr/buyer/suppliers`, a valid `/hr/buyer/suppliers/[token]`, and `/hr/passport/[token]`; confirm public skeletons contain no fake supplier data.
+5. Test an invalid token and confirm the safe unavailable state appears after loading.
+6. Confirm dynamic list rows do not aggressively prefetch every private detail page.

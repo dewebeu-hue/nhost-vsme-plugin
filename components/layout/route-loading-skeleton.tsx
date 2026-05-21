@@ -7,6 +7,14 @@ export function RouteLoadingSkeleton({ variant = "dashboard" }: RouteLoadingSkel
     return (
       <main className="min-h-screen bg-slate-50 px-5 py-8 sm:px-8 lg:px-10">
         <div className="mx-auto grid max-w-6xl gap-6">
+          <div className="flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white/90 p-5 shadow-sm shadow-slate-950/5 sm:flex-row sm:items-center sm:justify-between">
+            <SkeletonBlock className="h-8 w-44" />
+            <div className="flex flex-wrap gap-3">
+              <SkeletonBlock className="h-5 w-24" />
+              <SkeletonBlock className="h-5 w-28" />
+              <SkeletonBlock className="h-5 w-20" />
+            </div>
+          </div>
           <SkeletonBlock className="h-36" />
           <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
             <div className="grid gap-4">
@@ -66,7 +74,7 @@ function SkeletonHeader() {
 function SkeletonBlock({ className }: { className: string }) {
   return (
     <div
-      className={`animate-pulse rounded-2xl border border-slate-200 bg-white shadow-sm shadow-slate-950/5 ${className}`}
+      className={`route-skeleton-block animate-pulse rounded-2xl border border-slate-200 bg-white shadow-sm shadow-slate-950/5 ${className}`}
     />
   );
 }

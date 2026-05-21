@@ -98,6 +98,7 @@ export function AdminRisksClient({ labels = defaultAdminLabels }: { labels?: Adm
         </div>
         <Link
           href={`/${locale}/admin/organizations`}
+          prefetch
           className={cn(buttonVariants({ variant: "outline" }), "admin-secondary-action h-11 w-fit rounded-xl bg-white")}
         >
           {labels.viewOrganizations}
@@ -158,6 +159,7 @@ export function AdminRisksClient({ labels = defaultAdminLabels }: { labels?: Adm
                   </div>
                   <Link
                     href={`/${locale}/admin/organizations/${risk.organizationId}`}
+                    prefetch={false}
                     className={cn(buttonVariants({ variant: "outline" }), "admin-secondary-action w-fit rounded-xl bg-white")}
                   >
                     {labels.openDetail}

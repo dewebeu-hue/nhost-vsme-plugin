@@ -22,24 +22,28 @@ export function BuyerPortalShell({ children, locale }: BuyerPortalShellProps) {
           <nav className="flex flex-wrap items-center gap-3">
             <Link
               href={`/${locale}`}
+              prefetch
               className="text-sm font-semibold text-slate-600 transition hover:text-slate-950"
             >
               Supplier Passport
             </Link>
             <Link
               href={`/${locale}/buyer`}
+              prefetch
               className="text-sm font-semibold text-slate-600 transition hover:text-slate-950"
             >
               {t("title")}
             </Link>
             <Link
               href={`/${locale}/buyer/compare`}
+              prefetch
               className="text-sm font-semibold text-slate-600 transition hover:text-slate-950"
             >
               {t("compareSuppliers")}
             </Link>
             <Link
               href={`/${locale}/pricing`}
+              prefetch
               className="text-sm font-semibold text-slate-600 transition hover:text-slate-950"
             >
               {t("plans")}
