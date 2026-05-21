@@ -183,13 +183,7 @@ export function SupplierOnboardingTour({ locale, labels }: SupplierOnboardingTou
         }
 
         const rect = element.getBoundingClientRect();
-        setTargetRect({
-          top: Math.max(12, rect.top - 10),
-          left: Math.max(12, rect.left - 10),
-          width: Math.min(window.innerWidth - 24, rect.width + 20),
-          height: Math.min(window.innerHeight - 24, rect.height + 20),
-          borderRadius: getSpotlightBorderRadius(element),
-        });
+        setTargetRect(createSpotlightRect(element, rect));
       }, 260);
     }
 
@@ -378,43 +372,60 @@ function TourOverlay({ targetRect }: { targetRect: TargetRect | null }) {
     return <div className="fixed inset-0 z-[60] bg-slate-950/55 backdrop-blur-[1px]" />;
   }
 
-  const bottomTop = targetRect.top + targetRect.height;
-  const rightLeft = targetRect.left + targetRect.width;
-
   return (
-    <>
-      <div className="fixed left-0 right-0 top-0 z-[60] bg-slate-950/55 backdrop-blur-[1px]" style={{ height: targetRect.top }} />
-      <div className="fixed bottom-0 left-0 right-0 z-[60] bg-slate-950/55 backdrop-blur-[1px]" style={{ top: bottomTop }} />
-      <div className="fixed z-[60] bg-slate-950/55 backdrop-blur-[1px]" style={{ top: targetRect.top, left: 0, width: targetRect.left, height: targetRect.height }} />
-      <div className="fixed z-[60] bg-slate-950/55 backdrop-blur-[1px]" style={{ top: targetRect.top, left: rightLeft, right: 0, height: targetRect.height }} />
-    </>
+    <div
+      aria-hidden="true"
+      className="pointer-events-none fixed z-[60]"
+      style={{
+        top: targetRect.top,
+        left: targetRect.left,
+        width: targetRect.width,
+        height: targetRect.height,
+        borderRadius: targetRect.borderRadius,
+        boxShadow: "0 0 0 9999px rgba(2, 6, 23, 0.55)",
+      }}
+    />
   );
 }
 
-function getSpotlightBorderRadius(element: HTMLElement) {
+function createSpotlightRect(element: HTMLElement, rect: DOMRect): TargetRect {
+  const padding = 10;
+  const left = Math.max(0, rect.left - padding);
+  const top = Math.max(0, rect.top - padding);
+  const right = Math.min(window.innerWidth, rect.right + padding);
+  const bottom = Math.min(window.innerHeight, rect.bottom + padding);
+  const width = Math.max(0, right - left);
+  const height = Math.max(0, bottom - top);
+
+  return {
+    top,
+    left,
+    width,
+    height,
+    borderRadius: getSpotlightBorderRadius(element, width, height, padding),
+  };
+}
+
+function getSpotlightBorderRadius(
+  element: HTMLElement,
+  spotlightWidth: number,
+  spotlightHeight: number,
+  padding: number,
+) {
   const styles = window.getComputedStyle(element);
-  const rawRadius =
-    styles.borderRadius ||
-    styles.borderTopLeftRadius ||
-    styles.borderTopRightRadius ||
-    styles.borderBottomRightRadius ||
-    styles.borderBottomLeftRadius;
+  const radii = [
+    styles.borderTopLeftRadius,
+    styles.borderTopRightRadius,
+    styles.borderBottomRightRadius,
+    styles.borderBottomLeftRadius,
+    styles.borderRadius,
+  ].flatMap((value) => value.match(/[\d.]+px/g) ?? []);
+  const largestRadius = radii
+    .map((value) => Number.parseFloat(value))
+    .filter(Number.isFinite)
+    .reduce((largest, radius) => Math.max(largest, radius), 0);
+  const expandedRadius = Math.max(16, largestRadius + padding);
+  const maxRadius = Math.max(0, Math.min(spotlightWidth, spotlightHeight) / 2);
 
-  const firstPixelRadius = rawRadius.match(/[\d.]+px/)?.[0];
-
-  if (!firstPixelRadius) {
-    return "22px";
-  }
-
-  const radius = Number.parseFloat(firstPixelRadius);
-
-  if (!Number.isFinite(radius)) {
-    return "22px";
-  }
-
-  if (radius > 1000) {
-    return "9999px";
-  }
-
-  return `${Math.max(18, radius + 10)}px`;
+  return `${Math.min(expandedRadius, maxRadius)}px`;
 }
