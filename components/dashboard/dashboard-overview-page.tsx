@@ -83,12 +83,6 @@ export function DashboardOverviewPage({
         subtitle={labels.subtitle}
       />
 
-      <SupplierPassportSetupCard
-        summary={setupSummary}
-        labels={labels}
-        localePrefix={localePrefix}
-      />
-
       <section className="grid gap-6 xl:grid-cols-[1.15fr_0.95fr_0.8fr]">
         <OverallReadinessCard
           readiness={setupSummary?.readinessPercent ?? 0}
@@ -109,6 +103,12 @@ export function DashboardOverviewPage({
           localePrefix={localePrefix}
         />
       </section>
+
+      <SupplierPassportSetupCard
+        summary={setupSummary}
+        labels={labels}
+        localePrefix={localePrefix}
+      />
 
       <section className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
         <BuyerRequestsCard requests={[]} labels={labels} />

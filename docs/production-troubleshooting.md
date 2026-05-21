@@ -2734,6 +2734,45 @@ Deferred after Faza 4.0:
 - Backend request intake and supplier-side inbound drafts.
 - Email/CRM automation.
 
+## Faza 4.1 Korak 1 - Full Route and Localization Smoke Test
+
+Route smoke testing covers the public, supplier dashboard, admin, buyer, and token-based public surfaces across English, Croatian, and German.
+
+Route expectations:
+
+- Public routes: `/en`, `/hr`, `/de`, `/[locale]/pricing`, `/[locale]/plans`, and `/[locale]/request-demo` must load or redirect safely. `/[locale]/plans` is a locale-preserving alias to `/[locale]/pricing`.
+- Supplier dashboard routes: `/[locale]/dashboard`, questionnaire, documents, Passport, share, buyer requests, company profile, settings, and activity remain authenticated supplier surfaces.
+- Admin routes: `/[locale]/admin`, `/[locale]/admin/organizations`, and `/[locale]/admin/risks` remain admin-gated by server-side admin access.
+- Buyer routes: `/[locale]/buyer`, `/[locale]/buyer/suppliers`, and `/[locale]/buyer/compare` are public buyer-safe surfaces.
+- Token routes: `/[locale]/passport/[token]` and `/[locale]/buyer/suppliers/[token]` must show buyer-safe summaries for valid active tokens and safe unavailable states for invalid, expired, inactive, missing, or mock-only data.
+
+Localization checklist:
+
+- All navigation should preserve the current locale unless the language switcher is intentionally changing locale.
+- Croatian public/buyer/admin copy must preserve diacritics such as `dobavljača`, `Zatražite`, `omogućeni`, `sažetak`, `praćenje`, `više`, `računi`, and `Dovršenost`.
+- Avoid visible `Saćetak`, `dobavlja?`, `Zatra?`, `sa?etak`, `undefined`, `null`, `NaN`, or `[object Object]` in production UI.
+- English strings such as `Basic Information`, `Environment`, and `Social` may exist as translation keys or English locale values, but Croatian/German rendered labels should use localized values where those labels are visible.
+
+Security checklist:
+
+- Public and buyer routes must not expose private Nhost Storage URLs, storage file IDs, raw sensitive answers, user/member data, buyer request internal notes, admin notes, concierge/onboarding/portfolio/handoff data, commercial metadata, full token values in logs, admin secrets, or private file contents.
+- Supplier dashboard routes require supplier authentication.
+- Admin routes require admin authorization.
+- Buyer Portal does not add buyer accounts, buyer login, server-side saved shortlists, email sending, CRM, AI, Stripe, XBRL, Supabase, or plan enforcement.
+
+Manual QA:
+
+1. Deploy.
+2. Open `/hr`, `/hr/plans`, `/hr/pricing`, and `/hr/request-demo`.
+3. Confirm `/hr/plans` redirects to `/hr/pricing`.
+4. Open the supplier dashboard routes while logged out and confirm safe auth behavior.
+5. Log in as supplier and check `/hr/dashboard`, questionnaire, documents, Passport, share, buyer requests, company profile, settings, and activity.
+6. Open `/hr/admin`, `/hr/admin/organizations`, and `/hr/admin/risks` as admin and as a normal supplier to confirm access behavior.
+7. Open `/hr/buyer`, `/hr/buyer/suppliers`, and `/hr/buyer/compare`.
+8. Open valid and invalid `/hr/passport/[token]` and `/hr/buyer/suppliers/[token]` routes.
+9. Confirm no broken Croatian characters, English fallback in Croatian UI, mock supplier list, private URLs, storage IDs, raw answers, or dead navigation.
+10. Repeat quick checks on `/en` and `/de`.
+
 ## Safe Logging Rules
 
 Allowed categories:

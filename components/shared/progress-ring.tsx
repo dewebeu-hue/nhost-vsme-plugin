@@ -7,6 +7,11 @@ type ProgressRingProps = {
   size?: number;
   stroke?: number;
   className?: string;
+  trackClassName?: string;
+  progressClassName?: string;
+  valueClassName?: string;
+  labelClassName?: string;
+  helperClassName?: string;
 };
 
 export function ProgressRing({
@@ -16,6 +21,11 @@ export function ProgressRing({
   size = 148,
   stroke = 12,
   className,
+  trackClassName,
+  progressClassName,
+  valueClassName,
+  labelClassName,
+  helperClassName,
 }: ProgressRingProps) {
   const normalizedValue = Math.max(0, Math.min(100, value));
   const radius = (size - stroke) / 2;
@@ -36,7 +46,7 @@ export function ProgressRing({
           cy={size / 2}
           r={radius}
           fill="none"
-          stroke="#E2E8F0"
+          className={cn("stroke-slate-200", trackClassName)}
           strokeWidth={stroke}
         />
         <circle
@@ -44,7 +54,7 @@ export function ProgressRing({
           cy={size / 2}
           r={radius}
           fill="none"
-          stroke="#0B5CFF"
+          className={cn("stroke-blue-600", progressClassName)}
           strokeLinecap="round"
           strokeWidth={stroke}
           strokeDasharray={circumference}
@@ -53,13 +63,15 @@ export function ProgressRing({
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-        <span className="text-3xl font-semibold tracking-tight text-slate-950">
+        <span className={cn("text-3xl font-semibold tracking-tight text-slate-950", valueClassName)}>
           {normalizedValue}%
         </span>
-        <span className="text-xs font-medium uppercase tracking-[0.16em] text-slate-500">
+        <span className={cn("text-xs font-medium uppercase tracking-[0.16em] text-slate-500", labelClassName)}>
           {label}
         </span>
-        {helper ? <span className="mt-1 text-xs text-slate-500">{helper}</span> : null}
+        {helper ? (
+          <span className={cn("mt-1 text-xs text-slate-500", helperClassName)}>{helper}</span>
+        ) : null}
       </div>
     </div>
   );
