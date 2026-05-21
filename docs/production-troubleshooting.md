@@ -3530,6 +3530,59 @@ The guided-tour button dispatches the existing `supplier-passport-tour:restart` 
 10. Repeat a quick check on `/en/dashboard`.
 11. Confirm no private URLs, storage IDs, raw answers, share tokens, cookies, JWTs, admin/internal notes, or commercial notes appear.
 
+## Faza 4.2 Korak 4 - Admin First-Customer Onboarding Checklist
+
+Admin organization detail pages include an internal first-customer onboarding panel for concierge/support work. This checklist is admin-only and is not shown to suppliers, buyers, public Passport viewers, or share-link recipients.
+
+### Derived and manual items
+
+Derived from live supplier/admin data:
+
+1. Organization created and named correctly: organization name exists and is not an obvious demo/test/sample placeholder.
+2. Company Basics completed: `company_basics` section is fully answered.
+3. Questionnaire progress started: `answeredQuestions > 0`.
+4. Evidence document uploaded: `documentCount > 0`.
+5. Evidence linked to answers: `linkedEvidenceCount > 0`.
+6. Public Passport reviewed: treated as complete when an active public share link exists.
+7. Public share link created: active public share link exists.
+8. Buyer request created if applicable: `buyerRequestCount > 0`; otherwise optional.
+9. Admin handoff summary ready: onboarding next action, next follow-up date, and onboarding/internal note exist.
+
+Manual or recommended items:
+
+- Production setup verified remains a manual check against the production checklist. It is not auto-marked complete.
+- PDF draft tested remains a recommended/manual QA item because per-user PDF download testing is not stored.
+
+### Next admin action logic
+
+The panel suggests one next admin action based on the first gap:
+
+1. Ask supplier to complete Company Basics.
+2. Ask supplier to upload evidence documents.
+3. Ask supplier to link evidence to answers.
+4. Review the public Supplier Passport before sharing.
+5. Prepare handoff summary.
+6. Workspace is ready for first-customer review.
+
+### Privacy and scope
+
+- The checklist is internal and not a certification, approval, audit, or assurance report.
+- It does not send email, impersonate suppliers, expose private document URLs, expose storage IDs, or show raw sensitive answers.
+- CTAs use safe same-page admin anchors such as section readiness, onboarding fields, support checklist, and handoff summary. They do not open supplier-only dashboard routes as if the admin were impersonating the supplier.
+
+### Manual QA checklist
+
+1. Log in as an allowlisted admin.
+2. Open `/hr/admin/organizations/[id]`.
+3. Confirm `Onboarding prvog klijenta` appears on the admin organization detail page.
+4. Confirm derived items match real supplier data: Company Basics, questionnaire progress, documents, linked evidence, active share link, buyer requests.
+5. Confirm manual/recommended items are not falsely marked complete.
+6. Update onboarding next action, follow-up date, and onboarding/internal note; save and refresh.
+7. Confirm next admin action and handoff-ready state update when the relevant data exists.
+8. Confirm the checklist is not visible on `/hr/dashboard`, public Passport, buyer portal, or share-link pages.
+9. Quick-check `/en/admin/organizations/[id]`.
+10. Confirm no private URLs, storage IDs, raw answers, secrets, share tokens, or internal notes appear publicly.
+
 ## Safe Logging Rules
 
 Allowed categories:

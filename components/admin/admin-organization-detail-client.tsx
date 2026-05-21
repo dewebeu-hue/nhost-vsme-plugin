@@ -42,6 +42,16 @@ type DetailPayload = {
   error?: string;
 };
 
+type FirstCustomerChecklistItem = {
+  key: string;
+  title: string;
+  description: string;
+  done: boolean;
+  status: "derived" | "manual" | "recommended" | "optional";
+  href?: string;
+  cta?: string;
+};
+
 export function AdminOrganizationDetailClient({
   organizationId,
   labels = defaultAdminLabels,
@@ -308,6 +318,17 @@ export function AdminOrganizationDetailClient({
     ];
   }, [labels, organization]);
   const onboardingDoneCount = onboardingChecklist.filter((item) => item.done).length;
+  const firstCustomerChecklist = useMemo(
+    () => (organization ? createFirstCustomerChecklist(organization, labels) : []),
+    [labels, organization],
+  );
+  const firstCustomerDoneCount = firstCustomerChecklist.filter((item) => item.done).length;
+  const firstCustomerReadiness = organization
+    ? getFirstCustomerReadiness(organization, firstCustomerChecklist, labels)
+    : { label: labels.needsOnboarding, tone: "amber" as const };
+  const nextFirstCustomerAction = organization
+    ? getNextFirstCustomerAction(organization, firstCustomerChecklist, labels)
+    : labels.firstCustomerAskCompanyBasics;
   const handoffStatus = organization
     ? getHandoffStatus(organization, labels)
     : { label: labels.needsUpdate, tone: "warning" as const };
@@ -349,6 +370,9 @@ export function AdminOrganizationDetailClient({
                 {organization.name}
               </h1>
               <TriageBadge status={organization.triageStatus} labels={labels} />
+              <ReadinessBadge tone={firstCustomerReadiness.tone}>
+                {firstCustomerReadiness.label}
+              </ReadinessBadge>
             </div>
             <p className="mt-2 max-w-3xl text-base leading-7 text-slate-600">
               {labels.conciergeDashboard}
@@ -462,8 +486,43 @@ export function AdminOrganizationDetailClient({
         </div>
       </section>
 
+      <section id="admin-first-customer-onboarding" className="supplier-surface rounded-2xl border-0 p-5">
+        <div className="flex flex-col justify-between gap-4 xl:flex-row xl:items-start">
+          <div>
+            <div className="flex flex-wrap items-center gap-2">
+              <h2 className="text-lg font-semibold text-slate-950">{labels.firstCustomerOnboarding}</h2>
+              <ReadinessBadge tone={firstCustomerReadiness.tone}>
+                {firstCustomerReadiness.label}
+              </ReadinessBadge>
+            </div>
+            <p className="mt-1 max-w-3xl text-sm leading-6 text-slate-600">
+              {labels.firstCustomerOnboardingSubtitle}
+            </p>
+            <p className="mt-2 text-xs leading-5 text-slate-500">
+              {labels.firstCustomerInternalNote} {labels.firstCustomerNotCertification}
+            </p>
+          </div>
+          <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 xl:min-w-72">
+            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">
+              {labels.firstCustomerNextAction}
+            </p>
+            <p className="mt-2 text-sm font-semibold leading-6 text-slate-800">
+              {nextFirstCustomerAction}
+            </p>
+            <p className="mt-2 text-sm text-slate-500">
+              {firstCustomerDoneCount}/{firstCustomerChecklist.length} {labels.statusCompleted.toLowerCase()}
+            </p>
+          </div>
+        </div>
+        <div className="mt-5 grid gap-3 lg:grid-cols-2">
+          {firstCustomerChecklist.map((item) => (
+            <FirstCustomerChecklistRow key={item.key} item={item} labels={labels} />
+          ))}
+        </div>
+      </section>
+
       <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
-        <section className="supplier-surface rounded-2xl border-0 p-5">
+        <section id="admin-section-readiness" className="supplier-surface rounded-2xl border-0 p-5">
           <h2 className="text-lg font-semibold text-slate-950">{labels.sectionReadiness}</h2>
           <div className="mt-4 grid gap-3">
             {organization.sections.map((section) => (
@@ -485,7 +544,7 @@ export function AdminOrganizationDetailClient({
         </section>
 
         <aside className="flex flex-col gap-6">
-          <section className="supplier-surface rounded-2xl border-0 p-5">
+          <section id="admin-assisted-onboarding" className="supplier-surface rounded-2xl border-0 p-5">
             <h2 className="text-lg font-semibold text-slate-950">{labels.commercialClassification}</h2>
             <p className="mt-1 text-xs leading-5 text-slate-500">{labels.commercialLabelsInternalNote}</p>
             <form className="mt-4 grid gap-4" onSubmit={handleCommercialSubmit}>
@@ -582,7 +641,7 @@ export function AdminOrganizationDetailClient({
             </form>
           </section>
 
-          <section className="supplier-surface rounded-2xl border-0 p-5">
+          <section id="admin-onboarding-checklist" className="supplier-surface rounded-2xl border-0 p-5">
             <h2 className="text-lg font-semibold text-slate-950">{labels.assistedPortfolio}</h2>
             <form className="mt-4 grid gap-4" onSubmit={handlePortfolioSubmit}>
               <label htmlFor="admin-portfolio-label" className="grid gap-2 text-sm font-medium text-slate-700">
@@ -628,7 +687,7 @@ export function AdminOrganizationDetailClient({
             </form>
           </section>
 
-          <section className="supplier-surface rounded-2xl border-0 p-5">
+          <section id="admin-concierge-panel" className="supplier-surface rounded-2xl border-0 p-5">
             <h2 className="text-lg font-semibold text-slate-950">{labels.assistedOnboarding}</h2>
             <form className="mt-4 grid gap-4" onSubmit={handleOnboardingSubmit}>
               <div>
@@ -710,7 +769,7 @@ export function AdminOrganizationDetailClient({
             </form>
           </section>
 
-          <section className="supplier-surface rounded-2xl border-0 p-5">
+          <section id="admin-support-checklist" className="supplier-surface rounded-2xl border-0 p-5">
             <h2 className="text-lg font-semibold text-slate-950">{labels.onboardingChecklist}</h2>
             <div className="mt-4 flex flex-col gap-2">
               {onboardingChecklist.map((item) => (
@@ -914,6 +973,259 @@ function TriageBadge({ status, labels }: { status: AdminTriageStatus; labels: Ad
     <Badge variant="outline" className={`rounded-full ${className}`}>
       {text}
     </Badge>
+  );
+}
+
+function ReadinessBadge({
+  tone,
+  children,
+}: {
+  tone: "green" | "amber" | "red" | "blue";
+  children: string;
+}) {
+  const className = {
+    green: "border-emerald-200 bg-emerald-50 text-emerald-700",
+    amber: "border-amber-200 bg-amber-50 text-amber-700",
+    red: "border-red-200 bg-red-50 text-red-700",
+    blue: "border-blue-200 bg-blue-50 text-blue-700",
+  }[tone];
+
+  return (
+    <Badge variant="outline" className={`w-fit rounded-full ${className}`}>
+      {children}
+    </Badge>
+  );
+}
+
+function FirstCustomerChecklistRow({
+  item,
+  labels,
+}: {
+  item: FirstCustomerChecklistItem;
+  labels: AdminLabels;
+}) {
+  const statusLabel = item.done
+    ? labels.statusCompleted
+    : item.status === "manual"
+      ? labels.firstCustomerManual
+      : item.status === "optional"
+        ? labels.firstCustomerOptional
+        : item.status === "recommended"
+          ? labels.firstCustomerRecommended
+          : labels.triageNeedsAttention;
+  const statusTone = item.done
+    ? "green"
+    : item.status === "optional" || item.status === "recommended"
+      ? "blue"
+      : "amber";
+
+  return (
+    <article className="rounded-xl border border-slate-200 bg-white p-4">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div className="min-w-0">
+          <p className="font-semibold text-slate-950">{item.title}</p>
+          <p className="mt-1 text-sm leading-6 text-slate-600">{item.description}</p>
+        </div>
+        <ReadinessBadge tone={statusTone}>{statusLabel}</ReadinessBadge>
+      </div>
+      {item.href && item.cta ? (
+        <Link
+          href={item.href}
+          className="mt-3 inline-flex text-sm font-semibold text-blue-700 hover:text-blue-800"
+        >
+          {item.cta}
+        </Link>
+      ) : null}
+    </article>
+  );
+}
+
+function createFirstCustomerChecklist(
+  organization: AdminOrganizationDetail,
+  labels: AdminLabels,
+): FirstCustomerChecklistItem[] {
+  const companyBasics = organization.sections.find((section) => section.code === "company_basics");
+  const companyBasicsDone = Boolean(
+    companyBasics &&
+      companyBasics.totalQuestions > 0 &&
+      companyBasics.answeredQuestions >= companyBasics.totalQuestions,
+  );
+  const realOrganizationName = isRealOrganizationName(organization.name);
+  const handoffReady = isFirstCustomerHandoffReady(organization);
+
+  return [
+    {
+      key: "production-setup",
+      title: labels.firstCustomerProductionSetup,
+      description: labels.firstCustomerProductionSetupDescription,
+      done: false,
+      status: "manual",
+      href: "#admin-assisted-onboarding",
+      cta: labels.firstCustomerOpenOnboarding,
+    },
+    {
+      key: "organization-named",
+      title: labels.firstCustomerOrganizationNamed,
+      description: labels.firstCustomerOrganizationNamedDescription,
+      done: realOrganizationName,
+      status: "derived",
+      href: "#admin-assisted-onboarding",
+      cta: labels.firstCustomerOpenOnboarding,
+    },
+    {
+      key: "company-basics",
+      title: labels.firstCustomerCompanyBasics,
+      description: labels.firstCustomerCompanyBasicsDescription,
+      done: companyBasicsDone,
+      status: "derived",
+      href: "#admin-section-readiness",
+      cta: labels.firstCustomerOpenSections,
+    },
+    {
+      key: "questionnaire-started",
+      title: labels.firstCustomerQuestionnaireStarted,
+      description: labels.firstCustomerQuestionnaireStartedDescription,
+      done: organization.answeredQuestions > 0,
+      status: "derived",
+      href: "#admin-section-readiness",
+      cta: labels.firstCustomerOpenSections,
+    },
+    {
+      key: "evidence-uploaded",
+      title: labels.firstCustomerEvidenceUploaded,
+      description: labels.firstCustomerEvidenceUploadedDescription,
+      done: organization.documentCount > 0,
+      status: "derived",
+      href: "#admin-support-checklist",
+      cta: labels.firstCustomerOpenSupport,
+    },
+    {
+      key: "evidence-linked",
+      title: labels.firstCustomerEvidenceLinked,
+      description: labels.firstCustomerEvidenceLinkedDescription,
+      done: organization.linkedEvidenceCount > 0,
+      status: "derived",
+      href: "#admin-support-checklist",
+      cta: labels.firstCustomerOpenSupport,
+    },
+    {
+      key: "passport-reviewed",
+      title: labels.firstCustomerPassportReviewed,
+      description: labels.firstCustomerPassportReviewedDescription,
+      done: organization.activeShareLink,
+      status: "recommended",
+      href: "#admin-support-checklist",
+      cta: labels.firstCustomerOpenSupport,
+    },
+    {
+      key: "share-link",
+      title: labels.firstCustomerShareLinkCreated,
+      description: labels.firstCustomerShareLinkCreatedDescription,
+      done: organization.activeShareLink,
+      status: "derived",
+      href: "#admin-support-checklist",
+      cta: labels.firstCustomerOpenSupport,
+    },
+    {
+      key: "pdf-tested",
+      title: labels.firstCustomerPdfTested,
+      description: labels.firstCustomerPdfTestedDescription,
+      done: false,
+      status: "recommended",
+      href: "#admin-support-checklist",
+      cta: labels.firstCustomerOpenSupport,
+    },
+    {
+      key: "buyer-request",
+      title: labels.firstCustomerBuyerRequest,
+      description: labels.firstCustomerBuyerRequestDescription,
+      done: organization.buyerRequestCount > 0,
+      status: "optional",
+      href: "#admin-support-checklist",
+      cta: labels.firstCustomerOpenSupport,
+    },
+    {
+      key: "handoff-ready",
+      title: labels.firstCustomerHandoffReady,
+      description: labels.firstCustomerHandoffReadyDescription,
+      done: handoffReady,
+      status: "derived",
+      href: "#admin-first-customer-onboarding",
+      cta: labels.firstCustomerOpenHandoff,
+    },
+  ];
+}
+
+function getFirstCustomerReadiness(
+  organization: AdminOrganizationDetail,
+  checklist: FirstCustomerChecklistItem[],
+  labels: AdminLabels,
+) {
+  const companyBasics = checklist.find((item) => item.key === "company-basics");
+
+  if (!companyBasics?.done || organization.answeredQuestions === 0) {
+    return { label: labels.needsOnboarding, tone: "amber" as const };
+  }
+
+  if (organization.documentCount === 0 || organization.linkedEvidenceCount === 0) {
+    return { label: labels.needsEvidence, tone: "red" as const };
+  }
+
+  if (!organization.activeShareLink || !isFirstCustomerHandoffReady(organization)) {
+    return { label: labels.needsReview, tone: "blue" as const };
+  }
+
+  return { label: labels.firstCustomerReady, tone: "green" as const };
+}
+
+function getNextFirstCustomerAction(
+  organization: AdminOrganizationDetail,
+  checklist: FirstCustomerChecklistItem[],
+  labels: AdminLabels,
+) {
+  const companyBasics = checklist.find((item) => item.key === "company-basics");
+
+  if (!companyBasics?.done) {
+    return labels.firstCustomerAskCompanyBasics;
+  }
+
+  if (organization.documentCount === 0) {
+    return labels.firstCustomerAskEvidenceUpload;
+  }
+
+  if (organization.linkedEvidenceCount === 0) {
+    return labels.firstCustomerAskEvidenceLink;
+  }
+
+  if (!organization.activeShareLink) {
+    return labels.firstCustomerReviewPublicPassport;
+  }
+
+  if (!isFirstCustomerHandoffReady(organization)) {
+    return labels.firstCustomerPrepareHandoff;
+  }
+
+  return labels.firstCustomerReadyAction;
+}
+
+function isFirstCustomerHandoffReady(organization: AdminOrganizationDetail) {
+  const concierge = organization.concierge;
+  return Boolean(
+    concierge?.onboardingNextAction &&
+      concierge.nextFollowUpDate &&
+      (concierge.onboardingOwnerNote || concierge.internalNote),
+  );
+}
+
+function isRealOrganizationName(name: string) {
+  const normalized = name.trim().toLowerCase();
+
+  if (normalized.length < 2) {
+    return false;
+  }
+
+  return !["demo", "test", "sample", "placeholder", "acme"].some((term) =>
+    normalized.includes(term),
   );
 }
 

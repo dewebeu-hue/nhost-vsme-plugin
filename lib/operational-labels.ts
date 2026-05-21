@@ -168,6 +168,50 @@ export type AdminLabels = {
   needsUpdate: string;
   missingNextAction: string;
   missingFollowUpDate: string;
+  firstCustomerOnboarding: string;
+  firstCustomerOnboardingSubtitle: string;
+  firstCustomerReady: string;
+  needsOnboarding: string;
+  needsEvidence: string;
+  needsReview: string;
+  firstCustomerNextAction: string;
+  firstCustomerInternalNote: string;
+  firstCustomerNotCertification: string;
+  firstCustomerManual: string;
+  firstCustomerRecommended: string;
+  firstCustomerOptional: string;
+  firstCustomerProductionSetup: string;
+  firstCustomerProductionSetupDescription: string;
+  firstCustomerOrganizationNamed: string;
+  firstCustomerOrganizationNamedDescription: string;
+  firstCustomerCompanyBasics: string;
+  firstCustomerCompanyBasicsDescription: string;
+  firstCustomerQuestionnaireStarted: string;
+  firstCustomerQuestionnaireStartedDescription: string;
+  firstCustomerEvidenceUploaded: string;
+  firstCustomerEvidenceUploadedDescription: string;
+  firstCustomerEvidenceLinked: string;
+  firstCustomerEvidenceLinkedDescription: string;
+  firstCustomerPassportReviewed: string;
+  firstCustomerPassportReviewedDescription: string;
+  firstCustomerShareLinkCreated: string;
+  firstCustomerShareLinkCreatedDescription: string;
+  firstCustomerPdfTested: string;
+  firstCustomerPdfTestedDescription: string;
+  firstCustomerBuyerRequest: string;
+  firstCustomerBuyerRequestDescription: string;
+  firstCustomerHandoffReady: string;
+  firstCustomerHandoffReadyDescription: string;
+  firstCustomerOpenOnboarding: string;
+  firstCustomerOpenSections: string;
+  firstCustomerOpenSupport: string;
+  firstCustomerOpenHandoff: string;
+  firstCustomerAskCompanyBasics: string;
+  firstCustomerAskEvidenceUpload: string;
+  firstCustomerAskEvidenceLink: string;
+  firstCustomerReviewPublicPassport: string;
+  firstCustomerPrepareHandoff: string;
+  firstCustomerReadyAction: string;
   saveConciergeStatus: string;
   conciergeSaved: string;
   conciergeSaveError: string;
@@ -448,6 +492,52 @@ export const defaultAdminLabels: AdminLabels = {
   needsUpdate: "Needs update",
   missingNextAction: "Missing next action",
   missingFollowUpDate: "Missing follow-up date",
+  firstCustomerOnboarding: "First customer onboarding",
+  firstCustomerOnboardingSubtitle:
+    "Use this checklist before inviting or reviewing the first real supplier workspace.",
+  firstCustomerReady: "First-customer ready",
+  needsOnboarding: "Needs onboarding",
+  needsEvidence: "Needs evidence",
+  needsReview: "Needs review",
+  firstCustomerNextAction: "Next admin action",
+  firstCustomerInternalNote: "This checklist is internal and not shown to suppliers.",
+  firstCustomerNotCertification: "This is not a certification or approval.",
+  firstCustomerManual: "Manual check",
+  firstCustomerRecommended: "Recommended",
+  firstCustomerOptional: "Optional",
+  firstCustomerProductionSetup: "Production setup verified",
+  firstCustomerProductionSetupDescription:
+    "Confirm env vars, migrations, storage and admin access using the production checklist.",
+  firstCustomerOrganizationNamed: "Organization created and named correctly",
+  firstCustomerOrganizationNamedDescription: "Confirm the workspace name is real and not demo/test placeholder data.",
+  firstCustomerCompanyBasics: "Company Basics completed",
+  firstCustomerCompanyBasicsDescription: "Derived from the Company Basics questionnaire section.",
+  firstCustomerQuestionnaireStarted: "Questionnaire progress started",
+  firstCustomerQuestionnaireStartedDescription: "Derived from saved questionnaire answers.",
+  firstCustomerEvidenceUploaded: "Evidence document uploaded",
+  firstCustomerEvidenceUploadedDescription: "Derived from organization document count.",
+  firstCustomerEvidenceLinked: "Evidence linked to answers",
+  firstCustomerEvidenceLinkedDescription: "Derived from linked evidence metadata.",
+  firstCustomerPassportReviewed: "Public Passport reviewed",
+  firstCustomerPassportReviewedDescription: "Recommended until the public Passport/share state is ready.",
+  firstCustomerShareLinkCreated: "Public share link created",
+  firstCustomerShareLinkCreatedDescription: "Derived from active public share link status.",
+  firstCustomerPdfTested: "PDF draft tested",
+  firstCustomerPdfTestedDescription: "Manual QA item; PDF download tracking is not stored.",
+  firstCustomerBuyerRequest: "Buyer request created if applicable",
+  firstCustomerBuyerRequestDescription: "Optional unless the first customer has a buyer request workflow.",
+  firstCustomerHandoffReady: "Admin handoff summary ready",
+  firstCustomerHandoffReadyDescription: "Derived from next action, follow-up date and onboarding/internal note.",
+  firstCustomerOpenOnboarding: "Open onboarding fields",
+  firstCustomerOpenSections: "Review sections",
+  firstCustomerOpenSupport: "Review support checklist",
+  firstCustomerOpenHandoff: "Review handoff",
+  firstCustomerAskCompanyBasics: "Ask supplier to complete Company Basics.",
+  firstCustomerAskEvidenceUpload: "Ask supplier to upload evidence documents.",
+  firstCustomerAskEvidenceLink: "Ask supplier to link evidence to answers.",
+  firstCustomerReviewPublicPassport: "Review the public Supplier Passport before sharing.",
+  firstCustomerPrepareHandoff: "Prepare handoff summary.",
+  firstCustomerReadyAction: "Workspace is ready for first-customer review.",
   saveConciergeStatus: "Save concierge status",
   conciergeSaved: "Concierge status saved.",
   conciergeSaveError: "We could not save concierge status right now.",
