@@ -3583,6 +3583,55 @@ The panel suggests one next admin action based on the first gap:
 9. Quick-check `/en/admin/organizations/[id]`.
 10. Confirm no private URLs, storage IDs, raw answers, secrets, share tokens, or internal notes appear publicly.
 
+## Faza 4.2 Korak 5 - First Customer Onboarding Pack Final QA
+
+Use this checklist to close the guided onboarding pack before first-customer production testing. This is a hardening checklist only; it must not add AI, Stripe, billing, XBRL, Supabase, buyer accounts, email sending, or public document access.
+
+### Guided tour QA
+
+- Clear `supplierPassportTour:v1:completed`, `supplierPassportTour:v1:dismissed`, and `supplierPassportTour:v1:step` before testing a first-time supplier flow.
+- `/hr/dashboard` and `/en/dashboard` should show a start prompt only until the tour is skipped or finished.
+- Start, Skip, Back, Next, Finish, Close, and Restart must all work.
+- Route-aware steps must navigate through dashboard, `questionnaire?section=company_basics`, documents, Passport, share, and PDF areas.
+- Missing targets must show the safe fallback card instead of crashing.
+- Tour state must stay browser-local and must not store tokens, organization IDs, document IDs, raw answers, private URLs, cookies, JWTs, or secrets.
+
+### Tour visual QA
+
+- Tooltip cards use `#002B36` with readable white/light text.
+- `Back` / `Natrag`, `Next` / `Dalje`, `Skip` / `Preskoči`, and the close icon remain readable before hover.
+- The spotlight frame follows rounded target elements, includes highlight padding, and does not clip corners near viewport edges.
+- Scroll and resize should keep the spotlight aligned with the active target.
+
+### Contextual help and tooltips QA
+
+- Help cards should be visible on dashboard, questionnaire, documents, Passport, share, company profile, and buyer request pages.
+- Help copy should explain the task and public/private boundary in short, non-technical language.
+- Tooltips should work on hover, focus, and click; critical workflow guidance must not live only in a tooltip.
+- Help and tooltips must not expose private document URLs, storage IDs, raw answers, share tokens, admin notes, commercial notes, cookies, JWTs, or secrets.
+
+### Supplier quick-start checklist QA
+
+- `/hr/dashboard` should show `Kontrolna lista za prvi Supplier Passport`; `/en/dashboard` should show `First Supplier Passport checklist`.
+- Completion state must use live summary data for Company Basics, overall readiness, documents, linked evidence, and active share links.
+- Recommended/manual items such as Passport review and PDF draft must not be falsely marked complete.
+- The main continue action and individual CTAs must route to the localized dashboard pages, especially `/[locale]/dashboard/questionnaire?section=company_basics`.
+- The guide restart action must dispatch the supplier tour restart event and must not be dead.
+
+### Admin first-customer checklist QA
+
+- `/hr/admin/organizations/[id]` and `/en/admin/organizations/[id]` should show the internal first-customer onboarding panel for allowlisted admins only.
+- Derived items should match live supplier data; manual/recommended items must not be fake-completed.
+- Next admin action should move from Company Basics to evidence upload, evidence linking, Passport review, handoff preparation, then ready state as data is completed.
+- The panel is internal guidance only; it is not certification, approval, audit, assurance, email sending, or impersonation.
+
+### Localization and deferred items
+
+- Production-facing onboarding copy is English and Croatian.
+- Croatian rendered UI must not show broken strings such as `dobavlja?`, `Zatra?`, `sa?etak`, `omogu?`, `pra?`, `vi?e`, `ra?un`, or `Saćetak`.
+- German remains hidden from visible switchers until translation QA is complete.
+- Deferred: persistent cross-device tour state, admin manual checklist persistence, email/CRM automation, buyer accounts, billing, AI, XBRL, and full German production launch.
+
 ## Safe Logging Rules
 
 Allowed categories:
