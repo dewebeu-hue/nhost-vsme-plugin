@@ -72,19 +72,21 @@ Mock mode is demo-safe:
 Supplier Passport uses `next-intl` with locale-prefixed routes.
 
 - Supported locales: `en`, `hr`, `de`
+- Production-facing locales: `en`, `hr`
 - Default locale: `en`
 - Message files live in `messages/en.json`, `messages/hr.json`, and `messages/de.json`
 - Routing config lives in `i18n/routing.ts`
 - Request message loading lives in `i18n/request.ts`
+- German remains wired for future translation QA, but it is temporarily hidden from visible language switchers and direct `/de/...` routes redirect to the matching `/en/...` route.
 
 Route examples:
 
-- `/en`, `/hr`, `/de`
-- `/en/pricing`, `/hr/pricing`, `/de/pricing`
-- `/en/dashboard`, `/hr/dashboard`, `/de/dashboard`
-- `/en/share/acme-manufacturing`, `/hr/share/acme-manufacturing`, `/de/share/acme-manufacturing`
+- `/en`, `/hr`
+- `/en/pricing`, `/hr/pricing`
+- `/en/dashboard`, `/hr/dashboard`
+- `/en/passport/[token]`, `/hr/passport/[token]`
 
-The language switcher uses language names only: English, Hrvatski, Deutsch. It preserves the current path where possible, for example `/en/pricing` to `/hr/pricing`, and does not use flag icons or a full-screen language gate.
+The language switcher uses language names only: English and Hrvatski. It preserves the current path where possible, for example `/en/pricing` to `/hr/pricing`, and does not use flag icons or a full-screen language gate.
 
 When adding a translation key:
 

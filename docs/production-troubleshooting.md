@@ -3348,6 +3348,74 @@ These queries are intentionally read-only. Do not add `DELETE`, `TRUNCATE`, `DRO
 11. Log in as admin and update onboarding/concierge/commercial labels.
 12. Confirm no mock data, private URLs, storage IDs, secrets, raw answer dumps, or internal notes appear on supplier/public/buyer pages.
 
+## Faza 4.1 Korak 5 - Final Production Readiness QA
+
+Use this checklist to close Faza 4.1 before the first-customer smoke test. It is intentionally limited to verification and direct blocker fixes. Do not add new feature scope, billing, Stripe, AI, XBRL, Supabase, or destructive reset tooling during this closeout.
+
+### Dashboard and metrics
+
+- `/hr/dashboard` readiness must match questionnaire/passport readiness. If questionnaire shows `31/100` and `31%`, dashboard must also show `31%`.
+- Dashboard must not show a false `0%`, false `0/0`, stale live-metrics fallback, or `Nije započeto` when answers exist.
+- Setup checklist counts must use live answered questions, documents, linked evidence, buyer requests, and share-link status.
+- Missing data count must use real gaps or a neutral unavailable state, never a false zero when sections are incomplete.
+- Readiness colors remain: red below one third, yellow from one third through two thirds, green above two thirds, and green glow only at `100%`.
+
+### Company Profile and questionnaire
+
+- Company Profile must use the same normalized company summary source as Passport/report.
+- Values visible in Passport/report, such as industry, country/location, headquarters, employee count, and legal company name, must also appear in Company Profile.
+- Missing values use localized neutral fallback: `Još nije uneseno`, `Not provided yet`, or `Noch nicht angegeben`.
+- `Ažuriraj u upitniku` must open `/hr/dashboard/questionnaire?section=company_basics` and show Osnovni podaci.
+- Questionnaire default behavior: valid `?section=` wins, no parameter opens the first incomplete section, and all-complete state opens Company Basics or first taxonomy section.
+- Reporting-period date fields must render as date inputs and preserve saved values.
+
+### Missing Data
+
+- `/hr/dashboard/missing-data` must be Croatian: `Nedostajući podaci`, `Riješi nedostatke`, `Otvoreni nedostaci`, `Potrebni dokazi`, and `Spremnost za kupce`.
+- `Riješi nedostatke` routes to the first missing questionnaire section when known, otherwise to questionnaire/documents. It must not be a dead button.
+- Missing Data metrics must be live or neutral, not hardcoded/demo percentages.
+
+### Public Passport, report, buyer, and admin
+
+- Public Passport readiness circle text must stay inside the circle in English and Croatian.
+- Section cards and evidence badges must wrap inside card boundaries for Croatian and English.
+- Public Passport and buyer pages must not expose private document URLs, storage IDs, raw sensitive answers, user/member data, admin notes, concierge notes, commercial notes, or share-token internals.
+- Invalid public and buyer tokens must show safe unavailable states with no mock fallback.
+- Buyer Portal comparison remains local-only and buyer accounts remain deferred.
+- Admin routes remain gated by `ADMIN_EMAIL_ALLOWLIST`; normal suppliers must be forbidden.
+
+### Localization closeout
+
+- Production-facing locales are English and Croatian.
+- German remains in the repository but hidden from visible language switchers; direct `/de/...` routes redirect to matching `/en/...` routes.
+- Croatian UI must not show broken strings such as `dobavlja?`, `Zatra?`, `omogu?`, `sa?etak`, `pra?`, `vi?e`, `ra?un`, `Saćetak`, or `Dovrćenost`.
+- English strings such as `Missing Data`, `Resolve gaps`, `Basic Information`, `Environment`, and `Social` may exist in English locale files or code keys, but Croatian rendered pages must use localized copy.
+
+### First-customer smoke test
+
+1. Deploy.
+2. Open `/hr`, `/hr/plans`, and `/hr/request-demo`.
+3. Log in as supplier and open `/hr/dashboard`.
+4. Open `/hr/dashboard/questionnaire`; confirm first-incomplete/default section behavior.
+5. Open `/hr/dashboard/company-profile`; confirm live company data appears.
+6. Open `/hr/dashboard/missing-data`; confirm Croatian copy and working `Riješi nedostatke`.
+7. Upload/link one evidence document if the customer workspace needs a proof-of-flow check.
+8. Open `/hr/dashboard/passport` and download PDF.
+9. Open valid `/hr/passport/[token]` and `/hr/buyer/suppliers/[token]`.
+10. Log in as admin and open `/hr/admin/organizations`.
+11. Quick-check equivalent `/en` routes.
+12. Manually open a `/de/...` route and confirm it redirects/falls back safely.
+13. Confirm no mock data, private URLs, storage IDs, secrets, raw answer dumps, or internal notes appear on supplier/public/buyer pages.
+
+### Deferred items after Faza 4.1
+
+- Full German translation QA and re-enabling German in switchers.
+- Billing, Stripe, invoices, and plan enforcement.
+- Buyer accounts, buyer organization management, and server-side saved buyer lists.
+- Backend email/CRM automation.
+- AI and XBRL.
+- Destructive reset tooling; production cleanup remains manual, backed up, and narrowly scoped.
+
 ## Safe Logging Rules
 
 Allowed categories:
