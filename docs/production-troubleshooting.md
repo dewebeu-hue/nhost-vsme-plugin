@@ -3488,6 +3488,48 @@ Contextual help cards are available after the guided tour is skipped or complete
 - Public/private boundaries should remain explicit: public Passport shows a buyer-safe summary; private evidence files are not publicly downloadable.
 - No help button should be active-looking and dead.
 
+## Faza 4.2 Korak 3 - First Supplier Passport Quick-Start Checklist
+
+The supplier dashboard now includes a practical first-report checklist that complements the guided tour. It uses the live dashboard summary, not mock state, and links suppliers directly to the next useful page or section.
+
+### Completion logic
+
+1. Complete Company Basics: complete when the `company_basics` section has all questions answered.
+2. Answer key readiness sections: complete when overall readiness reaches at least 50%.
+3. Upload evidence documents: complete when `documentsCount > 0`.
+4. Link evidence to answers: complete when `linkedEvidenceCount > 0`.
+5. Review Supplier Passport: shown as recommended when a live Passport summary exists. It is not marked complete because per-user review tracking is not stored.
+6. Create public link: complete when an active share link exists.
+7. Download PDF draft: shown as recommended/available when the PDF draft is available. It is not marked complete because per-user PDF download tracking is not stored.
+
+The card shows completed steps, total steps, percent complete, and the next incomplete step. The main `Continue setup` CTA routes to that next incomplete step. When all tracked steps are complete, it routes to Passport review/share.
+
+### CTA routes
+
+- Company Basics: `/[locale]/dashboard/questionnaire?section=company_basics`
+- Key readiness sections: `/[locale]/dashboard/questionnaire`
+- Upload evidence: `/[locale]/dashboard/documents`
+- Link evidence: `/[locale]/dashboard/documents`
+- Review Supplier Passport: `/[locale]/dashboard/passport`
+- Create public link: `/[locale]/dashboard/share`
+- Download PDF draft: `/[locale]/dashboard/passport`
+
+The guided-tour button dispatches the existing `supplier-passport-tour:restart` browser event. It does not store tokens, organization IDs, raw answers, file IDs, private URLs, or secrets.
+
+### Manual QA checklist
+
+1. Log in as a supplier and open `/hr/dashboard`.
+2. Confirm the quick-start checklist appears as `Kontrolna lista za prvi Supplier Passport`.
+3. Confirm completed/total step count reflects live questionnaire, document, evidence link, and share-link data.
+4. Click Company Basics and confirm `/hr/dashboard/questionnaire?section=company_basics` opens `Osnovni podaci`.
+5. Click Documents CTAs and confirm they open `/hr/dashboard/documents`.
+6. Click Passport and PDF CTAs and confirm they open `/hr/dashboard/passport`.
+7. Click Share CTA and confirm it opens `/hr/dashboard/share`.
+8. Click `Pokreni vodič` / `Start guided tour` and confirm the guided tour restarts.
+9. Update data where practical and confirm the next incomplete action changes after refresh.
+10. Repeat a quick check on `/en/dashboard`.
+11. Confirm no private URLs, storage IDs, raw answers, share tokens, cookies, JWTs, admin/internal notes, or commercial notes appear.
+
 ## Safe Logging Rules
 
 Allowed categories:

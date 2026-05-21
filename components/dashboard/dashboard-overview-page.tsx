@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { ActiveShareLinksCard } from "@/components/dashboard/active-share-links-card";
 import { BuyerRequestsCard } from "@/components/dashboard/buyer-requests-card";
+import { FirstPassportChecklistCard } from "@/components/dashboard/first-passport-checklist-card";
 import { MissingDataSummaryCard } from "@/components/dashboard/missing-data-summary-card";
 import { ModuleCompletionCard } from "@/components/dashboard/module-completion-card";
 import { OverallReadinessCard } from "@/components/dashboard/overall-readiness-card";
@@ -136,6 +137,11 @@ export function DashboardOverviewPage({
         />
       </section>
 
+      <FirstPassportChecklistCard
+        summary={summary}
+        labels={labels}
+        localePrefix={localePrefix}
+      />
       <SupplierPassportSetupCard
         summary={summary}
         labels={labels}

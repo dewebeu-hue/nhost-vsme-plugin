@@ -102,6 +102,38 @@ export type DashboardOverviewLabels = {
     text: string;
     restartGuide: string;
   };
+  quickStart: {
+    title: string;
+    subtitle: string;
+    progress: string;
+    next: string;
+    continueSetup: string;
+    reviewAndSharePassport: string;
+    startGuidedTour: string;
+    openOnboardingGuide: string;
+    completed: string;
+    pending: string;
+    recommended: string;
+    companyBasicsTitle: string;
+    companyBasicsDescription: string;
+    keySectionsTitle: string;
+    keySectionsDescription: string;
+    uploadEvidenceTitle: string;
+    uploadEvidenceDescription: string;
+    linkEvidenceTitle: string;
+    linkEvidenceDescription: string;
+    reviewPassportTitle: string;
+    reviewPassportDescription: string;
+    createPublicLinkTitle: string;
+    createPublicLinkDescription: string;
+    downloadPdfTitle: string;
+    downloadPdfDescription: string;
+    openCompanyBasics: string;
+    openQuestionnaire: string;
+    openDocuments: string;
+    openPassport: string;
+    openShare: string;
+  };
   setupChecklist: {
     title: string;
     description: string;
@@ -200,6 +232,39 @@ export const defaultDashboardOverviewLabels: DashboardOverviewLabels = {
     title: "How to complete your Supplier Passport",
     text: "Follow the steps below to complete the questionnaire, add evidence and prepare a buyer-safe Passport summary.",
     restartGuide: "Restart onboarding guide",
+  },
+  quickStart: {
+    title: "First Supplier Passport checklist",
+    subtitle: "Complete these steps to create a useful first draft for buyers.",
+    progress: "{completed} of {total} steps complete",
+    next: "Next: {title}",
+    continueSetup: "Continue setup",
+    reviewAndSharePassport: "Review and share Passport",
+    startGuidedTour: "Start guided tour",
+    openOnboardingGuide: "Open onboarding guide",
+    completed: "Complete",
+    pending: "Pending",
+    recommended: "Recommended",
+    companyBasicsTitle: "Complete Company Basics",
+    companyBasicsDescription: "Add legal name, reporting year, location and business activity.",
+    keySectionsTitle: "Answer key readiness sections",
+    keySectionsDescription: "Complete the sections most relevant for your first buyer-ready draft.",
+    uploadEvidenceTitle: "Upload evidence documents",
+    uploadEvidenceDescription:
+      "Add certificates, policies, invoices or other documents that support your answers.",
+    linkEvidenceTitle: "Link evidence to answers",
+    linkEvidenceDescription: "Connect uploaded documents to questionnaire answers.",
+    reviewPassportTitle: "Review Supplier Passport",
+    reviewPassportDescription: "Check readiness, missing data and evidence status before sharing.",
+    createPublicLinkTitle: "Create public link",
+    createPublicLinkDescription: "Create a buyer-safe public summary link.",
+    downloadPdfTitle: "Download PDF draft",
+    downloadPdfDescription: "Download a draft for manual review or sharing.",
+    openCompanyBasics: "Open Company Basics",
+    openQuestionnaire: "Open questionnaire",
+    openDocuments: "Open Data Room",
+    openPassport: "Open Passport",
+    openShare: "Open sharing",
   },
   setupChecklist: {
     title: "Supplier Passport setup",

@@ -344,6 +344,7 @@ export function SupplierOnboardingTour({ locale, labels }: SupplierOnboardingTou
                 <Button
                   type="button"
                   variant="outline"
+                  className="border-white/70 bg-white text-[#002B36] hover:border-white hover:bg-slate-100 hover:text-slate-950 focus-visible:border-white focus-visible:ring-white/60 disabled:bg-white/60 disabled:text-slate-700 disabled:opacity-60"
                   disabled={stepIndex === 0}
                   onClick={() => goToStep(stepIndex - 1)}
                 >
