@@ -43,6 +43,13 @@ type TargetRect = {
   borderRadius: string;
 };
 
+type PopoverRect = {
+  top: number;
+  left: number;
+  width: number;
+  height: number;
+};
+
 const storagePrefix = "supplierPassportTour:v1";
 const completedKey = `${storagePrefix}:completed`;
 const dismissedKey = `${storagePrefix}:dismissed`;
@@ -223,18 +230,14 @@ export function SupplierOnboardingTour({ locale, labels }: SupplierOnboardingTou
       return undefined;
     }
 
-    const width = Math.min(380, window.innerWidth - 32);
-    const preferredTop = targetRect.top + targetRect.height + 16;
-    const top =
-      preferredTop + 220 < window.innerHeight
-        ? preferredTop
-        : Math.max(16, targetRect.top - 236);
-    const left = Math.min(
-      Math.max(16, targetRect.left),
-      Math.max(16, window.innerWidth - width - 16),
-    );
+    const rect = getSmartPopoverRect(targetRect, window.innerWidth, window.innerHeight);
 
-    return { top, left, width };
+    return {
+      top: rect.top,
+      left: rect.left,
+      width: rect.width,
+      maxHeight: Math.max(180, window.innerHeight - 32),
+    };
   }, [targetRect]);
 
   if (!isReady) {
@@ -301,7 +304,7 @@ export function SupplierOnboardingTour({ locale, labels }: SupplierOnboardingTou
             role="dialog"
             aria-modal="true"
             className={cn(
-              "fixed z-[70] w-[min(380px,calc(100vw-2rem))] rounded-2xl border border-white/10 bg-[#002B36] p-5 text-white shadow-2xl shadow-slate-950/30",
+              "fixed z-[70] w-[min(380px,calc(100vw-2rem))] overflow-y-auto rounded-2xl border border-white/10 bg-[#002B36] p-5 text-white shadow-2xl shadow-slate-950/30",
               targetRect ? "" : "left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2",
             )}
             style={popoverStyle}
@@ -428,4 +431,184 @@ function getSpotlightBorderRadius(
   const maxRadius = Math.max(0, Math.min(spotlightWidth, spotlightHeight) / 2);
 
   return `${Math.min(expandedRadius, maxRadius)}px`;
+}
+
+function getSmartPopoverRect(
+  targetRect: TargetRect,
+  viewportWidth: number,
+  viewportHeight: number,
+): PopoverRect {
+  const margin = 16;
+  const gap = 16;
+  const width = Math.min(380, Math.max(280, viewportWidth - margin * 2));
+  const height = Math.min(300, Math.max(220, viewportHeight - margin * 2));
+  const targetCenterX = targetRect.left + targetRect.width / 2;
+  const targetCenterY = targetRect.top + targetRect.height / 2;
+  const targetRight = targetRect.left + targetRect.width;
+  const targetBottom = targetRect.top + targetRect.height;
+  const available = {
+    top: Math.max(0, targetRect.top - margin),
+    bottom: Math.max(0, viewportHeight - targetBottom - margin),
+    left: Math.max(0, targetRect.left - margin),
+    right: Math.max(0, viewportWidth - targetRight - margin),
+  };
+  const candidates = [
+    createPopoverCandidate({
+      placement: "bottom",
+      rect: {
+        top: targetBottom + gap,
+        left: targetCenterX - width / 2,
+        width,
+        height,
+      },
+      availableSize: available.bottom,
+      availableArea: available.bottom * viewportWidth,
+      neededSize: height + gap,
+      targetRect,
+      viewportWidth,
+      viewportHeight,
+      margin,
+    }),
+    createPopoverCandidate({
+      placement: "top",
+      rect: {
+        top: targetRect.top - gap - height,
+        left: targetCenterX - width / 2,
+        width,
+        height,
+      },
+      availableSize: available.top,
+      availableArea: available.top * viewportWidth,
+      neededSize: height + gap,
+      targetRect,
+      viewportWidth,
+      viewportHeight,
+      margin,
+    }),
+    createPopoverCandidate({
+      placement: "right",
+      rect: {
+        top: targetCenterY - height / 2,
+        left: targetRight + gap,
+        width,
+        height,
+      },
+      availableSize: available.right,
+      availableArea: available.right * viewportHeight,
+      neededSize: width + gap,
+      targetRect,
+      viewportWidth,
+      viewportHeight,
+      margin,
+    }),
+    createPopoverCandidate({
+      placement: "left",
+      rect: {
+        top: targetCenterY - height / 2,
+        left: targetRect.left - gap - width,
+        width,
+        height,
+      },
+      availableSize: available.left,
+      availableArea: available.left * viewportHeight,
+      neededSize: width + gap,
+      targetRect,
+      viewportWidth,
+      viewportHeight,
+      margin,
+    }),
+  ];
+
+  candidates.sort((a, b) => {
+    if (a.hasEnoughSpace !== b.hasEnoughSpace) {
+      return a.hasEnoughSpace ? -1 : 1;
+    }
+
+    if (a.overlapArea !== b.overlapArea) {
+      return a.overlapArea - b.overlapArea;
+    }
+
+    return b.availableArea - a.availableArea;
+  });
+
+  return candidates[0]?.rect ?? createCenteredPopoverRect(width, height, viewportWidth, viewportHeight, margin);
+}
+
+function createPopoverCandidate({
+  rect,
+  availableSize,
+  availableArea,
+  neededSize,
+  targetRect,
+  viewportWidth,
+  viewportHeight,
+  margin,
+}: {
+  placement: "top" | "bottom" | "left" | "right";
+  rect: PopoverRect;
+  availableSize: number;
+  availableArea: number;
+  neededSize: number;
+  targetRect: TargetRect;
+  viewportWidth: number;
+  viewportHeight: number;
+  margin: number;
+}) {
+  const clampedRect = clampPopoverRect(rect, viewportWidth, viewportHeight, margin);
+
+  return {
+    rect: clampedRect,
+    availableArea,
+    hasEnoughSpace: availableSize >= neededSize,
+    overlapArea: getRectOverlapArea(clampedRect, targetRect),
+  };
+}
+
+function clampPopoverRect(
+  rect: PopoverRect,
+  viewportWidth: number,
+  viewportHeight: number,
+  margin: number,
+) {
+  const maxLeft = Math.max(margin, viewportWidth - rect.width - margin);
+  const maxTop = Math.max(margin, viewportHeight - rect.height - margin);
+
+  return {
+    ...rect,
+    left: clamp(rect.left, margin, maxLeft),
+    top: clamp(rect.top, margin, maxTop),
+  };
+}
+
+function createCenteredPopoverRect(
+  width: number,
+  height: number,
+  viewportWidth: number,
+  viewportHeight: number,
+  margin: number,
+) {
+  return clampPopoverRect(
+    {
+      top: viewportHeight / 2 - height / 2,
+      left: viewportWidth / 2 - width / 2,
+      width,
+      height,
+    },
+    viewportWidth,
+    viewportHeight,
+    margin,
+  );
+}
+
+function getRectOverlapArea(a: PopoverRect, b: TargetRect) {
+  const left = Math.max(a.left, b.left);
+  const right = Math.min(a.left + a.width, b.left + b.width);
+  const top = Math.max(a.top, b.top);
+  const bottom = Math.min(a.top + a.height, b.top + b.height);
+
+  return Math.max(0, right - left) * Math.max(0, bottom - top);
+}
+
+function clamp(value: number, min: number, max: number) {
+  return Math.min(Math.max(value, min), max);
 }
