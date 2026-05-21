@@ -40,6 +40,7 @@ type TargetRect = {
   left: number;
   width: number;
   height: number;
+  borderRadius: string;
 };
 
 const storagePrefix = "supplierPassportTour:v1";
@@ -175,6 +176,7 @@ export function SupplierOnboardingTour({ locale, labels }: SupplierOnboardingTou
           left: Math.max(12, rect.left - 10),
           width: Math.min(window.innerWidth - 24, rect.width + 20),
           height: Math.min(window.innerHeight - 24, rect.height + 20),
+          borderRadius: getSpotlightBorderRadius(element),
         });
       }, 260);
     }
@@ -251,15 +253,15 @@ export function SupplierOnboardingTour({ locale, labels }: SupplierOnboardingTou
           <div
             role="dialog"
             aria-modal="true"
-            className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl"
+            className="w-full max-w-md rounded-2xl border border-white/10 bg-[#002B36] p-6 text-white shadow-2xl shadow-slate-950/30"
           >
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-blue-700">
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-white/70">
               Supplier Passport
             </p>
-            <h2 className="mt-2 text-2xl font-semibold tracking-tight text-slate-950">
+            <h2 className="mt-2 text-2xl font-semibold tracking-tight text-white">
               {labels.promptTitle}
             </h2>
-            <p className="mt-3 text-sm leading-6 text-slate-600">{labels.promptText}</p>
+            <p className="mt-3 text-sm leading-6 text-white/85">{labels.promptText}</p>
             <div className="mt-6 flex flex-col gap-2 sm:flex-row sm:justify-end">
               <Button type="button" variant="outline" onClick={dismissTour}>
                 {labels.skipForNow}
@@ -279,12 +281,13 @@ export function SupplierOnboardingTour({ locale, labels }: SupplierOnboardingTou
           {targetRect ? (
             <div
               aria-hidden="true"
-              className="pointer-events-none fixed z-[61] rounded-2xl border-2 border-blue-300 shadow-[0_0_0_6px_rgba(37,99,235,0.18),0_0_35px_rgba(37,99,235,0.28)]"
+              className="pointer-events-none fixed z-[61] border-2 border-blue-300 shadow-[0_0_0_6px_rgba(37,99,235,0.18),0_0_35px_rgba(37,99,235,0.28)]"
               style={{
                 top: targetRect.top,
                 left: targetRect.left,
                 width: targetRect.width,
                 height: targetRect.height,
+                borderRadius: targetRect.borderRadius,
               }}
             />
           ) : null}
@@ -292,13 +295,13 @@ export function SupplierOnboardingTour({ locale, labels }: SupplierOnboardingTou
             role="dialog"
             aria-modal="true"
             className={cn(
-              "fixed z-[70] w-[min(380px,calc(100vw-2rem))] rounded-2xl border border-slate-200 bg-white p-5 shadow-2xl",
+              "fixed z-[70] w-[min(380px,calc(100vw-2rem))] rounded-2xl border border-white/10 bg-[#002B36] p-5 text-white shadow-2xl shadow-slate-950/30",
               targetRect ? "" : "left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2",
             )}
             style={popoverStyle}
           >
             <div className="flex items-start justify-between gap-4">
-              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-blue-700">
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-white/70">
                 {labels.stepLabel
                   .replace("{current}", String(stepIndex + 1))
                   .replace("{total}", String(tourSteps.length))}
@@ -307,22 +310,22 @@ export function SupplierOnboardingTour({ locale, labels }: SupplierOnboardingTou
                 type="button"
                 onClick={dismissTour}
                 aria-label={labels.skip}
-                className="rounded-full p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-700"
+                className="rounded-full p-1 text-white/70 hover:bg-white/10 hover:text-white"
               >
                 <X aria-hidden="true" className="size-4" />
               </button>
             </div>
-            <h2 className="mt-2 text-xl font-semibold tracking-tight text-slate-950">
+            <h2 className="mt-2 text-xl font-semibold tracking-tight text-white">
               {currentCopy.title}
             </h2>
-            <p className="mt-3 text-sm leading-6 text-slate-600">{currentCopy.text}</p>
+            <p className="mt-3 text-sm leading-6 text-white/85">{currentCopy.text}</p>
             {currentStep.target && !targetRect ? (
-              <p className="mt-3 rounded-xl border border-amber-100 bg-amber-50 px-3 py-2 text-xs font-medium text-amber-800">
+              <p className="mt-3 rounded-xl border border-white/10 bg-white/10 px-3 py-2 text-xs font-medium text-white/85">
                 {labels.missingTargetText}
               </p>
             ) : null}
             <div className="mt-5 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-              <Button type="button" variant="ghost" onClick={dismissTour}>
+              <Button type="button" variant="ghost" className="text-white/85 hover:bg-white/10 hover:text-white" onClick={dismissTour}>
                 {labels.skip}
               </Button>
               <div className="flex gap-2">
@@ -373,4 +376,32 @@ function TourOverlay({ targetRect }: { targetRect: TargetRect | null }) {
       <div className="fixed z-[60] bg-slate-950/55 backdrop-blur-[1px]" style={{ top: targetRect.top, left: rightLeft, right: 0, height: targetRect.height }} />
     </>
   );
+}
+
+function getSpotlightBorderRadius(element: HTMLElement) {
+  const styles = window.getComputedStyle(element);
+  const rawRadius =
+    styles.borderRadius ||
+    styles.borderTopLeftRadius ||
+    styles.borderTopRightRadius ||
+    styles.borderBottomRightRadius ||
+    styles.borderBottomLeftRadius;
+
+  const firstPixelRadius = rawRadius.match(/[\d.]+px/)?.[0];
+
+  if (!firstPixelRadius) {
+    return "22px";
+  }
+
+  const radius = Number.parseFloat(firstPixelRadius);
+
+  if (!Number.isFinite(radius)) {
+    return "22px";
+  }
+
+  if (radius > 1000) {
+    return "9999px";
+  }
+
+  return `${Math.max(18, radius + 10)}px`;
 }
