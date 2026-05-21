@@ -7,6 +7,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { ArrowRight, Building2, FileText, LockKeyhole, ShieldCheck } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { BuyerPortalShell } from "@/components/buyer/buyer-portal-shell";
+import { BuyerRequestEvidencePanel } from "@/components/buyer/buyer-request-message";
 import { ProgressRing } from "@/components/shared/progress-ring";
 import { StateCard } from "@/components/shared/state-card";
 import { Badge } from "@/components/ui/badge";
@@ -264,6 +265,10 @@ export function BuyerSupplierSummary({ passport, token }: BuyerSupplierSummaryPr
             value={formatCertificateStatus(passport.certificateStatus, t)}
           />
         </section>
+
+        {token ? (
+          <BuyerRequestEvidencePanel supplierName={passport.company.name} token={token} />
+        ) : null}
 
         <section>
           <h2 className="text-2xl font-semibold tracking-tight text-slate-950">

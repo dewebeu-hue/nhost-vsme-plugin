@@ -2011,6 +2011,12 @@
     "unavailableSupplierLink": "Ovaj link dobavljača nije dostupan.",
     "passwordRequiredForComparison": "Ovaj link dobavljača zahtijeva potvrdu lozinkom prije usporedbe.",
     "unavailable": "Nije dostupno",
-    "lastUpdated": "Zadnje ažurirano"
+    "lastUpdated": "Zadnje ažurirano",
+    "requestEvidenceTitle": "Zatražite dokaznu dokumentaciju",
+    "requestEvidenceDescription": "Privatni dokazni dokumenti nisu javno dostupni za preuzimanje s ove stranice. Ako trebate dokazne dokumente, zatražite ih izravno od dobavljača.",
+    "requestEvidenceChannel": "Kopirajte poruku i pošaljite je kroz svoj uobičajeni nabavni kanal. Slanje emailova nije omogućeno u ovoj verziji.",
+    "copyRequestMessage": "Kopiraj poruku zahtjeva",
+    "requestMessageCopied": "Poruka zahtjeva je kopirana",
+    "requestEvidenceMessage": "Pozdrav, pregledali smo Supplier Passport sažetak dobavljača {supplierName}. Možete li nam dostaviti dokaznu dokumentaciju za relevantne sekcije, poput certifikata, politika ili dokumentacije o energiji/otpadu? Javni sažetak: {link}"
   }
 }

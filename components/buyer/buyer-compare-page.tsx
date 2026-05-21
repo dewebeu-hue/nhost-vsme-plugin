@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { Plus, Trash2, X } from "lucide-react";
 import { BuyerPortalShell } from "@/components/buyer/buyer-portal-shell";
+import { BuyerRequestEvidencePanel } from "@/components/buyer/buyer-request-message";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { extractSupplierToken } from "@/lib/buyer-token";
@@ -219,6 +220,7 @@ export function BuyerComparePage() {
         {tokens.length ? (
           <ComparisonGrid
             items={items}
+            tokens={tokens}
             isLoading={loadedTokensKey !== tokensKey}
             sectionTitles={sectionTitles}
             onRemove={handleRemove}
@@ -236,12 +238,14 @@ export function BuyerComparePage() {
 
 function ComparisonGrid({
   items,
+  tokens,
   isLoading,
   sectionTitles,
   onRemove,
   t,
 }: {
   items: CompareItem[];
+  tokens: string[];
   isLoading: boolean;
   sectionTitles: string[];
   onRemove: (index: number) => void;
@@ -277,6 +281,13 @@ function ComparisonGrid({
                 <MetricLine label={t("evidenceOnRequest")} value={item.evidenceCount} />
                 <MetricLine label={t("certificateSummary")} value={formatCertificateStatus(item.certificateStatus, t)} />
                 <MetricLine label={t("lastUpdated")} value={item.lastUpdated} />
+                {tokens[item.index] ? (
+                  <BuyerRequestEvidencePanel
+                    supplierName={item.organizationName}
+                    token={tokens[item.index]}
+                    compact
+                  />
+                ) : null}
               </div>
             ) : (
               <p className="mt-5 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm leading-6 text-amber-900">

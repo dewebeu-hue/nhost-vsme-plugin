@@ -2034,6 +2034,12 @@
     "unavailableSupplierLink": "Dieser Lieferantenlink ist nicht verfügbar.",
     "passwordRequiredForComparison": "Dieser Lieferantenlink erfordert eine Passwortbestätigung, bevor er verglichen werden kann.",
     "unavailable": "Nicht verfügbar",
-    "lastUpdated": "Zuletzt aktualisiert"
+    "lastUpdated": "Zuletzt aktualisiert",
+    "requestEvidenceTitle": "Nachweisdokumente anfordern",
+    "requestEvidenceDescription": "Private Nachweisdokumente können über diese Seite nicht öffentlich heruntergeladen werden. Wenn Sie Nachweise benötigen, fordern Sie diese direkt beim Lieferanten an.",
+    "requestEvidenceChannel": "Kopieren Sie die Nachricht und senden Sie sie über Ihren üblichen Beschaffungskanal. E-Mail-Versand ist in dieser Version nicht aktiviert.",
+    "copyRequestMessage": "Anfragenachricht kopieren",
+    "requestMessageCopied": "Anfragenachricht kopiert",
+    "requestEvidenceMessage": "Hallo, wir haben Ihre Supplier-Passport-Zusammenfassung für {supplierName} geprüft. Können Sie uns bitte Nachweisdokumente für die relevanten Abschnitte bereitstellen, z. B. Zertifikate, Richtlinien oder Energie-/Abfalldokumentation? Öffentliche Zusammenfassung: {link}"
   }
 }

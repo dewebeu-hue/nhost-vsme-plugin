@@ -2644,6 +2644,46 @@ Manual QA:
 9. Confirm no private URLs, storage IDs, raw answers, user/member data, admin/internal notes, or full token values are visible.
 10. Repeat quick checks on `/en/buyer/compare` and `/de/buyer/compare`.
 
+## Faza 4.0 Korak 4 - Buyer Request Follow-up Without Email
+
+Buyer request follow-up is copy-message only in this phase. It does not create a backend request intake, supplier-side draft, buyer account, buyer login, email, CRM activity, or server-side buyer list.
+
+Behavior:
+
+- `/[locale]/buyer/suppliers/[token]` shows a `Request supporting evidence` panel for valid supplier summaries.
+- `/[locale]/buyer/compare` shows the same request-message action on each valid supplier card.
+- The copy action generates a plain-text request message with the supplier organization name and public `/[locale]/passport/[token]` summary link.
+- The message tells the buyer to request supporting evidence directly through their usual procurement channel.
+- No `Send request`, `Submit request`, `Email supplier`, or fake backend action is shown.
+
+Excluded from copied messages:
+
+- Private document URLs.
+- Storage file IDs.
+- Raw sensitive answer values.
+- Admin, concierge, onboarding, portfolio, handoff, or commercial notes.
+- Buyer request internal notes.
+- Any automatic email delivery or CRM integration.
+
+Deferred:
+
+- Backend request intake from public buyer tokens.
+- Supplier-side inbound request drafts.
+- Buyer accounts and buyer organization workflows.
+- Email automation.
+
+Manual QA:
+
+1. Deploy.
+2. Open `/hr/buyer/suppliers/[token]`.
+3. Confirm `Zatražite dokaznu dokumentaciju` appears.
+4. Click `Kopiraj poruku zahtjeva`.
+5. Paste the message into a text editor and confirm it contains only supplier name plus a public `/hr/passport/[token]` link.
+6. Confirm no private document URL, storage ID, raw answer, admin note, commercial note, or backend-send action is visible.
+7. Open `/hr/buyer/compare` with at least one valid supplier.
+8. Confirm each valid supplier card can copy the request message.
+9. Repeat quick checks on `/en` and `/de`.
+
 ## Safe Logging Rules
 
 Allowed categories:

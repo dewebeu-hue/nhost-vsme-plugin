@@ -2011,6 +2011,12 @@
     "unavailableSupplierLink": "This supplier link is unavailable.",
     "passwordRequiredForComparison": "This supplier link requires password verification before it can be compared.",
     "unavailable": "Unavailable",
-    "lastUpdated": "Last updated"
+    "lastUpdated": "Last updated",
+    "requestEvidenceTitle": "Request supporting evidence",
+    "requestEvidenceDescription": "Private evidence files are not publicly downloadable from this page. If you need supporting documents, request them directly from the supplier.",
+    "requestEvidenceChannel": "Copy the message and send it through your usual procurement channel. Email sending is not enabled in this version.",
+    "copyRequestMessage": "Copy request message",
+    "requestMessageCopied": "Request message copied",
+    "requestEvidenceMessage": "Hello, we reviewed your Supplier Passport summary for {supplierName}. Could you please provide supporting evidence for the relevant sections, such as certificates, policies or energy/waste documentation? Public summary: {link}"
   }
 }
