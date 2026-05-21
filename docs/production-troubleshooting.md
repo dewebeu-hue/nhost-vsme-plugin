@@ -2986,7 +2986,7 @@ Localization checklist:
 
 Dead-control checklist:
 
-- Public Passport `Request additional information` must route to `/[locale]/buyer/suppliers/[token]`, where the buyer can copy a safe request message.
+- Public Passport `Request additional information` must open the safe copy-message dialog. It must not send email, submit a backend request, or expose private evidence file URLs/storage IDs.
 - `Download public PDF`, `Resolve gaps`, request-demo CTAs, share-link controls, evidence upload/link controls, buyer comparison controls, and admin save buttons must either work, be disabled with clear copy, or be removed.
 
 Privacy checklist:

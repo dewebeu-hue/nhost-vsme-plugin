@@ -1,11 +1,14 @@
+"use client";
+
 import {
   CalendarDays,
+  ClipboardCopy,
   FileText,
   LockKeyhole,
   Mail,
   ShieldCheck,
 } from "lucide-react";
-import Link from "next/link";
+import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Logo } from "@/components/brand/logo";
 import { LanguageSwitcher } from "@/components/shared/language-switcher";
@@ -13,6 +16,14 @@ import { ProgressRing } from "@/components/shared/progress-ring";
 import { StateCard } from "@/components/shared/state-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { PublicPdfDownloadButton } from "@/components/passport/public-pdf-download-button";
 import type { publicSharePassport } from "@/lib/mock-data";
 import { getReadinessVisualState } from "@/lib/readiness-visual-state";
@@ -55,6 +66,8 @@ export function PublicShareAccessState({
 
 export function PublicSharePage({ locale, passport, token }: PublicSharePageProps) {
   const t = useTranslations("share");
+  const [isRequestOpen, setIsRequestOpen] = useState(false);
+  const [copyState, setCopyState] = useState<"idle" | "copied" | "error">("idle");
   const evidenceSection = passport.sections.find((section) => section.title === "Evidence summary");
   const readinessSections = passport.sections.filter((section) => section.title !== "Evidence summary");
   const readinessLevel = getReadinessLevel(passport.readinessScore);
@@ -130,7 +143,11 @@ export function PublicSharePage({ locale, passport, token }: PublicSharePageProp
                   {t("lastUpdated")}: {passport.lastUpdated}
                 </div>
                 <Button
-                  render={<Link href={`/${locale}/buyer/suppliers/${encodeURIComponent(token)}`} />}
+                  type="button"
+                  onClick={() => {
+                    setCopyState("idle");
+                    setIsRequestOpen(true);
+                  }}
                   className="h-11 rounded-xl bg-blue-600 px-5 hover:bg-blue-700"
                 >
                   <Mail data-icon="inline-start" />
@@ -336,7 +353,88 @@ export function PublicSharePage({ locale, passport, token }: PublicSharePageProp
           </p>
         </div>
       </footer>
+      <RequestAdditionalInformationDialog
+        open={isRequestOpen}
+        copyState={copyState}
+        locale={locale}
+        token={token}
+        supplierName={passport.company.name}
+        onCopyStateChange={setCopyState}
+        onOpenChange={setIsRequestOpen}
+      />
     </div>
+  );
+}
+
+function RequestAdditionalInformationDialog({
+  open,
+  copyState,
+  locale,
+  token,
+  supplierName,
+  onCopyStateChange,
+  onOpenChange,
+}: {
+  open: boolean;
+  copyState: "idle" | "copied" | "error";
+  locale: string;
+  token: string;
+  supplierName: string;
+  onCopyStateChange: (state: "idle" | "copied" | "error") => void;
+  onOpenChange: (open: boolean) => void;
+}) {
+  const t = useTranslations("share");
+
+  async function handleCopy() {
+    const publicLink = `${window.location.origin}/${locale}/passport/${encodeURIComponent(token)}`;
+    const message = t("requestAdditionalInformationMessage", {
+      supplierName: supplierName || t("supplierProfile"),
+      link: publicLink,
+    });
+
+    try {
+      await window.navigator.clipboard.writeText(message);
+      onCopyStateChange("copied");
+    } catch {
+      onCopyStateChange("error");
+    }
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-lg rounded-2xl border border-slate-200 bg-white p-0 shadow-2xl shadow-slate-950/10">
+        <DialogHeader className="border-b border-slate-100 px-6 py-5">
+          <DialogTitle className="text-xl font-semibold tracking-tight text-slate-950">
+            {t("requestAdditionalInformationTitle")}
+          </DialogTitle>
+          <DialogDescription className="leading-6 text-slate-600">
+            {t("requestAdditionalInformationDescription")}
+          </DialogDescription>
+        </DialogHeader>
+        <div className="grid gap-3 px-6 py-5 text-sm leading-6 text-slate-600">
+          <p>{t("requestAdditionalInformationEmailDisabled")}</p>
+          {copyState === "copied" ? (
+            <p className="rounded-xl border border-emerald-100 bg-emerald-50 px-3 py-2 font-medium text-emerald-700">
+              {t("requestAdditionalInformationCopied")}
+            </p>
+          ) : null}
+          {copyState === "error" ? (
+            <p className="rounded-xl border border-red-100 bg-red-50 px-3 py-2 font-medium text-red-700">
+              {t("requestAdditionalInformationCopyError")}
+            </p>
+          ) : null}
+        </div>
+        <DialogFooter className="rounded-b-2xl border-t border-slate-100 bg-slate-50 px-6 py-4">
+          <Button type="button" variant="outline" className="bg-white" onClick={() => onOpenChange(false)}>
+            {t("cancel")}
+          </Button>
+          <Button type="button" onClick={handleCopy}>
+            <ClipboardCopy data-icon="inline-start" />
+            {t("copyRequestMessage")}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
 
