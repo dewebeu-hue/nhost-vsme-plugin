@@ -2684,6 +2684,56 @@ Manual QA:
 8. Confirm each valid supplier card can copy the request message.
 9. Repeat quick checks on `/en` and `/de`.
 
+## Faza 4.0 Korak 5 - Buyer Portal Final QA
+
+Buyer Portal remains a token-based, buyer-safe foundation. It does not include buyer accounts, buyer login, buyer organization management, server-side saved shortlists, email sending, CRM integration, billing, Stripe, AI, XBRL, or Supabase.
+
+Routes to verify:
+
+- `/en/buyer`, `/hr/buyer`, `/de/buyer`
+- `/en/buyer/suppliers`, `/hr/buyer/suppliers`, `/de/buyer/suppliers`
+- `/en/buyer/suppliers/[token]`, `/hr/buyer/suppliers/[token]`, `/de/buyer/suppliers/[token]`
+- `/en/buyer/compare`, `/hr/buyer/compare`, `/de/buyer/compare`
+- `/en/passport/[token]`, `/hr/passport/[token]`, `/de/passport/[token]`
+
+API to verify:
+
+- `POST /api/buyer/compare`
+
+Final QA expectations:
+
+- `/buyer` explains buyer access is based on supplier-shared links.
+- `/buyer/suppliers` has no fake saved supplier list and says buyer accounts are not enabled.
+- The token opener accepts a full `/passport/[token]` URL, `/buyer/suppliers/[token]` URL, or plain token.
+- Valid `/buyer/suppliers/[token]` pages show supplier name, readiness, section statuses, evidence availability, certificate status, disclaimer, back navigation, add-to-comparison, and request-evidence copy.
+- Invalid, inactive, expired, or missing live token data shows a safe unavailable state with no mock fallback.
+- `/buyer/compare` stores comparison tokens only in browser `localStorage`, enforces a maximum of 10 suppliers, allows remove/clear, and marks invalid tokens unavailable.
+- Request evidence copy contains only supplier name plus a public `/[locale]/passport/[token]` summary link.
+- No buyer route or buyer API exposes private document URLs, storage file IDs, raw sensitive answers, user/member data, buyer request internal notes, admin notes, concierge/onboarding/portfolio/handoff data, commercial metadata, full token values in logs, or admin secrets.
+
+Production manual QA checklist:
+
+1. Deploy.
+2. Open `/hr/buyer` and confirm the access-model copy.
+3. Open `/hr/buyer/suppliers` and confirm there is no fake supplier list.
+4. Open a valid `/hr/buyer/suppliers/[token]`.
+5. Confirm the page is buyer-safe and has back navigation.
+6. Click `Dodaj u usporedbu` and confirm `/hr/buyer/compare` opens.
+7. Add, remove, and clear a supplier in comparison.
+8. Add an invalid token and confirm the unavailable state.
+9. Click `Kopiraj poruku zahtjeva`, paste the text, and confirm it contains only the public Passport link.
+10. Confirm no private URLs, storage IDs, raw answers, internal notes, user/member data, or full token values are visible.
+11. Open an invalid `/hr/buyer/suppliers/not-a-real-token` and confirm safe unavailable copy.
+12. Repeat quick checks on `/en` and `/de`.
+
+Deferred after Faza 4.0:
+
+- Buyer accounts and buyer login.
+- Buyer organization management.
+- Server-side saved buyer shortlists.
+- Backend request intake and supplier-side inbound drafts.
+- Email/CRM automation.
+
 ## Safe Logging Rules
 
 Allowed categories:
