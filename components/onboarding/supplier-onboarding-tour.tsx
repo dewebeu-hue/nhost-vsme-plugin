@@ -288,17 +288,24 @@ export function SupplierOnboardingTour({ locale, labels }: SupplierOnboardingTou
         <>
           <TourOverlay targetRect={targetRect} />
           {targetRect ? (
-            <div
-              aria-hidden="true"
-              className="pointer-events-none fixed z-[61] border-2 border-blue-300 shadow-[0_0_0_6px_rgba(37,99,235,0.18),0_0_35px_rgba(37,99,235,0.28)]"
-              style={{
-                top: targetRect.top,
-                left: targetRect.left,
-                width: targetRect.width,
-                height: targetRect.height,
-                borderRadius: targetRect.borderRadius,
-              }}
-            />
+            <>
+              <div
+                aria-hidden="true"
+                className="tour-spotlight-glow pointer-events-none fixed z-[61]"
+                style={getSpotlightGlowStyle(targetRect)}
+              />
+              <div
+                aria-hidden="true"
+                className="pointer-events-none fixed z-[62] border-2 border-blue-300 shadow-[0_0_0_6px_rgba(37,99,235,0.18),0_0_35px_rgba(37,99,235,0.28)]"
+                style={{
+                  top: targetRect.top,
+                  left: targetRect.left,
+                  width: targetRect.width,
+                  height: targetRect.height,
+                  borderRadius: targetRect.borderRadius,
+                }}
+              />
+            </>
           ) : null}
           <div
             role="dialog"
@@ -406,6 +413,18 @@ function createSpotlightRect(element: HTMLElement, rect: DOMRect): TargetRect {
     width,
     height,
     borderRadius: getSpotlightBorderRadius(element, width, height, padding),
+  };
+}
+
+function getSpotlightGlowStyle(targetRect: TargetRect) {
+  const padding = 10;
+
+  return {
+    top: targetRect.top - padding,
+    left: targetRect.left - padding,
+    width: targetRect.width + padding * 2,
+    height: targetRect.height + padding * 2,
+    borderRadius: `calc(${targetRect.borderRadius} + ${padding}px)`,
   };
 }
 

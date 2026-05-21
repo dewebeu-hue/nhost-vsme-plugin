@@ -96,6 +96,68 @@
     @apply border border-border/80 bg-card shadow-[0_18px_45px_rgba(15,23,42,0.07)];
   }
 
+  .tour-spotlight-glow {
+    opacity: 0.8;
+  }
+
+  .tour-spotlight-glow::before,
+  .tour-spotlight-glow::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+  }
+
+  .tour-spotlight-glow::before {
+    padding: 2px;
+    background: conic-gradient(
+      from 0deg,
+      rgb(37 99 235 / 0),
+      rgb(37 99 235 / 0.72),
+      rgb(20 184 166 / 0.68),
+      rgb(255 255 255 / 0.5),
+      rgb(37 99 235 / 0)
+    );
+    mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    animation: tour-spotlight-glow-rotate 4.5s linear infinite;
+  }
+
+  .tour-spotlight-glow::after {
+    inset: -4px;
+    background: conic-gradient(
+      from 0deg,
+      rgb(37 99 235 / 0),
+      rgb(37 99 235 / 0.34),
+      rgb(20 184 166 / 0.3),
+      rgb(255 255 255 / 0.2),
+      rgb(37 99 235 / 0)
+    );
+    filter: blur(14px);
+    opacity: 0.72;
+    animation: tour-spotlight-glow-rotate 6s linear infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tour-spotlight-glow::before,
+    .tour-spotlight-glow::after {
+      animation: none;
+    }
+  }
+
+  @keyframes tour-spotlight-glow-rotate {
+    to {
+      transform: rotate(1turn);
+    }
+  }
+
   .admin-workspace[data-admin-theme="dark"] {
     --background: #002b36;
     --foreground: #f8fafc;
