@@ -5,6 +5,7 @@ import {
   Mail,
   ShieldCheck,
 } from "lucide-react";
+import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { Logo } from "@/components/brand/logo";
 import { LanguageSwitcher } from "@/components/shared/language-switcher";
@@ -128,7 +129,10 @@ export function PublicSharePage({ locale, passport, token }: PublicSharePageProp
                   <CalendarDays aria-hidden="true" />
                   {t("lastUpdated")}: {passport.lastUpdated}
                 </div>
-                <Button className="h-11 rounded-xl bg-blue-600 px-5 hover:bg-blue-700">
+                <Button
+                  render={<Link href={`/${locale}/buyer/suppliers/${encodeURIComponent(token)}`} />}
+                  className="h-11 rounded-xl bg-blue-600 px-5 hover:bg-blue-700"
+                >
                   <Mail data-icon="inline-start" />
                   {t("requestAdditionalInformation")}
                 </Button>

@@ -2966,6 +2966,36 @@ Manual QA:
 8. Click `Riješi nedostatke` and confirm it opens the questionnaire for a real missing section.
 9. Confirm no private document URLs, storage IDs, raw answer dumps, admin notes, or commercial notes are visible.
 
+## Faza 4.1 Korak 2 - Full Route And Localization Smoke Test
+
+Production-facing locales are English and Croatian. German translation files and routes remain in the repository, but visible switchers should only show `English` and `Hrvatski`; direct `/de/...` requests redirect to the matching `/en/...` route through `proxy.ts`.
+
+Route groups to smoke test after deployment:
+
+- Public: `/en`, `/hr`, `/en/plans`, `/hr/plans`, `/en/request-demo`, `/hr/request-demo`.
+- Supplier dashboard: `/en/dashboard`, `/hr/dashboard`, company profile, questionnaire, documents, passport, share, share links, activity, settings, missing data, and buyer requests.
+- Public Passport and Buyer Portal: `/en/passport/[token]`, `/hr/passport/[token]`, `/en/buyer`, `/hr/buyer`, supplier token pages, and compare pages.
+- Admin: `/en/admin`, `/hr/admin`, organizations list/detail, and risks.
+
+Localization checklist:
+
+- Croatian routes must not show broken characters such as `dobavlja?`, `Zatra?`, `sa?etak`, or `Saćetak`.
+- Croatian Missing Data must show `Nedostajući podaci`, `Riješi nedostatke`, `Otvoreni nedostaci`, `Potrebni dokazi`, and `Spremnost za kupce`.
+- English routes must not show Croatian fallback copy.
+- Product terms such as `Supplier Passport`, `VSME-aligned`, `Buyer Request Workspace`, and `Evidence Data Room` may remain in English when intentionally used.
+
+Dead-control checklist:
+
+- Public Passport `Request additional information` must route to `/[locale]/buyer/suppliers/[token]`, where the buyer can copy a safe request message.
+- `Download public PDF`, `Resolve gaps`, request-demo CTAs, share-link controls, evidence upload/link controls, buyer comparison controls, and admin save buttons must either work, be disabled with clear copy, or be removed.
+
+Privacy checklist:
+
+- Public and buyer routes must not expose private document URLs, storage IDs, raw sensitive answers, admin/concierge/commercial notes, tokens, cookies, or secrets.
+- Supplier dashboard routes require authentication.
+- Admin routes remain admin-gated.
+- `ADMIN_EMAIL_ALLOWLIST`, `HASURA_GRAPHQL_ADMIN_SECRET`, and `SHARE_LINK_COOKIE_SECRET` must stay server-side only.
+
 ## Safe Logging Rules
 
 Allowed categories:
