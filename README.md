@@ -30,11 +30,14 @@ NEXT_PUBLIC_NHOST_STORAGE_URL=
 NHOST_ADMIN_SECRET=
 HASURA_GRAPHQL_ADMIN_SECRET=
 SHARE_LINK_COOKIE_SECRET=
+ADMIN_EMAIL_ALLOWLIST=
 ```
 
-`NEXT_PUBLIC_NHOST_SUBDOMAIN` and `NEXT_PUBLIC_NHOST_REGION` are enough for standard hosted Nhost URLs. The explicit URL variables are available for local or custom deployments. Never expose `NHOST_ADMIN_SECRET`, `HASURA_GRAPHQL_ADMIN_SECRET`, or `SHARE_LINK_COOKIE_SECRET` to client components.
+`NEXT_PUBLIC_NHOST_SUBDOMAIN` and `NEXT_PUBLIC_NHOST_REGION` are enough for standard hosted Nhost URLs. The explicit URL variables are available for local or custom deployments. Never expose `NHOST_ADMIN_SECRET`, `HASURA_GRAPHQL_ADMIN_SECRET`, `SHARE_LINK_COOKIE_SECRET`, or `ADMIN_EMAIL_ALLOWLIST` to client components.
 
 For production, set `SHARE_LINK_COOKIE_SECRET` to a long random value. It signs token-scoped public share verification cookies and must remain server-only.
+
+For the full production environment, Nhost/Hasura migration, storage, and admin-access checklist, see `docs/production-troubleshooting.md`.
 
 ## Local Development
 

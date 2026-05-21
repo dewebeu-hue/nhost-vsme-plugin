@@ -2996,6 +2996,208 @@ Privacy checklist:
 - Admin routes remain admin-gated.
 - `ADMIN_EMAIL_ALLOWLIST`, `HASURA_GRAPHQL_ADMIN_SECRET`, and `SHARE_LINK_COOKIE_SECRET` must stay server-side only.
 
+## Faza 4.1 Korak 3 - Production Environment And Migration Checklist
+
+This checklist is the production readiness source for Vercel, Nhost Auth, Nhost Storage, Hasura GraphQL, and Nhost Postgres. Never paste real secret values into Git, docs, tickets, or logs.
+
+### Environment variables
+
+Public client-safe variables:
+
+| Variable | Purpose | Required | Safe placeholder |
+| --- | --- | --- | --- |
+| `NEXT_PUBLIC_NHOST_SUBDOMAIN` | Nhost project subdomain used to derive standard hosted URLs. | Yes for hosted Nhost unless explicit URLs are used. | `your-subdomain` |
+| `NEXT_PUBLIC_NHOST_REGION` | Nhost region used to derive standard hosted URLs. | Yes for hosted Nhost unless explicit URLs are used. | `eu-central-1` |
+| `NEXT_PUBLIC_NHOST_GRAPHQL_URL` | Explicit Hasura GraphQL endpoint. Useful for custom/local deployments. | Recommended in production. | `https://<subdomain>.hasura.<region>.nhost.run/v1/graphql` |
+| `NEXT_PUBLIC_NHOST_AUTH_URL` | Explicit Nhost Auth endpoint for signup/login/session flows. | Recommended in production. | `https://<subdomain>.auth.<region>.nhost.run/v1` |
+| `NEXT_PUBLIC_NHOST_STORAGE_URL` | Explicit Nhost Storage endpoint for upload/download flows. | Recommended in production. | `https://<subdomain>.storage.<region>.nhost.run/v1` |
+
+Server-only required variables:
+
+| Variable | Purpose | Required | Safe placeholder |
+| --- | --- | --- | --- |
+| `HASURA_GRAPHQL_ADMIN_SECRET` | Server-side admin GraphQL calls for onboarding, questionnaire, documents, document links, buyer requests, admin summaries, and diagnostics. | Yes. | `replace_me` |
+| `SHARE_LINK_COOKIE_SECRET` | Signs token-scoped public share verification cookies. | Yes for protected public links. | `replace_me_with_long_random_secret` |
+| `ADMIN_EMAIL_ALLOWLIST` | Comma-separated admin emails for Admin/Concierge workspace access. | Yes for admin routes. | `admin@example.com` |
+
+Optional/deferred server-only variables:
+
+| Variable | Purpose | Required | Safe placeholder |
+| --- | --- | --- | --- |
+| `NHOST_ADMIN_SECRET` | Optional Nhost admin secret fallback used by server-side storage/admin helpers where configured. | Optional if `HASURA_GRAPHQL_ADMIN_SECRET` covers the active server paths. | `replace_me_if_used` |
+
+Forbidden production variables:
+
+- Do not create `NEXT_PUBLIC_ADMIN_EMAIL_ALLOWLIST`.
+- Do not create any `NEXT_PUBLIC_*SECRET*` variable.
+- Do not expose admin secrets, share-cookie secrets, JWTs, or storage file IDs to client code.
+
+### Migration checklist
+
+Apply and track these migrations in production Nhost/Hasura in order:
+
+| Migration | Purpose | Tables/columns | Production action |
+| --- | --- | --- | --- |
+| `0001_initial_supplier_passport` | Core Supplier Passport schema. | `organizations`, `organization_members`, `company_profiles`, `question_sections`, `question_items`, `question_answers`, `documents`, `document_links`, `supplier_passports`, `share_links`, `share_link_accesses`, `admin_notes`, `audit_events`, triggers. | Required. Apply first and track tables used by GraphQL. |
+| `0002_add_document_file_id` | Historical no-op; `documents.file_id` is already in initial schema. | None. | Keep in migration history. |
+| `0003_expand_questionnaire_taxonomy` | Full questionnaire taxonomy and answer types. | Upserts `question_sections` and `question_items` including `company_basics`, `employees`, `energy`, `fuel`, `waste`, `environmental_policies`, `health_safety`, `certifications`, `governance`, `supplier_information`. | Required. Re-run safe upsert if taxonomy is stale. |
+| `0004_add_buyer_requests` | Supplier-side Buyer Request Workspace. | `buyer_requests` plus indexes and update trigger. | Required for buyer request pages/APIs. |
+| `0005_add_organization_concierge_notes` | Admin/Concierge status and follow-up foundation. | `organization_concierge_notes` status, priority, internal note, follow-up, reviewed fields. | Required for admin organization detail/list. |
+| `0006_add_assisted_onboarding_fields` | Assisted onboarding workflow. | `onboarding_status`, `onboarding_next_action`, `onboarding_checklist`, `onboarding_owner_note`, `onboarding_completed_at`. | Required for assisted onboarding. |
+| `0007_add_admin_portfolio_fields` | Partner-ready portfolio grouping. | `portfolio_label`, `partner_label`, `assigned_consultant_note`. | Required for portfolio labels/grouping. |
+| `0008_add_admin_commercial_fields` | Commercial segmentation without billing. | `commercial_plan`, `commercial_segment`, `commercial_status`, `commercial_note`, `pilot_start_date`, `pilot_target_date`. | Required for admin commercial classification. |
+
+### Hasura tracking checklist
+
+Track these tables in Hasura if GraphQL queries/mutations use them:
+
+- `organizations`
+- `organization_members`
+- `company_profiles`
+- `question_sections`
+- `question_items`
+- `question_answers`
+- `documents`
+- `document_links`
+- `supplier_passports`
+- `share_links`
+- `share_link_accesses`
+- `buyer_requests`
+- `organization_concierge_notes`
+- `admin_notes`
+- `audit_events`
+
+Relationships are useful, but production code avoids relying on fragile relationship names where possible. In particular, Company Profile and Passport-style loaders join `question_items` and `question_answers` in code when that is safer.
+
+### Verification SQL
+
+Questionnaire taxonomy:
+
+```sql
+select
+  qs.code,
+  count(qi.id) as question_count
+from question_sections qs
+left join question_items qi on qi.section_id = qs.id
+group by qs.code, qs.sort_order
+order by qs.sort_order;
+```
+
+Documents:
+
+```sql
+select
+  id,
+  organization_id,
+  file_name,
+  document_type,
+  expires_at,
+  created_at
+from documents
+order by created_at desc
+limit 20;
+```
+
+Evidence links:
+
+```sql
+select
+  dl.id,
+  d.file_name as document_name,
+  qi.code as question_code,
+  qs.code as section_code,
+  qa.status,
+  dl.created_at
+from document_links dl
+join documents d on d.id = dl.document_id
+join question_answers qa on qa.id = dl.question_answer_id
+join question_items qi on qi.id = qa.question_item_id
+join question_sections qs on qs.id = qi.section_id
+order by dl.created_at desc
+limit 20;
+```
+
+Buyer requests:
+
+```sql
+select
+  id,
+  organization_id,
+  buyer_name,
+  request_title,
+  status,
+  requested_sections,
+  due_date,
+  created_at,
+  updated_at
+from buyer_requests
+order by created_at desc
+limit 20;
+```
+
+Concierge/admin:
+
+```sql
+select
+  id,
+  organization_id,
+  status,
+  priority,
+  internal_note,
+  next_follow_up_date,
+  onboarding_status,
+  portfolio_label,
+  commercial_plan,
+  commercial_status,
+  updated_at
+from organization_concierge_notes
+order by updated_at desc
+limit 20;
+```
+
+Share links:
+
+```sql
+select
+  id,
+  organization_id,
+  passport_id,
+  buyer_name,
+  is_active,
+  expires_at,
+  document_visibility,
+  created_at
+from share_links
+order by created_at desc
+limit 20;
+```
+
+### Nhost Storage checklist
+
+- Confirm Nhost Storage is enabled and `NEXT_PUBLIC_NHOST_STORAGE_URL` points to the Storage service, not Auth or Hasura.
+- Confirm authenticated suppliers can upload documents through `/[locale]/dashboard/documents`.
+- Confirm `documents.file_id`, `file_name`, `mime_type`, `file_size_bytes`, and `document_type` are written after upload.
+- Confirm public Passport and buyer routes never render private storage URLs, raw file IDs, or storage paths.
+- Confirm document preview/download paths use authenticated or token-scoped server routes, not direct private URLs.
+
+### Admin access checklist
+
+- Configure `ADMIN_EMAIL_ALLOWLIST` in Vercel as a server-only env var.
+- Use comma-separated emails for multiple admins.
+- Redeploy after changing the allowlist.
+- Log in as an allowlisted admin and open `/hr/admin/organizations`.
+- Log in as a normal supplier and confirm admin routes are forbidden.
+
+### Production setup order
+
+1. Configure all Vercel env vars.
+2. Redeploy Vercel.
+3. Apply Nhost/Hasura migrations in order.
+4. Track required Hasura tables.
+5. Confirm Nhost Storage upload works.
+6. Run the verification SQL snippets above.
+7. Smoke test `/hr/dashboard`, `/hr/dashboard/questionnaire`, `/hr/dashboard/documents`, `/hr/dashboard/passport`, `/hr/passport/[token]`, `/hr/buyer/suppliers/[token]`, and `/hr/admin/organizations`.
+
 ## Safe Logging Rules
 
 Allowed categories:
