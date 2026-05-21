@@ -2777,17 +2777,27 @@ Manual QA:
 
 Company Profile combines the authenticated user's current organization record, the optional `company_profiles` row, and a narrow allowlist of questionnaire answers from `question_answers`.
 
+Faza 4.1.3 update: Company Profile, the authenticated Passport/report summary, and the public Passport readiness presentation now share the same company-profile mapping and readiness visual helpers. This prevents Company Profile from showing neutral fallbacks while the Passport/report can already show real values such as industry, country, headquarters, and employee count.
+
 Mapped questionnaire codes:
 
 - `company_reporting_year` -> Reporting year in the questionnaire.
 - `company_period_start` -> Reporting period start date in the questionnaire.
 - `company_period_end` -> Reporting period end date in the questionnaire.
 - `company_legal_name` -> Legal company name.
-- `company_city` + `company_country` -> Location.
-- `company_main_activity` -> Industry.
+- `company_country` -> Country.
+- `company_city` -> City/headquarters.
+- `company_main_activity` -> Industry/main activity.
 - `employees_total_headcount` -> Employee count.
+- `cert_iso_9001`, `cert_iso_14001`, `cert_iso_45001`, `cert_iso_50001`, `cert_esg_rating`, and `cert_industry_specific` -> Key certifications when real questionnaire answers exist.
 
 Organization name still comes from `organizations.name`. Website still comes from `company_profiles.website` because the current `company_basics` taxonomy does not define a website question.
+
+Shared summary behavior:
+
+- `lib/company-profile-summary.ts` normalizes organization fields, company profile fields, and selected questionnaire answers into `organizationName`, `legalCompanyName`, `country`, `city`, `headquarters`, `industry`, `employeeCount`, `website`, `reportingYear`, `reportingPeriodStart`, `reportingPeriodEnd`, `countriesServed`, and `keyCertifications`.
+- Company Profile and Passport/report should use this shared mapper instead of duplicating question-code lookups.
+- Missing fields must remain neutral fallbacks: `Not provided yet`, `Još nije uneseno`, or `Noch nicht angegeben`.
 
 Questionnaire deep-link behavior:
 
@@ -2802,16 +2812,28 @@ Date input behavior:
 - Existing `DD-MM-YYYY` values are normalized to `YYYY-MM-DD` for the date input.
 - Saved date values use `YYYY-MM-DD` where the browser date input is used.
 
+Readiness visual behavior:
+
+- `lib/readiness-visual-state.ts` is the shared visual helper for dashboard and Passport-style readiness indicators.
+- Readiness below `33.333%` uses the red state.
+- Readiness from `33.333%` through `66.666%` uses the yellow/amber state.
+- Readiness above `66.666%` uses the green state.
+- A subtle green glow is applied only when readiness is exactly `100%`.
+- For the current live `31%` example, the dashboard and Passport/report readiness indicators should be red with no glow.
+- PDF export remains a generated document surface; use the same readiness status/score where supported, but do not force browser-only glow effects into PDF output.
+
 Manual QA:
 
-1. Login as a supplier with completed Company Basics / Osnovni podaci answers.
-2. Open `/hr/dashboard/company-profile`.
-3. Confirm legal name, location, industry, and employee count reflect real questionnaire answers where provided.
-4. Confirm missing fields show `Još nije uneseno`/localized fallback, not mock company data.
-5. Click `Ažuriraj u upitniku`.
-6. Confirm `/hr/dashboard/questionnaire?section=company_basics` opens Osnovni podaci, not Energija.
-7. Confirm the reporting-period date questions show date inputs and preserve existing dates after save and refresh.
-8. Repeat quick checks for `/en/dashboard/questionnaire?section=company_basics` and `/de/dashboard/questionnaire?section=company_basics`.
+1. Log in as a supplier with completed Company Basics / Osnovni podaci answers.
+2. Open `/hr/dashboard/questionnaire?section=company_basics`.
+3. Confirm `Osnovni podaci` is selected and completed answers such as legal company name, country, city, industry, employee count, and reporting dates are visible.
+4. Open `/hr/dashboard/company-profile` and confirm real questionnaire/profile values render, including industry, country/headquarters, employee count, and legal company name when answered.
+5. Confirm missing fields show `Još nije uneseno`/localized fallback, not mock company data.
+6. Click `Ažuriraj u upitniku`.
+7. Confirm `/hr/dashboard/questionnaire?section=company_basics` opens Osnovni podaci, not Energija.
+8. Confirm the reporting-period date questions show date inputs and preserve existing dates after save and refresh.
+9. Open `/hr/dashboard/passport` and a valid `/hr/passport/[token]` and confirm readiness colors follow red/yellow/green thresholds.
+10. Repeat quick checks for `/en/dashboard/questionnaire?section=company_basics` and `/de/dashboard/questionnaire?section=company_basics`.
 
 ## Safe Logging Rules
 

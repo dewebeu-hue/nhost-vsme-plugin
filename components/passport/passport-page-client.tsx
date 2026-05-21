@@ -51,6 +51,7 @@ import {
   createPassportReadinessModules,
   createPassportSectionSummaries,
 } from "@/lib/passport-summary";
+import { buildCompanyProfileSummary } from "@/lib/company-profile-summary";
 
 type SupplierPassportPayload = {
   configured?: boolean;
@@ -513,25 +514,19 @@ function createCompanyProfile(
   questionnaire: QuestionnairePayload,
   labels: PassportLabels,
 ): PassportCompanyProfile {
-  const answersByCode = mapAnswersByQuestionCode(questionnaire);
-  const industry = readAnswerText(answersByCode.get("company_main_activity")) || organization.industry;
-  const employeeCount =
-    readAnswerText(answersByCode.get("employees_total_headcount")) ||
-    organization.employee_count_range;
-  const city = readAnswerText(answersByCode.get("company_city")) || organization.headquarters_city;
-  const country =
-    readAnswerText(answersByCode.get("company_country")) || organization.headquarters_country;
-  const countries = organization.countries_served?.filter(Boolean) ?? [];
-  const certifications = createCertificationList(answersByCode);
+  const summary = buildCompanyProfileSummary({
+    organization,
+    answersByCode: mapAnswerValuesByQuestionCode(questionnaire),
+  });
 
   return {
-    name: organization.name || labels.notProvided,
+    name: summary.organizationName || labels.notProvided,
     verified: organization.is_verified,
-    industries: industry ? [industry] : [],
-    countriesServed: countries.length ? countries.join(", ") : labels.notProvided,
-    employeeCount: employeeCount ? String(employeeCount) : labels.notProvided,
-    headquarters: [city, country].filter(Boolean).join(", ") || labels.notProvided,
-    certifications,
+    industries: summary.industry ? [summary.industry] : [],
+    countriesServed: summary.countriesServed || labels.notProvided,
+    employeeCount: summary.employeeCount || labels.notProvided,
+    headquarters: summary.headquarters || labels.notProvided,
+    certifications: summary.keyCertifications,
   };
 }
 
@@ -591,36 +586,12 @@ function mapAnswersByQuestionCode(questionnaire: QuestionnairePayload) {
   return answersByCode;
 }
 
-function createCertificationList(answersByCode: Map<string, QuestionAnswerRecord>) {
-  const certificationCodes = [
-    ["cert_iso_9001", "ISO 9001"],
-    ["cert_iso_14001", "ISO 14001"],
-    ["cert_iso_45001", "ISO 45001"],
-    ["cert_iso_50001", "ISO 50001"],
-  ] as const;
-  const certifications = certificationCodes
-    .filter(([code]) => answersByCode.get(code)?.value === true)
-    .map(([, label]) => label);
-  const otherRating = readAnswerText(answersByCode.get("cert_esg_rating"));
-  const industrySpecific = readAnswerText(answersByCode.get("cert_industry_specific"));
+function mapAnswerValuesByQuestionCode(questionnaire: QuestionnairePayload) {
+  const answersByCode = mapAnswersByQuestionCode(questionnaire);
 
-  return [...certifications, otherRating, industrySpecific].filter(
-    (value): value is string => Boolean(value),
+  return new Map(
+    Array.from(answersByCode.entries()).map(([code, answer]) => [code, answer.value]),
   );
-}
-
-function readAnswerText(answer: QuestionAnswerRecord | undefined) {
-  const value = answer?.value;
-
-  if (typeof value === "string") {
-    return value.trim();
-  }
-
-  if (typeof value === "number") {
-    return String(value);
-  }
-
-  return "";
 }
 
 type ShareLinkFormValues = {

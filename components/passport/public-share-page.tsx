@@ -14,6 +14,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { PublicPdfDownloadButton } from "@/components/passport/public-pdf-download-button";
 import type { publicSharePassport } from "@/lib/mock-data";
+import { getReadinessVisualState } from "@/lib/readiness-visual-state";
+import { cn } from "@/lib/utils";
 
 type PublicSharePageProps = {
   locale: string;
@@ -56,6 +58,7 @@ export function PublicSharePage({ locale, passport, token }: PublicSharePageProp
   const readinessSections = passport.sections.filter((section) => section.title !== "Evidence summary");
   const readinessLevel = getReadinessLevel(passport.readinessScore);
   const certificateStatus = getCertificateStatusLabel(passport.certificateStatus, t);
+  const readinessVisualState = getReadinessVisualState(passport.readinessScore);
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-950">
@@ -163,9 +166,29 @@ export function PublicSharePage({ locale, passport, token }: PublicSharePageProp
         </section>
 
         <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
-          <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm shadow-slate-200/70">
+          <div
+            className={cn(
+              "rounded-3xl border bg-white p-6 shadow-sm shadow-slate-200/70",
+              readinessVisualState.cardClassName,
+              readinessVisualState.isComplete && "shadow-[0_0_28px_rgba(16,185,129,0.24)]",
+            )}
+          >
             <div className="flex flex-col gap-6 lg:flex-row lg:items-center">
-              <ProgressRing value={passport.readinessScore} label={t("readinessScore")} size={156} />
+              <ProgressRing
+                value={passport.readinessScore}
+                label={t("readinessScore")}
+                size={156}
+                trackClassName={readinessVisualState.trackClassName}
+                progressClassName={readinessVisualState.progressClassName}
+                valueClassName={readinessVisualState.valueClassName}
+                labelClassName={readinessVisualState.labelClassName}
+                className={cn(
+                  "rounded-full bg-white",
+                  readinessVisualState.isComplete
+                    ? "shadow-[0_0_22px_rgba(16,185,129,0.3)]"
+                    : "shadow-sm",
+                )}
+              />
               <div className="grid flex-1 gap-4 md:grid-cols-2">
                 <InfoBlock
                   label={t("readinessStatus")}
@@ -207,7 +230,12 @@ export function PublicSharePage({ locale, passport, token }: PublicSharePageProp
             <p className="mt-3 text-sm leading-7 text-slate-600">
               {t("readinessScoreExplanation")}
             </p>
-            <div className="mt-5 rounded-2xl bg-teal-50 p-4 text-sm font-semibold text-teal-800">
+            <div
+              className={cn(
+                "mt-5 rounded-2xl p-4 text-sm font-semibold",
+                readinessVisualState.footerClassName,
+              )}
+            >
               {translateReadinessLevel(readinessLevel, t)}
             </div>
           </div>

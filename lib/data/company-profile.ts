@@ -1,5 +1,10 @@
 import "server-only";
 
+import {
+  buildCompanyProfileSummary,
+  companyProfileSummaryQuestionCodes,
+  type CompanySummaryOrganization,
+} from "@/lib/company-profile-summary";
 import { getNhostAdminSecret, getNhostGraphqlUrl } from "@/lib/nhost/config";
 
 export type CompanyProfileBasics = {
@@ -9,14 +14,8 @@ export type CompanyProfileBasics = {
   trade_name: string | null;
   website: string | null;
   industries: string[] | null;
-};
-
-export type CompanyQuestionnaireProfile = {
-  legalName: string | null;
-  locationCity: string | null;
-  locationCountry: string | null;
-  industry: string | null;
-  employeeCount: string | null;
+  employee_count_range?: string | null;
+  countries_served?: string[] | null;
 };
 
 type GraphqlResponse<T> = {
@@ -44,14 +43,6 @@ type CompanyProfileQuestionItemRecord = {
   }>;
 };
 
-const companyProfileQuestionCodes = [
-  "company_legal_name",
-  "company_country",
-  "company_city",
-  "company_main_activity",
-  "employees_total_headcount",
-] as const;
-
 const companyProfileQuery = `
   query CompanyProfile($organizationId: uuid!, $questionCodes: [String!]!) {
     company_profiles(where: { organization_id: { _eq: $organizationId } }, limit: 1) {
@@ -61,6 +52,8 @@ const companyProfileQuery = `
       trade_name
       website
       industries
+      employee_count_range
+      countries_served
     }
     question_items(where: { code: { _in: $questionCodes } }, order_by: { sort_order: asc }) {
       code
@@ -75,7 +68,10 @@ const companyProfileQuery = `
   }
 `;
 
-export async function getCompanyProfileForOrganization(organizationId: string) {
+export async function getCompanyProfileForOrganization(
+  organizationId: string,
+  organization?: CompanySummaryOrganization | null,
+) {
   const graphqlUrl = getNhostGraphqlUrl();
   const adminSecret = getNhostAdminSecret();
 
@@ -91,7 +87,7 @@ export async function getCompanyProfileForOrganization(organizationId: string) {
     },
     body: JSON.stringify({
       query: companyProfileQuery,
-      variables: { organizationId, questionCodes: companyProfileQuestionCodes },
+      variables: { organizationId, questionCodes: companyProfileSummaryQuestionCodes },
     }),
     cache: "no-store",
   });
@@ -114,14 +110,16 @@ export async function getCompanyProfileForOrganization(organizationId: string) {
 
   return {
     profile: data.company_profiles[0] ?? null,
-    questionnaire: mapQuestionnaireProfile(data.question_items),
+    summary: buildCompanyProfileSummary({
+      organization: organization ?? null,
+      profile: data.company_profiles[0] ?? null,
+      answersByCode: mapQuestionnaireAnswersByCode(data.question_items),
+    }),
   };
 }
 
-function mapQuestionnaireProfile(
-  items: CompanyProfileQuestionItemRecord[],
-): CompanyQuestionnaireProfile {
-  const answersByCode = new Map<string, string>();
+function mapQuestionnaireAnswersByCode(items: CompanyProfileQuestionItemRecord[]) {
+  const answersByCode = new Map<string, unknown>();
 
   for (const item of items) {
     const answer = item.question_answers[0];
@@ -130,48 +128,10 @@ function mapQuestionnaireProfile(
       continue;
     }
 
-    const value = formatCompanyProfileAnswer(answer.value);
-
-    if (value) {
-      answersByCode.set(item.code, value);
+    if (answer.value !== null && answer.value !== undefined) {
+      answersByCode.set(item.code, answer.value);
     }
   }
 
-  return {
-    legalName: answersByCode.get("company_legal_name") ?? null,
-    locationCity: answersByCode.get("company_city") ?? null,
-    locationCountry: answersByCode.get("company_country") ?? null,
-    industry: answersByCode.get("company_main_activity") ?? null,
-    employeeCount: answersByCode.get("employees_total_headcount") ?? null,
-  };
-}
-
-function formatCompanyProfileAnswer(value: GraphqlJson): string {
-  if (typeof value === "string") {
-    return value.trim();
-  }
-
-  if (typeof value === "number") {
-    return Number.isFinite(value) ? String(value) : "";
-  }
-
-  if (typeof value === "boolean") {
-    return value ? "Yes" : "No";
-  }
-
-  if (Array.isArray(value)) {
-    return value
-      .map(formatCompanyProfileAnswer)
-      .filter(Boolean)
-      .join(", ");
-  }
-
-  if (value && typeof value === "object") {
-    const record = value as Record<string, GraphqlJson>;
-    const displayValue = record.label ?? record.value ?? record.name ?? record.title;
-
-    return formatCompanyProfileAnswer(displayValue ?? null);
-  }
-
-  return "";
+  return answersByCode;
 }

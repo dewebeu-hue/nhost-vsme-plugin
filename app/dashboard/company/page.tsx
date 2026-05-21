@@ -34,29 +34,14 @@ export async function CompanyProfilePageContent({
     ? await getPrimaryOrganizationForUserWithAdmin(user.id).catch(() => null)
     : null;
   const companyProfile = organization
-    ? await getCompanyProfileForOrganization(organization.id).catch(() => null)
+    ? await getCompanyProfileForOrganization(organization.id, organization).catch(() => null)
     : null;
-  const profile = companyProfile?.profile ?? null;
-  const questionnaireProfile = companyProfile?.questionnaire ?? null;
+  const profileSummary = companyProfile?.summary ?? null;
 
-  const legalName =
-    questionnaireProfile?.legalName ||
-    profile?.legal_name ||
-    organization?.name ||
-    "";
-  const industry =
-    questionnaireProfile?.industry ||
-    organization?.industry ||
-    profile?.industries?.filter(Boolean).join(", ") ||
-    "";
-  const location = [
-    questionnaireProfile?.locationCity || organization?.headquarters_city,
-    questionnaireProfile?.locationCountry || organization?.headquarters_country,
-  ]
-    .filter(Boolean)
-    .join(", ");
-  const employeeCount =
-    questionnaireProfile?.employeeCount || organization?.employee_count_range || "";
+  const legalName = profileSummary?.legalCompanyName || "";
+  const industry = profileSummary?.industry || "";
+  const location = profileSummary?.headquarters || "";
+  const employeeCount = profileSummary?.employeeCount || "";
 
   return (
     <div className="mx-auto w-full max-w-7xl">
@@ -80,7 +65,7 @@ export async function CompanyProfilePageContent({
       <section className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
         <ProfileCard
           title={labels.organizationName}
-          value={organization?.name}
+          value={profileSummary?.organizationName}
           description={labels.workspace}
           fallback={labels.notProvided}
           icon={Building2}
@@ -115,7 +100,7 @@ export async function CompanyProfilePageContent({
         />
         <ProfileCard
           title={labels.website}
-          value={profile?.website}
+          value={profileSummary?.website}
           description={labels.supplierProfile}
           fallback={labels.notProvided}
           icon={Globe2}
