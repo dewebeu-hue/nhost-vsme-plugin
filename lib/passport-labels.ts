@@ -2,6 +2,7 @@ export type PassportLabels = {
   title: string;
   subtitle: string;
   generatePassport: string;
+  generatingPassport: string;
   createShareLink: string;
   exportPdf: string;
   exportPdfGenerating: string;
@@ -75,6 +76,9 @@ export type PassportLabels = {
   creatingLink: string;
   generatedLink: string;
   copyLink: string;
+  copyingLink: string;
+  linkCopied: string;
+  copyError: string;
   openShareLink: string;
   shareLinkSuccess: string;
   shareLinkError: string;
@@ -97,6 +101,7 @@ export const defaultPassportLabels: PassportLabels = {
   subtitle:
     "Review your VSME readiness profile, evidence metadata, and buyer-facing passport before sharing.",
   generatePassport: "Generate Passport",
+  generatingPassport: "Generating Passport...",
   createShareLink: "Create Share Link",
   exportPdf: "Download PDF",
   exportPdfGenerating: "Generating PDF...",
@@ -176,6 +181,9 @@ export const defaultPassportLabels: PassportLabels = {
   creatingLink: "Creating link...",
   generatedLink: "Generated link",
   copyLink: "Copy link",
+  copyingLink: "Copying...",
+  linkCopied: "Link copied.",
+  copyError: "We could not copy the link right now.",
   openShareLink: "Open share link",
   shareLinkSuccess: "Share link created successfully.",
   shareLinkError: "We could not create the share link right now.",

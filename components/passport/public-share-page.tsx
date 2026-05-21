@@ -67,7 +67,7 @@ export function PublicShareAccessState({
 export function PublicSharePage({ locale, passport, token }: PublicSharePageProps) {
   const t = useTranslations("share");
   const [isRequestOpen, setIsRequestOpen] = useState(false);
-  const [copyState, setCopyState] = useState<"idle" | "copied" | "error">("idle");
+  const [copyState, setCopyState] = useState<"idle" | "copying" | "copied" | "error">("idle");
   const evidenceSection = passport.sections.find((section) => section.title === "Evidence summary");
   const readinessSections = passport.sections.filter((section) => section.title !== "Evidence summary");
   const readinessLevel = getReadinessLevel(passport.readinessScore);
@@ -376,25 +376,32 @@ function RequestAdditionalInformationDialog({
   onOpenChange,
 }: {
   open: boolean;
-  copyState: "idle" | "copied" | "error";
+  copyState: "idle" | "copying" | "copied" | "error";
   locale: string;
   token: string;
   supplierName: string;
-  onCopyStateChange: (state: "idle" | "copied" | "error") => void;
+  onCopyStateChange: (state: "idle" | "copying" | "copied" | "error") => void;
   onOpenChange: (open: boolean) => void;
 }) {
   const t = useTranslations("share");
 
   async function handleCopy() {
+    if (copyState === "copying") {
+      return;
+    }
+
     const publicLink = `${window.location.origin}/${locale}/passport/${encodeURIComponent(token)}`;
     const message = t("requestAdditionalInformationMessage", {
       supplierName: supplierName || t("supplierProfile"),
       link: publicLink,
     });
 
+    onCopyStateChange("copying");
+
     try {
       await window.navigator.clipboard.writeText(message);
       onCopyStateChange("copied");
+      window.setTimeout(() => onCopyStateChange("idle"), 2500);
     } catch {
       onCopyStateChange("error");
     }
@@ -428,9 +435,13 @@ function RequestAdditionalInformationDialog({
           <Button type="button" variant="outline" className="bg-white" onClick={() => onOpenChange(false)}>
             {t("cancel")}
           </Button>
-          <Button type="button" onClick={handleCopy}>
+          <Button type="button" disabled={copyState === "copying"} onClick={handleCopy}>
             <ClipboardCopy data-icon="inline-start" />
-            {t("copyRequestMessage")}
+            {copyState === "copying"
+              ? t("copyingRequestMessage")
+              : copyState === "copied"
+                ? t("requestAdditionalInformationCopied")
+                : t("copyRequestMessage")}
           </Button>
         </DialogFooter>
       </DialogContent>

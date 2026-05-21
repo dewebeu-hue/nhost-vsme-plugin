@@ -52,6 +52,8 @@ type FirstCustomerChecklistItem = {
   cta?: string;
 };
 
+type AdminSaveAction = "commercial" | "portfolio" | "onboarding" | "concierge" | "reviewed" | null;
+
 export function AdminOrganizationDetailClient({
   organizationId,
   labels = defaultAdminLabels,
@@ -78,6 +80,8 @@ export function AdminOrganizationDetailClient({
   const [pilotStartDate, setPilotStartDate] = useState("");
   const [pilotTargetDate, setPilotTargetDate] = useState("");
   const [isSaving, setIsSaving] = useState(false);
+  const [savingAction, setSavingAction] = useState<AdminSaveAction>(null);
+  const [isCopyingHandoff, setIsCopyingHandoff] = useState(false);
   const [status, setStatus] = useState<"loading" | "ready" | "unauthorized" | "error">("loading");
   const [message, setMessage] = useState<string | null>(null);
 
@@ -129,6 +133,7 @@ export function AdminOrganizationDetailClient({
     markReviewed = false,
     successMessage = labels.conciergeSaved,
     errorMessage = labels.conciergeSaveError,
+    action: AdminSaveAction = "concierge",
   ) {
     if (!organizationId) {
       setMessage(labels.missingOrganizationContext);
@@ -136,6 +141,7 @@ export function AdminOrganizationDetailClient({
     }
 
     setIsSaving(true);
+    setSavingAction(action);
     setMessage(null);
 
     let response: Response;
@@ -166,12 +172,14 @@ export function AdminOrganizationDetailClient({
       });
     } catch {
       setIsSaving(false);
+      setSavingAction(null);
       setMessage(errorMessage);
       return;
     }
 
     if (!response.ok) {
       setIsSaving(false);
+      setSavingAction(null);
       setMessage(errorMessage);
       return;
     }
@@ -181,22 +189,23 @@ export function AdminOrganizationDetailClient({
     setOrganization((current) => (current ? { ...current, concierge } : current));
     hydrateConciergeForm(concierge);
     setIsSaving(false);
+    setSavingAction(null);
     setMessage(successMessage);
   }
 
   function handlePortfolioSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    void saveAdminSupportState(false, labels.conciergeSaved, labels.conciergeSaveError);
+    void saveAdminSupportState(false, labels.conciergeSaved, labels.conciergeSaveError, "portfolio");
   }
 
   function handleOnboardingSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    void saveAdminSupportState(false, labels.onboardingSaved, labels.onboardingSaveError);
+    void saveAdminSupportState(false, labels.onboardingSaved, labels.onboardingSaveError, "onboarding");
   }
 
   function handleConciergeSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    void saveAdminSupportState(false, labels.conciergeSaved, labels.conciergeSaveError);
+    void saveAdminSupportState(false, labels.conciergeSaved, labels.conciergeSaveError, "concierge");
   }
 
   function handleCommercialSubmit(event: FormEvent<HTMLFormElement>) {
@@ -205,16 +214,21 @@ export function AdminOrganizationDetailClient({
       false,
       labels.commercialClassificationSaved,
       labels.commercialClassificationSaveError,
+      "commercial",
     );
   }
 
   function handleReviewedClick() {
-    void saveAdminSupportState(true, labels.reviewedSaved, labels.reviewedSaveError);
+    void saveAdminSupportState(true, labels.reviewedSaved, labels.reviewedSaveError, "reviewed");
   }
 
   async function handleCopyHandoffSummary() {
     if (!organization) {
       setMessage(labels.missingOrganizationContext);
+      return;
+    }
+
+    if (isCopyingHandoff) {
       return;
     }
 
@@ -224,11 +238,15 @@ export function AdminOrganizationDetailClient({
       locale,
     });
 
+    setIsCopyingHandoff(true);
+
     try {
       await navigator.clipboard.writeText(handoffText);
       setMessage(labels.handoffCopied);
     } catch {
       setMessage(labels.handoffCopyError);
+    } finally {
+      setIsCopyingHandoff(false);
     }
   }
 
@@ -441,9 +459,15 @@ export function AdminOrganizationDetailClient({
             <p className="mt-1 max-w-3xl text-sm leading-6 text-slate-600">{labels.internalUseOnly}</p>
           </div>
           <div className="flex flex-wrap gap-2">
-            <Button type="button" variant="outline" className="admin-secondary-action w-fit rounded-xl bg-white" onClick={handleCopyHandoffSummary}>
+            <Button
+              type="button"
+              variant="outline"
+              className="admin-secondary-action w-fit rounded-xl bg-white"
+              disabled={isCopyingHandoff}
+              onClick={handleCopyHandoffSummary}
+            >
               <ClipboardCopy data-icon="inline-start" />
-              {labels.copyHandoffSummary}
+              {isCopyingHandoff ? labels.copying : labels.copyHandoffSummary}
             </Button>
             <Button type="button" variant="outline" className="admin-secondary-action w-fit rounded-xl bg-white" onClick={handleDownloadHandoffSummary}>
               <Download data-icon="inline-start" />
@@ -681,7 +705,7 @@ export function AdminOrganizationDetailClient({
               </label>
               <Button type="submit" disabled={isSaving} className="w-fit rounded-xl">
                 <Save data-icon="inline-start" />
-                {labels.saveCommercialClassification}
+                {savingAction === "commercial" ? labels.saving : labels.saveCommercialClassification}
               </Button>
               {message ? <p className="text-sm text-slate-600">{message}</p> : null}
             </form>
@@ -727,7 +751,7 @@ export function AdminOrganizationDetailClient({
                 className="w-fit rounded-xl"
               >
                 <Save data-icon="inline-start" />
-                {labels.assistedPortfolio}
+                {savingAction === "portfolio" ? labels.saving : labels.assistedPortfolio}
               </Button>
               {message ? <p className="text-sm text-slate-600">{message}</p> : null}
             </form>
@@ -809,7 +833,7 @@ export function AdminOrganizationDetailClient({
                 className="w-fit rounded-xl"
               >
                 <Save data-icon="inline-start" />
-                {labels.saveOnboardingDetails}
+                {savingAction === "onboarding" ? labels.saving : labels.saveOnboardingDetails}
               </Button>
               {message ? <p className="text-sm text-slate-600">{message}</p> : null}
             </form>
@@ -908,7 +932,7 @@ export function AdminOrganizationDetailClient({
                   className="w-fit rounded-xl"
                 >
                   <Save data-icon="inline-start" />
-                  {labels.saveConciergeStatus}
+                  {savingAction === "concierge" ? labels.saving : labels.saveConciergeStatus}
                 </Button>
                 <Button
                   type="button"
@@ -917,7 +941,7 @@ export function AdminOrganizationDetailClient({
                   variant="outline"
                   className="admin-secondary-action w-fit rounded-xl bg-white"
                 >
-                  {labels.markReviewed}
+                  {savingAction === "reviewed" ? labels.saving : labels.markReviewed}
                 </Button>
               </div>
               <div className="rounded-xl bg-slate-50 p-3">

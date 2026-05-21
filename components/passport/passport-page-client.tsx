@@ -144,6 +144,8 @@ type MessageState = {
   text: string;
 };
 
+type CopyState = "idle" | "copying" | "copied" | "error";
+
 type PassportPageClientProps = {
   labels?: PassportLabels;
 };
@@ -405,7 +407,7 @@ export function PassportPageClient({
             onClick={handleGeneratePassport}
           >
             <Sparkles data-icon="inline-start" />
-            {isGenerating ? labels.generatePassport : labels.generatePassport}
+            {isGenerating ? labels.generatingPassport : labels.generatePassport}
           </Button>
           <Button
             variant="outline"
@@ -626,6 +628,7 @@ function CreateShareLinkDialog({
   onOpenChange: (open: boolean) => void;
   onSubmit: (values: ShareLinkFormValues) => Promise<void>;
 }) {
+  const [copyState, setCopyState] = useState<CopyState>("idle");
   const [buyerName, setBuyerName] = useState("");
   const [buyerEmail, setBuyerEmail] = useState("");
   const [expiresAt, setExpiresAt] = useState("");
@@ -643,6 +646,22 @@ function CreateShareLinkDialog({
       password: passwordProtected ? password : "",
       documentVisibility,
     });
+  }
+
+  async function handleCopyShareUrl() {
+    if (!shareUrl || copyState === "copying") {
+      return;
+    }
+
+    setCopyState("copying");
+
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      setCopyState("copied");
+      window.setTimeout(() => setCopyState("idle"), 2500);
+    } catch {
+      setCopyState("error");
+    }
   }
 
   return (
@@ -685,10 +704,23 @@ function CreateShareLinkDialog({
                 <p className="text-sm font-semibold text-teal-900">{labels.generatedLink}</p>
                 <div className="mt-2 flex flex-col gap-2 sm:flex-row">
                   <Input readOnly value={shareUrl} className="bg-white" />
-                  <Button type="button" variant="outline" className="bg-white" onClick={() => navigator.clipboard?.writeText(shareUrl)}>
-                    {labels.copyLink}
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="bg-white"
+                    disabled={copyState === "copying"}
+                    onClick={handleCopyShareUrl}
+                  >
+                    {copyState === "copying"
+                      ? labels.copyingLink
+                      : copyState === "copied"
+                        ? labels.linkCopied
+                        : labels.copyLink}
                   </Button>
                 </div>
+                {copyState === "error" ? (
+                  <p className="mt-2 text-sm font-medium text-red-700">{labels.copyError}</p>
+                ) : null}
               </div>
             ) : null}
           </div>

@@ -62,6 +62,7 @@ export type BuyerRequestLabels = {
   responsePackage: string;
   prepareResponse: string;
   copyResponseNote: string;
+  copying: string;
   responseNoteCopied: string;
   createPublicLinkFirst: string;
   requestLooksReady: string;
@@ -172,6 +173,7 @@ export const defaultBuyerRequestLabels: BuyerRequestLabels = {
   responsePackage: "Response package",
   prepareResponse: "Prepare response",
   copyResponseNote: "Copy response note",
+  copying: "Copying...",
   responseNoteCopied: "Response note copied",
   createPublicLinkFirst: "Create public link first",
   requestLooksReady: "This request looks ready to share.",

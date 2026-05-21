@@ -3733,3 +3733,25 @@ Manual QA:
 7. Use buyer portal and compare routes; token pages should show skeletons instead of blank pages during loading.
 8. Start the guided tour and move across dashboard, questionnaire, documents, Passport, and share routes.
 9. Confirm no internal click causes a full browser reload unless it intentionally opens an external destination.
+
+## Faza 4.3 Client Action Feedback Checklist
+
+Use this checklist when polishing async client actions so the interface does not feel frozen or dead.
+
+- Save, upload, link, copy, PDF, share-link, buyer-request, and admin actions should disable the active control while pending.
+- Pending labels should be localized, for example `Saving...` / `Spremanje...`, `Copying...` / `Kopiranje...`, and `Generating PDF...` / `Generiranje PDF-a...`.
+- Successful copy actions may update immediately because clipboard feedback is local and low-risk.
+- Uploads, evidence links, share-link mutations, PDF generation, and admin saves should only show success after the browser receives a successful response.
+- Failed actions should keep the current page and user input visible, then show safe localized copy without raw server errors, stack traces, tokens, private URLs, or storage IDs.
+- Buttons that trigger client-side actions should use `type="button"` unless they intentionally submit a form.
+- Do not clear the entire page for small actions; keep existing content visible and update only the relevant button/message area.
+
+Manual QA:
+
+1. Save questionnaire answers and double-click Save; confirm only one pending state is visible and answers remain on failure.
+2. Upload a document and link evidence; confirm pending states do not blank the documents page.
+3. Create and copy a share link; confirm copied/error feedback appears.
+4. Generate/download Passport PDFs from supplier and public pages; confirm generating/downloading labels and safe errors.
+5. Copy the public request-information message and buyer request response note; confirm copied feedback and no private URL/storage ID in copied text.
+6. Save admin commercial, portfolio, onboarding, concierge, and reviewed fields; confirm the active button shows saving feedback.
+7. Toggle admin dark mode and use local filters/search; confirm local UI updates without a page-wide reload.

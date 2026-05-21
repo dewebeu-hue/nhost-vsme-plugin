@@ -46,6 +46,8 @@ export type AdminLabels = {
   unauthorizedTitle: string;
   unauthorizedDescription: string;
   loading: string;
+  saving: string;
+  copying: string;
   loadError: string;
   retry: string;
   searchPlaceholder: string;
@@ -373,6 +375,8 @@ export const defaultAdminLabels: AdminLabels = {
   unauthorizedTitle: "You do not have access to this admin workspace.",
   unauthorizedDescription: "Sign in with an allowlisted admin account to use the concierge workspace.",
   loading: "Loading...",
+  saving: "Saving...",
+  copying: "Copying...",
   loadError: "We could not load admin data right now.",
   retry: "Retry",
   searchPlaceholder: "Search organizations, owners, or domains...",

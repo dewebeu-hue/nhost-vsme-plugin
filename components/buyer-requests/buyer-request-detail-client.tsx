@@ -66,6 +66,7 @@ export function BuyerRequestDetailClient({
   const [selectedSections, setSelectedSections] = useState<BuyerRequestSectionCode[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [isCopyingResponseNote, setIsCopyingResponseNote] = useState(false);
   const [message, setMessage] = useState<MessageState | null>(null);
   const currentStatus = status;
   const readinessSummary = useMemo(
@@ -175,7 +176,7 @@ export function BuyerRequestDetailClient({
   }
 
   async function handleCopyResponseNote() {
-    if (!request) {
+    if (!request || isCopyingResponseNote) {
       return;
     }
 
@@ -190,11 +191,15 @@ export function BuyerRequestDetailClient({
       publicUrl,
     });
 
+    setIsCopyingResponseNote(true);
+
     try {
       await navigator.clipboard.writeText(note);
       setMessage({ tone: "success", text: labels.responseNoteCopied });
     } catch {
       setMessage({ tone: "error", text: labels.updateError });
+    } finally {
+      setIsCopyingResponseNote(false);
     }
   }
 
@@ -557,9 +562,15 @@ export function BuyerRequestDetailClient({
               <ActionLink href={`/${locale}/dashboard/passport`} label={labels.downloadPdfDraft} />
             </div>
             <p className="mt-4 text-sm leading-6 text-slate-500">{labels.downloadPdfHint}</p>
-            <Button type="button" variant="outline" className="mt-4 w-full bg-white" onClick={handleCopyResponseNote}>
+            <Button
+              type="button"
+              variant="outline"
+              className="mt-4 w-full bg-white"
+              disabled={isCopyingResponseNote}
+              onClick={handleCopyResponseNote}
+            >
               <Copy data-icon="inline-start" />
-              {labels.copyResponseNote}
+              {isCopyingResponseNote ? labels.copying : labels.copyResponseNote}
             </Button>
           </section>
         </aside>
