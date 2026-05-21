@@ -9,6 +9,8 @@ type CompanyProfilePageProps = {
   params: Promise<{ locale: string }>;
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function CompanyProfilePage({ params }: CompanyProfilePageProps) {
   const { locale } = await params;
   setRequestLocale(locale);

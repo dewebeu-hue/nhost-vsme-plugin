@@ -206,7 +206,7 @@ function renderAnswerControl(
       <div className="flex max-w-md items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700 shadow-sm">
         <CalendarDays aria-hidden="true" className="size-4 text-blue-600" />
         <Input
-          type="text"
+          type="date"
           value={question.value}
           onChange={(event) => onValueChange?.(question.id, event.target.value)}
           readOnly={!onValueChange}

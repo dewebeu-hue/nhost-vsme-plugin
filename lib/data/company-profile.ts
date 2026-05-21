@@ -26,7 +26,7 @@ type GraphqlResponse<T> = {
 
 type CompanyProfileResponse = {
   company_profiles: CompanyProfileBasics[];
-  question_answers: CompanyProfileAnswerRecord[];
+  question_items: CompanyProfileQuestionItemRecord[];
 };
 
 type GraphqlJson =
@@ -37,11 +37,11 @@ type GraphqlJson =
   | GraphqlJson[]
   | { [key: string]: GraphqlJson };
 
-type CompanyProfileAnswerRecord = {
-  value: GraphqlJson;
-  question_item?: {
-    code: string;
-  } | null;
+type CompanyProfileQuestionItemRecord = {
+  code: string;
+  question_answers: Array<{
+    value: GraphqlJson;
+  }>;
 };
 
 const companyProfileQuestionCodes = [
@@ -62,16 +62,14 @@ const companyProfileQuery = `
       website
       industries
     }
-    question_answers(
-      where: {
-        organization_id: { _eq: $organizationId }
-        question_item: { code: { _in: $questionCodes } }
-      }
-      order_by: { updated_at: desc }
-    ) {
-      value
-      question_item {
-        code
+    question_items(where: { code: { _in: $questionCodes } }, order_by: { sort_order: asc }) {
+      code
+      question_answers(
+        where: { organization_id: { _eq: $organizationId } }
+        order_by: { updated_at: desc }
+        limit: 1
+      ) {
+        value
       }
     }
   }
@@ -116,26 +114,26 @@ export async function getCompanyProfileForOrganization(organizationId: string) {
 
   return {
     profile: data.company_profiles[0] ?? null,
-    questionnaire: mapQuestionnaireProfile(data.question_answers),
+    questionnaire: mapQuestionnaireProfile(data.question_items),
   };
 }
 
 function mapQuestionnaireProfile(
-  answers: CompanyProfileAnswerRecord[],
+  items: CompanyProfileQuestionItemRecord[],
 ): CompanyQuestionnaireProfile {
   const answersByCode = new Map<string, string>();
 
-  for (const answer of answers) {
-    const code = answer.question_item?.code;
+  for (const item of items) {
+    const answer = item.question_answers[0];
 
-    if (!code || answersByCode.has(code)) {
+    if (!answer || answersByCode.has(item.code)) {
       continue;
     }
 
     const value = formatCompanyProfileAnswer(answer.value);
 
     if (value) {
-      answersByCode.set(code, value);
+      answersByCode.set(item.code, value);
     }
   }
 

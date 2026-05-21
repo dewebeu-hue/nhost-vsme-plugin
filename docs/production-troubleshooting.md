@@ -2779,6 +2779,9 @@ Company Profile combines the authenticated user's current organization record, t
 
 Mapped questionnaire codes:
 
+- `company_reporting_year` -> Reporting year in the questionnaire.
+- `company_period_start` -> Reporting period start date in the questionnaire.
+- `company_period_end` -> Reporting period end date in the questionnaire.
 - `company_legal_name` -> Legal company name.
 - `company_city` + `company_country` -> Location.
 - `company_main_activity` -> Industry.
@@ -2791,6 +2794,13 @@ Questionnaire deep-link behavior:
 - Company Profile's update button links to `/[locale]/dashboard/questionnaire?section=company_basics`.
 - The questionnaire opens Company Basics / Osnovni podaci / Unternehmensdaten for `section=company_basics`.
 - Invalid section parameters fall back to the first live questionnaire section instead of crashing.
+- The localized Company Profile pages are dynamic routes so they can read the current authenticated supplier organization instead of serving a prerendered neutral state.
+
+Date input behavior:
+
+- `company_period_start` and `company_period_end` render as HTML date inputs.
+- Existing `DD-MM-YYYY` values are normalized to `YYYY-MM-DD` for the date input.
+- Saved date values use `YYYY-MM-DD` where the browser date input is used.
 
 Manual QA:
 
@@ -2800,7 +2810,8 @@ Manual QA:
 4. Confirm missing fields show `Još nije uneseno`/localized fallback, not mock company data.
 5. Click `Ažuriraj u upitniku`.
 6. Confirm `/hr/dashboard/questionnaire?section=company_basics` opens Osnovni podaci, not Energija.
-7. Repeat quick checks for `/en/dashboard/questionnaire?section=company_basics` and `/de/dashboard/questionnaire?section=company_basics`.
+7. Confirm the reporting-period date questions show date inputs and preserve existing dates after save and refresh.
+8. Repeat quick checks for `/en/dashboard/questionnaire?section=company_basics` and `/de/dashboard/questionnaire?section=company_basics`.
 
 ## Safe Logging Rules
 

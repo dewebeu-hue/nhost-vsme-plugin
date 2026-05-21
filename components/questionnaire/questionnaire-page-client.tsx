@@ -1031,7 +1031,7 @@ function mapLiveQuestions(
         prompt,
         status,
         type: "date",
-        value: typeof value === "string" ? value : "",
+        value: typeof value === "string" ? normalizeDateInputValue(value) : "",
       };
     }
 
@@ -1157,6 +1157,14 @@ function applyValueToQuestion(
     return { ...question, status, value: value === false ? "No" : "Yes" };
   }
 
+  if (question.type === "date") {
+    return {
+      ...question,
+      status,
+      value: typeof value === "string" ? normalizeDateInputValue(value) : "",
+    };
+  }
+
   return { ...question, status, value: typeof value === "string" ? value : String(value) };
 }
 
@@ -1174,6 +1182,10 @@ function normalizeAnswerValue(
 
   if (question.answer_type === "multi_select") {
     return Array.isArray(value) ? value.filter(isString) : [];
+  }
+
+  if (question.answer_type === "date") {
+    return typeof value === "string" ? normalizeDateInputValue(value) : "";
   }
 
   return typeof value === "string" || typeof value === "number" ? String(value) : "";
@@ -1235,6 +1247,10 @@ function serializeAnswerValue(question: QuestionItemRecord, value: AnswerValue):
 
   if (question.answer_type === "multi_select") {
     return Array.isArray(value) ? value.filter(isString) : [];
+  }
+
+  if (question.answer_type === "date") {
+    return typeof value === "string" ? normalizeDateInputValue(value) || null : null;
   }
 
   return typeof value === "string" ? value : String(value);
@@ -1303,6 +1319,39 @@ function normalizeSectionCode(value: string | undefined) {
   const trimmed = value.trim();
 
   return /^[a-z0-9_ -]+$/i.test(trimmed) ? trimmed : null;
+}
+
+function normalizeDateInputValue(value: string) {
+  const trimmed = value.trim();
+
+  if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) {
+    return isValidCalendarDate(trimmed) ? trimmed : "";
+  }
+
+  const dayMonthYear = /^(\d{2})-(\d{2})-(\d{4})$/.exec(trimmed);
+
+  if (dayMonthYear) {
+    const [, day, month, year] = dayMonthYear;
+    if (!day || !month || !year) {
+      return "";
+    }
+
+    const normalized = `${year}-${month}-${day}`;
+
+    return isValidCalendarDate(normalized) ? normalized : "";
+  }
+
+  return "";
+}
+
+function isValidCalendarDate(value: string) {
+  const date = new Date(`${value}T00:00:00.000Z`);
+
+  if (Number.isNaN(date.getTime())) {
+    return false;
+  }
+
+  return date.toISOString().slice(0, 10) === value;
 }
 
 function linkedDocumentsForAnswer(answerId: string, links: DocumentLinkRecord[]) {
