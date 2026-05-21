@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Logo } from "@/components/brand/logo";
 import { AdminNavItem } from "@/components/admin/admin-nav-item";
@@ -39,12 +40,12 @@ export function AdminSidebar({
               />
             ))}
           </nav>
-          <a
+          <Link
             href={`${localePrefix}/dashboard`}
             className="admin-ghost-link mt-4 flex rounded-xl px-3 py-2.5 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-950"
           >
             {labels.backToDashboard}
-          </a>
+          </Link>
         </div>
 
         <section className="mt-auto rounded-2xl border border-slate-200 bg-slate-50 p-4">

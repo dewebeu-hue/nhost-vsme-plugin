@@ -3709,3 +3709,27 @@ Never log:
 - raw file ids
 - storage paths
 - admin secrets
+
+## Faza 4.3 Navigation Smoothness Checklist
+
+Use this checklist when investigating visible page flicker, full reloads, or heavy navigation.
+
+- Internal app navigation should use `next/link` or `router.push` / `router.replace`, not plain anchors or `window.location.assign`.
+- Buttons should use `type="button"` by default. Use `type="submit"` only for intentional form submits.
+- Dashboard and admin shell layouts should not use unstable keys such as `key={pathname}`, `Date.now()`, or `Math.random()`.
+- Dynamic dashboard, admin, buyer, and public token routes should have lightweight `loading.tsx` skeletons so users do not see blank transitions.
+- Authenticated organization-specific fetches may remain `no-store`; do not cache private supplier, admin, document, or token-scoped data publicly.
+- Client save/upload/copy actions should keep existing content visible and disable only the active control while pending.
+- Guided tour route steps should keep the tooltip visible while the next target is loading and should remeasure targets after route changes, async renders, scroll, and resize.
+
+Manual QA:
+
+1. Navigate between dashboard sidebar routes and confirm the sidebar/topbar stay visually stable.
+2. Open questionnaire, switch sections, and save answers without a full document reload.
+3. Open documents and use upload/link actions; pending states should not blank the page.
+4. Navigate Passport, share, and PDF actions; route transitions should show skeletons where needed.
+5. Navigate admin organization list, organization detail, and risks; admin shell should remain stable.
+6. Use the admin dark mode toggle and confirm it does not reload the document.
+7. Use buyer portal and compare routes; token pages should show skeletons instead of blank pages during loading.
+8. Start the guided tour and move across dashboard, questionnaire, documents, Passport, and share routes.
+9. Confirm no internal click causes a full browser reload unless it intentionally opens an external destination.

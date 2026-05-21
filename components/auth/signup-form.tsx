@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { ArrowRight } from "lucide-react";
 import { AuthStatusMessage } from "@/components/auth/auth-status-message";
@@ -23,6 +24,7 @@ type SafeAuthError = {
 
 export function SignupForm() {
   const locale = useLocale();
+  const router = useRouter();
   const t = useTranslations("auth.signup");
   const [message, setMessage] = useState<MessageState | null>(() =>
     getBrowserNhostClient() && isAuthEndpointConfigured()
@@ -108,7 +110,7 @@ export function SignupForm() {
           text: t("success"),
         });
         window.sessionStorage.setItem("supplier-passport:onboarding-company", companyName);
-        window.location.assign(`/${locale}/onboarding`);
+        router.replace(`/${locale}/onboarding`);
         return;
       }
 

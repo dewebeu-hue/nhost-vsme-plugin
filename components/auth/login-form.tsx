@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { ArrowRight } from "lucide-react";
 import { AuthStatusMessage } from "@/components/auth/auth-status-message";
@@ -24,6 +25,7 @@ type AuthSession = {
 
 export function LoginForm() {
   const locale = useLocale();
+  const router = useRouter();
   const t = useTranslations("auth.login");
   const [message, setMessage] = useState<MessageState | null>(() =>
     getBrowserNhostClient()
@@ -80,7 +82,7 @@ export function LoginForm() {
         }
 
         setMessage({ tone: "success", text: t("success") });
-        window.location.assign(destination.href);
+        router.replace(destination.href);
         return;
       }
 
