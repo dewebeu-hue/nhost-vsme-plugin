@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { ArrowLeft, ArrowRight, HelpCircle, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -413,75 +413,11 @@ export function SupplierOnboardingTour({ locale, labels }: SupplierOnboardingTou
         <>
           <TourOverlay targetRect={targetRect} />
           {targetRect ? (
-            <>
-              <div
-                aria-hidden="true"
-                className="pointer-events-none fixed z-[61]"
-                style={getSpotlightGlowStyle(targetRect)}
-              >
-                <svg
-                  className="tour-spotlight-svg size-full overflow-visible"
-                  width="100%"
-                  height="100%"
-                  viewBox={`0 0 ${targetRect.width + 20} ${targetRect.height + 20}`}
-                  preserveAspectRatio="none"
-                >
-                  <defs>
-                    <linearGradient id="tour-spotlight-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#6EA8FF" />
-                      <stop offset="45%" stopColor="#7CF0D2" />
-                      <stop offset="72%" stopColor="#B8D8FF" />
-                      <stop offset="100%" stopColor="#6EA8FF" />
-                      <animateTransform
-                        attributeName="gradientTransform"
-                        type="rotate"
-                        from={`0 ${(targetRect.width + 20) / 2} ${(targetRect.height + 20) / 2}`}
-                        to={`360 ${(targetRect.width + 20) / 2} ${(targetRect.height + 20) / 2}`}
-                        dur="4.8s"
-                        repeatCount="indefinite"
-                      />
-                    </linearGradient>
-                  </defs>
-                  <rect
-                    x="10"
-                    y="10"
-                    width={Math.max(0, targetRect.width)}
-                    height={Math.max(0, targetRect.height)}
-                    rx={getSvgBorderRadius(targetRect.borderRadius)}
-                    ry={getSvgBorderRadius(targetRect.borderRadius)}
-                    fill="none"
-                    stroke="url(#tour-spotlight-gradient)"
-                    strokeWidth="3"
-                    vectorEffect="non-scaling-stroke"
-                    className="tour-spotlight-ring"
-                  />
-                  <rect
-                    x="10"
-                    y="10"
-                    width={Math.max(0, targetRect.width)}
-                    height={Math.max(0, targetRect.height)}
-                    rx={getSvgBorderRadius(targetRect.borderRadius)}
-                    ry={getSvgBorderRadius(targetRect.borderRadius)}
-                    fill="none"
-                    stroke="#DBEAFE"
-                    strokeOpacity="0.75"
-                    strokeWidth="1"
-                    vectorEffect="non-scaling-stroke"
-                  />
-                </svg>
-              </div>
-              <div
-                aria-hidden="true"
-                className="pointer-events-none fixed z-[62] border border-blue-200/90 shadow-[0_0_0_4px_rgba(37,99,235,0.12)]"
-                style={{
-                  top: targetRect.top,
-                  left: targetRect.left,
-                  width: targetRect.width,
-                  height: targetRect.height,
-                  borderRadius: targetRect.borderRadius,
-                }}
-              />
-            </>
+            <div
+              aria-hidden="true"
+              className="tour-spotlight-frame pointer-events-none fixed z-[62]"
+              style={getSpotlightFrameStyle(targetRect)}
+            />
           ) : null}
           <div
             role="dialog"
@@ -592,21 +528,14 @@ function createSpotlightRect(element: HTMLElement, rect: DOMRect): TargetRect {
   };
 }
 
-function getSpotlightGlowStyle(targetRect: TargetRect) {
-  const padding = 10;
-
+function getSpotlightFrameStyle(targetRect: TargetRect): CSSProperties {
   return {
-    top: targetRect.top - padding,
-    left: targetRect.left - padding,
-    width: targetRect.width + padding * 2,
-    height: targetRect.height + padding * 2,
-    borderRadius: `calc(${targetRect.borderRadius} + ${padding}px)`,
+    top: targetRect.top,
+    left: targetRect.left,
+    width: targetRect.width,
+    height: targetRect.height,
+    borderRadius: targetRect.borderRadius,
   };
-}
-
-function getSvgBorderRadius(borderRadius: string) {
-  const radius = Number.parseFloat(borderRadius);
-  return Number.isFinite(radius) ? radius : 18;
 }
 
 function getSpotlightBorderRadius(
