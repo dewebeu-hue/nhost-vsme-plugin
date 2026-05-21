@@ -38,7 +38,7 @@ export function DashboardOverviewPage({
     percent: section.percent,
   })) ?? [];
   const missingDataSummary = {
-    total: setupSummary?.missingSections.reduce((sum, section) => sum + section.missing, 0) ?? 0,
+    total: setupSummary?.missingItemsCount ?? 0,
     items: setupSummary?.missingSections.map((section) => ({
       area: section.title,
       items: section.missing,
@@ -169,12 +169,20 @@ function createDashboardTasks(
 }
 
 function getReadinessLabel(readiness: number, labels: DashboardOverviewLabels) {
-  if (readiness >= 70) {
-    return labels.goodProgress;
+  if (readiness >= 100) {
+    return labels.readinessStrong;
+  }
+
+  if (readiness > 200 / 3) {
+    return labels.readinessBuyerReadyDraft;
+  }
+
+  if (readiness >= 100 / 3) {
+    return labels.readinessInProgress;
   }
 
   if (readiness > 0) {
-    return labels.statuses["In progress"] ?? "In progress";
+    return labels.readinessNeedsAttention;
   }
 
   return labels.statuses["Not started"] ?? "Not started";

@@ -99,6 +99,7 @@ export type DashboardSetupSummary = {
   activeShareLinkCount: number;
   pdfAvailable: boolean;
   readinessPercent: number;
+  missingItemsCount: number;
   lastUpdated: string | null;
   sectionProgress: DashboardSectionProgress[];
   missingSections: DashboardSectionProgress[];
@@ -239,6 +240,7 @@ export async function getDashboardSetupSummary(): Promise<DashboardSetupSummary 
   });
   const answeredQuestions = completeAnswerQuestionIds.size;
   const totalQuestions = data.question_items.length;
+  const missingSections = sectionProgress.filter((section) => section.missing > 0);
   const latestAnswerDate = data.question_answers[0]?.updated_at ?? null;
   const latestDocumentDate = data.documents[0]?.created_at ?? null;
   const latestPassportDate =
@@ -259,9 +261,10 @@ export async function getDashboardSetupSummary(): Promise<DashboardSetupSummary 
     activeShareLinkCount: activeShareLinks.length,
     pdfAvailable: totalQuestions > 0,
     readinessPercent: calculatePercent(answeredQuestions, totalQuestions),
+    missingItemsCount: missingSections.reduce((sum, section) => sum + section.missing, 0),
     lastUpdated,
     sectionProgress,
-    missingSections: sectionProgress.filter((section) => section.missing > 0).slice(0, 5),
+    missingSections: missingSections.slice(0, 5),
     recentUploads: data.documents.slice(0, 5).map((document) => ({
       name: document.file_name || "Document",
       category: document.document_type || "other",
@@ -284,7 +287,7 @@ export async function getDashboardSetupSummary(): Promise<DashboardSetupSummary 
 }
 
 function isAnswerComplete(status: string | null) {
-  return status === "completed" || status === "reviewed";
+  return status === "answered" || status === "completed" || status === "reviewed";
 }
 
 function calculatePercent(completed: number, total: number) {

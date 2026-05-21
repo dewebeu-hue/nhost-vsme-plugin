@@ -2844,6 +2844,65 @@ Manual QA:
 10. Confirm public Passport/readiness cards do not overflow for `Preporučuje se dokazna dokumentacija` replacements or German labels such as `Lieferantendaten`.
 11. Repeat quick checks for `/en/dashboard/questionnaire?section=company_basics` and `/de/dashboard/questionnaire?section=company_basics`.
 
+## Faza 4.1.5 Korak 1 - Dashboard Readiness Data Source
+
+The localized dashboard home must be dynamic. `/[locale]/dashboard` reads the current authenticated supplier session and calls `getDashboardSetupSummary()` at request time. If the route is statically generated, the summary is calculated without a user session and the dashboard can freeze at `0%`, `0/0`, empty documents, and the neutral live-metrics fallback even when questionnaire/passport routes show real progress.
+
+Dashboard summary source:
+
+- Current organization: authenticated user membership resolved server-side.
+- Overall readiness: completed/reviewed/answered `question_answers` divided by all `question_items`.
+- Section/module completion: `question_sections`, `question_items`, and organization-scoped `question_answers`.
+- Missing data count: all incomplete questionnaire items across sections, with only the first five sections shown as summary rows.
+- Document count: organization-scoped `documents`.
+- Linked evidence count: `document_links` scoped to the current organization's document IDs and answer IDs.
+- Active share link count: active, non-expired `share_links`.
+
+Readiness label and visual QA:
+
+- `0%` uses `Not started` / `Nije započeto` / `Nicht begonnen`.
+- More than `0%` and below `33.333%` uses needs-attention copy and the red visual state.
+- `33.333%` through `66.666%` uses in-progress copy and the yellow/amber visual state.
+- Above `66.666%` and below `100%` uses buyer-ready draft copy and the green visual state.
+- Exactly `100%` uses strong-readiness copy and the green glow.
+
+SQL/debug checklist:
+
+```sql
+select count(*) from question_items;
+
+select
+  count(*) filter (
+    where qa.id is not null
+      and qa.status in ('answered', 'completed', 'reviewed')
+  ) as answered_count,
+  count(qi.id) as total_count
+from question_items qi
+left join question_answers qa
+  on qa.question_item_id = qi.id
+  and qa.organization_id = '<ORG_ID>';
+
+select count(*) from documents where organization_id = '<ORG_ID>';
+
+select count(*)
+from document_links dl
+join documents d on d.id = dl.document_id
+where d.organization_id = '<ORG_ID>';
+```
+
+Manual QA:
+
+1. Log in as a supplier.
+2. Open `/hr/dashboard/questionnaire` and note completed/total, for example `31/100`.
+3. Open `/hr/dashboard`.
+4. Confirm overall readiness matches the questionnaire percentage.
+5. Confirm the setup card answers metric matches the questionnaire count.
+6. Confirm module completion shows real section values such as `Osnovni podaci 12/12`, `Energija 10/15`, and `Podaci o dobavljačima 9/9` when those values exist.
+7. Confirm missing data is not falsely `0` when incomplete sections remain.
+8. Confirm documents and evidence link counts match Data Room/linking state.
+9. Confirm the live-metrics fallback only appears when no authenticated live summary can be loaded.
+10. Repeat quick checks on `/en/dashboard` and `/de/dashboard`.
+
 ## Safe Logging Rules
 
 Allowed categories:

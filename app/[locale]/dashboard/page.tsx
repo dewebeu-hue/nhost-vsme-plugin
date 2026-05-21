@@ -9,10 +9,13 @@ type DashboardPageProps = {
   }>;
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function DashboardPage({ params }: DashboardPageProps) {
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("dashboard.overview");
+  const share = await getTranslations("share");
   const statuses = await getTranslations("statuses");
   const shell = await getTranslations("dashboard.shell");
 
@@ -23,6 +26,10 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
     overallReadiness: t("overallReadiness"),
     readinessDescription: t("readinessDescription"),
     goodProgress: t("goodProgress"),
+    readinessNeedsAttention: share("readinessNeedsAttention"),
+    readinessInProgress: share("readinessInProgress"),
+    readinessBuyerReadyDraft: share("readinessBuyerReadyDraft"),
+    readinessStrong: share("readinessStrong"),
     ready: t("ready"),
     vsme: t("vsme"),
     readinessHelper: t("readinessHelper"),

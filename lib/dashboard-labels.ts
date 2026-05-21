@@ -60,6 +60,10 @@ export type DashboardOverviewLabels = {
   overallReadiness: string;
   readinessDescription: string;
   goodProgress: string;
+  readinessNeedsAttention: string;
+  readinessInProgress: string;
+  readinessBuyerReadyDraft: string;
+  readinessStrong: string;
   ready: string;
   vsme: string;
   readinessHelper: string;
@@ -150,6 +154,10 @@ export const defaultDashboardOverviewLabels: DashboardOverviewLabels = {
   overallReadiness: "Overall readiness",
   readinessDescription: "Your current VSME readiness snapshot.",
   goodProgress: "Good progress",
+  readinessNeedsAttention: "Needs attention",
+  readinessInProgress: "In progress",
+  readinessBuyerReadyDraft: "Buyer-ready draft",
+  readinessStrong: "Strong readiness",
   ready: "Ready",
   vsme: "VSME",
   readinessHelper: "Keep closing evidence gaps to move this passport toward buyer-ready review.",
