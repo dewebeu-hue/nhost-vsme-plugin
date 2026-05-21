@@ -97,7 +97,7 @@
   }
 
   .tour-spotlight-glow {
-    opacity: 0.8;
+    opacity: 0.86;
   }
 
   .tour-spotlight-glow::before,
@@ -131,17 +131,26 @@
   }
 
   .tour-spotlight-glow::after {
-    inset: -4px;
+    inset: -8px;
+    padding: 10px;
     background: conic-gradient(
       from 0deg,
       rgb(37 99 235 / 0),
-      rgb(37 99 235 / 0.34),
-      rgb(20 184 166 / 0.3),
-      rgb(255 255 255 / 0.2),
+      rgb(37 99 235 / 0.48),
+      rgb(20 184 166 / 0.42),
+      rgb(255 255 255 / 0.28),
       rgb(37 99 235 / 0)
     );
-    filter: blur(14px);
-    opacity: 0.72;
+    filter: blur(10px);
+    opacity: 0.58;
+    mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
     animation: tour-spotlight-glow-rotate 6s linear infinite;
   }
 
