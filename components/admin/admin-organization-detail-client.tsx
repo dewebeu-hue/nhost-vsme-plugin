@@ -521,7 +521,7 @@ export function AdminOrganizationDetailClient({
         </div>
       </section>
 
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
+      <div className="grid gap-6 xl:grid-cols-[minmax(0,7fr)_minmax(320px,5fr)] 2xl:grid-cols-[minmax(0,8fr)_minmax(340px,4fr)]">
         <section id="admin-section-readiness" className="supplier-surface rounded-2xl border-0 p-5">
           <h2 className="text-lg font-semibold text-slate-950">{labels.sectionReadiness}</h2>
           <div className="mt-4 grid gap-3">
@@ -543,7 +543,53 @@ export function AdminOrganizationDetailClient({
           </div>
         </section>
 
-        <aside className="flex flex-col gap-6">
+        <aside className="grid gap-6 md:grid-cols-2 xl:grid-cols-1">
+          <section className="supplier-surface rounded-2xl border-0 p-5">
+            <h2 className="text-lg font-semibold text-slate-950">{labels.buyerRequestSummary}</h2>
+            <div className="mt-4 flex flex-col gap-3">
+              {organization.buyerRequests.length ? (
+                organization.buyerRequests.slice(0, 5).map((request) => (
+                  <article key={request.id} className="rounded-xl bg-slate-50 p-3">
+                    <p className="text-sm font-semibold text-slate-950">{request.requestTitle}</p>
+                    <p className="mt-1 text-xs text-slate-500">
+                      {request.buyerName} • {request.status}
+                    </p>
+                  </article>
+                ))
+              ) : (
+                <p className="text-sm text-slate-600">{labels.notProvided}</p>
+              )}
+            </div>
+          </section>
+
+          <section className="supplier-surface rounded-2xl border-0 p-5 md:col-span-2 xl:col-span-1">
+            <h2 className="text-lg font-semibold text-slate-950">{labels.missingSteps}</h2>
+            <div className="mt-4 flex flex-col gap-3">
+              {organization.missingActions.length ? (
+                organization.missingActions.map((action) => (
+                  <article key={action.id} className="rounded-xl bg-slate-50 p-3">
+                    <Badge
+                      variant="outline"
+                      className={
+                        action.severity === "critical"
+                          ? "rounded-full border-red-200 bg-red-50 text-red-700"
+                          : "rounded-full border-amber-200 bg-amber-50 text-amber-700"
+                      }
+                    >
+                      {action.severity === "critical" ? labels.critical : labels.warning}
+                    </Badge>
+                    <p className="mt-2 text-sm font-medium text-slate-700">{action.label}</p>
+                  </article>
+                ))
+              ) : (
+                <p className="text-sm text-slate-600">{labels.noMissingSteps}</p>
+              )}
+            </div>
+          </section>
+        </aside>
+      </div>
+
+      <div className="grid gap-6 xl:grid-cols-2">
           <section id="admin-assisted-onboarding" className="supplier-surface rounded-2xl border-0 p-5">
             <h2 className="text-lg font-semibold text-slate-950">{labels.commercialClassification}</h2>
             <p className="mt-1 text-xs leading-5 text-slate-500">{labels.commercialLabelsInternalNote}</p>
@@ -907,49 +953,6 @@ export function AdminOrganizationDetailClient({
             </p>
           </section>
 
-          <section className="supplier-surface rounded-2xl border-0 p-5">
-            <h2 className="text-lg font-semibold text-slate-950">{labels.buyerRequestSummary}</h2>
-            <div className="mt-4 flex flex-col gap-3">
-              {organization.buyerRequests.length ? (
-                organization.buyerRequests.slice(0, 5).map((request) => (
-                  <article key={request.id} className="rounded-xl bg-slate-50 p-3">
-                    <p className="text-sm font-semibold text-slate-950">{request.requestTitle}</p>
-                    <p className="mt-1 text-xs text-slate-500">
-                      {request.buyerName} • {request.status}
-                    </p>
-                  </article>
-                ))
-              ) : (
-                <p className="text-sm text-slate-600">{labels.notProvided}</p>
-              )}
-            </div>
-          </section>
-
-          <section className="supplier-surface rounded-2xl border-0 p-5">
-            <h2 className="text-lg font-semibold text-slate-950">{labels.missingSteps}</h2>
-            <div className="mt-4 flex flex-col gap-3">
-              {organization.missingActions.length ? (
-                organization.missingActions.map((action) => (
-                  <article key={action.id} className="rounded-xl bg-slate-50 p-3">
-                    <Badge
-                      variant="outline"
-                      className={
-                        action.severity === "critical"
-                          ? "rounded-full border-red-200 bg-red-50 text-red-700"
-                          : "rounded-full border-amber-200 bg-amber-50 text-amber-700"
-                      }
-                    >
-                      {action.severity === "critical" ? labels.critical : labels.warning}
-                    </Badge>
-                    <p className="mt-2 text-sm font-medium text-slate-700">{action.label}</p>
-                  </article>
-                ))
-              ) : (
-                <p className="text-sm text-slate-600">{labels.noMissingSteps}</p>
-              )}
-            </div>
-          </section>
-        </aside>
       </div>
     </div>
   );
