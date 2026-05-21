@@ -3198,6 +3198,156 @@ limit 20;
 6. Run the verification SQL snippets above.
 7. Smoke test `/hr/dashboard`, `/hr/dashboard/questionnaire`, `/hr/dashboard/documents`, `/hr/dashboard/passport`, `/hr/passport/[token]`, `/hr/buyer/suppliers/[token]`, and `/hr/admin/organizations`.
 
+## Faza 4.1 Korak 4 - First Customer Onboarding And Data Reset Checklist
+
+This is a manual readiness checklist for using production with a real organization. It intentionally does not add a reset endpoint, reset button, destructive SQL, seed reset, or one-click cleanup flow. If cleanup is needed, take a backup first, verify the exact `organization_id`, and perform the smallest manual action possible.
+
+### Demo and test data audit
+
+Current repository findings:
+
+- Explicit mock/demo fixtures live in `lib/mock-data.ts`. They include sample names such as Acme, Anna, Elena, and Munich and are intended for local/mock mode only.
+- Mock-mode copy exists in `messages/*.json`, `lib/workspace-labels.ts`, and `lib/operational-labels.ts` so the app can explain when Nhost is not configured.
+- Demo/checklist documentation mentions sample names and mock routes as QA warnings.
+- Seed files under `nhost/seeds` seed questionnaire taxonomy, not customer organizations.
+- Production-facing authenticated/public routes should use live Nhost/Hasura data when configured. Seeing Acme, Anna, Elena, Munich, or mock documents in production is a signal to check env vars, auth, current organization lookup, or fallback behavior.
+
+### Before inviting the first customer
+
+1. Confirm the production environment checklist above is complete.
+2. Confirm all required migrations are applied and Hasura tables are tracked.
+3. Confirm `ADMIN_EMAIL_ALLOWLIST` is configured server-side and Vercel has been redeployed.
+4. Open `/hr`, `/hr/plans`, `/hr/request-demo`, `/hr/dashboard`, `/hr/dashboard/questionnaire`, `/hr/dashboard/documents`, `/hr/dashboard/passport`, and `/hr/admin/organizations`.
+5. Confirm Croatian copy has no broken characters and German is hidden from visible switchers until translation QA is complete.
+6. Confirm no Acme, Anna, Elena, Munich, lorem, TODO, `undefined`, `NaN`, or `[object Object]` text appears in production-facing UI.
+7. Confirm a valid public Passport token opens in an incognito/private window and invalid tokens show a safe unavailable state.
+8. Confirm PDF export works for the authenticated dashboard Passport and for a valid public Passport token.
+9. Confirm public and buyer routes do not expose private storage URLs, storage file IDs, user/member data, raw sensitive answers, admin notes, concierge notes, or commercial notes.
+
+### Create or verify the customer organization
+
+1. Create the customer account through the normal signup/onboarding flow, or verify the existing workspace.
+2. Confirm the organization name is correct in the dashboard shell, Company Profile, Passport, and admin organization detail.
+3. Complete Company Basics / Osnovni podaci.
+4. Open Company Profile and confirm legal name, location, industry, employee count, reporting period, and website fallback map from live questionnaire data.
+5. Open the dashboard and confirm readiness, answered question count, missing data count, document count, and evidence link count match questionnaire/documents.
+6. Refresh the page and confirm values persist.
+
+### Questionnaire readiness
+
+1. Open `/hr/dashboard/questionnaire` with no query parameter and confirm it opens the first incomplete section.
+2. Open `/hr/dashboard/questionnaire?section=company_basics` and confirm it opens Osnovni podaci.
+3. Save answers in at least one incomplete section.
+4. Refresh and confirm answers and section completion persist.
+5. Confirm dashboard readiness percentage matches questionnaire/passport readiness.
+6. Confirm missing data points route to a real questionnaire section or documents page, not a dead action.
+
+### Documents and evidence
+
+1. Upload one non-sensitive test evidence document through `/hr/dashboard/documents`.
+2. Set document type/category and expiry date if relevant.
+3. Link the document to at least one questionnaire answer.
+4. Refresh and confirm document metadata and evidence link persist.
+5. Confirm document count and linked evidence count update on dashboard/passport.
+6. Open public Passport and buyer token views and confirm they show evidence availability only, not private file URLs or storage IDs.
+7. Confirm authenticated preview/download routes work only for authorized users or token-scoped access.
+
+### Passport, share, PDF, and buyer portal
+
+1. Review `/hr/dashboard/passport`.
+2. Create or verify an active share link from `/hr/dashboard/share`.
+3. Open `/hr/passport/[token]` in an incognito/private window.
+4. Download the public PDF and confirm it contains buyer-safe summary information only.
+5. Open `/hr/buyer/suppliers/[token]` and confirm the buyer-safe summary loads without login.
+6. Open `/hr/buyer/compare`, add the token, remove it, and clear the local comparison.
+7. Copy the request-supporting-evidence message and confirm it includes only the public link, not private file URLs or storage IDs.
+
+### Buyer Request Workspace and admin/concierge
+
+1. Create a buyer request if the first-customer rollout needs one.
+2. Confirm `/hr/dashboard/buyer-requests` and request detail pages show real request data.
+3. Log in as admin and open `/hr/admin/organizations`.
+4. Open the customer organization detail and set onboarding status, next action, follow-up date, portfolio label, and commercial plan/status labels if needed.
+5. Add an internal onboarding note only if it is appropriate for admin/concierge users.
+6. Confirm admin notes, concierge notes, commercial notes, and internal handoff metadata are not visible on supplier/public/buyer pages.
+7. Review `/hr/admin/risks` for risk signals before the first customer walkthrough.
+
+### Read-only SQL to identify likely demo/test data
+
+Organizations:
+
+```sql
+select id, name, created_at
+from organizations
+where lower(coalesce(name, '')) like '%acme%'
+   or lower(coalesce(name, '')) like '%demo%'
+   or lower(coalesce(name, '')) like '%test%'
+   or lower(coalesce(name, '')) like '%sample%'
+order by created_at desc;
+```
+
+Documents:
+
+```sql
+select id, organization_id, file_name, created_at
+from documents
+where lower(coalesce(file_name, '')) like '%sample%'
+   or lower(coalesce(file_name, '')) like '%test%'
+   or lower(coalesce(file_name, '')) like '%demo%'
+order by created_at desc;
+```
+
+Buyer requests:
+
+```sql
+select id, organization_id, buyer_name, request_title, created_at
+from buyer_requests
+where lower(coalesce(buyer_name, '')) like '%demo%'
+   or lower(coalesce(buyer_name, '')) like '%test%'
+   or lower(coalesce(request_title, '')) like '%demo%'
+   or lower(coalesce(request_title, '')) like '%test%'
+order by created_at desc;
+```
+
+Admin/concierge notes:
+
+```sql
+select id, organization_id, onboarding_status, portfolio_label, commercial_plan, commercial_status, updated_at
+from organization_concierge_notes
+where lower(coalesce(portfolio_label, '')) like '%demo%'
+   or lower(coalesce(portfolio_label, '')) like '%test%'
+   or lower(coalesce(commercial_segment, '')) like '%internal_demo%'
+order by updated_at desc;
+```
+
+Share links:
+
+```sql
+select id, organization_id, buyer_name, is_active, expires_at, created_at
+from share_links
+where lower(coalesce(buyer_name, '')) like '%demo%'
+   or lower(coalesce(buyer_name, '')) like '%test%'
+   or lower(coalesce(buyer_name, '')) like '%sample%'
+order by created_at desc;
+```
+
+These queries are intentionally read-only. Do not add `DELETE`, `TRUNCATE`, `DROP`, or production reset SQL to this checklist. If a row must be removed, export the relevant tables first, verify the organization and ownership, and clean up manually through the safest admin/Nhost workflow available.
+
+### Manual first-customer QA checklist
+
+1. Configure production env vars and redeploy.
+2. Apply/verify migrations and Hasura tracking.
+3. Run the read-only demo/test identification SQL.
+4. Create or verify the customer organization.
+5. Complete Company Basics and confirm Company Profile mapping.
+6. Save questionnaire answers and confirm dashboard readiness matches questionnaire.
+7. Upload and link one evidence document.
+8. Create a share link and test public Passport in incognito.
+9. Download dashboard/public PDFs.
+10. Test buyer token view, comparison, and request-message copy.
+11. Log in as admin and update onboarding/concierge/commercial labels.
+12. Confirm no mock data, private URLs, storage IDs, secrets, raw answer dumps, or internal notes appear on supplier/public/buyer pages.
+
 ## Safe Logging Rules
 
 Allowed categories:
