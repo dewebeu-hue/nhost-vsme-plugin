@@ -176,7 +176,7 @@ export function PublicSharePage({ locale, passport, token }: PublicSharePageProp
             <div className="flex flex-col gap-6 lg:flex-row lg:items-center">
               <ProgressRing
                 value={passport.readinessScore}
-                label={t("readinessScore")}
+                label={t("readinessCircleLabel")}
                 size={156}
                 trackClassName={readinessVisualState.trackClassName}
                 progressClassName={readinessVisualState.progressClassName}

@@ -2903,6 +2903,34 @@ Manual QA:
 9. Confirm the live-metrics fallback only appears when no authenticated live summary can be loaded.
 10. Repeat quick checks on `/en/dashboard` and `/de/dashboard`.
 
+## Faza 4.1.6 Korak 1 - Temporary German Locale Hide And Readiness Circle QA
+
+German remains in the repository for future translation completion, but it is temporarily hidden from production-facing language switchers until German copy QA is complete.
+
+Locale behavior:
+
+- `i18n/routing.ts` keeps `locales = ["en", "hr", "de"]` so translation files and route infrastructure remain available for later.
+- `productionLocales = ["en", "hr"]` controls visible language switcher options.
+- Shared language switchers should show only `English` and `Hrvatski`.
+- Direct `/de/...` requests are redirected by `proxy.ts` to the matching `/en/...` path, preserving the rest of the URL.
+
+Readiness circle behavior:
+
+- Public Passport/report uses a short circle label: `Score` in English and `Spremnost` in Croatian.
+- The longer label `Readiness score` remains available as surrounding UI copy, but it should not be placed inside the circular indicator.
+- The shared `ProgressRing` constrains the inside label width, reduces letter spacing, and allows wrapping so text stays inside the ring.
+- Red/yellow/green readiness thresholds and the `100%`-only glow behavior are unchanged.
+
+Manual QA:
+
+1. Open `/hr/passport/[token]` and confirm the language switcher shows only `English` and `Hrvatski`.
+2. Open `/en/passport/[token]` and confirm `Deutsch` is not visible.
+3. Open dashboard, buyer portal, landing, and plans pages and confirm German is hidden from switchers.
+4. Manually open `/de/passport/[token]` and confirm it redirects to `/en/passport/[token]`.
+5. Confirm the English readiness circle uses the short `Score` label and does not cross the circular stroke.
+6. Confirm the Croatian readiness circle uses `Spremnost` and stays inside the ring.
+7. Confirm `31%` remains red and `100%` is the only state with a green glow.
+
 ## Safe Logging Rules
 
 Allowed categories:

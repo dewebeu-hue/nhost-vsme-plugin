@@ -66,7 +66,12 @@ export function ProgressRing({
         <span className={cn("text-3xl font-semibold tracking-tight text-slate-950", valueClassName)}>
           {normalizedValue}%
         </span>
-        <span className={cn("text-xs font-medium uppercase tracking-[0.16em] text-slate-500", labelClassName)}>
+        <span
+          className={cn(
+            "mt-0.5 max-w-[70%] text-center text-[0.68rem] font-semibold uppercase leading-tight tracking-[0.08em] text-slate-500 break-words",
+            labelClassName,
+          )}
+        >
           {label}
         </span>
         {helper ? (

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
-import { locales, type AppLocale } from "@/i18n/routing";
+import { locales, productionLocales, type AppLocale } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
 
 const localeNames: Record<AppLocale, string> = {
@@ -25,7 +25,7 @@ export function LanguageSwitcher({ className }: { className?: string }) {
         className,
       )}
     >
-      {locales.map((locale) => {
+      {productionLocales.map((locale) => {
         const active = locale === activeLocale;
 
         return (

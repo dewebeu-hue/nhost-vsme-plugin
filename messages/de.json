@@ -1126,6 +1126,7 @@
     "sectionReadiness": "Bereitschaft nach Abschnitten",
     "sectionReadinessDescription": "Abschnittsbezogener Fortschritt auf Basis der Fragebogenantworten des Lieferanten.",
     "readinessScore": "Bereitschaftswert",
+    "readinessCircleLabel": "Bereitschaft",
     "readinessStatus": "Bereitschaftsstatus",
     "readinessNeedsAttention": "Handlungsbedarf",
     "readinessInProgress": "In Bearbeitung",

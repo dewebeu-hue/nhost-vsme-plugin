@@ -1134,6 +1134,7 @@
     "healthSafety": "Health and safety",
     "supplierInformation": "Supplier information",
     "readinessScore": "Readiness score",
+    "readinessCircleLabel": "Score",
     "readinessStatus": "Readiness status",
     "readinessNeedsAttention": "Needs attention",
     "readinessInProgress": "In progress",

@@ -1134,6 +1134,7 @@
     "healthSafety": "Zdravlje i sigurnost",
     "supplierInformation": "Podaci o dobavljačima",
     "readinessScore": "Ocjena spremnosti",
+    "readinessCircleLabel": "Spremnost",
     "readinessStatus": "Status spremnosti",
     "readinessNeedsAttention": "Potrebna dorada",
     "readinessInProgress": "U tijeku",
