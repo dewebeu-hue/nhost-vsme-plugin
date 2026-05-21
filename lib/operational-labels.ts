@@ -271,6 +271,7 @@ export type CompanyProfileLabels = {
   website: string;
   workspace: string;
   notProvided: string;
+  loadFailed: string;
 };
 
 export const defaultOnboardingLabels: OnboardingLabels = {
@@ -574,6 +575,7 @@ export const defaultCompanyProfileLabels: CompanyProfileLabels = {
   website: "Website",
   workspace: "Workspace",
   notProvided: "Not provided yet",
+  loadFailed: "We could not load company profile data.",
 };
 
 export function interpolate(template: string, values: Record<string, string | number>) {

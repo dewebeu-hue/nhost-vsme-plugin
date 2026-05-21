@@ -25,6 +25,7 @@ type GraphqlResponse<T> = {
 
 type CompanyProfileResponse = {
   company_profiles: CompanyProfileBasics[];
+  question_items: CompanyProfileQuestionItemRecord[];
   question_answers: CompanyProfileQuestionAnswerRecord[];
 };
 
@@ -38,9 +39,12 @@ type GraphqlJson =
 
 type CompanyProfileQuestionAnswerRecord = {
   value: GraphqlJson;
-  question_item: {
-    code: string;
-  } | null;
+  question_item_id: string;
+};
+
+type CompanyProfileQuestionItemRecord = {
+  id: string;
+  code: string;
 };
 
 const companyProfileQuery = `
@@ -55,17 +59,18 @@ const companyProfileQuery = `
       employee_count_range
       countries_served
     }
+    question_items(where: { code: { _in: $questionCodes } }) {
+      id
+      code
+    }
     question_answers(
       where: {
         organization_id: { _eq: $organizationId }
-        question_item: { code: { _in: $questionCodes } }
       }
       order_by: { updated_at: desc }
     ) {
       value
-      question_item {
-        code
-      }
+      question_item_id
     }
   }
 `;
@@ -115,16 +120,20 @@ export async function getCompanyProfileForOrganization(
     summary: buildCompanyProfileSummary({
       organization: organization ?? null,
       profile: data.company_profiles[0] ?? null,
-      answersByCode: mapQuestionnaireAnswersByCode(data.question_answers),
+      answersByCode: mapQuestionnaireAnswersByCode(data.question_answers, data.question_items),
     }),
   };
 }
 
-function mapQuestionnaireAnswersByCode(answers: CompanyProfileQuestionAnswerRecord[]) {
+function mapQuestionnaireAnswersByCode(
+  answers: CompanyProfileQuestionAnswerRecord[],
+  questionItems: CompanyProfileQuestionItemRecord[],
+) {
   const answersByCode = new Map<string, unknown>();
+  const codesByQuestionId = new Map(questionItems.map((item) => [item.id, item.code]));
 
   for (const answer of answers) {
-    const code = answer.question_item?.code;
+    const code = codesByQuestionId.get(answer.question_item_id);
 
     if (!code || answersByCode.has(code)) {
       continue;

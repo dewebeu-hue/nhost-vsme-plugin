@@ -1939,7 +1939,8 @@
     "employeeCount": "Employee count",
     "website": "Website",
     "workspace": "Workspace",
-    "notProvided": "Not provided yet"
+    "notProvided": "Not provided yet",
+    "loadFailed": "We could not load company profile data."
   },
   "requestDemo": {
     "eyebrow": "Pilot rollout",

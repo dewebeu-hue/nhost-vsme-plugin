@@ -2781,6 +2781,8 @@ Faza 4.1.3 update: Company Profile, the authenticated Passport/report summary, a
 
 Faza 4.1.4 update: Company Profile now loads questionnaire answers from `question_answers` directly and maps them through `question_item.code`, matching the production questionnaire/Passport answer source more closely. Do not reintroduce a nested `question_items { question_answers { ... } }` mapping for this page, because that shape can diverge from the live Passport/questionnaire source and fail back to empty profile cards.
 
+Faza 4.1.9 update: Company Profile now follows the same robust data shape as the working Passport loader: it queries `question_items` and organization-scoped `question_answers` separately, then joins them by `question_item_id` in application code. The page also refreshes through authenticated `/api/company-profile/summary` in the browser so a missing server session does not silently produce an all-fallback profile.
+
 Mapped questionnaire codes:
 
 - `company_reporting_year` -> Reporting year in the questionnaire.
@@ -2813,6 +2815,7 @@ Questionnaire deep-link behavior:
 - The questionnaire opens Company Basics / Osnovni podaci / Unternehmensdaten for `section=company_basics`.
 - Invalid section parameters fall back to the first live questionnaire section instead of crashing.
 - The localized Company Profile pages are dynamic routes so they can read the current authenticated supplier organization instead of serving a prerendered neutral state.
+- If the Company Profile loader fails, the page shows localized load-failure copy (`We could not load company profile data` / `Podatke nije moguće učitati`) instead of disguising the failure as empty profile data.
 
 Date input behavior:
 

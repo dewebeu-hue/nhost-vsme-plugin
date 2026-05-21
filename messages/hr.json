@@ -1939,7 +1939,8 @@
     "employeeCount": "Broj zaposlenih",
     "website": "Web stranica",
     "workspace": "Radni prostor",
-    "notProvided": "Još nije uneseno"
+    "notProvided": "Još nije uneseno",
+    "loadFailed": "Podatke nije moguće učitati."
   },
   "requestDemo": {
     "eyebrow": "Pilot uvođenje",

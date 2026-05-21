@@ -1962,7 +1962,8 @@
     "employeeCount": "Beschäftigtenzahl",
     "website": "Website",
     "workspace": "Arbeitsbereich",
-    "notProvided": "Noch nicht angegeben"
+    "notProvided": "Noch nicht angegeben",
+    "loadFailed": "Unternehmensprofildaten konnten nicht geladen werden."
   },
   "requestDemo": {
     "eyebrow": "Pilotphase",
