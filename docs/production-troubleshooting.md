@@ -3632,6 +3632,27 @@ Use this checklist to close the guided onboarding pack before first-customer pro
 - German remains hidden from visible switchers until translation QA is complete.
 - Deferred: persistent cross-device tour state, admin manual checklist persistence, email/CRM automation, buyer accounts, billing, AI, XBRL, and full German production launch.
 
+## Admin Workspace Dark Mode
+
+The Admin / Concierge workspace has an admin-only appearance toggle in the admin topbar. The preference is stored locally in the browser under `supplierPassportAdminTheme` with values `light` or `dark`.
+
+- Dark mode uses `#002B36` as the main admin background, with `#073642` / `#0B3A45` surfaces for cards and form controls.
+- The preference is browser-local only; no database migration or server-side preference storage is required.
+- The dark theme is scoped to the admin layout wrapper and must not affect supplier dashboard, public Passport, buyer portal, landing, or plans routes.
+- The toggle labels are localized as `Dark mode` / `Light mode` and `Tamni način` / `Svijetli način`.
+- Admin forms, selects, textareas, risk cards, organization lists, and organization detail cards must remain readable and usable in both themes.
+
+Manual QA:
+
+1. Open `/hr/admin/organizations`.
+2. Click `Tamni način` and confirm the admin workspace uses the `#002B36`-style dark background, not pure black.
+3. Refresh and confirm the preference persists.
+4. Open `/hr/admin/organizations/[id]` and confirm commercial classification, assisted portfolio, onboarding, concierge, and checklist cards remain readable.
+5. Save one non-sensitive admin field and confirm the existing save flow still works.
+6. Open `/hr/admin/risks` and confirm risk cards, search, badges, and detail links remain readable.
+7. Switch back to `Svijetli način`.
+8. Open `/hr/dashboard`, public Passport, and buyer portal routes and confirm they did not inherit admin dark mode.
+
 ## Safe Logging Rules
 
 Allowed categories:

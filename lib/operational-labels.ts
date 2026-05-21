@@ -32,6 +32,10 @@ export type AdminLabels = {
   subtitle: string;
   adminWorkspace: string;
   adminAccount: string;
+  darkMode: string;
+  lightMode: string;
+  switchToDarkMode: string;
+  switchToLightMode: string;
   conciergeDashboard: string;
   organizations: string;
   organization: string;
@@ -355,6 +359,10 @@ export const defaultAdminLabels: AdminLabels = {
   subtitle: "Manage and support your client organizations.",
   adminWorkspace: "Admin workspace",
   adminAccount: "Admin account",
+  darkMode: "Dark mode",
+  lightMode: "Light mode",
+  switchToDarkMode: "Switch to dark mode",
+  switchToLightMode: "Switch to light mode",
   conciergeDashboard: "Concierge dashboard",
   organizations: "Organizations",
   organization: "Organization",

@@ -7,6 +7,7 @@ import { useLocale } from "next-intl";
 import { useRouter } from "next/navigation";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button, buttonVariants } from "@/components/ui/button";
+import { AdminThemeToggle } from "@/components/admin/admin-theme-provider";
 import { getBrowserNhostClient, getFreshBrowserNhostSession } from "@/lib/nhost/client";
 import { defaultAdminLabels, type AdminLabels } from "@/lib/operational-labels";
 import { cn } from "@/lib/utils";
@@ -80,6 +81,7 @@ export function AdminAccountControls({ labels = defaultAdminLabels }: { labels?:
       >
         {labels.backToDashboard}
       </Link>
+      <AdminThemeToggle labels={labels} />
       <div className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-3 py-2">
         <Avatar className="size-9 border border-slate-200">
           <AvatarFallback>{initials}</AvatarFallback>
