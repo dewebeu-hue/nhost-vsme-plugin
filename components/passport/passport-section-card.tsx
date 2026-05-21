@@ -18,10 +18,10 @@ export function PassportSectionCard({
   const VisibilityIcon = shared ? Eye : EyeOff;
 
   return (
-    <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm shadow-slate-200/60">
+    <article className="min-w-0 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm shadow-slate-200/60">
       <div className="flex items-start justify-between gap-4">
-        <div>
-          <h3 className="text-base font-semibold tracking-tight text-slate-950">
+        <div className="min-w-0">
+          <h3 className="text-base font-semibold tracking-tight text-slate-950 break-words">
             {labels.modules[section.title] ?? section.title}
           </h3>
           <p className="mt-1 text-sm text-slate-500">
@@ -31,7 +31,7 @@ export function PassportSectionCard({
         <Badge
           variant="outline"
           className={cn(
-            "rounded-full px-2.5 py-1 font-medium",
+            "max-w-[48%] shrink-0 whitespace-normal rounded-2xl px-2.5 py-1 text-left font-medium leading-5 break-words",
             shared
               ? "border-teal-200 bg-teal-50 text-teal-700"
               : "border-slate-200 bg-slate-50 text-slate-600",
@@ -49,7 +49,7 @@ export function PassportSectionCard({
           <p className="text-2xl font-semibold tracking-tight text-slate-950">
             {section.approvedAnswers}
           </p>
-          <p className="mt-1 text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
+          <p className="mt-1 text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 break-words">
             {labels.approvedAnswers}
           </p>
         </div>
@@ -57,7 +57,7 @@ export function PassportSectionCard({
           <p className="text-2xl font-semibold tracking-tight text-blue-700">
             {section.linkedDocuments}
           </p>
-          <p className="mt-1 text-xs font-semibold uppercase tracking-[0.12em] text-blue-600">
+          <p className="mt-1 text-xs font-semibold uppercase tracking-[0.12em] text-blue-600 break-words">
             {labels.linkedDocuments}
           </p>
         </div>

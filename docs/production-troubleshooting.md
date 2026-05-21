@@ -2779,6 +2779,8 @@ Company Profile combines the authenticated user's current organization record, t
 
 Faza 4.1.3 update: Company Profile, the authenticated Passport/report summary, and the public Passport readiness presentation now share the same company-profile mapping and readiness visual helpers. This prevents Company Profile from showing neutral fallbacks while the Passport/report can already show real values such as industry, country, headquarters, and employee count.
 
+Faza 4.1.4 update: Company Profile now loads questionnaire answers from `question_answers` directly and maps them through `question_item.code`, matching the production questionnaire/Passport answer source more closely. Do not reintroduce a nested `question_items { question_answers { ... } }` mapping for this page, because that shape can diverge from the live Passport/questionnaire source and fail back to empty profile cards.
+
 Mapped questionnaire codes:
 
 - `company_reporting_year` -> Reporting year in the questionnaire.
@@ -2798,6 +2800,12 @@ Shared summary behavior:
 - `lib/company-profile-summary.ts` normalizes organization fields, company profile fields, and selected questionnaire answers into `organizationName`, `legalCompanyName`, `country`, `city`, `headquarters`, `industry`, `employeeCount`, `website`, `reportingYear`, `reportingPeriodStart`, `reportingPeriodEnd`, `countriesServed`, and `keyCertifications`.
 - Company Profile and Passport/report should use this shared mapper instead of duplicating question-code lookups.
 - Missing fields must remain neutral fallbacks: `Not provided yet`, `Još nije uneseno`, or `Noch nicht angegeben`.
+
+Report/public Passport layout QA:
+
+- Long Croatian and German section labels, descriptions, and badges must wrap inside cards.
+- Use shorter public badge labels where helpful: `Evidence available` / `Dokaz dostupan` / `Nachweis verfügbar` and `Evidence recommended` / `Dokaz preporučen` / `Nachweis empfohlen`.
+- Public Passport and buyer summary section grids should reduce column count before labels become cramped; do not force five narrow cards across when localized copy needs more width.
 
 Questionnaire deep-link behavior:
 
@@ -2833,7 +2841,8 @@ Manual QA:
 7. Confirm `/hr/dashboard/questionnaire?section=company_basics` opens Osnovni podaci, not Energija.
 8. Confirm the reporting-period date questions show date inputs and preserve existing dates after save and refresh.
 9. Open `/hr/dashboard/passport` and a valid `/hr/passport/[token]` and confirm readiness colors follow red/yellow/green thresholds.
-10. Repeat quick checks for `/en/dashboard/questionnaire?section=company_basics` and `/de/dashboard/questionnaire?section=company_basics`.
+10. Confirm public Passport/readiness cards do not overflow for `Preporučuje se dokazna dokumentacija` replacements or German labels such as `Lieferantendaten`.
+11. Repeat quick checks for `/en/dashboard/questionnaire?section=company_basics` and `/de/dashboard/questionnaire?section=company_basics`.
 
 ## Safe Logging Rules
 

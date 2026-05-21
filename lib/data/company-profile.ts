@@ -25,7 +25,7 @@ type GraphqlResponse<T> = {
 
 type CompanyProfileResponse = {
   company_profiles: CompanyProfileBasics[];
-  question_items: CompanyProfileQuestionItemRecord[];
+  question_answers: CompanyProfileQuestionAnswerRecord[];
 };
 
 type GraphqlJson =
@@ -36,11 +36,11 @@ type GraphqlJson =
   | GraphqlJson[]
   | { [key: string]: GraphqlJson };
 
-type CompanyProfileQuestionItemRecord = {
-  code: string;
-  question_answers: Array<{
-    value: GraphqlJson;
-  }>;
+type CompanyProfileQuestionAnswerRecord = {
+  value: GraphqlJson;
+  question_item: {
+    code: string;
+  } | null;
 };
 
 const companyProfileQuery = `
@@ -55,14 +55,16 @@ const companyProfileQuery = `
       employee_count_range
       countries_served
     }
-    question_items(where: { code: { _in: $questionCodes } }, order_by: { sort_order: asc }) {
-      code
-      question_answers(
-        where: { organization_id: { _eq: $organizationId } }
-        order_by: { updated_at: desc }
-        limit: 1
-      ) {
-        value
+    question_answers(
+      where: {
+        organization_id: { _eq: $organizationId }
+        question_item: { code: { _in: $questionCodes } }
+      }
+      order_by: { updated_at: desc }
+    ) {
+      value
+      question_item {
+        code
       }
     }
   }
@@ -113,23 +115,23 @@ export async function getCompanyProfileForOrganization(
     summary: buildCompanyProfileSummary({
       organization: organization ?? null,
       profile: data.company_profiles[0] ?? null,
-      answersByCode: mapQuestionnaireAnswersByCode(data.question_items),
+      answersByCode: mapQuestionnaireAnswersByCode(data.question_answers),
     }),
   };
 }
 
-function mapQuestionnaireAnswersByCode(items: CompanyProfileQuestionItemRecord[]) {
+function mapQuestionnaireAnswersByCode(answers: CompanyProfileQuestionAnswerRecord[]) {
   const answersByCode = new Map<string, unknown>();
 
-  for (const item of items) {
-    const answer = item.question_answers[0];
+  for (const answer of answers) {
+    const code = answer.question_item?.code;
 
-    if (!answer || answersByCode.has(item.code)) {
+    if (!code || answersByCode.has(code)) {
       continue;
     }
 
     if (answer.value !== null && answer.value !== undefined) {
-      answersByCode.set(item.code, answer.value);
+      answersByCode.set(code, answer.value);
     }
   }
 

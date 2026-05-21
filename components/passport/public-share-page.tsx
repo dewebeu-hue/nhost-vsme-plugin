@@ -252,27 +252,30 @@ export function PublicSharePage({ locale, passport, token }: PublicSharePageProp
               </p>
             </div>
           </div>
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5">
             {readinessSections.map((section) => (
               <article
                 key={section.title}
-                className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm shadow-slate-200/70"
+                className="min-w-0 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm shadow-slate-200/70"
               >
-                <h3 className="text-lg font-semibold tracking-tight text-slate-950">
+                <h3 className="text-lg font-semibold tracking-tight text-slate-950 break-words">
                   {translateShareSectionTitle(section.title, t)}
                 </h3>
-                <p className="mt-2 min-h-12 text-sm leading-6 text-slate-600">
+                <p className="mt-2 min-h-12 text-sm leading-6 text-slate-600 break-words">
                   {translateShareSectionDescription(section.title, section.description, t)}
                 </p>
                 <div className="mt-5 rounded-2xl bg-slate-50 p-4">
-                  <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">
+                  <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 break-words">
                     {translateShareMetricLabel(section.metricLabel, t)}
                   </p>
                   <p className="mt-1 text-3xl font-semibold tracking-tight text-slate-950">
                     {section.metricValue}
                   </p>
                 </div>
-                <Badge variant="outline" className="mt-4 rounded-full border-blue-100 bg-blue-50 text-blue-700">
+                <Badge
+                  variant="outline"
+                  className="mt-4 inline-flex max-w-full whitespace-normal rounded-2xl border-blue-100 bg-blue-50 px-3 py-1.5 text-left leading-5 text-blue-700 break-words"
+                >
                   {translateSectionStatus(section, t)}
                 </Badge>
               </article>

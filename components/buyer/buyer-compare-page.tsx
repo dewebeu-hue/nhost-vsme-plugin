@@ -328,11 +328,11 @@ function ComparisonGrid({
               <tbody className="divide-y divide-slate-100">
                 {sectionTitles.map((title) => (
                   <tr key={title}>
-                    <td className="px-5 py-4 font-medium text-slate-900">
+                    <td className="px-5 py-4 font-medium text-slate-900 break-words">
                       {translateSectionTitle(title, t)}
                     </td>
                     {items.map((item) => (
-                      <td key={`${item.index}-${title}`} className="px-5 py-4 text-slate-600">
+                      <td key={`${item.index}-${title}`} className="px-5 py-4 text-slate-600 break-words">
                         {item.state === "ok" ? (
                           <SectionStatus item={item} title={title} />
                         ) : (
@@ -374,7 +374,7 @@ function SectionStatus({ item, title }: { item: Extract<CompareItem, { state: "o
   return (
     <div className="grid gap-1">
       <span className="font-semibold text-slate-950">{section.metricValue}</span>
-      <span className="text-xs text-slate-500">{section.actionLabel}</span>
+      <span className="text-xs text-slate-500 break-words">{section.actionLabel}</span>
     </div>
   );
 }

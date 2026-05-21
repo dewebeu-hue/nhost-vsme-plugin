@@ -274,14 +274,14 @@ export function BuyerSupplierSummary({ passport, token }: BuyerSupplierSummaryPr
           <h2 className="text-2xl font-semibold tracking-tight text-slate-950">
             {t("sectionReadiness")}
           </h2>
-          <div className="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          <div className="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
             {readinessSections.map((section) => (
-              <article key={section.title} className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
-                <h3 className="text-lg font-semibold tracking-tight text-slate-950">
+              <article key={section.title} className="min-w-0 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+                <h3 className="text-lg font-semibold tracking-tight text-slate-950 break-words">
                   {translateSectionTitle(section.title, t)}
                 </h3>
                 <div className="mt-5 rounded-2xl bg-slate-50 p-4">
-                  <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">
+                  <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 break-words">
                     {t("completion")}
                   </p>
                   <p className="mt-1 text-3xl font-semibold tracking-tight text-slate-950">
