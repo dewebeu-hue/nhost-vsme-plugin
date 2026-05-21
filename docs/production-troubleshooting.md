@@ -2931,6 +2931,38 @@ Manual QA:
 6. Confirm the Croatian readiness circle uses `Spremnost` and stays inside the ring.
 7. Confirm `31%` remains red and `100%` is the only state with a green glow.
 
+## Faza 4.1.7 Korak 1 - Dashboard Live Metrics And Missing Data Page
+
+Dashboard live metrics must use the same completion semantics as the questionnaire: a `question_answers` row counts as answered when it has a real non-empty value, including answers currently marked `needs_evidence`. The dashboard summary is now shared by the server-rendered dashboard and `/api/dashboard/summary`, so browser-authenticated sessions can refresh live metrics if the server session is unavailable.
+
+Dashboard summary source:
+
+- Current organization: authenticated membership only.
+- Readiness: `calculateOverallCompletion(question_sections, question_items, question_answers)`.
+- Section completion: `calculateSectionCompletion(...)` per module.
+- Missing data: unanswered questionnaire items grouped by section.
+- Evidence required: evidence-required items that are still unanswered.
+- Documents/evidence links: organization-scoped `documents` and `document_links`; no storage IDs or private URLs are returned.
+
+Missing Data page behavior:
+
+- `/[locale]/dashboard/missing-data` is localized through `dashboard.missingData`.
+- The page uses live dashboard summary data, not mock cards or hardcoded percentages.
+- `Resolve gaps` / `Riješi nedostatke` routes to the first missing questionnaire section with `?section=<section_code>`, or the questionnaire overview if no section is known.
+- Secondary action routes to the documents page for evidence uploads.
+
+Manual QA:
+
+1. Log in as a supplier.
+2. Open `/hr/dashboard/questionnaire` and note completed/total, for example `31/100`.
+3. Open `/hr/dashboard` and confirm readiness and setup counts match the questionnaire.
+4. Confirm module completion shows real section values and the live-metrics fallback is not shown when data exists.
+5. Confirm missing data is not falsely `0` while sections remain incomplete.
+6. Click `Idi na nedostajuće podatke`.
+7. Confirm `/hr/dashboard/missing-data` uses Croatian copy.
+8. Click `Riješi nedostatke` and confirm it opens the questionnaire for a real missing section.
+9. Confirm no private document URLs, storage IDs, raw answer dumps, admin notes, or commercial notes are visible.
+
 ## Safe Logging Rules
 
 Allowed categories:

@@ -202,6 +202,25 @@
       "missingDataPoints": "Nedostajući podaci",
       "buyerRequests": "Zahtjevi kupaca",
       "createNewShareLink": "Kreiraj novi share link"
+    },
+    "missingData": {
+      "title": "Nedostajući podaci",
+      "subtitle": "Prioritizirajte otvorene nedostatke u dokazima i nedovršene odgovore prije pregleda kupca.",
+      "resolveGaps": "Riješi nedostatke",
+      "openGaps": "Otvoreni nedostaci",
+      "evidenceRequired": "Potrebni dokazi",
+      "buyerReadiness": "Spremnost za kupce",
+      "groupedByModule": "Nedostajući podaci grupirani su po modulu i važnosti.",
+      "taskAssignment": "Važni zahtjevi za dokazima spremni su za dodjelu zadatka.",
+      "closingGaps": "Zatvaranje ovih nedostataka poboljšat će Passport prije dijeljenja.",
+      "nextFocus": "Sljedeći fokus",
+      "loading": "Učitavanje živih podataka o nedostacima...",
+      "unavailable": "Živi podaci o nedostacima trenutno nisu dostupni.",
+      "noGapsTitle": "Nema otvorenih nedostataka u upitniku",
+      "noGapsDescription": "Trenutni podaci iz upitnika ne pokazuju nedostajuće odgovore.",
+      "items": "stavki",
+      "answerQuestions": "Odgovori na pitanja",
+      "uploadEvidence": "Učitaj dokaze"
     }
   },
   "questionnaire": {

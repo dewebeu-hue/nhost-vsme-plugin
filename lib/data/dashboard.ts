@@ -1,9 +1,15 @@
 import "server-only";
 
 import { getCurrentUser } from "@/lib/auth/session";
-import { getPrimaryOrganizationForUserWithAdmin } from "@/lib/data/organizations";
+import { getPrimaryOrganizationForUserWithAdmin, type OrganizationBasics } from "@/lib/data/organizations";
+import type { GraphqlJson } from "@/lib/data/questionnaire";
 import { executeHasuraGraphql } from "@/lib/graphql/client";
 import { getNhostGraphqlUrl } from "@/lib/nhost/config";
+import {
+  calculateOverallCompletion,
+  calculateSectionCompletion,
+  isQuestionAnswered,
+} from "@/lib/questionnaire-completion";
 
 type DashboardQuestionSection = {
   id: string;
@@ -15,11 +21,13 @@ type DashboardQuestionSection = {
 type DashboardQuestionItem = {
   id: string;
   section_id: string;
+  evidence_required: boolean;
 };
 
 type DashboardQuestionAnswer = {
   id: string;
   question_item_id: string;
+  value: GraphqlJson;
   status: string | null;
   updated_at: string | null;
 };
@@ -69,6 +77,7 @@ export type DashboardSectionProgress = {
   total: number;
   percent: number;
   missing: number;
+  evidenceRequiredMissing: number;
 };
 
 export type DashboardRecentUploadSummary = {
@@ -100,6 +109,7 @@ export type DashboardSetupSummary = {
   pdfAvailable: boolean;
   readinessPercent: number;
   missingItemsCount: number;
+  evidenceRequiredCount: number;
   lastUpdated: string | null;
   sectionProgress: DashboardSectionProgress[];
   missingSections: DashboardSectionProgress[];
@@ -120,6 +130,7 @@ const dashboardSetupDataQuery = `
     question_items(order_by: { sort_order: asc }) {
       id
       section_id
+      evidence_required
     }
     question_answers(
       where: { organization_id: { _eq: $organizationId } }
@@ -127,6 +138,7 @@ const dashboardSetupDataQuery = `
     ) {
       id
       question_item_id
+      value
       status
       updated_at
     }
@@ -194,6 +206,12 @@ export async function getDashboardSetupSummary(): Promise<DashboardSetupSummary 
     return null;
   }
 
+  return getDashboardSetupSummaryForOrganization(organization);
+}
+
+export async function getDashboardSetupSummaryForOrganization(
+  organization: OrganizationBasics,
+): Promise<DashboardSetupSummary> {
   const data = await executeHasuraGraphql<DashboardSetupDataResponse>(
     dashboardSetupDataQuery,
     { organizationId: organization.id },
@@ -212,7 +230,7 @@ export async function getDashboardSetupSummary(): Promise<DashboardSetupSummary 
 
   const completeAnswerQuestionIds = new Set(
     data.question_answers
-      .filter((answer) => isAnswerComplete(answer.status))
+      .filter((answer) => isQuestionAnswered(answer))
       .map((answer) => answer.question_item_id),
   );
   const questionsBySection = new Map<string, DashboardQuestionItem[]>();
@@ -224,23 +242,39 @@ export async function getDashboardSetupSummary(): Promise<DashboardSetupSummary 
   });
 
   const sectionProgress = data.question_sections.map((section) => {
+    const completion = calculateSectionCompletion(
+      section,
+      data.question_items,
+      data.question_answers,
+    );
     const questions = questionsBySection.get(section.id) ?? [];
-    const completed = questions.filter((question) => completeAnswerQuestionIds.has(question.id)).length;
-    const total = questions.length;
-    const percent = calculatePercent(completed, total);
+    const evidenceRequiredMissing = questions.filter((question) =>
+      question.evidence_required && !completeAnswerQuestionIds.has(question.id),
+    ).length;
 
     return {
       code: section.code,
       title: section.title,
-      completed,
-      total,
-      percent,
-      missing: Math.max(total - completed, 0),
+      completed: completion.answeredCount,
+      total: completion.totalCount,
+      percent: completion.percent,
+      missing: Math.max(completion.totalCount - completion.answeredCount, 0),
+      evidenceRequiredMissing,
     };
   });
-  const answeredQuestions = completeAnswerQuestionIds.size;
-  const totalQuestions = data.question_items.length;
+  const overallCompletion = calculateOverallCompletion(
+    data.question_sections,
+    data.question_items,
+    data.question_answers,
+  );
+  const answeredQuestions = overallCompletion.answeredCount;
+  const totalQuestions = overallCompletion.totalCount;
   const missingSections = sectionProgress.filter((section) => section.missing > 0);
+  const missingItemsCount = missingSections.reduce((sum, section) => sum + section.missing, 0);
+  const evidenceRequiredCount = sectionProgress.reduce(
+    (sum, section) => sum + section.evidenceRequiredMissing,
+    0,
+  );
   const latestAnswerDate = data.question_answers[0]?.updated_at ?? null;
   const latestDocumentDate = data.documents[0]?.created_at ?? null;
   const latestPassportDate =
@@ -255,13 +289,14 @@ export async function getDashboardSetupSummary(): Promise<DashboardSetupSummary 
     organizationName: organization.name,
     answeredQuestions,
     totalQuestions,
-    questionnairePercent: calculatePercent(answeredQuestions, totalQuestions),
+    questionnairePercent: overallCompletion.percent,
     documentsCount: data.documents.length,
     linkedEvidenceCount: links.document_links.length,
     activeShareLinkCount: activeShareLinks.length,
     pdfAvailable: totalQuestions > 0,
-    readinessPercent: calculatePercent(answeredQuestions, totalQuestions),
-    missingItemsCount: missingSections.reduce((sum, section) => sum + section.missing, 0),
+    readinessPercent: overallCompletion.percent,
+    missingItemsCount,
+    evidenceRequiredCount,
     lastUpdated,
     sectionProgress,
     missingSections: missingSections.slice(0, 5),
@@ -284,18 +319,6 @@ export async function getDashboardSetupSummary(): Promise<DashboardSetupSummary 
     }),
     source: "live",
   };
-}
-
-function isAnswerComplete(status: string | null) {
-  return status === "answered" || status === "completed" || status === "reviewed";
-}
-
-function calculatePercent(completed: number, total: number) {
-  if (!total) {
-    return 0;
-  }
-
-  return Math.round((completed / total) * 100);
 }
 
 function isShareLinkActive(link: DashboardShareLink) {

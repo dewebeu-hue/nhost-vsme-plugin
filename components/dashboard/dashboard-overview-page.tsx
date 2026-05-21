@@ -31,28 +31,32 @@ export function DashboardOverviewPage({
   setupSummary = null,
 }: DashboardOverviewPageProps) {
   const [welcomeName, setWelcomeName] = useState(labels.account);
-  const moduleCompletion = setupSummary?.sectionProgress.map((section) => ({
+  const [liveSetupSummary, setLiveSetupSummary] = useState<DashboardSetupSummary | null>(
+    setupSummary,
+  );
+  const summary = liveSetupSummary;
+  const moduleCompletion = summary?.sectionProgress.map((section) => ({
     name: section.title,
     completed: section.completed,
     total: section.total,
     percent: section.percent,
   })) ?? [];
   const missingDataSummary = {
-    total: setupSummary?.missingItemsCount ?? 0,
-    items: setupSummary?.missingSections.map((section) => ({
+    total: summary?.missingItemsCount ?? 0,
+    items: summary?.missingSections.map((section) => ({
       area: section.title,
       items: section.missing,
     })) ?? [],
   };
-  const tasks = createDashboardTasks(setupSummary, labels);
-  const readinessData = setupSummary
-    ? [{ day: labels.lastUpdated, readiness: setupSummary.readinessPercent }]
+  const tasks = createDashboardTasks(summary, labels);
+  const readinessData = summary
+    ? [{ day: labels.lastUpdated, readiness: summary.readinessPercent }]
     : [];
 
   useEffect(() => {
     let cancelled = false;
 
-    async function loadUserName() {
+    async function loadBrowserSessionData() {
       const session = await getFreshBrowserNhostSession();
       const user = session?.user as
         | {
@@ -62,14 +66,39 @@ export function DashboardOverviewPage({
           }
         | undefined;
 
-      if (!user || cancelled) {
+      if (user && !cancelled) {
+        setWelcomeName(getUserSafeLabel(user, labels.account));
+      }
+
+      if (!session?.accessToken || cancelled) {
         return;
       }
 
-      setWelcomeName(getUserSafeLabel(user, labels.account));
+      try {
+        const response = await fetch("/api/dashboard/summary", {
+          headers: {
+            authorization: `Bearer ${session.accessToken}`,
+          },
+          cache: "no-store",
+        });
+
+        if (!response.ok || cancelled) {
+          return;
+        }
+
+        const payload = (await response.json()) as {
+          summary?: DashboardSetupSummary | null;
+        };
+
+        if (payload.summary && !cancelled) {
+          setLiveSetupSummary(payload.summary);
+        }
+      } catch {
+        // Keep the server-rendered summary or neutral fallback.
+      }
     }
 
-    void loadUserName();
+    void loadBrowserSessionData();
 
     return () => {
       cancelled = true;
@@ -85,9 +114,9 @@ export function DashboardOverviewPage({
 
       <section className="grid gap-6 xl:grid-cols-[1.15fr_0.95fr_0.8fr]">
         <OverallReadinessCard
-          readiness={setupSummary?.readinessPercent ?? 0}
-          label={getReadinessLabel(setupSummary?.readinessPercent ?? 0, labels)}
-          lastUpdated={formatDate(setupSummary?.lastUpdated, labels)}
+          readiness={summary?.readinessPercent ?? 0}
+          label={getReadinessLabel(summary?.readinessPercent ?? 0, labels)}
+          lastUpdated={formatDate(summary?.lastUpdated, labels)}
           modules={moduleCompletion}
           labels={labels}
         />
@@ -105,14 +134,14 @@ export function DashboardOverviewPage({
       </section>
 
       <SupplierPassportSetupCard
-        summary={setupSummary}
+        summary={summary}
         labels={labels}
         localePrefix={localePrefix}
       />
 
       <section className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
         <BuyerRequestsCard requests={[]} labels={labels} />
-        <RecentUploadsCard uploads={setupSummary?.recentUploads ?? []} labels={labels} />
+        <RecentUploadsCard uploads={summary?.recentUploads ?? []} labels={labels} />
       </section>
 
       <section className="grid gap-6 xl:grid-cols-[0.95fr_1.05fr]">
@@ -121,14 +150,14 @@ export function DashboardOverviewPage({
           data={readinessData}
           improvementText={labels.readinessHelper}
           rangeLabel={labels.lastUpdated}
-          endValue={setupSummary?.readinessPercent ?? 0}
+          endValue={summary?.readinessPercent ?? 0}
           labels={labels}
         />
       </section>
 
       <section className="grid gap-6 xl:grid-cols-[1fr_1fr]">
-        <ActiveShareLinksCard links={setupSummary?.activeShareLinks ?? []} labels={labels} />
-        <RecentActivityCard activity={setupSummary?.recentActivity ?? []} labels={labels} />
+        <ActiveShareLinksCard links={summary?.activeShareLinks ?? []} labels={labels} />
+        <RecentActivityCard activity={summary?.recentActivity ?? []} labels={labels} />
       </section>
     </div>
   );

@@ -202,6 +202,25 @@
       "missingDataPoints": "Fehlende Datenpunkte",
       "buyerRequests": "Buyer Requests",
       "createNewShareLink": "Neuen Share Link erstellen"
+    },
+    "missingData": {
+      "title": "Fehlende Daten",
+      "subtitle": "Priorisieren Sie offene Nachweislücken und unvollständige Fragebogenantworten vor der Käuferprüfung.",
+      "resolveGaps": "Lücken schließen",
+      "openGaps": "Offene Lücken",
+      "evidenceRequired": "Nachweise erforderlich",
+      "buyerReadiness": "Käuferbereitschaft",
+      "groupedByModule": "Fehlende Datenpunkte sind nach Modul und Wichtigkeit gruppiert.",
+      "taskAssignment": "Wichtige Nachweisanfragen sind für die Aufgabenverteilung vorbereitet.",
+      "closingGaps": "Das Schließen dieser Lücken verbessert den Passport vor der Freigabe.",
+      "nextFocus": "Nächster Fokus",
+      "loading": "Live-Daten zu Lücken werden geladen...",
+      "unavailable": "Live-Daten zu Lücken sind derzeit nicht verfügbar.",
+      "noGapsTitle": "Keine offenen Fragebogenlücken",
+      "noGapsDescription": "Die aktuellen Fragebogendaten zeigen keine fehlenden Antworten.",
+      "items": "Einträge",
+      "answerQuestions": "Fragen beantworten",
+      "uploadEvidence": "Nachweise hochladen"
     }
   },
   "questionnaire": {

@@ -202,6 +202,25 @@
       "missingDataPoints": "Missing data points",
       "buyerRequests": "Buyer requests",
       "createNewShareLink": "Create new share link"
+    },
+    "missingData": {
+      "title": "Missing Data",
+      "subtitle": "Prioritize open evidence gaps and incomplete questionnaire answers before buyer review.",
+      "resolveGaps": "Resolve gaps",
+      "openGaps": "Open gaps",
+      "evidenceRequired": "Evidence required",
+      "buyerReadiness": "Buyer readiness",
+      "groupedByModule": "Missing data points are grouped by module and severity.",
+      "taskAssignment": "High-impact evidence requests are ready for task assignment.",
+      "closingGaps": "Closing these gaps will improve the passport before sharing.",
+      "nextFocus": "Next focus",
+      "loading": "Loading live missing data...",
+      "unavailable": "Live missing data is not available right now.",
+      "noGapsTitle": "No open questionnaire gaps",
+      "noGapsDescription": "Current questionnaire data does not show missing answers.",
+      "items": "items",
+      "answerQuestions": "Answer questions",
+      "uploadEvidence": "Upload evidence"
     }
   },
   "questionnaire": {
