@@ -3625,12 +3625,41 @@ Use this checklist to close the guided onboarding pack before first-customer pro
 - Next admin action should move from Company Basics to evidence upload, evidence linking, Passport review, handoff preparation, then ready state as data is completed.
 - The panel is internal guidance only; it is not certification, approval, audit, assurance, email sending, or impersonation.
 
+### Public request-information CTA QA
+
+- `/hr/passport/[token]` should open a `Zatražite dodatne informacije` dialog from the public CTA; `/en/passport/[token]` should open `Request additional information`.
+- The dialog copies a safe manual request message only. It must not send email, create buyer accounts, submit a backend request, or expose private evidence file URLs.
+- The copied text may include the supplier organization name and current public Passport URL. It must not include storage IDs, raw answers, admin notes, commercial notes, cookies, JWTs, secrets, or private document paths.
+- Clipboard failure must show the localized safe error instead of silently doing nothing.
+
+### Admin dark mode QA
+
+- Admin dark mode uses `#002B36` as the base background and remains scoped to `/admin`.
+- Topbar controls, account pill, `Natrag na dashboard`, `Svijetli način`, `Odjava`, `Natrag na organizacije`, and `Pogledaj organizacije` must be readable before hover.
+- Forms, selects, textareas, badges, risk cards, organization list actions, and organization detail actions must remain readable in dark mode.
+- Switching back to light mode should preserve the existing light admin appearance.
+- Supplier dashboard, public Passport, buyer portal, landing, and plans must not inherit admin dark mode.
+
 ### Localization and deferred items
 
 - Production-facing onboarding copy is English and Croatian.
 - Croatian rendered UI must not show broken strings such as `dobavlja?`, `Zatra?`, `sa?etak`, `omogu?`, `pra?`, `vi?e`, `ra?un`, or `Saćetak`.
 - German remains hidden from visible switchers until translation QA is complete.
 - Deferred: persistent cross-device tour state, admin manual checklist persistence, email/CRM automation, buyer accounts, billing, AI, XBRL, and full German production launch.
+
+### Final first-customer smoke test
+
+1. Clear `supplierPassportTour:v1:completed`, `supplierPassportTour:v1:dismissed`, and `supplierPassportTour:v1:step` for the supplier test browser.
+2. Log in as a supplier and open `/hr/dashboard`.
+3. Start the guided tour, complete several steps across dashboard, questionnaire, documents, Passport, and share routes, then test Back, Next, Skip, Finish, Close, and Restart.
+4. Confirm the tour does not auto-start after completion or skip.
+5. Test help cards and terminology tooltips on questionnaire, documents, Passport, share, company profile, and buyer request pages.
+6. Test the quick-start checklist CTAs, especially Company Basics opening `/hr/dashboard/questionnaire?section=company_basics`.
+7. Open `/hr/passport/[token]`, click `Zatraži dodatne informacije`, copy the message, and confirm only buyer-safe public-link text is included.
+8. Log in as admin, open `/hr/admin/organizations/[id]`, and verify the first-customer onboarding checklist.
+9. Enable admin dark mode and verify controls are readable without hover.
+10. Quick-check the equivalent `/en` routes.
+11. Confirm no private URLs, storage IDs, raw sensitive answers, admin notes, commercial notes, secrets, or share-token logs are exposed.
 
 ## Admin Workspace Dark Mode
 
