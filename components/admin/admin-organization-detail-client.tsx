@@ -358,7 +358,7 @@ export function AdminOrganizationDetailClient({
       <div className="flex flex-col gap-4">
         <Link
           href={`/${locale}/admin/organizations`}
-          className={cn(buttonVariants({ variant: "ghost" }), "w-fit")}
+          className={cn(buttonVariants({ variant: "ghost" }), "admin-ghost-link w-fit")}
         >
           <ArrowLeft data-icon="inline-start" />
           {labels.backToOrganizations}
@@ -441,11 +441,11 @@ export function AdminOrganizationDetailClient({
             <p className="mt-1 max-w-3xl text-sm leading-6 text-slate-600">{labels.internalUseOnly}</p>
           </div>
           <div className="flex flex-wrap gap-2">
-            <Button type="button" variant="outline" className="w-fit rounded-xl bg-white" onClick={handleCopyHandoffSummary}>
+            <Button type="button" variant="outline" className="admin-secondary-action w-fit rounded-xl bg-white" onClick={handleCopyHandoffSummary}>
               <ClipboardCopy data-icon="inline-start" />
               {labels.copyHandoffSummary}
             </Button>
-            <Button type="button" variant="outline" className="w-fit rounded-xl bg-white" onClick={handleDownloadHandoffSummary}>
+            <Button type="button" variant="outline" className="admin-secondary-action w-fit rounded-xl bg-white" onClick={handleDownloadHandoffSummary}>
               <Download data-icon="inline-start" />
               {labels.downloadHandoffTxt}
             </Button>
@@ -915,7 +915,7 @@ export function AdminOrganizationDetailClient({
                   onClick={handleReviewedClick}
                   disabled={isSaving}
                   variant="outline"
-                  className="w-fit rounded-xl bg-white"
+                  className="admin-secondary-action w-fit rounded-xl bg-white"
                 >
                   {labels.markReviewed}
                 </Button>

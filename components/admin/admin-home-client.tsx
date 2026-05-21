@@ -100,7 +100,7 @@ function AdminHomeCard({
       <p className="mt-2 text-sm leading-6 text-slate-600">{description}</p>
       <Link
         href={href}
-        className={cn(buttonVariants({ variant: "outline" }), "mt-5 w-fit rounded-xl bg-white")}
+        className={cn(buttonVariants({ variant: "outline" }), "admin-secondary-action mt-5 w-fit rounded-xl bg-white")}
       >
         {action}
       </Link>

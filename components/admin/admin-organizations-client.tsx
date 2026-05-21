@@ -218,7 +218,7 @@ export function AdminOrganizationsClient({ labels = defaultAdminLabels }: AdminO
         </div>
         <Link
           href={`/${locale}/admin`}
-          className={cn(buttonVariants({ variant: "outline" }), "h-11 w-fit rounded-xl bg-white")}
+          className={cn(buttonVariants({ variant: "outline" }), "admin-secondary-action h-11 w-fit rounded-xl bg-white")}
         >
           {labels.adminWorkspace}
         </Link>
@@ -384,7 +384,7 @@ export function AdminOrganizationsClient({ labels = defaultAdminLabels }: AdminO
                 <Button
                   type="button"
                   variant="outline"
-                  className="mt-4 w-fit rounded-xl bg-white"
+                  className="admin-secondary-action mt-4 w-fit rounded-xl bg-white"
                   onClick={() => setPortfolioFilter(summary.filterValue)}
                 >
                   {labels.viewOrganizations}
@@ -503,7 +503,7 @@ export function AdminOrganizationsClient({ labels = defaultAdminLabels }: AdminO
                   </Badge>
                   <Link
                     href={`/${locale}/admin/organizations/${organization.id}`}
-                    className={cn(buttonVariants({ variant: "outline" }), "w-fit rounded-xl bg-white")}
+                    className={cn(buttonVariants({ variant: "outline" }), "admin-secondary-action w-fit rounded-xl bg-white")}
                   >
                     {labels.openDetail}
                     <ArrowRight data-icon="inline-end" />

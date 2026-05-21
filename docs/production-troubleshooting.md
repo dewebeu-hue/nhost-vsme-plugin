@@ -3640,18 +3640,20 @@ The Admin / Concierge workspace has an admin-only appearance toggle in the admin
 - The preference is browser-local only; no database migration or server-side preference storage is required.
 - The dark theme is scoped to the admin layout wrapper and must not affect supplier dashboard, public Passport, buyer portal, landing, or plans routes.
 - The toggle labels are localized as `Dark mode` / `Light mode` and `Tamni način` / `Svijetli način`.
+- Admin secondary actions, ghost links, topbar controls, account pills, forms, and badges must be readable in dark mode before hover. Use admin-scoped contrast classes rather than changing shared supplier/public components.
 - Admin forms, selects, textareas, risk cards, organization lists, and organization detail cards must remain readable and usable in both themes.
 
 Manual QA:
 
 1. Open `/hr/admin/organizations`.
 2. Click `Tamni način` and confirm the admin workspace uses the `#002B36`-style dark background, not pure black.
-3. Refresh and confirm the preference persists.
-4. Open `/hr/admin/organizations/[id]` and confirm commercial classification, assisted portfolio, onboarding, concierge, and checklist cards remain readable.
-5. Save one non-sensitive admin field and confirm the existing save flow still works.
-6. Open `/hr/admin/risks` and confirm risk cards, search, badges, and detail links remain readable.
-7. Switch back to `Svijetli način`.
-8. Open `/hr/dashboard`, public Passport, and buyer portal routes and confirm they did not inherit admin dark mode.
+3. Confirm sidebar links, `Natrag na dashboard`, `Svijetli način`, the account pill, and `Odjava` are readable without hover.
+4. Refresh and confirm the preference persists.
+5. Open `/hr/admin/organizations/[id]` and confirm `Natrag na organizacije`, commercial classification, assisted portfolio, onboarding, concierge, form controls, and checklist cards remain readable.
+6. Save one non-sensitive admin field and confirm the existing save flow still works.
+7. Open `/hr/admin/risks` and confirm `Pogledaj organizacije`, risk cards, search, badges, and detail links remain readable.
+8. Switch back to `Svijetli način`.
+9. Open `/hr/dashboard`, public Passport, and buyer portal routes and confirm they did not inherit admin dark mode.
 
 ## Safe Logging Rules
 

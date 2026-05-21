@@ -77,12 +77,12 @@ export function AdminAccountControls({ labels = defaultAdminLabels }: { labels?:
     <div className="flex flex-wrap items-center justify-end gap-3">
       <Link
         href={`/${locale}/dashboard`}
-        className={cn(buttonVariants({ variant: "outline" }), "rounded-xl bg-white")}
+        className={cn(buttonVariants({ variant: "outline" }), "admin-secondary-action rounded-xl bg-white")}
       >
         {labels.backToDashboard}
       </Link>
       <AdminThemeToggle labels={labels} />
-      <div className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-3 py-2">
+      <div className="admin-account-pill flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-3 py-2">
         <Avatar className="size-9 border border-slate-200">
           <AvatarFallback>{initials}</AvatarFallback>
         </Avatar>
@@ -96,7 +96,7 @@ export function AdminAccountControls({ labels = defaultAdminLabels }: { labels?:
       <Button
         type="button"
         variant="outline"
-        className="rounded-xl bg-white"
+        className="admin-secondary-action rounded-xl bg-white"
         onClick={() => void handleSignOut()}
       >
         <LogOut data-icon="inline-start" />

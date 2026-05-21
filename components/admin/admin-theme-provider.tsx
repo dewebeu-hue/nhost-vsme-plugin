@@ -80,7 +80,7 @@ export function AdminThemeToggle({
     <Button
       type="button"
       variant="outline"
-      className="rounded-xl bg-white"
+      className="admin-secondary-action rounded-xl bg-white"
       aria-label={ariaLabel}
       onClick={() => setTheme(nextTheme)}
     >

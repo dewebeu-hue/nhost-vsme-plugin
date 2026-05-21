@@ -45,7 +45,7 @@ export function AdminPlaceholder({
           <p className="max-w-2xl text-sm leading-6 text-slate-600">
             {mockNote ?? note}
           </p>
-          <Button variant="outline" className="w-fit rounded-xl bg-white">
+          <Button variant="outline" className="admin-secondary-action w-fit rounded-xl bg-white">
             <Link href={openOrganizationsHref} className="inline-flex items-center gap-1.5">
               {openOrganizationsLabel}
               <ArrowRight data-icon="inline-end" />

@@ -98,7 +98,7 @@ export function AdminRisksClient({ labels = defaultAdminLabels }: { labels?: Adm
         </div>
         <Link
           href={`/${locale}/admin/organizations`}
-          className={cn(buttonVariants({ variant: "outline" }), "h-11 w-fit rounded-xl bg-white")}
+          className={cn(buttonVariants({ variant: "outline" }), "admin-secondary-action h-11 w-fit rounded-xl bg-white")}
         >
           {labels.viewOrganizations}
         </Link>
@@ -158,7 +158,7 @@ export function AdminRisksClient({ labels = defaultAdminLabels }: { labels?: Adm
                   </div>
                   <Link
                     href={`/${locale}/admin/organizations/${risk.organizationId}`}
-                    className={cn(buttonVariants({ variant: "outline" }), "w-fit rounded-xl bg-white")}
+                    className={cn(buttonVariants({ variant: "outline" }), "admin-secondary-action w-fit rounded-xl bg-white")}
                   >
                     {labels.openDetail}
                     <ArrowRight data-icon="inline-end" />
