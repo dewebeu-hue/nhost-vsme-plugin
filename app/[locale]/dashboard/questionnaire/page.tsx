@@ -7,10 +7,12 @@ import {
 
 type QuestionnairePageProps = {
   params: Promise<{ locale: string }>;
+  searchParams?: Promise<{ section?: string | string[] }>;
 };
 
-export default async function QuestionnairePage({ params }: QuestionnairePageProps) {
+export default async function QuestionnairePage({ params, searchParams }: QuestionnairePageProps) {
   const { locale } = await params;
+  const query = await searchParams;
   setRequestLocale(locale);
   const messages = (await getMessages()) as { questionnaire?: Partial<QuestionnaireLabels> };
   const source = messages.questionnaire ?? {};
@@ -36,5 +38,12 @@ export default async function QuestionnairePage({ params }: QuestionnairePagePro
     documentTypes: { ...defaultQuestionnaireLabels.documentTypes, ...source.documentTypes },
   };
 
-  return <QuestionnairePageClient labels={labels} />;
+  return <QuestionnairePageClient labels={labels} initialSectionCode={readSectionParam(query)} />;
+}
+
+function readSectionParam(searchParams?: { section?: string | string[] }) {
+  const value = searchParams?.section;
+  const section = Array.isArray(value) ? value[0] : value;
+
+  return typeof section === "string" && section.trim() ? section.trim() : undefined;
 }

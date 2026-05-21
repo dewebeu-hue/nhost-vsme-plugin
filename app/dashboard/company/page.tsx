@@ -36,15 +36,27 @@ export async function CompanyProfilePageContent({
   const companyProfile = organization
     ? await getCompanyProfileForOrganization(organization.id).catch(() => null)
     : null;
+  const profile = companyProfile?.profile ?? null;
+  const questionnaireProfile = companyProfile?.questionnaire ?? null;
 
-  const legalName = companyProfile?.legal_name || organization?.name || "";
-  const industry =
-    organization?.industry ||
-    companyProfile?.industries?.filter(Boolean).join(", ") ||
+  const legalName =
+    questionnaireProfile?.legalName ||
+    profile?.legal_name ||
+    organization?.name ||
     "";
-  const location = [organization?.headquarters_city, organization?.headquarters_country]
+  const industry =
+    questionnaireProfile?.industry ||
+    organization?.industry ||
+    profile?.industries?.filter(Boolean).join(", ") ||
+    "";
+  const location = [
+    questionnaireProfile?.locationCity || organization?.headquarters_city,
+    questionnaireProfile?.locationCountry || organization?.headquarters_country,
+  ]
     .filter(Boolean)
     .join(", ");
+  const employeeCount =
+    questionnaireProfile?.employeeCount || organization?.employee_count_range || "";
 
   return (
     <div className="mx-auto w-full max-w-7xl">
@@ -53,7 +65,7 @@ export async function CompanyProfilePageContent({
         subtitle={labels.subtitle}
         action={
           <Link
-            href={`${localePrefix}/dashboard/questionnaire`}
+            href={`${localePrefix}/dashboard/questionnaire?section=company_basics`}
             className={cn(buttonVariants(), "shadow-lg shadow-blue-600/15")}
           >
             {labels.updateInQuestionnaire}
@@ -96,14 +108,14 @@ export async function CompanyProfilePageContent({
         />
         <ProfileCard
           title={labels.employeeCount}
-          value={organization?.employee_count_range}
+          value={employeeCount}
           description={labels.supplierProfile}
           fallback={labels.notProvided}
           icon={Users}
         />
         <ProfileCard
           title={labels.website}
-          value={companyProfile?.website}
+          value={profile?.website}
           description={labels.supplierProfile}
           fallback={labels.notProvided}
           icon={Globe2}

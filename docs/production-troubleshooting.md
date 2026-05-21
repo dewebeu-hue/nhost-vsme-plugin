@@ -2773,6 +2773,35 @@ Manual QA:
 9. Confirm no broken Croatian characters, English fallback in Croatian UI, mock supplier list, private URLs, storage IDs, raw answers, or dead navigation.
 10. Repeat quick checks on `/en` and `/de`.
 
+## Faza 4.1.1 Korak 1 - Company Profile Mapping and Questionnaire Deep Link
+
+Company Profile combines the authenticated user's current organization record, the optional `company_profiles` row, and a narrow allowlist of questionnaire answers from `question_answers`.
+
+Mapped questionnaire codes:
+
+- `company_legal_name` -> Legal company name.
+- `company_city` + `company_country` -> Location.
+- `company_main_activity` -> Industry.
+- `employees_total_headcount` -> Employee count.
+
+Organization name still comes from `organizations.name`. Website still comes from `company_profiles.website` because the current `company_basics` taxonomy does not define a website question.
+
+Questionnaire deep-link behavior:
+
+- Company Profile's update button links to `/[locale]/dashboard/questionnaire?section=company_basics`.
+- The questionnaire opens Company Basics / Osnovni podaci / Unternehmensdaten for `section=company_basics`.
+- Invalid section parameters fall back to the first live questionnaire section instead of crashing.
+
+Manual QA:
+
+1. Login as a supplier with completed Company Basics / Osnovni podaci answers.
+2. Open `/hr/dashboard/company-profile`.
+3. Confirm legal name, location, industry, and employee count reflect real questionnaire answers where provided.
+4. Confirm missing fields show `Još nije uneseno`/localized fallback, not mock company data.
+5. Click `Ažuriraj u upitniku`.
+6. Confirm `/hr/dashboard/questionnaire?section=company_basics` opens Osnovni podaci, not Energija.
+7. Repeat quick checks for `/en/dashboard/questionnaire?section=company_basics` and `/de/dashboard/questionnaire?section=company_basics`.
+
 ## Safe Logging Rules
 
 Allowed categories:

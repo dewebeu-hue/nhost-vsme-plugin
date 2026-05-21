@@ -263,7 +263,7 @@ export async function GET(request: Request) {
   }
 
   const url = new URL(request.url);
-  const sectionCode = url.searchParams.get("sectionCode")?.trim() || "energy";
+  const requestedSectionCode = url.searchParams.get("sectionCode")?.trim() || "energy";
 
   logSafeDiagnostic("organization_id_resolved", {
     organizationIdResolved: true,
@@ -320,7 +320,9 @@ export async function GET(request: Request) {
     ...link,
     document: documentMap.get(link.document_id) ?? null,
   }));
-  const activeSection = sections.find((section) => section.code === sectionCode);
+  const activeSection =
+    sections.find((section) => section.code === requestedSectionCode) ?? sections[0];
+  const activeSectionCode = activeSection?.code ?? requestedSectionCode;
   const questions = activeSection
     ? items.filter((item) => item.section_id === activeSection.id)
     : items;
@@ -337,7 +339,7 @@ export async function GET(request: Request) {
       id: organizationResult.organizationId,
     },
     organizationId: organizationResult.organizationId,
-    activeSectionCode: sectionCode,
+    activeSectionCode,
     sections,
     items,
     questions,

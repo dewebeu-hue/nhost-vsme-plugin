@@ -182,6 +182,7 @@ type ActiveSectionState = {
 
 type QuestionnairePageClientProps = {
   labels?: QuestionnaireLabels;
+  initialSectionCode?: string;
 };
 
 const defaultActiveSectionCode = "energy";
@@ -206,6 +207,7 @@ const documentTypeLabels: Record<LiveDocumentType, EvidenceRoomDocument["type"]>
 
 export function QuestionnairePageClient({
   labels = defaultQuestionnaireLabels,
+  initialSectionCode,
 }: QuestionnairePageClientProps) {
   const locale = useLocale();
   const router = useRouter();
@@ -213,7 +215,9 @@ export function QuestionnairePageClient({
   const [isSaving, setIsSaving] = useState(false);
   const [message, setMessage] = useState<MessageState | null>(null);
   const [organizationId, setOrganizationId] = useState<string | null>(null);
-  const [selectedSectionCode, setSelectedSectionCode] = useState(defaultActiveSectionCode);
+  const [selectedSectionCode, setSelectedSectionCode] = useState(
+    () => normalizeSectionCode(initialSectionCode) ?? defaultActiveSectionCode,
+  );
   const [sections, setSections] = useState<QuestionnaireSectionProgress[]>(
     questionnaireSectionProgress,
   );
@@ -324,17 +328,18 @@ export function QuestionnairePageClient({
           nextDocumentLinks,
           labels,
         );
+        const activePayloadSectionCode = payload.activeSectionCode || selectedSectionCode;
         const nextSections = mapLiveSections(
           payload.sections ?? [],
           allLiveItems,
           payload.answers ?? [],
-          selectedSectionCode,
+          activePayloadSectionCode,
         );
         const currentSection = payload.sections?.find(
-          (section) => section.code === selectedSectionCode,
+          (section) => section.code === activePayloadSectionCode,
         );
         const currentProgress = nextSections.find(
-          (section) => section.id === selectedSectionCode,
+          (section) => section.id === activePayloadSectionCode,
         );
 
         if (!nextQuestions.length || !currentSection) {
@@ -347,6 +352,9 @@ export function QuestionnairePageClient({
 
         setOrganizationId(payload.organization.id);
         setLiveMode(true);
+        if (activePayloadSectionCode !== selectedSectionCode) {
+          setSelectedSectionCode(activePayloadSectionCode);
+        }
         setLiveSections(payload.sections ?? []);
         setSections(nextSections);
         setQuestions(nextQuestions);
@@ -1285,6 +1293,16 @@ function getQuestionLabel(item: QuestionItemRecord, labels: QuestionnaireLabels)
     labels.questionPrompts[questionCodeLabelKeys[item.code]] ??
     item.title
   );
+}
+
+function normalizeSectionCode(value: string | undefined) {
+  if (!value) {
+    return null;
+  }
+
+  const trimmed = value.trim();
+
+  return /^[a-z0-9_ -]+$/i.test(trimmed) ? trimmed : null;
 }
 
 function linkedDocumentsForAnswer(answerId: string, links: DocumentLinkRecord[]) {
