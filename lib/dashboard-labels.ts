@@ -337,7 +337,7 @@ export const defaultDashboardOverviewLabels: DashboardOverviewLabels = {
     reviewAndShareNext: "Review your Supplier Passport and share it with buyers.",
     downloadOrShareNext: "Download your PDF draft or share the public link.",
     neutralFallback:
-      "Live dashboard metrics will appear after your organization data is available.",
+      "Dashboard metrics will appear after your organization data is available.",
     questionsAnswered: "Questions answered",
     documentsUploaded: "Documents uploaded",
     evidenceLinks: "Evidence links",

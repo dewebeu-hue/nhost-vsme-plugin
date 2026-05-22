@@ -9,7 +9,6 @@ import { OverallReadinessCard } from "@/components/dashboard/overall-readiness-c
 import { ReadinessChartCard } from "@/components/dashboard/readiness-chart-card";
 import { RecentActivityCard } from "@/components/dashboard/recent-activity-card";
 import { RecentUploadsCard } from "@/components/dashboard/recent-uploads-card";
-import { SupplierPassportSetupCard } from "@/components/dashboard/supplier-passport-setup-card";
 import { TasksCard } from "@/components/dashboard/tasks-card";
 import { PageHeader } from "@/components/layout/page-header";
 import { ContextualHelpCard } from "@/components/onboarding/contextual-help";
@@ -140,7 +139,7 @@ export function DashboardOverviewPage({
           />
           <RecentActivityCard activity={summary?.recentActivity ?? []} labels={labels} compact />
           <BuyerRequestsCard
-            requests={[]}
+            requests={summary?.recentBuyerRequests ?? []}
             labels={labels}
             localePrefix={localePrefix}
             compact
@@ -155,11 +154,6 @@ export function DashboardOverviewPage({
       </section>
 
       <FirstPassportChecklistCard
-        summary={summary}
-        labels={labels}
-        localePrefix={localePrefix}
-      />
-      <SupplierPassportSetupCard
         summary={summary}
         labels={labels}
         localePrefix={localePrefix}

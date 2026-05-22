@@ -168,10 +168,12 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
       "Not started": statuses("notStarted"),
       "In progress": statuses("inProgress"),
       Completed: statuses("completed"),
+      Requested: statuses("requested"),
       Reviewed: statuses("reviewed"),
       Uploaded: statuses("uploaded"),
       Linked: statuses("linked"),
       Active: statuses("active"),
+      Shared: statuses("shared"),
     },
   };
   const setupSummary = await getDashboardSetupSummary().catch(() => null);

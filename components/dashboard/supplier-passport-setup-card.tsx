@@ -158,7 +158,7 @@ function createSetupItems(
       cta: setup.completeQuestionnaireCta,
       href: `${localePrefix}/dashboard/questionnaire`,
       completed: total > 0 && answered > 0,
-      metric: total > 0 ? `${answered}/${total}` : `0/0`,
+      metric: total > 0 ? `${answered}/${total}` : "--",
       icon: FileText,
     },
     {
@@ -224,7 +224,7 @@ function createMetrics(summary: DashboardSetupSummary | null, labels: DashboardO
   return [
     {
       label: setup.questionsAnswered,
-      value: summary ? `${summary.answeredQuestions}/${summary.totalQuestions}` : "0/0",
+      value: summary ? `${summary.answeredQuestions}/${summary.totalQuestions}` : "--",
     },
     { label: setup.documentsUploaded, value: String(summary?.documentsCount ?? 0) },
     { label: setup.evidenceLinks, value: String(summary?.linkedEvidenceCount ?? 0) },

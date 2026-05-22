@@ -4,10 +4,11 @@ import { DashboardStatusPill } from "@/components/dashboard/dashboard-status-pil
 import { defaultDashboardOverviewLabels, type DashboardOverviewLabels } from "@/lib/dashboard-labels";
 
 type DashboardBuyerRequest = {
+  id: string;
   buyer: string;
   module: string;
-  status: "In progress" | "Requested" | "Not started";
-  dueDate: string;
+  status: "In progress" | "Requested" | "Not started" | "Shared" | "Completed";
+  dueDate: string | null;
 };
 
 type BuyerRequestsCardProps = {
@@ -21,6 +22,8 @@ const statusTone: Record<DashboardBuyerRequest["status"], "blue" | "amber" | "sl
   "In progress": "blue",
   Requested: "amber",
   "Not started": "slate",
+  Shared: "blue",
+  Completed: "slate",
 };
 
 export function BuyerRequestsCard({
@@ -45,7 +48,11 @@ export function BuyerRequestsCard({
     >
       <div className="flex flex-col divide-y divide-slate-100">
         {requests.length ? requests.slice(0, compact ? 3 : requests.length).map((request) => (
-          <div key={`${request.buyer}-${request.dueDate}`} className="grid gap-3 py-3 first:pt-0 last:pb-0 sm:grid-cols-[1fr_auto]">
+          <Link
+            key={request.id}
+            href={`${localePrefix}/dashboard/buyer-requests/${request.id}`}
+            className="grid gap-3 py-3 transition first:pt-0 last:pb-0 hover:bg-blue-50/40 sm:grid-cols-[1fr_auto]"
+          >
             <div>
               <p className="font-semibold text-slate-950">{request.buyer}</p>
               <p className="mt-1 text-sm text-slate-500">{request.module}</p>
@@ -54,11 +61,13 @@ export function BuyerRequestsCard({
               <DashboardStatusPill tone={statusTone[request.status]}>
                 {labels.statuses[request.status] ?? request.status}
               </DashboardStatusPill>
-              <span className="text-sm font-medium text-slate-500">
-                {labels.due} {request.dueDate}
-              </span>
+              {request.dueDate ? (
+                <span className="text-sm font-medium text-slate-500">
+                  {labels.due} {formatDate(request.dueDate)}
+                </span>
+              ) : null}
             </div>
-          </div>
+          </Link>
         )) : (
           <p className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-500">
             {labels.noBuyerRequests}
@@ -67,4 +76,12 @@ export function BuyerRequestsCard({
       </div>
     </SectionCard>
   );
+}
+
+function formatDate(value: string) {
+  return new Intl.DateTimeFormat(undefined, {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  }).format(new Date(value));
 }

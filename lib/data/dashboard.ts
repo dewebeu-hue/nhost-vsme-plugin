@@ -52,6 +52,16 @@ type DashboardSupplierPassport = {
   generated_at: string | null;
 };
 
+type DashboardBuyerRequest = {
+  id: string;
+  buyer_name: string;
+  request_title: string;
+  due_date: string | null;
+  status: string;
+  updated_at: string | null;
+  created_at: string | null;
+};
+
 type DashboardSetupDataResponse = {
   question_sections: DashboardQuestionSection[];
   question_items: DashboardQuestionItem[];
@@ -59,6 +69,7 @@ type DashboardSetupDataResponse = {
   documents: DashboardDocument[];
   share_links: DashboardShareLink[];
   supplier_passports: DashboardSupplierPassport[];
+  buyer_requests: DashboardBuyerRequest[];
 };
 
 type DashboardDocumentLinksResponse = {
@@ -98,6 +109,14 @@ export type DashboardActivitySummary = {
   count: number;
 };
 
+export type DashboardBuyerRequestSummary = {
+  id: string;
+  buyer: string;
+  module: string;
+  status: "In progress" | "Requested" | "Not started" | "Shared" | "Completed";
+  dueDate: string | null;
+};
+
 export type DashboardSetupSummary = {
   organizationName: string;
   answeredQuestions: number;
@@ -115,6 +134,7 @@ export type DashboardSetupSummary = {
   missingSections: DashboardSectionProgress[];
   recentUploads: DashboardRecentUploadSummary[];
   activeShareLinks: DashboardActiveShareLinkSummary[];
+  recentBuyerRequests: DashboardBuyerRequestSummary[];
   recentActivity: DashboardActivitySummary[];
   source: "live" | "unavailable";
 };
@@ -168,6 +188,19 @@ const dashboardSetupDataQuery = `
       id
       generated_at
       updated_at
+    }
+    buyer_requests(
+      where: { organization_id: { _eq: $organizationId } }
+      order_by: [{ updated_at: desc_nulls_last }, { created_at: desc }]
+      limit: 5
+    ) {
+      id
+      buyer_name
+      request_title
+      due_date
+      status
+      updated_at
+      created_at
     }
   }
 `;
@@ -311,6 +344,13 @@ export async function getDashboardSetupSummaryForOrganization(
       status: "Active" as const,
       expires: link.expires_at ?? "",
     })),
+    recentBuyerRequests: data.buyer_requests.map((request) => ({
+      id: request.id,
+      buyer: request.buyer_name || "Buyer",
+      module: request.request_title || "Buyer request",
+      status: mapBuyerRequestStatus(request.status),
+      dueDate: request.due_date,
+    })),
     recentActivity: createRecentActivity({
       answeredQuestions,
       documentsCount: data.documents.length,
@@ -331,6 +371,26 @@ function isShareLinkActive(link: DashboardShareLink) {
   }
 
   return new Date(link.expires_at).getTime() > Date.now();
+}
+
+function mapBuyerRequestStatus(status: string): DashboardBuyerRequestSummary["status"] {
+  if (status === "draft") {
+    return "Not started";
+  }
+
+  if (status === "shared") {
+    return "Shared";
+  }
+
+  if (status === "closed") {
+    return "Completed";
+  }
+
+  if (status === "ready_to_share") {
+    return "Requested";
+  }
+
+  return "In progress";
 }
 
 function createRecentActivity({
