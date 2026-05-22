@@ -4081,3 +4081,28 @@ Manual production QA:
 Phase close:
 
 - Faza 4.4 is ready to close when lint/build pass and the manual production QA confirms public/buyer surfaces are buyer-safe, admin APIs are protected, document/storage internals are not exposed, logs are sanitized, and browser storage contains no sensitive data.
+
+## Faza 4.4.1 Notification And Share Navigation Cleanup
+
+Use this checklist before pilot launch when validating the supplier dashboard shell and share flow.
+
+Notification status:
+
+- The supplier dashboard topbar does not show a notification bell in production UI because notifications are deferred.
+- Do not leave an active-looking bell or notification icon without a real notification surface.
+- Notification preferences can remain documented in settings as deferred copy, but they should not behave like a live notification system.
+
+Canonical share route:
+
+- The supplier-facing share workflow is `/[locale]/dashboard/share`.
+- The supplier sidebar should show one clear share navigation item labeled `Sharing` in English and `Dijeljenje` in Croatian.
+- `/[locale]/dashboard/share-links` and legacy `/dashboard/share-links` redirect to the canonical share page for backwards compatibility only.
+- Do not add mock Share Links content or duplicate sidebar entries unless a real link-history/lifecycle workspace is implemented later.
+
+Manual QA:
+
+1. Open `/hr/dashboard` and confirm the topbar has no dead notification bell.
+2. Confirm the supplier sidebar shows one share-related item, `Dijeljenje`.
+3. Open `/hr/dashboard/share` and confirm the public-link/share page still works.
+4. Open `/hr/dashboard/share-links` and confirm it redirects safely to `/hr/dashboard/share`.
+5. Repeat a quick `/en/dashboard` check and confirm the share label is `Sharing`.

@@ -1,4 +1,4 @@
-import { Bell, Menu } from "lucide-react";
+import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/brand/logo";
 import { DashboardOrganizationSelector } from "@/components/layout/dashboard-organization-selector";
@@ -26,15 +26,6 @@ export function DashboardTopbar({ labels }: DashboardTopbarProps) {
 
         <div className="flex items-center gap-3">
           <LanguageSwitcher className="hidden xl:inline-flex" />
-          <Button
-            variant="outline"
-            size="icon"
-            aria-label={labels.notificationsUnavailable}
-            title={labels.notificationsUnavailable}
-            disabled
-          >
-            <Bell aria-hidden="true" />
-          </Button>
           <DashboardUserAvatar fallbackLabel={labels.account} logoutLabel={labels.logOut} />
         </div>
       </div>

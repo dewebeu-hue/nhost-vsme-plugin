@@ -14,7 +14,6 @@ const navigation = [
   { href: "/dashboard/documents", labelKey: "evidenceRoom", icon: "file-text" },
   { href: "/dashboard/passport", labelKey: "passport", icon: "shield" },
   { href: "/dashboard/share", labelKey: "share", icon: "link" },
-  { href: "/dashboard/share-links", labelKey: "shareLinks", icon: "link" },
   { href: "/dashboard/activity", labelKey: "activity", icon: "activity" },
   { href: "/dashboard/settings", labelKey: "settings", icon: "settings" },
 ] as const;

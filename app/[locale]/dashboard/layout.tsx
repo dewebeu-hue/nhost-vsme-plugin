@@ -32,7 +32,6 @@ export default async function DashboardRouteLayout({
       evidenceRoom: nav("evidenceRoom"),
       passport: nav("passport"),
       share: nav("share"),
-      shareLinks: nav("shareLinks"),
       activity: nav("activity"),
       settings: nav("settings"),
     },
@@ -46,8 +45,6 @@ export default async function DashboardRouteLayout({
     needHelp: shell("needHelp"),
     helpCenter: shell("helpCenter"),
     openNavigation: shell("openNavigation"),
-    notifications: shell("notifications"),
-    notificationsUnavailable: shell("notificationsUnavailable"),
   };
   const tourLabels: SupplierOnboardingTourLabels = {
     startGuide: tour("startGuide"),

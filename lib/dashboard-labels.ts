@@ -6,7 +6,6 @@ export type DashboardNavKey =
   | "evidenceRoom"
   | "passport"
   | "share"
-  | "shareLinks"
   | "activity"
   | "settings";
 
@@ -22,8 +21,6 @@ export type DashboardShellLabels = {
   needHelp: string;
   helpCenter: string;
   openNavigation: string;
-  notifications: string;
-  notificationsUnavailable: string;
 };
 
 export const defaultDashboardShellLabels: DashboardShellLabels = {
@@ -34,8 +31,7 @@ export const defaultDashboardShellLabels: DashboardShellLabels = {
     questionnaire: "Questionnaire",
     evidenceRoom: "Evidence Room",
     passport: "Passport",
-    share: "Share",
-    shareLinks: "Share Links",
+    share: "Sharing",
     activity: "Activity",
     settings: "Settings",
   },
@@ -49,8 +45,6 @@ export const defaultDashboardShellLabels: DashboardShellLabels = {
   needHelp: "Need help?",
   helpCenter: "Visit our Help Center",
   openNavigation: "Open navigation",
-  notifications: "Notifications",
-  notificationsUnavailable: "Notifications are not available yet.",
 };
 
 export type DashboardOverviewLabels = {
