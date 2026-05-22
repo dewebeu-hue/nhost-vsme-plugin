@@ -31,7 +31,7 @@ export function ProductPreview() {
     <div className="relative mx-auto flex w-full max-w-[620px] flex-col gap-6 overflow-visible lg:mx-0 lg:block lg:min-h-[760px] xl:min-h-[790px]">
       <div className="absolute inset-x-6 top-2 h-72 rounded-[2rem] bg-blue-600/10 blur-3xl" />
 
-      <section className="supplier-surface relative z-10 w-full rounded-[2rem] border-0 p-5 shadow-[0_24px_64px_rgba(15,23,42,0.10)] sm:p-6 lg:w-[88%] lg:max-w-[620px]">
+      <section className="landing-preview-card-back supplier-surface relative z-10 w-full rounded-[2rem] border-0 p-5 shadow-[0_24px_64px_rgba(15,23,42,0.10)] sm:p-6 lg:w-[88%] lg:max-w-[620px]">
         <div className="mb-6 flex items-center justify-between gap-4">
           <div>
             <p className="text-sm font-medium text-slate-500">{t("supplierReadiness")}</p>
@@ -89,7 +89,7 @@ export function ProductPreview() {
         </div>
       </section>
 
-      <section className="supplier-surface relative z-20 w-full rounded-[2rem] border-0 p-5 shadow-[-12px_-12px_30px_rgba(15,23,42,0.10),-4px_-4px_12px_rgba(15,23,42,0.06),0_30px_70px_rgba(15,23,42,0.12)] sm:p-6 lg:absolute lg:bottom-0 lg:right-0 lg:w-[78%] lg:max-w-[460px]">
+      <section className="landing-preview-card-front supplier-surface relative z-20 w-full rounded-[2rem] border-0 p-5 shadow-[-12px_-12px_30px_rgba(15,23,42,0.10),-4px_-4px_12px_rgba(15,23,42,0.06),0_30px_70px_rgba(15,23,42,0.12)] sm:p-6 lg:absolute lg:bottom-0 lg:right-0 lg:w-[78%] lg:max-w-[460px]">
         <div className="flex items-start justify-between gap-4">
           <div>
             <p className="text-sm font-medium text-slate-500">{t("passportPreview")}</p>
