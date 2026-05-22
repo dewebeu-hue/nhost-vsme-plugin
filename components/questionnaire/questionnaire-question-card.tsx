@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { AnswerStatusPill } from "@/components/questionnaire/answer-status-pill";
+import { QuestionHelp } from "@/components/questionnaire/question-help";
 import type { QuestionnaireEnergyQuestion } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
 import {
@@ -48,9 +49,17 @@ export function QuestionnaireQuestionCard({
           <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-slate-100 text-sm font-semibold text-slate-600">
             {index + 1}
           </span>
-          <h3 className="text-base font-semibold leading-7 text-slate-950">
-            {labels.questionPrompts[question.id] ?? question.prompt}
-          </h3>
+          <div className="flex items-start gap-2">
+            <h3 className="text-base font-semibold leading-7 text-slate-950">
+              {labels.questionPrompts[question.id] ?? question.prompt}
+            </h3>
+            <QuestionHelp
+              label={labels.questionHelpLabel}
+              closeLabel={labels.questionHelpCloseLabel}
+              text={resolveQuestionHelpText(question, labels)}
+              className="mt-0.5"
+            />
+          </div>
         </div>
         <AnswerStatusPill
           status={question.status}
@@ -130,6 +139,18 @@ export function QuestionnaireQuestionCard({
       </div>
     </article>
   );
+}
+
+function resolveQuestionHelpText(
+  question: QuestionnaireEnergyQuestion,
+  labels: QuestionnaireLabels,
+) {
+  const metadataHelp = question.helpText?.trim();
+  const localizedHelp =
+    labels.helperTexts[question.id]?.trim() ??
+    (question.code ? labels.helperTexts[question.code]?.trim() : undefined);
+
+  return metadataHelp ?? localizedHelp ?? labels.questionHelpFallback;
 }
 
 function renderAnswerControl(

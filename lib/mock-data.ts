@@ -819,7 +819,9 @@ export type QuestionnaireLinkedDocument = {
 
 type QuestionnaireQuestionEvidence = {
   answerId?: string;
+  code?: string;
   evidenceRequired?: boolean;
+  helpText?: string | null;
   linkedDocuments?: QuestionnaireLinkedDocument[];
 };
 

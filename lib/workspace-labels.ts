@@ -68,6 +68,9 @@ export type QuestionnaireLabels = {
   attachSuccess: string;
   noAnswersSaved: string;
   startFirstSection: string;
+  questionHelpLabel: string;
+  questionHelpCloseLabel: string;
+  questionHelpFallback: string;
   contextualHelp: {
     title: string;
     text: string;
@@ -269,6 +272,9 @@ export const defaultQuestionnaireLabels: QuestionnaireLabels = {
   attachSuccess: "Evidence attached to questionnaire answer.",
   noAnswersSaved: "No answers saved yet.",
   startFirstSection: "Start with the first section to build your Supplier Passport.",
+  questionHelpLabel: "Question help",
+  questionHelpCloseLabel: "Close question help",
+  questionHelpFallback: "Provide the value requested for this field. Use the reporting period and evidence available to your organization.",
   contextualHelp: {
     title: "Questionnaire guidance",
     text: "Your answers build the readiness score and section summaries shown in Supplier Passport. Start with Company Basics, then continue through each incomplete section.",

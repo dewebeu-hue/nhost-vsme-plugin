@@ -1029,7 +1029,9 @@ function mapLiveQuestions(
     );
     const evidenceFields = {
       answerId: answer?.id,
+      code: item.code,
       evidenceRequired: item.evidence_required,
+      helpText: item.help_text ?? labels.helperTexts[item.code] ?? null,
       linkedDocuments,
     };
     const prompt = getQuestionLabel(item, labels);

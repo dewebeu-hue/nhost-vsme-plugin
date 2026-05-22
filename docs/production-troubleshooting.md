@@ -4212,3 +4212,31 @@ Manual production QA:
 Phase close:
 
 - Faza 4.4.1 is ready to close when lint/build pass and manual production QA confirms no dead notification UI, no duplicate supplier share navigation, password reset works with configured Nhost redirects, mobile/tablet layouts are usable, and no private URLs, storage ids, reset tickets, tokens, passwords, or secrets are exposed.
+
+## Questionnaire Per-Question Help Text
+
+Per-question help appears from the blue info icon next to each questionnaire question. The tooltip should help first-time supplier users understand the requested value, reporting period, scope, and likely evidence without making legal, audit, certification, or approval claims.
+
+Source of help text:
+
+- Live questionnaire metadata can provide `question_items.help_text`.
+- Localized frontend guidance lives in `messages/<locale>.json` under `questionnaire.helperTexts`, keyed by stable question code.
+- The questionnaire card resolves help in this order: live metadata, localized helper by question id/code, then localized fallback.
+- Current EN and HR guidance covers every active questionnaire prompt key. DE has safe fallback coverage while German remains hidden from production switchers.
+
+When adding or renaming questions:
+
+1. Keep question codes stable so saved answers remain linked.
+2. Add EN and HR `questionnaire.helperTexts[question_code]` copy at the same time as the prompt.
+3. Keep guidance to 1-3 practical sentences.
+4. Mention reporting period, boundary, evidence examples, 0/blank handling, or estimates where useful.
+5. Avoid wording such as certified, approved, guaranteed compliance, legally compliant, or audit-ready.
+
+Manual QA:
+
+1. Open `/hr/dashboard/questionnaire?section=company_basics`.
+2. Click the info icon for reporting year, legal company name, and OIB/registration fields; confirm useful Croatian guidance.
+3. Open Energy and check electricity, natural gas, renewable share, and a unit field.
+4. Open Certifications and check ISO/certificate guidance.
+5. Repeat a quick `/en/dashboard/questionnaire` check.
+6. Confirm the tooltip does not affect save/load, completion counters, evidence linking, the guided tour, or mobile layout.
