@@ -4,6 +4,7 @@ import {
 import { Logo } from "@/components/brand/logo";
 import { DashboardNavItem } from "@/components/layout/dashboard-nav-item";
 import { DashboardSidebarWorkspaceCard } from "@/components/layout/dashboard-sidebar-workspace-card";
+import { SupportRequestDialog } from "@/components/support/support-request-dialog";
 import { dashboardNavigation } from "@/lib/dashboard-navigation";
 import { type DashboardShellLabels } from "@/lib/dashboard-labels";
 
@@ -40,6 +41,7 @@ export function DashboardSidebar({ labels, localePrefix = "" }: DashboardSidebar
             </div>
             <p className="text-sm font-semibold text-slate-950">{labels.needHelp}</p>
             <p className="mt-1 text-sm text-slate-600">{labels.helpCenter}</p>
+            <SupportRequestDialog labels={labels.supportRequest} />
           </section>
         </div>
       </div>

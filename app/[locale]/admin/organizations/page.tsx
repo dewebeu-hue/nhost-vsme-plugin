@@ -18,6 +18,9 @@ export default async function AdminOrganizationsPage({ params }: AdminOrganizati
     checklistLabels: { ...defaultAdminLabels.checklistLabels, ...source.checklistLabels },
     statuses: { ...defaultAdminLabels.statuses, ...source.statuses },
     stats: { ...defaultAdminLabels.stats, ...source.stats },
+    supportStatuses: { ...defaultAdminLabels.supportStatuses, ...source.supportStatuses },
+    supportPriorities: { ...defaultAdminLabels.supportPriorities, ...source.supportPriorities },
+    supportCategories: { ...defaultAdminLabels.supportCategories, ...source.supportCategories },
   };
 
   return <AdminOrganizationsPageContent labels={labels} />;

@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { AdminNavItem } from "@/components/admin/admin-nav-item";
+import { AdminSupportRequestIndicator } from "@/components/admin/admin-support-request-indicator";
 import { AdminThemeToggle } from "@/components/admin/admin-theme-provider";
 import {
   Sheet,
@@ -114,6 +115,14 @@ export function AdminAccountControls({ labels = defaultAdminLabels }: { labels?:
                 href={`/${locale}${item.href}`}
                 label={labels.navigation[item.label] ?? item.label}
                 icon={item.icon}
+                badge={
+                  item.label === "Support requests" ? (
+                    <AdminSupportRequestIndicator
+                      href={`/${locale}/admin/support-requests`}
+                      label={labels.openSupportRequests}
+                    />
+                  ) : undefined
+                }
                 onClick={() => setIsNavigationOpen(false)}
               />
             ))}
@@ -135,6 +144,11 @@ export function AdminAccountControls({ labels = defaultAdminLabels }: { labels?:
         {labels.backToDashboard}
       </Link>
       <AdminThemeToggle labels={labels} />
+      <AdminSupportRequestIndicator
+        href={`/${locale}/admin/support-requests`}
+        label={labels.openSupportRequests}
+        mode="bell"
+      />
       <div className="admin-account-pill flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-3 py-2">
         <Avatar className="size-9 border border-slate-200">
           <AvatarFallback>{initials}</AvatarFallback>

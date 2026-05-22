@@ -20,6 +20,20 @@ export type DashboardShellLabels = {
   logOut: string;
   needHelp: string;
   helpCenter: string;
+  supportRequest: {
+    contactSupport: string;
+    description: string;
+    category: string;
+    subject: string;
+    message: string;
+    sendRequest: string;
+    sending: string;
+    sent: string;
+    error: string;
+    validation: string;
+    close: string;
+    categories: Record<string, string>;
+  };
   openNavigation: string;
 };
 
@@ -44,6 +58,29 @@ export const defaultDashboardShellLabels: DashboardShellLabels = {
   logOut: "Log out",
   needHelp: "Need help?",
   helpCenter: "Visit our Help Center",
+  supportRequest: {
+    contactSupport: "Contact support",
+    description: "Send a short request to the Supplier Passport team. Email sending is not enabled; admins will review it in the support inbox.",
+    category: "Category",
+    subject: "Subject",
+    message: "Message",
+    sendRequest: "Send request",
+    sending: "Sending...",
+    sent: "Support request sent.",
+    error: "We could not send the request right now.",
+    validation: "Enter a short message before sending.",
+    close: "Close",
+    categories: {
+      general: "General",
+      questionnaire: "Questionnaire",
+      documents: "Documents",
+      evidence_links: "Evidence links",
+      sharing: "Sharing",
+      passport_pdf: "Passport / PDF",
+      account: "Account",
+      other: "Other",
+    },
+  },
   openNavigation: "Open navigation",
 };
 

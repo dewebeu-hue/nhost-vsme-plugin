@@ -1,12 +1,16 @@
 import { getMessages, setRequestLocale } from "next-intl/server";
-import { AdminHomeClient } from "@/components/admin/admin-home-client";
+import { AdminSupportRequestsClient } from "@/components/admin/admin-support-requests-client";
 import { defaultAdminLabels, type AdminLabels } from "@/lib/operational-labels";
 
-type AdminPageProps = {
+type AdminSupportRequestsPageProps = {
   params: Promise<{ locale: string }>;
 };
 
-export default async function AdminPage({ params }: AdminPageProps) {
+export const dynamic = "force-dynamic";
+
+export default async function AdminSupportRequestsPage({
+  params,
+}: AdminSupportRequestsPageProps) {
   const { locale } = await params;
   setRequestLocale(locale);
   const messages = (await getMessages()) as { admin?: Partial<AdminLabels> };
@@ -23,5 +27,5 @@ export default async function AdminPage({ params }: AdminPageProps) {
     supportCategories: { ...defaultAdminLabels.supportCategories, ...source.supportCategories },
   };
 
-  return <AdminHomeClient labels={labels} />;
+  return <AdminSupportRequestsClient labels={labels} />;
 }

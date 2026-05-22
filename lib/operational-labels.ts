@@ -228,6 +228,32 @@ export type AdminLabels = {
   internalReviewDisclaimer: string;
   support: string;
   supportChecklist: string;
+  supportRequests: string;
+  supportRequestsSubtitle: string;
+  openSupportRequests: string;
+  supportRequestInboxEmpty: string;
+  supportRequestInboxEmptyDescription: string;
+  supportRequestCount: string;
+  supportRequestInProgressCount: string;
+  supportRequestResolvedCount: string;
+  supportRequestHighPriorityCount: string;
+  supportRequester: string;
+  supportCategory: string;
+  supportSubject: string;
+  supportMessage: string;
+  supportStatus: string;
+  supportPriority: string;
+  supportAdminNote: string;
+  supportSaveNote: string;
+  supportMarkInProgress: string;
+  supportMarkResolved: string;
+  supportUpdateError: string;
+  supportUpdated: string;
+  supportFilterAll: string;
+  supportSearchPlaceholder: string;
+  supportStatuses: Record<string, string>;
+  supportPriorities: Record<string, string>;
+  supportCategories: Record<string, string>;
   reviewedAt: string;
   notReviewedYet: string;
   supportAcknowledgementDeferred: string;
@@ -560,6 +586,50 @@ export const defaultAdminLabels: AdminLabels = {
   internalReviewDisclaimer: "Internal review only. This is not a certification or approval.",
   support: "Support",
   supportChecklist: "Support checklist",
+  supportRequests: "Support requests",
+  supportRequestsSubtitle: "Review supplier support requests and update internal follow-up status.",
+  openSupportRequests: "Open support requests",
+  supportRequestInboxEmpty: "No support requests yet.",
+  supportRequestInboxEmptyDescription: "Supplier support requests will appear here after they are submitted from the dashboard.",
+  supportRequestCount: "Open requests",
+  supportRequestInProgressCount: "In progress",
+  supportRequestResolvedCount: "Resolved",
+  supportRequestHighPriorityCount: "High priority",
+  supportRequester: "Requester",
+  supportCategory: "Category",
+  supportSubject: "Subject",
+  supportMessage: "Message",
+  supportStatus: "Status",
+  supportPriority: "Priority",
+  supportAdminNote: "Internal admin note",
+  supportSaveNote: "Save admin note",
+  supportMarkInProgress: "Mark in progress",
+  supportMarkResolved: "Mark resolved",
+  supportUpdateError: "We could not update this support request right now.",
+  supportUpdated: "Support request updated.",
+  supportFilterAll: "All",
+  supportSearchPlaceholder: "Search organization, requester or message...",
+  supportStatuses: {
+    open: "Open",
+    in_progress: "In progress",
+    resolved: "Resolved",
+    closed: "Closed",
+  },
+  supportPriorities: {
+    low: "Low",
+    normal: "Normal",
+    high: "High",
+  },
+  supportCategories: {
+    general: "General",
+    questionnaire: "Questionnaire",
+    documents: "Documents",
+    evidence_links: "Evidence links",
+    sharing: "Sharing",
+    passport_pdf: "Passport / PDF",
+    account: "Account",
+    other: "Other",
+  },
   reviewedAt: "Reviewed at",
   notReviewedYet: "Not reviewed yet",
   supportAcknowledgementDeferred:
@@ -629,6 +699,7 @@ export const defaultAdminLabels: AdminLabels = {
   navigation: {
     Organizations: "Organizations",
     Risks: "Risks",
+    "Support requests": "Support requests",
     Reviews: "Reviews",
     Documents: "Documents",
     Passports: "Passports",

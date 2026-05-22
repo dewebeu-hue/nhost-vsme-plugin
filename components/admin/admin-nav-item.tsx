@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import type { ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import {
   Building2,
@@ -11,6 +12,7 @@ import {
   NotebookText,
   Settings,
   ShieldCheck,
+  LifeBuoy,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -23,7 +25,8 @@ export type AdminNavIcon =
   | "link"
   | "notes"
   | "settings"
-  | "shield";
+  | "shield"
+  | "support";
 
 const iconMap: Record<AdminNavIcon, LucideIcon> = {
   building: Building2,
@@ -34,16 +37,18 @@ const iconMap: Record<AdminNavIcon, LucideIcon> = {
   notes: NotebookText,
   settings: Settings,
   shield: ShieldCheck,
+  support: LifeBuoy,
 };
 
 type AdminNavItemProps = {
   href: string;
   label: string;
   icon: AdminNavIcon;
+  badge?: ReactNode;
   onClick?: () => void;
 };
 
-export function AdminNavItem({ href, label, icon, onClick }: AdminNavItemProps) {
+export function AdminNavItem({ href, label, icon, badge, onClick }: AdminNavItemProps) {
   const pathname = usePathname();
   const Icon = iconMap[icon];
   const isActive = pathname === href || pathname.startsWith(`${href}/`);
@@ -62,7 +67,8 @@ export function AdminNavItem({ href, label, icon, onClick }: AdminNavItemProps) 
       )}
     >
       <Icon aria-hidden="true" />
-      {label}
+      <span className="min-w-0 flex-1 truncate">{label}</span>
+      {badge}
     </Link>
   );
 }

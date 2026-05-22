@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Logo } from "@/components/brand/logo";
 import { AdminNavItem } from "@/components/admin/admin-nav-item";
+import { AdminSupportRequestIndicator } from "@/components/admin/admin-support-request-indicator";
 import { adminNavigation } from "@/lib/admin-navigation";
 import { defaultAdminLabels, type AdminLabels } from "@/lib/operational-labels";
 
@@ -33,6 +34,14 @@ export function AdminSidebar({
                 {...item}
                 href={`${localePrefix}${item.href}`}
                 label={labels.navigation[item.label] ?? item.label}
+                badge={
+                  item.label === "Support requests" ? (
+                    <AdminSupportRequestIndicator
+                      href={`${localePrefix}/admin/support-requests`}
+                      label={labels.openSupportRequests}
+                    />
+                  ) : undefined
+                }
               />
             ))}
           </nav>
