@@ -2,12 +2,8 @@ import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Logo } from "@/components/brand/logo";
 import { AdminNavItem } from "@/components/admin/admin-nav-item";
+import { adminNavigation } from "@/lib/admin-navigation";
 import { defaultAdminLabels, type AdminLabels } from "@/lib/operational-labels";
-
-const adminNavigation = [
-  { href: "/admin/organizations", label: "Organizations", icon: "building" },
-  { href: "/admin/risks", label: "Risks", icon: "alert" },
-] as const;
 
 export function AdminSidebar({
   labels = defaultAdminLabels,

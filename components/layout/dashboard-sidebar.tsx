@@ -4,19 +4,8 @@ import {
 import { Logo } from "@/components/brand/logo";
 import { DashboardNavItem } from "@/components/layout/dashboard-nav-item";
 import { DashboardSidebarWorkspaceCard } from "@/components/layout/dashboard-sidebar-workspace-card";
+import { dashboardNavigation } from "@/lib/dashboard-navigation";
 import { type DashboardShellLabels } from "@/lib/dashboard-labels";
-
-const navigation = [
-  { href: "/dashboard", labelKey: "dashboard", icon: "layout" },
-  { href: "/dashboard/company", labelKey: "companyProfile", icon: "building" },
-  { href: "/dashboard/buyer-requests", labelKey: "buyerRequests", icon: "clipboard-check" },
-  { href: "/dashboard/questionnaire", labelKey: "questionnaire", icon: "clipboard-check" },
-  { href: "/dashboard/documents", labelKey: "evidenceRoom", icon: "file-text" },
-  { href: "/dashboard/passport", labelKey: "passport", icon: "shield" },
-  { href: "/dashboard/share", labelKey: "share", icon: "link" },
-  { href: "/dashboard/activity", labelKey: "activity", icon: "activity" },
-  { href: "/dashboard/settings", labelKey: "settings", icon: "settings" },
-] as const;
 
 type DashboardSidebarProps = {
   labels: DashboardShellLabels;
@@ -32,7 +21,7 @@ export function DashboardSidebar({ labels, localePrefix = "" }: DashboardSidebar
 
       <div className="flex flex-1 flex-col gap-6 overflow-y-auto px-4 py-5">
         <nav className="flex flex-col gap-1.5">
-          {navigation.map((item) => (
+          {dashboardNavigation.map((item) => (
             <DashboardNavItem
               key={item.href}
               href={`${localePrefix}${item.href}`}

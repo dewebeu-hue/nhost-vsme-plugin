@@ -4141,3 +4141,42 @@ Manual QA:
 5. Confirm the app redirects to login and the new password works.
 6. Repeat a quick `/en/login` check.
 7. Inspect logs and confirm no emails, reset tickets, passwords or raw auth payloads are printed.
+
+## Faza 4.4.1 Mobile And Tablet Responsiveness Audit
+
+Use this checklist before pilot launch. Desktop remains the primary target, but mobile and tablet layouts must be usable and must not look broken.
+
+Responsive navigation:
+
+- Supplier dashboard routes hide the desktop sidebar below `lg` and expose a mobile navigation drawer from the topbar menu button.
+- The supplier mobile drawer uses the same canonical dashboard navigation as the desktop sidebar.
+- Admin routes hide the desktop sidebar below `lg` and expose a compact admin navigation drawer from the topbar controls.
+- The admin mobile drawer links to Organizations, Risks, and back to the supplier dashboard without exposing new admin functionality.
+
+Tables and dense lists:
+
+- Shared table components keep horizontal scrolling inside the table container.
+- Documents, admin organization rows, admin risks, and buyer compare should not force the whole page to scroll sideways.
+- Buyer compare can use horizontal scrolling for the section comparison table; this is acceptable because the compare grid remains readable above it.
+
+Forms and dialogs:
+
+- Inputs, selects, textareas, and action buttons should use full-width or wrapping layouts on small screens.
+- Upload/link dialogs, public request-info dialog, password reset forms, and auth forms should fit within `calc(100vw - 2rem)`.
+
+Guided tour:
+
+- Tour tooltip width is capped with `calc(100vw - 2rem)`.
+- On small screens, the tooltip may use centered/fallback placement when side placement would cover the target.
+- Back/Next/Skip/Close controls must remain visible and tappable.
+
+Manual QA:
+
+1. Test 375px, 430px, 768px, and desktop widths.
+2. Open `/hr`, `/hr/plans`, and `/hr/request-demo`; confirm no horizontal page overflow.
+3. Open `/hr/dashboard`; tap the menu button and confirm supplier navigation is reachable.
+4. Open dashboard questionnaire, documents, passport, share, company profile, and buyer requests; confirm cards/forms fit.
+5. Open `/hr/admin/organizations`; tap the admin menu button and confirm admin navigation is reachable.
+6. Open admin organization detail and risks; confirm forms and dense rows are usable.
+7. Open public Passport and buyer compare pages; confirm modals/tables stay within the viewport or scroll inside their own container.
+8. Run the guided tour on a mobile-width viewport and confirm the tooltip and controls fit.

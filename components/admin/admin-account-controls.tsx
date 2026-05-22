@@ -2,12 +2,22 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { LogOut } from "lucide-react";
+import { LogOut, Menu } from "lucide-react";
 import { useLocale } from "next-intl";
 import { useRouter } from "next/navigation";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button, buttonVariants } from "@/components/ui/button";
+import { AdminNavItem } from "@/components/admin/admin-nav-item";
 import { AdminThemeToggle } from "@/components/admin/admin-theme-provider";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { adminNavigation } from "@/lib/admin-navigation";
 import { clearCurrentOrganizationCache } from "@/lib/current-organization-client";
 import { getBrowserNhostClient, getFreshBrowserNhostSession } from "@/lib/nhost/client";
 import { defaultAdminLabels, type AdminLabels } from "@/lib/operational-labels";
@@ -18,6 +28,7 @@ export function AdminAccountControls({ labels = defaultAdminLabels }: { labels?:
   const router = useRouter();
   const [email, setEmail] = useState<string | null>(null);
   const [initials, setInitials] = useState("A");
+  const [isNavigationOpen, setIsNavigationOpen] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -76,10 +87,50 @@ export function AdminAccountControls({ labels = defaultAdminLabels }: { labels?:
   }
 
   return (
-    <div className="flex flex-wrap items-center justify-end gap-3">
+    <div className="flex flex-wrap items-center justify-between gap-3">
+      <Sheet open={isNavigationOpen} onOpenChange={setIsNavigationOpen}>
+        <SheetTrigger
+          render={
+            <Button
+              type="button"
+              variant="outline"
+              size="icon"
+              className="admin-secondary-action rounded-xl bg-white lg:hidden"
+              aria-label={labels.adminWorkspace}
+            />
+          }
+        >
+          <Menu />
+        </SheetTrigger>
+        <SheetContent side="left" className="w-[min(22rem,calc(100vw-2rem))] bg-white p-0">
+          <SheetHeader className="border-b border-slate-200 px-5 py-4">
+            <SheetTitle>{labels.adminWorkspace}</SheetTitle>
+            <SheetDescription>{labels.conciergeDashboard}</SheetDescription>
+          </SheetHeader>
+          <nav className="grid gap-1.5 overflow-y-auto px-4 py-5">
+            {adminNavigation.map((item) => (
+              <AdminNavItem
+                key={item.href}
+                href={`/${locale}${item.href}`}
+                label={labels.navigation[item.label] ?? item.label}
+                icon={item.icon}
+                onClick={() => setIsNavigationOpen(false)}
+              />
+            ))}
+            <Link
+              href={`/${locale}/dashboard`}
+              onClick={() => setIsNavigationOpen(false)}
+              className="admin-ghost-link mt-2 flex rounded-xl px-3 py-2.5 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-950"
+            >
+              {labels.backToDashboard}
+            </Link>
+          </nav>
+        </SheetContent>
+      </Sheet>
+      <div className="ml-auto flex flex-wrap items-center justify-end gap-3">
       <Link
         href={`/${locale}/dashboard`}
-        className={cn(buttonVariants({ variant: "outline" }), "admin-secondary-action rounded-xl bg-white")}
+        className={cn(buttonVariants({ variant: "outline" }), "admin-secondary-action hidden rounded-xl bg-white sm:inline-flex")}
       >
         {labels.backToDashboard}
       </Link>
@@ -104,6 +155,7 @@ export function AdminAccountControls({ labels = defaultAdminLabels }: { labels?:
         <LogOut data-icon="inline-start" />
         {labels.logOut}
       </Button>
+      </div>
     </div>
   );
 }

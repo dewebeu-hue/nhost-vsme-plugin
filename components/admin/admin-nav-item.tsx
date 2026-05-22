@@ -40,9 +40,10 @@ type AdminNavItemProps = {
   href: string;
   label: string;
   icon: AdminNavIcon;
+  onClick?: () => void;
 };
 
-export function AdminNavItem({ href, label, icon }: AdminNavItemProps) {
+export function AdminNavItem({ href, label, icon, onClick }: AdminNavItemProps) {
   const pathname = usePathname();
   const Icon = iconMap[icon];
   const isActive = pathname === href || pathname.startsWith(`${href}/`);
@@ -51,6 +52,7 @@ export function AdminNavItem({ href, label, icon }: AdminNavItemProps) {
     <Link
       href={href}
       prefetch
+      onClick={onClick}
       aria-current={isActive ? "page" : undefined}
       className={cn(
         "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors",
