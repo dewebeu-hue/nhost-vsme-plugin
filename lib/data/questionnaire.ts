@@ -59,9 +59,6 @@ export type QuestionAnswerRecord = {
   question_item_id: string;
   value: GraphqlJson;
   status: QuestionAnswerStatus;
-  internal_note: string | null;
-  reviewed_by: string | null;
-  reviewed_at: string | null;
   created_at: string;
   updated_at: string;
   question_item?: {
@@ -83,7 +80,6 @@ export type UpsertQuestionAnswerInput = {
   questionItemId: string;
   value: GraphqlJson;
   status: QuestionAnswerStatus;
-  internalNote?: string;
 };
 
 export type SaveQuestionnaireAnswersInput = {
@@ -92,7 +88,6 @@ export type SaveQuestionnaireAnswersInput = {
     questionItemId: string;
     value: GraphqlJson;
     status: QuestionAnswerStatus;
-    internalNote?: string;
   }>;
 };
 
@@ -191,7 +186,6 @@ export async function upsertQuestionAnswer(
         question_item_id: input.questionItemId,
         value: input.value,
         status: input.status,
-        internal_note: input.internalNote ?? null,
       },
     },
     accessToken,
@@ -216,7 +210,6 @@ export async function saveQuestionnaireAnswers(
           questionItemId: answer.questionItemId,
           value: answer.value,
           status: answer.status === "reviewed" ? "completed" : answer.status,
-          internalNote: answer.internalNote,
         },
         accessToken,
       ),

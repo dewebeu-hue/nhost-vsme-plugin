@@ -3920,3 +3920,42 @@ Manual QA:
 4. Download authenticated and public PDFs; confirm no private URLs, storage IDs, tokens, admin notes, commercial notes, concierge notes, or raw sensitive answers appear.
 5. Confirm supplier dashboard still shows supplier-private data only after authenticated membership resolution.
 6. Confirm admin organization detail still shows admin-only fields and that those fields do not appear in supplier, buyer, public Passport, or PDF surfaces.
+
+## Faza 4.4 Admin API And Access-Control Audit
+
+Admin route inventory:
+
+- Admin pages: `/[locale]/admin`, `/[locale]/admin/organizations`, `/[locale]/admin/organizations/[id]`, `/[locale]/admin/risks`, and placeholder admin workspace routes for documents, passports, reviews, notes, settings, and share links.
+- Admin APIs: `GET /api/admin/organizations`, `GET /api/admin/organizations/[id]`, `GET /api/admin/risks`, and `GET/PATCH /api/admin/organizations/[id]/concierge`.
+- Legacy `/admin/*` routes should redirect to localized `/en/admin/*` routes and should not fetch admin data themselves.
+
+Admin access model:
+
+- Admin APIs must call `requireAdminUser(request)` before reading organization, risk, concierge, commercial, portfolio, handoff, or onboarding data.
+- `requireAdminUser` resolves the authenticated user server-side and compares the normalized email against `ADMIN_EMAIL_ALLOWLIST`.
+- Missing/invalid authentication returns 401. Authenticated non-admin users return 403.
+- `ADMIN_EMAIL_ALLOWLIST` must be configured only as a server-side environment variable. Do not create `NEXT_PUBLIC_ADMIN_EMAIL_ALLOWLIST` or send the allowlist to client components.
+
+Admin API response rules:
+
+- Admin APIs may return organization readiness counts, evidence counts, buyer request counts, triage status, concierge notes, onboarding status, portfolio labels, commercial labels, and internal handoff context to allowlisted admins only.
+- Admin APIs should not return private document URLs, raw storage paths, storage file IDs, full user/member records, secrets, access tokens, JWTs, cookies, or raw GraphQL stack traces.
+- API errors should be JSON with safe 401/403/404/500 messages and no HTML error page or secret-bearing payload.
+
+Non-admin exposure rules:
+
+- Supplier APIs should not return admin/concierge/commercial/handoff data.
+- Supplier questionnaire payloads should not return `internal_note`, `reviewed_by`, or `reviewed_at`.
+- Supplier document payloads should not return storage `file_id`, `uploaded_by`, `reviewed_by`, or `reviewed_at`.
+- Public Passport, Buyer Portal, buyer compare, public PDF, and buyer copy-message payloads should not include organization concierge notes, commercial metadata, portfolio labels, admin handoff summaries, internal review state, private file URLs, storage IDs, raw sensitive answers, member data, tokens, cookies, JWTs, or secrets.
+
+Manual QA:
+
+1. Log out and open `/hr/admin/organizations`; confirm no organization list or admin details are visible.
+2. Log in as a normal non-admin supplier and open `/hr/admin/organizations`; confirm the page shows a safe unauthorized state.
+3. Directly call `/api/admin/organizations`, `/api/admin/organizations/[id]`, `/api/admin/risks`, and `/api/admin/organizations/[id]/concierge` while logged out; expect 401 JSON.
+4. Directly call the same endpoints as a non-admin supplier; expect 403 JSON.
+5. Log in as an allowlisted admin and confirm organizations, organization detail, risks, and concierge save work.
+6. Inspect supplier dashboard/questionnaire/documents API payloads and confirm no admin-only fields, storage file IDs, or internal review metadata are returned.
+7. Inspect public Passport and buyer payloads and confirm no admin/concierge/commercial/handoff fields are present.
+8. Confirm Vercel has `ADMIN_EMAIL_ALLOWLIST` server-side only and no `NEXT_PUBLIC_ADMIN*` allowlist variable.

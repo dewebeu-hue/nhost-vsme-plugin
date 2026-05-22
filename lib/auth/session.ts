@@ -131,8 +131,11 @@ async function verifyNhostAccessToken(token: string) {
     }
 
     return normalizeUser(await response.json());
-  } catch (error) {
-    console.error("Unable to verify Nhost session", error);
+  } catch {
+    console.error("Unable to verify Nhost session", {
+      stage: "nhost_session_verification",
+      reason: "auth_user_lookup_failed",
+    });
     return null;
   }
 }

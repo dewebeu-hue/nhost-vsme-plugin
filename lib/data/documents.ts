@@ -3,12 +3,11 @@ import "server-only";
 import { createAPIClient } from "@nhost/nhost-js/storage";
 import type { FileMetadata } from "@nhost/nhost-js/storage";
 import {
-  DELETE_DOCUMENT,
   INSERT_DOCUMENT,
   UPDATE_DOCUMENT_STATUS,
 } from "@/lib/graphql/mutations";
 import { executeHasuraGraphql } from "@/lib/graphql/client";
-import { GET_DOCUMENT_BY_ID, GET_ORGANIZATION_DOCUMENTS } from "@/lib/graphql/queries";
+import { GET_ORGANIZATION_DOCUMENTS } from "@/lib/graphql/queries";
 import { getNhostGraphqlUrl, getNhostStorageUrl } from "@/lib/nhost/config";
 
 export type EvidenceDocumentStatus =
@@ -32,16 +31,12 @@ export type EvidenceDocumentType =
 export type EvidenceDocumentRecord = {
   id: string;
   organization_id: string;
-  uploaded_by: string | null;
-  file_id: string | null;
   file_name: string;
   file_size_bytes: number | null;
   mime_type: string | null;
   document_type: EvidenceDocumentType;
   status: EvidenceDocumentStatus;
   expires_at: string | null;
-  reviewed_by: string | null;
-  reviewed_at: string | null;
   created_at: string;
   updated_at: string;
 };
@@ -72,7 +67,7 @@ type OrganizationDocumentsResponse = {
 };
 
 type DocumentByIdResponse = {
-  documents_by_pk: EvidenceDocumentRecord | null;
+  documents_by_pk: { id: string; file_id: string | null } | null;
 };
 
 type InsertDocumentResponse = {
@@ -84,7 +79,7 @@ type UpdateDocumentStatusResponse = {
 };
 
 type DeleteDocumentResponse = {
-  delete_documents_by_pk: EvidenceDocumentRecord | null;
+  delete_documents_by_pk: (EvidenceDocumentRecord & { file_id: string | null }) | null;
 };
 
 export const evidenceDocumentTypes = [
@@ -98,6 +93,33 @@ export const evidenceDocumentTypes = [
   "report",
   "training",
 ] as const satisfies EvidenceDocumentType[];
+
+const getDocumentFileIdById = `
+  query GetDocumentFileIdById($documentId: uuid!) {
+    documents_by_pk(id: $documentId) {
+      id
+      file_id
+    }
+  }
+`;
+
+const deleteDocumentWithFileId = `
+  mutation DeleteDocumentWithFileId($documentId: uuid!) {
+    delete_documents_by_pk(id: $documentId) {
+      id
+      organization_id
+      file_id
+      file_name
+      file_size_bytes
+      mime_type
+      document_type
+      status
+      expires_at
+      created_at
+      updated_at
+    }
+  }
+`;
 
 export const evidenceDocumentStatuses = [
   "uploaded",
@@ -199,7 +221,7 @@ export async function updateDocumentStatus(
 
 export async function getDocumentPreviewUrl(documentId: string, accessToken?: string) {
   const data = await executeDocumentsGraphql<DocumentByIdResponse>(
-    GET_DOCUMENT_BY_ID,
+    getDocumentFileIdById,
     { documentId },
     accessToken,
   );
@@ -213,7 +235,7 @@ export async function getDocumentPreviewUrl(documentId: string, accessToken?: st
 
 export async function deleteDocument(documentId: string, accessToken?: string) {
   const data = await executeDocumentsGraphql<DeleteDocumentResponse>(
-    DELETE_DOCUMENT,
+    deleteDocumentWithFileId,
     { documentId },
     accessToken,
   );

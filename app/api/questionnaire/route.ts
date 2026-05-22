@@ -47,9 +47,6 @@ type QuestionAnswerRecord = {
   question_item_id: string;
   value: GraphqlJson;
   status: QuestionAnswerStatus;
-  internal_note: string | null;
-  reviewed_by: string | null;
-  reviewed_at: string | null;
   created_at: string;
   updated_at: string;
 };
@@ -105,7 +102,6 @@ type AnswerInput = {
   questionItemId: string;
   value: GraphqlJson;
   status: QuestionAnswerStatus;
-  internalNote?: string;
 };
 
 const allowedStatuses: QuestionAnswerStatus[] = [
@@ -161,9 +157,6 @@ const getQuestionnaireDataQuery = `
       question_item_id
       value
       status
-      internal_note
-      reviewed_by
-      reviewed_at
       created_at
       updated_at
     }
@@ -220,7 +213,7 @@ const upsertQuestionAnswersMutation = `
       objects: $objects
       on_conflict: {
         constraint: question_answers_organization_id_question_item_id_key
-        update_columns: [value, status, internal_note]
+        update_columns: [value, status]
       }
     ) {
       returning {
@@ -229,9 +222,6 @@ const upsertQuestionAnswersMutation = `
         question_item_id
         value
         status
-        internal_note
-        reviewed_by
-        reviewed_at
         created_at
         updated_at
       }
@@ -430,7 +420,6 @@ export async function POST(request: Request) {
     question_item_id: answer.questionItemId,
     value: answer.value,
     status: answer.status === "reviewed" ? "completed" : answer.status,
-    internal_note: answer.internalNote ?? null,
   }));
 
   const saveResult = await executeQuestionnaireAdminGraphql<{
@@ -712,14 +701,11 @@ function parseAnswers(value: unknown): AnswerInput[] {
       return [];
     }
 
-    const internalNote = readString(record.internalNote);
-
     return [
       {
         questionItemId,
         value: record.value,
         status,
-        internalNote: internalNote || undefined,
       },
     ];
   });

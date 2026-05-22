@@ -36,9 +36,6 @@ export const QUESTION_ANSWER_FRAGMENT = `
     question_item_id
     value
     status
-    internal_note
-    reviewed_by
-    reviewed_at
     created_at
     updated_at
     question_item {
@@ -60,16 +57,12 @@ export const DOCUMENT_FRAGMENT = `
   fragment DocumentFields on documents {
     id
     organization_id
-    uploaded_by
-    file_id
     file_name
     file_size_bytes
     mime_type
     document_type
     status
     expires_at
-    reviewed_by
-    reviewed_at
     created_at
     updated_at
   }

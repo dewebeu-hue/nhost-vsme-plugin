@@ -21,7 +21,6 @@ type AnswerInput = {
   questionItemId: string;
   value: GraphqlJson;
   status: QuestionAnswerStatus;
-  internalNote?: string;
 };
 
 const allowedStatuses: QuestionAnswerStatus[] = [
@@ -77,7 +76,10 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Please sign in before saving answers." }, { status: 401 });
     }
 
-    console.error("Unable to save questionnaire answers", error);
+    console.error("Unable to save questionnaire answers", {
+      stage: "questionnaire_save",
+      message: error instanceof Error ? error.message : "Unknown questionnaire save error",
+    });
 
     if (error instanceof Error && /permission|access|not found/i.test(error.message)) {
       return NextResponse.json(
@@ -111,14 +113,11 @@ function parseAnswers(value: unknown): AnswerInput[] {
       return [];
     }
 
-    const internalNote = readString(record.internalNote);
-
     return [
       {
         questionItemId,
         value: record.value,
         status,
-        internalNote: internalNote || undefined,
       },
     ];
   });

@@ -89,9 +89,6 @@ type QuestionAnswerRecord = {
   question_item_id: string;
   value: GraphqlJson;
   status: QuestionAnswerStatus;
-  internal_note: string | null;
-  reviewed_by: string | null;
-  reviewed_at: string | null;
   created_at: string;
   updated_at: string;
   question_item?: {

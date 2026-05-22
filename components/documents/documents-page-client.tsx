@@ -62,8 +62,6 @@ type LiveDocumentType =
 type LiveDocument = {
   id: string;
   organization_id: string;
-  uploaded_by: string | null;
-  file_id: string | null;
   file_name: string;
   file_size_bytes: number | null;
   mime_type: string | null;

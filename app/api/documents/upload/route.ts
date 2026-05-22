@@ -22,16 +22,12 @@ type Membership = {
 type EvidenceDocumentRecord = {
   id: string;
   organization_id: string;
-  uploaded_by: string | null;
-  file_id: string | null;
   file_name: string;
   file_size_bytes: number | null;
   mime_type: string | null;
   document_type: string;
   status: string;
   expires_at: string | null;
-  reviewed_by: string | null;
-  reviewed_at: string | null;
   created_at: string;
   updated_at: string;
 };
@@ -80,16 +76,12 @@ const insertDocumentMutation = `
     insert_documents_one(object: $object) {
       id
       organization_id
-      uploaded_by
-      file_id
       file_name
       file_size_bytes
       mime_type
       document_type
       status
       expires_at
-      reviewed_by
-      reviewed_at
       created_at
       updated_at
     }

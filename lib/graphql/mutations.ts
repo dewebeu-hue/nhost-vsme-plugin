@@ -14,7 +14,7 @@ export const UPSERT_QUESTION_ANSWER = `
       object: $object
       on_conflict: {
         constraint: question_answers_organization_id_question_item_id_key
-        update_columns: [value, status, internal_note]
+        update_columns: [value, status]
       }
     ) {
       ...QuestionAnswerFields
