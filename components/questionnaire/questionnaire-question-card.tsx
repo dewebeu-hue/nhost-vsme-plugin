@@ -142,6 +142,19 @@ function renderAnswerControl(
   onValueChange?: (questionId: string, value: string | string[] | boolean) => void,
 ) {
   if (question.type === "input") {
+    const unit = question.unit?.trim();
+
+    if (!unit) {
+      return (
+        <Input
+          value={question.value}
+          onChange={(event) => onValueChange?.(question.id, event.target.value)}
+          readOnly={!onValueChange}
+          className="h-12 w-full max-w-md rounded-xl border-slate-200 bg-slate-50 px-4 text-base font-semibold shadow-sm"
+        />
+      );
+    }
+
     return (
       <div className="flex max-w-md overflow-hidden rounded-xl border border-slate-200 bg-slate-50 shadow-sm">
         <Input
@@ -151,7 +164,7 @@ function renderAnswerControl(
           className="h-12 border-0 bg-transparent px-4 text-base font-semibold shadow-none"
         />
         <div className="flex min-w-28 items-center justify-center border-l border-slate-200 px-4 text-sm font-semibold text-slate-500">
-          {question.unit}
+          {unit}
         </div>
       </div>
     );
