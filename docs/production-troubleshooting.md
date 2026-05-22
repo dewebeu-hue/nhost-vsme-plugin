@@ -60,6 +60,19 @@ SHARE_LINK_COOKIE_SECRET
 - Production requires applying and tracking `nhost/migrations/default/0009_add_support_requests/up.sql` in Nhost/Hasura before first use.
 - Manual QA: submit a request as a supplier, confirm the admin bell/open-request badge increments, open the support inbox, mark the request in progress/resolved, and save an internal admin note.
 
+## Faza 4.4.1 Pre-Pilot UX Debt QA
+
+Use this checklist before inviting pilot users:
+
+- Support: submit a supplier support request from the dashboard or questionnaire help card, then confirm the admin badge and `/[locale]/admin/support-requests` inbox show the request. Mark it in progress/resolved and verify no admin notes appear outside admin routes.
+- Sharing: use `/[locale]/dashboard/share` as the canonical supplier sharing workflow. If `/[locale]/dashboard/share-links` remains reachable, confirm it is clearly differentiated or safely redirects and does not show mock share data.
+- Auth recovery: confirm `/[locale]/login` links to forgot password, forgot password shows a non-enumerating success message, reset password accepts the Nhost reset link, and no reset tokens or passwords are logged.
+- Responsive layout: check 375px, 430px, 768px, and desktop widths for landing, dashboard, questionnaire, public Passport, buyer compare, and admin support requests. Confirm no horizontal overflow and that dialogs fit the viewport.
+- Localization: on `/hr/passport/[token]`, verify buyer-facing labels are Croatian, no literal placeholders appear, and public security/access copy is understandable. On `/hr/dashboard/questionnaire`, verify selected dropdown labels and help tooltips remain Croatian after save/reload.
+- Dashboard: confirm readiness/module progress appears once, missing data is visible near readiness, and right-column widgets stay compact without false zero states.
+- Branding and dark mode: confirm landing/sidebar logos are readable at 100% zoom and admin dark mode keeps controls readable on `#002B36`.
+- Privacy: inspect public Passport, buyer pages, PDFs, and copied messages for private document URLs, storage IDs, raw sensitive answers, admin notes, support notes, tokens, or secrets.
+
 ## Login Fails
 
 Likely causes:
