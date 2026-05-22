@@ -145,12 +145,12 @@ function resolveQuestionHelpText(
   question: QuestionnaireEnergyQuestion,
   labels: QuestionnaireLabels,
 ) {
-  const metadataHelp = question.helpText?.trim();
   const localizedHelp =
     labels.helperTexts[question.id]?.trim() ??
     (question.code ? labels.helperTexts[question.code]?.trim() : undefined);
+  const metadataHelp = question.helpText?.trim();
 
-  return metadataHelp ?? localizedHelp ?? labels.questionHelpFallback;
+  return localizedHelp ?? metadataHelp ?? labels.questionHelpFallback;
 }
 
 function renderAnswerControl(
