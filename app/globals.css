@@ -277,6 +277,13 @@
     color: #b7c9cf !important;
   }
 
+  .admin-workspace[data-admin-theme="dark"] .brand-logo-mark {
+    box-shadow:
+      0 12px 28px rgb(0 0 0 / 0.24),
+      0 0 22px rgb(45 212 191 / 0.16);
+    --tw-ring-color: rgb(207 250 254 / 0.32);
+  }
+
   .admin-workspace[data-admin-theme="dark"] .admin-secondary-action,
   .admin-workspace[data-admin-theme="dark"] .admin-account-pill {
     border-color: rgb(255 255 255 / 0.24) !important;

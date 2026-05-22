@@ -24,7 +24,11 @@ export function OnboardingPageContent({
     <main className="min-h-screen bg-slate-50 text-slate-950">
       <header className="border-b border-slate-200 bg-white">
         <div className="mx-auto flex h-20 max-w-6xl items-center justify-between px-5 sm:px-8">
-          <Link href={localePrefix || "/en"} className="w-fit">
+          <Link
+            href={localePrefix || "/en"}
+            className="w-fit"
+            aria-label="Supplier Passport dashboard"
+          >
             <Logo />
           </Link>
           <Link href={`${localePrefix}/dashboard`} className="text-sm font-semibold text-slate-600 hover:text-blue-700">

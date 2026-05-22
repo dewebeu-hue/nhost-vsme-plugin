@@ -23,9 +23,9 @@ export function AuthShell({ eyebrow, title, subtitle, children }: AuthShellProps
       <div className="mx-auto grid min-h-screen max-w-7xl lg:grid-cols-[minmax(0,1fr)_480px]">
         <section className="hidden flex-col justify-between border-r border-slate-200 bg-white px-10 py-8 lg:flex">
           <div className="flex items-center justify-between gap-4">
-          <Link href={`/${locale}`} className="w-fit">
-            <Logo />
-          </Link>
+            <Link href={`/${locale}`} className="w-fit" aria-label="Supplier Passport home">
+              <Logo size="lg" />
+            </Link>
             <LanguageSwitcher />
           </div>
 
@@ -64,9 +64,9 @@ export function AuthShell({ eyebrow, title, subtitle, children }: AuthShellProps
           <div className="w-full max-w-md">
             <div className="mb-8 lg:hidden">
               <div className="flex items-center justify-between gap-4">
-              <Link href={`/${locale}`} className="w-fit">
-                <Logo />
-              </Link>
+                <Link href={`/${locale}`} className="w-fit" aria-label="Supplier Passport home">
+                  <Logo size="md" />
+                </Link>
                 <LanguageSwitcher />
               </div>
             </div>

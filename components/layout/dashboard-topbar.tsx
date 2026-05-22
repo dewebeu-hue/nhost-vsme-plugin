@@ -33,7 +33,7 @@ export function DashboardTopbar({ labels }: DashboardTopbarProps) {
       <div className="flex min-h-20 items-center justify-between gap-3 px-4 py-3 sm:px-8">
         <div className="flex min-w-0 items-center gap-2 sm:gap-3">
           <div className="hidden shrink-0 sm:block lg:hidden">
-            <Logo />
+            <Logo size="sm" />
           </div>
           <Sheet open={isNavigationOpen} onOpenChange={setIsNavigationOpen}>
             <SheetTrigger
@@ -51,7 +51,7 @@ export function DashboardTopbar({ labels }: DashboardTopbarProps) {
             </SheetTrigger>
             <SheetContent side="left" className="w-[min(22rem,calc(100vw-2rem))] bg-white p-0">
               <SheetHeader className="border-b border-slate-200 px-5 py-4">
-                <Logo />
+                <Logo size="md" />
                 <SheetTitle className="sr-only">{labels.openNavigation}</SheetTitle>
                 <SheetDescription className="sr-only">{labels.workspace}</SheetDescription>
               </SheetHeader>
