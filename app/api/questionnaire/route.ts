@@ -556,7 +556,6 @@ function questionnaireError(
     hasUserId: metadata.hasUserId ?? false,
     organizationIdResolved: metadata.organizationIdResolved ?? false,
     membershipCount: metadata.membershipCount ?? 0,
-    message: metadata.safeGraphqlMessage,
   });
 
   return NextResponse.json(
@@ -568,7 +567,6 @@ function questionnaireError(
       hasUserId: metadata.hasUserId ?? false,
       organizationIdResolved: metadata.organizationIdResolved ?? false,
       membershipCount: metadata.membershipCount ?? 0,
-      safeGraphqlMessage: metadata.safeGraphqlMessage,
     },
     { status },
   );
@@ -671,7 +669,7 @@ async function executeQuestionnaireAdminGraphql<TData>({
   if (firstError) {
     console.error("Questionnaire admin GraphQL returned errors", {
       operationName,
-      message: firstError,
+      reason: "graphql_returned_errors",
     });
     return { ok: false, safeGraphqlMessage: firstError };
   }

@@ -41,11 +41,11 @@ export async function POST(request: Request) {
           }
 
           return createCompareItem(index, result.share);
-        } catch (error) {
+        } catch {
           console.error("Buyer comparison lookup failed", {
             stage: "buyer_compare_lookup",
             index,
-            message: error instanceof Error ? error.message : "Unknown buyer comparison lookup error",
+            reason: "buyer_compare_lookup_failed",
           });
           return createUnavailableCompareItem(index);
         }
@@ -53,10 +53,10 @@ export async function POST(request: Request) {
     );
 
     return NextResponse.json({ items, maxSuppliers: MAX_COMPARE_TOKENS });
-  } catch (error) {
+  } catch {
     console.error("Buyer comparison API failed", {
       stage: "buyer_compare",
-      message: error instanceof Error ? error.message : "Unknown buyer comparison error",
+      reason: "buyer_compare_failed",
     });
     return NextResponse.json({ error: "Unable to load buyer comparison." }, { status: 500 });
   }

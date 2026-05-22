@@ -405,7 +405,6 @@ function uploadError(
     membershipVerified: metadata.membershipVerified ?? false,
     storageUploadSucceeded: metadata.storageUploadSucceeded ?? false,
     storageStatus: metadata.storageStatus,
-    message: metadata.safeGraphqlMessage,
   });
 
   return NextResponse.json(
@@ -418,7 +417,6 @@ function uploadError(
       membershipVerified: metadata.membershipVerified ?? false,
       storageUploadSucceeded: metadata.storageUploadSucceeded ?? false,
       storageStatus: metadata.storageStatus,
-      safeGraphqlMessage: metadata.safeGraphqlMessage,
     },
     { status },
   );
@@ -521,7 +519,7 @@ async function executeDocumentsAdminGraphql<TData>({
   if (firstError) {
     console.error("Document upload admin GraphQL returned errors", {
       operationName,
-      message: firstError,
+      reason: "graphql_returned_errors",
     });
     return { ok: false, safeGraphqlMessage: firstError };
   }

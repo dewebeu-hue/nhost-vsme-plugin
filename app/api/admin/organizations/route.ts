@@ -13,7 +13,8 @@ export async function GET(request: Request) {
     }
 
     console.error("Admin organizations API failed", {
-      message: error instanceof Error ? error.message : "Unknown error",
+      stage: "admin_organizations",
+      reason: "admin_organizations_failed",
     });
 
     return NextResponse.json({ ok: false, error: "Unable to load admin organizations." }, { status: 500 });

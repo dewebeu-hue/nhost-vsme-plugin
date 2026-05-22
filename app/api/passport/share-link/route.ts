@@ -616,7 +616,7 @@ async function executeAdminGraphql<TData>({
   if (firstError) {
     console.error("Passport share admin GraphQL returned errors", {
       operationName,
-      message: firstError,
+      reason: "graphql_returned_errors",
     });
     return { ok: false, safeGraphqlMessage: firstError };
   }
@@ -641,12 +641,13 @@ function shareLinkResponse(request: Request, shareLink: ShareLink | null, organi
 }
 
 function shareLinkError(category: string, stage: string, status: number, safeGraphqlMessage?: string) {
+  void safeGraphqlMessage;
+
   return NextResponse.json(
     {
       error: "We could not load your share link right now.",
       category,
       stage,
-      safeGraphqlMessage,
     },
     { status },
   );

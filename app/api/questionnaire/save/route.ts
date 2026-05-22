@@ -78,7 +78,7 @@ export async function POST(request: Request) {
 
     console.error("Unable to save questionnaire answers", {
       stage: "questionnaire_save",
-      message: error instanceof Error ? error.message : "Unknown questionnaire save error",
+      reason: "questionnaire_save_failed",
     });
 
     if (error instanceof Error && /permission|access|not found/i.test(error.message)) {

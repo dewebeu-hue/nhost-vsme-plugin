@@ -3995,3 +3995,40 @@ Manual QA:
 5. Open supplier Data Room and confirm file metadata, upload, preview placeholder, and evidence linking still work after authenticated membership resolution.
 6. Open admin organization detail and risks; confirm admin can see safe operational summaries but no raw storage internals are rendered unless a deliberate authenticated server proxy is invoked.
 7. Review production logs after upload/preview/share-link actions and confirm no storage ids, private URLs, cookies, JWTs, tokens, or document contents are printed.
+
+## Faza 4.4 Token Logging And Environment Secret Audit
+
+Use this checklist before first-customer launch and after any change touching auth, share links, public routes, GraphQL helpers, uploads, admin APIs, or diagnostics.
+
+Environment variable model:
+
+- Client-safe public variables: `NEXT_PUBLIC_NHOST_SUBDOMAIN`, `NEXT_PUBLIC_NHOST_REGION`, `NEXT_PUBLIC_NHOST_GRAPHQL_URL`, `NEXT_PUBLIC_NHOST_AUTH_URL`, and `NEXT_PUBLIC_NHOST_STORAGE_URL`. These are endpoint/config values only, not credentials.
+- Server-only variables: `HASURA_GRAPHQL_ADMIN_SECRET`, `NHOST_ADMIN_SECRET`, `SHARE_LINK_COOKIE_SECRET`, and `ADMIN_EMAIL_ALLOWLIST`.
+- Never create `NEXT_PUBLIC_ADMIN_EMAIL_ALLOWLIST`, `NEXT_PUBLIC_HASURA_GRAPHQL_ADMIN_SECRET`, `NEXT_PUBLIC_NHOST_ADMIN_SECRET`, `NEXT_PUBLIC_SHARE_LINK_COOKIE_SECRET`, or any other public secret/allowlist variable.
+
+Logging rules:
+
+- Allowed diagnostics: stage, category, safe reason, HTTP status, boolean flags such as `hasUserId`, `hasAdminSecret`, count values, and token length only where useful for route lookup debugging.
+- Never log full Authorization headers, bearer tokens, JWT payloads, cookies, share tokens, share verification cookies, admin secrets, private storage URLs, storage ids, document contents, raw questionnaire answers, internal notes, raw GraphQL variables, or raw upload responses.
+- Do not log raw `error` objects or raw `error.message` on public, buyer, auth, document, questionnaire, share-link, or admin API boundaries. Convert failures to safe stage/category/reason values.
+
+API error response rules:
+
+- API responses should return localized or generic user-safe errors plus category/stage when useful.
+- Do not return raw stack traces, raw GraphQL messages, raw storage responses, admin secret status beyond booleans, request headers, cookies, tokens, private URLs, document contents, or raw answer values.
+- Public token routes should show invalid/inactive/expired/password-required states without logging or returning the full token.
+
+Browser storage and clipboard:
+
+- Allowed browser storage: guided tour state, admin theme preference, onboarding company name draft, and buyer compare public supplier tokens/local public links.
+- Never store JWTs, cookies, admin secrets, private document URLs, storage ids, document contents, raw answers, admin notes, or internal handoff text in `localStorage` or `sessionStorage`.
+- Public/buyer clipboard messages may include supplier name, generic request wording, and a public Passport link only. Admin handoff copy remains admin-only and should be treated as internal.
+
+Manual QA:
+
+1. Inspect Vercel logs after login, questionnaire save, document upload/link, share-link create, public Passport lookup, buyer compare, and admin save. Confirm no JWTs, cookies, Authorization headers, share tokens, private URLs, storage ids, raw answers, raw GraphQL variables, or document contents appear.
+2. Trigger a safe API error, such as invalid public token or logged-out admin API call, and confirm the JSON response contains only safe error/category/stage details.
+3. Copy the public request-information message and confirm it includes only supplier name, generic wording, and the public Passport link.
+4. Inspect `localStorage` and `sessionStorage`; confirm only non-sensitive UI state and buyer compare public tokens appear.
+5. Search the deployed client bundle or source maps for `ADMIN_EMAIL_ALLOWLIST`, `HASURA_GRAPHQL_ADMIN_SECRET`, `NHOST_ADMIN_SECRET`, and `SHARE_LINK_COOKIE_SECRET`; none should appear as client-exposed values.
+6. Confirm admin routes and APIs still work for allowlisted admins after the logging hardening.

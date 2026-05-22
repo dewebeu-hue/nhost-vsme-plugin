@@ -513,7 +513,6 @@ export function buyerRequestError(
     category,
     stage,
     hasUserId: metadata.hasUserId ?? false,
-    message: metadata.safeGraphqlMessage,
   });
 
   return NextResponse.json(
@@ -523,7 +522,6 @@ export function buyerRequestError(
       stage,
       hasAdminSecret: Boolean(process.env.HASURA_GRAPHQL_ADMIN_SECRET),
       hasUserId: metadata.hasUserId ?? false,
-      safeGraphqlMessage: metadata.safeGraphqlMessage,
     },
     { status },
   );

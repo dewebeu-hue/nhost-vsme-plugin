@@ -348,9 +348,9 @@ async function executeAdminGraphql<TData>({
   if (payload.errors?.length) {
     console.error("Admin GraphQL returned errors", {
       operationName,
-      message: payload.errors[0]?.message ?? "unknown",
+      reason: "graphql_returned_errors",
     });
-    throw new Error(`${errorCategory}: ${payload.errors[0]?.message ?? "GraphQL error"}`);
+    throw new Error(`${errorCategory}: graphql_returned_errors`);
   }
 
   if (!payload.data) {

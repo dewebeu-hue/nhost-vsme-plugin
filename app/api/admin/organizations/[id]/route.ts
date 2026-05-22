@@ -24,7 +24,8 @@ export async function GET(request: Request, { params }: AdminOrganizationDetailR
     }
 
     console.error("Admin organization detail API failed", {
-      message: error instanceof Error ? error.message : "Unknown error",
+      stage: "admin_organization_detail",
+      reason: "admin_organization_detail_failed",
     });
 
     return NextResponse.json({ ok: false, error: "Unable to load admin organization." }, { status: 500 });

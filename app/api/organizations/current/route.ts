@@ -178,7 +178,6 @@ export async function POST(request: Request) {
       logSafeDiagnostic("current_org_failed", {
         category: "membership_lookup_graphql_error",
         stage: "membership_lookup",
-        message: membershipResult.safeGraphqlMessage,
       });
 
       return NextResponse.json(
@@ -189,7 +188,6 @@ export async function POST(request: Request) {
           hasAdminSecret: true,
           hasUserId: true,
           membershipCount: 0,
-          safeGraphqlMessage: membershipResult.safeGraphqlMessage,
         },
         { status: 502 },
       );
@@ -245,7 +243,6 @@ export async function POST(request: Request) {
       logSafeDiagnostic("current_org_failed", {
         category: "organization_lookup_graphql_error",
         stage: "organization_lookup",
-        message: organizationResult.safeGraphqlMessage,
       });
 
       return NextResponse.json(
@@ -256,7 +253,6 @@ export async function POST(request: Request) {
           hasAdminSecret: true,
           hasUserId: true,
           membershipCount: 1,
-          safeGraphqlMessage: organizationResult.safeGraphqlMessage,
         },
         { status: 502 },
       );
@@ -291,10 +287,9 @@ export async function POST(request: Request) {
       hasUserId: true,
       membershipCount: 1,
     });
-  } catch (error) {
+  } catch {
     logSafeDiagnostic("current_org_failed", {
       category: "admin_lookup_graphql_error",
-      message: error instanceof Error ? error.message : "unknown",
     });
 
     return NextResponse.json(
@@ -447,7 +442,7 @@ async function executeCurrentOrgAdminGraphql<TData>({
   if (firstError) {
     console.error("Current organization admin GraphQL returned errors", {
       operationName,
-      message: firstError,
+      reason: "graphql_returned_errors",
     });
     return { ok: false, safeGraphqlMessage: firstError };
   }

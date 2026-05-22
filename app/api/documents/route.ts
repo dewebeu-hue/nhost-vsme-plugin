@@ -390,7 +390,6 @@ function documentsError(
     organizationIdPresent: metadata.organizationIdPresent ?? false,
     membershipVerified: metadata.membershipVerified ?? false,
     documentCount: metadata.documentCount ?? 0,
-    message: metadata.safeGraphqlMessage,
   });
 
   return NextResponse.json(
@@ -403,7 +402,6 @@ function documentsError(
       organizationIdPresent: metadata.organizationIdPresent ?? false,
       membershipVerified: metadata.membershipVerified ?? false,
       documentCount: metadata.documentCount ?? 0,
-      safeGraphqlMessage: metadata.safeGraphqlMessage,
     },
     { status },
   );
@@ -506,7 +504,7 @@ async function executeDocumentsAdminGraphql<TData>({
   if (firstError) {
     console.error("Documents admin GraphQL returned errors", {
       operationName,
-      message: firstError,
+      reason: "graphql_returned_errors",
     });
     return { ok: false, safeGraphqlMessage: firstError };
   }

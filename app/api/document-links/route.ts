@@ -923,7 +923,7 @@ async function executeDocumentLinksAdminGraphql<TData>({
   if (firstError) {
     console.error("Document links admin GraphQL returned errors", {
       operationName,
-      message: firstError,
+      reason: "graphql_returned_errors",
     });
     return { ok: false, safeGraphqlMessage: firstError };
   }
@@ -956,7 +956,6 @@ function documentLinksError(
     selectedQuestionItemCount: metadata.selectedQuestionItemCount,
     foundQuestionItemCount: metadata.foundQuestionItemCount,
     answerOrganizationMatches: metadata.answerOrganizationMatches,
-    message: metadata.safeGraphqlMessage,
   });
 
   return NextResponse.json(
@@ -976,7 +975,6 @@ function documentLinksError(
       selectedQuestionItemCount: metadata.selectedQuestionItemCount,
       foundQuestionItemCount: metadata.foundQuestionItemCount,
       answerOrganizationMatches: metadata.answerOrganizationMatches,
-      safeGraphqlMessage: metadata.safeGraphqlMessage,
     },
     { status },
   );

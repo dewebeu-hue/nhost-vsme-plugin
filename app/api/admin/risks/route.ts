@@ -13,7 +13,8 @@ export async function GET(request: Request) {
     }
 
     console.error("Admin risks API failed", {
-      message: error instanceof Error ? error.message : "Unknown error",
+      stage: "admin_risks",
+      reason: "admin_risks_failed",
     });
 
     return NextResponse.json({ ok: false, error: "Unable to load admin risks." }, { status: 500 });

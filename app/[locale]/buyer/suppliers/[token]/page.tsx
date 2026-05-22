@@ -34,12 +34,12 @@ export default async function BuyerSupplierTokenPage({ params }: BuyerSupplierTo
     const cookieStore = await cookies();
     const verificationCookieValue = cookieStore.get(getShareVerificationCookieName(token))?.value;
     result = await getPublicShareByToken(token, { verificationCookieValue });
-  } catch (error) {
+  } catch {
     console.error("Buyer supplier summary lookup failed", {
       stage: "buyer_supplier_lookup",
       hasToken: Boolean(token),
       tokenLength: token.length,
-      message: error instanceof Error ? error.message : "Unknown buyer supplier lookup error",
+      reason: "buyer_supplier_lookup_failed",
     });
   }
 

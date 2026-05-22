@@ -32,12 +32,12 @@ export default async function PassportTokenPage({ params }: PassportTokenPagePro
     const cookieStore = await cookies();
     const verificationCookieValue = cookieStore.get(getShareVerificationCookieName(token))?.value;
     result = await getPublicShareByToken(token, { verificationCookieValue });
-  } catch (error) {
+  } catch {
     console.error("Public Passport route failed", {
       stage: "public_passport_lookup",
       hasToken: Boolean(token),
       tokenLength: token.length,
-      message: error instanceof Error ? error.message : "Unknown public Passport error",
+      reason: "public_passport_lookup_failed",
     });
   }
 

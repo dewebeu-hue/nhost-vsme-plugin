@@ -59,7 +59,6 @@ export async function POST(request: Request) {
 
     logSafeDiagnostic("passport_error", {
       category,
-      message: error instanceof Error ? error.message : "unknown",
     });
 
     return NextResponse.json(

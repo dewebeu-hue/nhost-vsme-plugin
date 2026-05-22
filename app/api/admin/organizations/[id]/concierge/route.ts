@@ -28,7 +28,8 @@ export async function GET(request: Request, { params }: AdminConciergeRouteProps
     }
 
     console.error("Admin concierge status API failed", {
-      message: error instanceof Error ? error.message : "Unknown error",
+      stage: "admin_concierge_status",
+      reason: "admin_concierge_status_failed",
     });
 
     return NextResponse.json({ ok: false, error: "Unable to load concierge status." }, { status: 500 });
@@ -53,7 +54,8 @@ export async function PATCH(request: Request, { params }: AdminConciergeRoutePro
     }
 
     console.error("Admin concierge status update failed", {
-      message: error instanceof Error ? error.message : "Unknown error",
+      stage: "admin_concierge_status_update",
+      reason: "admin_concierge_status_update_failed",
     });
 
     return NextResponse.json({ ok: false, error: "Unable to save concierge status." }, { status: 500 });

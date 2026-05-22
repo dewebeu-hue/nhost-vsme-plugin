@@ -72,7 +72,7 @@ export async function POST(request: Request) {
     }
 
     const category = classifyOnboardingError(error);
-    logOnboardingServerError(category, error);
+    logOnboardingServerError(category);
 
     return NextResponse.json(
       {
@@ -115,9 +115,9 @@ function classifyOnboardingError(error: unknown) {
   return "unknown_onboarding_error";
 }
 
-function logOnboardingServerError(category: string, error: unknown) {
+function logOnboardingServerError(category: string) {
   console.error("Unable to create workspace", {
     category,
-    message: error instanceof Error ? error.message : "unknown",
+    reason: "workspace_create_failed",
   });
 }
