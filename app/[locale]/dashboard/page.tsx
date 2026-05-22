@@ -15,6 +15,7 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("dashboard.overview");
+  const questionnaireSections = await getTranslations("questionnaire.sections");
   const share = await getTranslations("share");
   const statuses = await getTranslations("statuses");
   const shell = await getTranslations("dashboard.shell");
@@ -37,10 +38,12 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
     moduleCompletion: t("moduleCompletion"),
     moduleDescription: t("moduleDescription"),
     viewAllSections: t("viewAllSections"),
+    viewAll: t("viewAll"),
     missingDataSummary: t("missingDataSummary"),
     missingDataDescription: t("missingDataDescription"),
     totalMissingData: t("totalMissingData"),
     items: t("items"),
+    resolve: t("resolve"),
     goToMissingData: t("goToMissingData"),
     recentBuyerRequests: t("recentBuyerRequests"),
     buyerRequestsDescription: t("buyerRequestsDescription"),
@@ -147,6 +150,15 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
       share: t("activity.share"),
     },
     modules: {
+      "Company Basics": questionnaireSections("Company Basics"),
+      Employees: questionnaireSections("Employees"),
+      Energy: questionnaireSections("Energy"),
+      Fuel: questionnaireSections("Fuel"),
+      Waste: questionnaireSections("Waste"),
+      "Environmental Policies": questionnaireSections("Environmental Policies"),
+      "Health & Safety": questionnaireSections("Health & Safety"),
+      Certifications: questionnaireSections("Certifications"),
+      "Supplier Information": questionnaireSections("Supplier Information"),
       "Basic Information": t("modules.basicInformation"),
       Environment: t("modules.environment"),
       Social: t("modules.social"),

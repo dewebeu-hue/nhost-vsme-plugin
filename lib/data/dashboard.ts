@@ -299,7 +299,7 @@ export async function getDashboardSetupSummaryForOrganization(
     evidenceRequiredCount,
     lastUpdated,
     sectionProgress,
-    missingSections: missingSections.slice(0, 5),
+    missingSections,
     recentUploads: data.documents.slice(0, 5).map((document) => ({
       name: document.file_name || "Document",
       category: document.document_type || "other",

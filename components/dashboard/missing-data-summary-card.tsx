@@ -7,6 +7,7 @@ import {
 } from "@/lib/dashboard-labels";
 
 type DashboardMissingDataItem = {
+  code: string;
   area: string;
   items: number;
 };
@@ -30,26 +31,33 @@ export function MissingDataSummaryCard({
       description={labels.missingDataDescription}
       className="h-full"
     >
-      <div className="flex flex-col gap-5">
-        <div className="rounded-2xl border border-amber-100 bg-amber-50/70 p-5">
+      <div className="flex flex-col gap-4">
+        <div className="rounded-2xl border border-amber-100 bg-amber-50/70 p-4">
           <p className="text-sm font-medium text-amber-700">{labels.totalMissingData}</p>
-          <p className="mt-2 text-4xl font-semibold tracking-tight text-slate-950">
+          <p className="mt-1.5 text-3xl font-semibold tracking-tight text-slate-950">
             {total} {labels.items}
           </p>
         </div>
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-2.5">
           {items.length ? items.map((item) => (
-            <div
+            <Link
               key={item.area}
-              className="flex items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3"
+              href={`${localePrefix}/dashboard/questionnaire?section=${encodeURIComponent(item.code)}`}
+              className="group flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white px-3 py-2.5 transition-colors hover:border-blue-200 hover:bg-blue-50/50"
             >
-              <span className="text-sm font-semibold text-slate-950">
-                {labels.modules[item.area] ?? item.area}
+              <span className="min-w-0">
+                <span className="block truncate text-sm font-semibold text-slate-950">
+                  {labels.modules[item.area] ?? item.area}
+                </span>
+                <span className="mt-0.5 block text-xs font-medium text-slate-500">
+                  {item.items} {labels.items}
+                </span>
               </span>
-              <span className="text-sm font-medium text-slate-500">
-                {item.items} {labels.items}
+              <span className="inline-flex shrink-0 items-center gap-1 text-xs font-semibold text-blue-700 group-hover:text-blue-800">
+                {labels.resolve}
+                <ArrowRight aria-hidden="true" className="size-3.5" />
               </span>
-            </div>
+            </Link>
           )) : (
             <p className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-500">
               {labels.setupChecklist.neutralFallback}

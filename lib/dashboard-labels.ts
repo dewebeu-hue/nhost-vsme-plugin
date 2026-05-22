@@ -65,10 +65,12 @@ export type DashboardOverviewLabels = {
   moduleCompletion: string;
   moduleDescription: string;
   viewAllSections: string;
+  viewAll: string;
   missingDataSummary: string;
   missingDataDescription: string;
   totalMissingData: string;
   items: string;
+  resolve: string;
   goToMissingData: string;
   recentBuyerRequests: string;
   buyerRequestsDescription: string;
@@ -196,10 +198,12 @@ export const defaultDashboardOverviewLabels: DashboardOverviewLabels = {
   moduleCompletion: "VSME module completion",
   moduleDescription: "Completion by disclosure area.",
   viewAllSections: "View all sections",
-  missingDataSummary: "Missing data summary",
+  viewAll: "View all",
+  missingDataSummary: "Missing data",
   missingDataDescription: "Open items blocking buyer-ready status.",
   totalMissingData: "Total missing data",
   items: "items",
+  resolve: "Resolve",
   goToMissingData: "Go to missing data",
   recentBuyerRequests: "Recent buyer requests",
   buyerRequestsDescription: "Latest buyer requests and deadlines.",
@@ -310,6 +314,15 @@ export const defaultDashboardOverviewLabels: DashboardOverviewLabels = {
     share: "{count} public share link active.",
   },
   modules: {
+    "Company Basics": "Company Basics",
+    Employees: "Employees",
+    Energy: "Energy",
+    Fuel: "Fuel",
+    Waste: "Waste",
+    "Environmental Policies": "Environmental Policies",
+    "Health & Safety": "Health & Safety",
+    Certifications: "Certifications",
+    "Supplier Information": "Supplier Information",
     "Basic Information": "Basic Information",
     Environment: "Environment",
     Social: "Social",

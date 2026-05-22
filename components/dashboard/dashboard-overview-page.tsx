@@ -45,6 +45,7 @@ export function DashboardOverviewPage({
   const missingDataSummary = {
     total: summary?.missingItemsCount ?? 0,
     items: summary?.missingSections.map((section) => ({
+      code: section.code,
       area: section.title,
       items: section.missing,
     })) ?? [],
@@ -113,7 +114,7 @@ export function DashboardOverviewPage({
         subtitle={labels.subtitle}
       />
 
-      <section className="grid gap-6 xl:grid-cols-[1.35fr_0.85fr]">
+      <section className="grid items-start gap-6 lg:grid-cols-2 xl:grid-cols-[minmax(0,1.15fr)_minmax(0,0.95fr)_minmax(280px,0.75fr)]">
         <div data-tour="dashboard-readiness">
           <OverallReadinessCard
             readiness={summary?.readinessPercent ?? 0}
@@ -130,6 +131,27 @@ export function DashboardOverviewPage({
           labels={labels}
           localePrefix={localePrefix}
         />
+        <div className="grid gap-4 lg:col-span-2 xl:col-span-1">
+          <ActiveShareLinksCard
+            links={summary?.activeShareLinks ?? []}
+            labels={labels}
+            localePrefix={localePrefix}
+            compact
+          />
+          <RecentActivityCard activity={summary?.recentActivity ?? []} labels={labels} compact />
+          <BuyerRequestsCard
+            requests={[]}
+            labels={labels}
+            localePrefix={localePrefix}
+            compact
+          />
+          <RecentUploadsCard
+            uploads={summary?.recentUploads ?? []}
+            labels={labels}
+            localePrefix={localePrefix}
+            compact
+          />
+        </div>
       </section>
 
       <FirstPassportChecklistCard
@@ -149,11 +171,6 @@ export function DashboardOverviewPage({
         onAction={() => window.dispatchEvent(new CustomEvent("supplier-passport-tour:restart"))}
       />
 
-      <section className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
-        <BuyerRequestsCard requests={[]} labels={labels} />
-        <RecentUploadsCard uploads={summary?.recentUploads ?? []} labels={labels} />
-      </section>
-
       <section className="grid gap-6 xl:grid-cols-[0.95fr_1.05fr]">
         <TasksCard tasks={tasks} labels={labels} />
         <ReadinessChartCard
@@ -163,11 +180,6 @@ export function DashboardOverviewPage({
           endValue={summary?.readinessPercent ?? 0}
           labels={labels}
         />
-      </section>
-
-      <section className="grid gap-6 xl:grid-cols-[1fr_1fr]">
-        <ActiveShareLinksCard links={summary?.activeShareLinks ?? []} labels={labels} />
-        <RecentActivityCard activity={summary?.recentActivity ?? []} labels={labels} />
       </section>
     </div>
   );

@@ -42,15 +42,15 @@ export function OverallReadinessCard({
         visualState.cardClassName,
         visualState.isComplete ? "shadow-[0_0_28px_rgba(16,185,129,0.22)]" : "",
       )}
-      contentClassName="flex flex-col gap-6"
+      contentClassName="flex flex-col gap-4"
     >
-      <div className="grid gap-6 rounded-2xl bg-white/70 p-4 sm:grid-cols-[auto_1fr] sm:items-center">
+      <div className="grid gap-4 rounded-2xl bg-white/70 p-3 sm:grid-cols-[auto_1fr] sm:items-center">
         <ProgressRing
           value={readiness}
           label={labels.ready}
           helper={labels.vsme}
-          size={152}
-          stroke={14}
+          size={124}
+          stroke={11}
           className={cn(
             "rounded-full bg-white",
             visualState.isComplete ? "shadow-[0_0_22px_rgba(16,185,129,0.3)]" : "shadow-sm",
@@ -62,20 +62,20 @@ export function OverallReadinessCard({
           helperClassName={visualState.helperClassName}
         />
         <div>
-          <p className={cn("text-2xl font-semibold tracking-tight", visualState.valueClassName)}>
+          <p className={cn("text-xl font-semibold tracking-tight", visualState.valueClassName)}>
             {label}
           </p>
-          <p className="mt-2 text-sm leading-6 text-slate-600">
+          <p className="mt-1.5 text-sm leading-6 text-slate-600">
             {labels.readinessHelper}
           </p>
         </div>
       </div>
 
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-2.5">
         {modules.length ? modules.map((module) => (
           <div
             key={module.name}
-            className="grid gap-2 rounded-xl border border-slate-200 bg-white/80 p-3"
+            className="grid gap-1.5 rounded-xl border border-slate-200 bg-white/80 px-3 py-2.5"
           >
             <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 text-sm">
               <span className="font-semibold text-slate-950">

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Link2 } from "lucide-react";
 import { SectionCard } from "@/components/shared/section-card";
 import { DashboardStatusPill } from "@/components/dashboard/dashboard-status-pill";
@@ -16,26 +17,39 @@ type DashboardShareLink = {
 type ActiveShareLinksCardProps = {
   links: DashboardShareLink[];
   labels?: DashboardOverviewLabels;
+  localePrefix?: string;
+  compact?: boolean;
 };
 
 export function ActiveShareLinksCard({
   links,
   labels = defaultDashboardOverviewLabels,
+  localePrefix = "",
+  compact = false,
 }: ActiveShareLinksCardProps) {
   return (
     <SectionCard
       title={labels.activeShareLinks}
-      description={labels.activeShareLinksDescription}
+      description={compact ? undefined : labels.activeShareLinksDescription}
       className="h-full"
+      contentClassName={compact ? "pt-0" : undefined}
+      action={compact ? (
+        <Link
+          href={`${localePrefix}/dashboard/share`}
+          className="text-xs font-semibold text-blue-700 hover:text-blue-800"
+        >
+          {labels.setupChecklist.sharePublicLinkCta}
+        </Link>
+      ) : undefined}
     >
-      <div className="flex flex-col gap-3">
-        {links.length ? links.map((link) => (
+      <div className={compact ? "flex flex-col gap-2.5" : "flex flex-col gap-3"}>
+        {links.length ? links.slice(0, compact ? 3 : links.length).map((link) => (
           <div
             key={`${link.buyer}-${link.expires}`}
             className="flex gap-3 rounded-xl border border-slate-200 bg-white p-3"
           >
-            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-teal-50 text-teal-700">
-              <Link2 aria-hidden="true" className="size-5" />
+            <div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-teal-50 text-teal-700">
+              <Link2 aria-hidden="true" className="size-4" />
             </div>
             <div className="min-w-0 flex-1">
               <div className="flex flex-wrap items-center gap-2">
