@@ -1,5 +1,6 @@
 import { useTranslations } from "next-intl";
 import { BarChart3, ClipboardCheck, Database, Link2 } from "lucide-react";
+import { ScrollReveal } from "@/components/landing/scroll-reveal";
 
 const icons = [ClipboardCheck, Database, BarChart3, Link2] as const;
 
@@ -24,18 +25,17 @@ export function FeatureCards() {
             const Icon = icons[index];
 
             return (
-              <article
-                key={feature.title}
-                className="supplier-surface rounded-2xl border-0 p-6 transition-transform duration-200 hover:-translate-y-1"
-              >
-                <div className="mb-8 flex size-12 items-center justify-center rounded-xl bg-blue-50 text-blue-700">
-                  <Icon aria-hidden="true" className="size-6" />
-                </div>
-                <h3 className="text-xl font-semibold tracking-tight text-slate-950">
-                  {feature.title}
-                </h3>
-                <p className="mt-3 text-sm leading-6 text-slate-600">{feature.description}</p>
-              </article>
+              <ScrollReveal key={feature.title} delay={index * 90}>
+                <article className="supplier-surface h-full rounded-2xl border-0 p-6 transition-transform duration-200 hover:-translate-y-1">
+                  <div className="mb-8 flex size-12 items-center justify-center rounded-xl bg-blue-50 text-blue-700">
+                    <Icon aria-hidden="true" className="size-6" />
+                  </div>
+                  <h3 className="text-xl font-semibold tracking-tight text-slate-950">
+                    {feature.title}
+                  </h3>
+                  <p className="mt-3 text-sm leading-6 text-slate-600">{feature.description}</p>
+                </article>
+              </ScrollReveal>
             );
           })}
         </div>

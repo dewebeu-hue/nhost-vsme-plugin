@@ -1,5 +1,6 @@
 import { useTranslations } from "next-intl";
 import { Quote } from "lucide-react";
+import { ScrollReveal } from "@/components/landing/scroll-reveal";
 
 export function SocialProof() {
   const t = useTranslations("landing.socialProof");
@@ -9,13 +10,12 @@ export function SocialProof() {
     <section id="resources" className="px-6 py-16 lg:px-8">
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-8">
         <div className="grid gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:grid-cols-2 lg:grid-cols-5">
-          {logos.map((logo) => (
-            <div
-              key={logo}
-              className="flex min-h-20 items-center justify-center rounded-xl bg-slate-50 px-4 text-center text-sm font-semibold text-slate-500"
-            >
-              {logo}
-            </div>
+          {logos.map((logo, index) => (
+            <ScrollReveal key={logo} delay={index * 70}>
+              <div className="flex min-h-20 items-center justify-center rounded-xl bg-slate-50 px-4 text-center text-sm font-semibold text-slate-500">
+                {logo}
+              </div>
+            </ScrollReveal>
           ))}
         </div>
 

@@ -4,6 +4,7 @@ import { ArrowRight, CheckCircle2, ShieldCheck } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { ProductPreview } from "@/components/landing/product-preview";
+import { ScrollReveal } from "@/components/landing/scroll-reveal";
 import { cn } from "@/lib/utils";
 
 export function HeroSection() {
@@ -22,60 +23,67 @@ export function HeroSection() {
 
       <div className="relative mx-auto grid w-full max-w-7xl items-start gap-12 lg:grid-cols-[0.95fr_1.05fr]">
         <div className="flex flex-col items-start gap-8">
-          <Badge
-            variant="outline"
-            className="rounded-full border-blue-200 bg-white px-4 py-2 text-blue-700 shadow-sm"
-          >
-            <ShieldCheck aria-hidden="true" className="size-4" />
-            {t("badge")}
-          </Badge>
-
-          <div className="flex max-w-3xl flex-col gap-6">
-            <h1 className="text-5xl font-semibold tracking-tight text-slate-950 sm:text-6xl lg:text-7xl">
-              {t("titlePrefix")}{" "}
-              <span className="text-teal-500">{t("titleEmphasis")}</span>
-            </h1>
-            <p className="max-w-2xl text-lg leading-8 text-slate-600 sm:text-xl sm:leading-9">
-              {t("description")}
-            </p>
-          </div>
-
-          <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
-            <Link
-              href={`/${locale}/signup`}
-              className={cn(
-                buttonVariants({ size: "lg" }),
-                "h-12 px-5 shadow-xl shadow-blue-600/20",
-              )}
+          <ScrollReveal delay={60}>
+            <Badge
+              variant="outline"
+              className="rounded-full border-blue-200 bg-white px-4 py-2 text-blue-700 shadow-sm"
             >
-              {common("startPassport")}
-              <ArrowRight data-icon="inline-end" />
-            </Link>
-            <Link
-              href={`/${locale}/request-demo`}
-              className={cn(
-                buttonVariants({ variant: "outline", size: "lg" }),
-                "h-12 border-slate-200 bg-white px-5",
-              )}
-            >
-              {common("requestDemo")}
-            </Link>
-          </div>
+              <ShieldCheck aria-hidden="true" className="size-4" />
+              {t("badge")}
+            </Badge>
+          </ScrollReveal>
+
+          <ScrollReveal delay={140}>
+            <div className="flex max-w-3xl flex-col gap-6">
+              <h1 className="text-5xl font-semibold tracking-tight text-slate-950 sm:text-6xl lg:text-7xl">
+                {t("titlePrefix")}{" "}
+                <span className="text-teal-500">{t("titleEmphasis")}</span>
+              </h1>
+              <p className="max-w-2xl text-lg leading-8 text-slate-600 sm:text-xl sm:leading-9">
+                {t("description")}
+              </p>
+            </div>
+          </ScrollReveal>
+
+          <ScrollReveal delay={220}>
+            <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
+              <Link
+                href={`/${locale}/signup`}
+                className={cn(
+                  buttonVariants({ size: "lg" }),
+                  "h-12 px-5 shadow-xl shadow-blue-600/20",
+                )}
+              >
+                {common("startPassport")}
+                <ArrowRight data-icon="inline-end" />
+              </Link>
+              <Link
+                href={`/${locale}/request-demo`}
+                className={cn(
+                  buttonVariants({ variant: "outline", size: "lg" }),
+                  "h-12 border-slate-200 bg-white px-5",
+                )}
+              >
+                {common("requestDemo")}
+              </Link>
+            </div>
+          </ScrollReveal>
 
           <div className="flex flex-wrap gap-3">
-            {trustChips.map((chip) => (
-              <div
-                key={chip}
-                className="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-600 shadow-sm"
-              >
-                <CheckCircle2 aria-hidden="true" className="size-4 text-teal-500" />
-                {chip}
-              </div>
+            {trustChips.map((chip, index) => (
+              <ScrollReveal key={chip} delay={300 + index * 90}>
+                <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-600 shadow-sm">
+                  <CheckCircle2 aria-hidden="true" className="size-4 text-teal-500" />
+                  {chip}
+                </div>
+              </ScrollReveal>
             ))}
           </div>
         </div>
 
-        <ProductPreview />
+        <ScrollReveal delay={220} direction="right">
+          <ProductPreview />
+        </ScrollReveal>
       </div>
     </section>
   );

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { ArrowRight } from "lucide-react";
 import { PricingCard } from "@/components/pricing/pricing-card";
+import { ScrollReveal } from "@/components/landing/scroll-reveal";
 import { buttonVariants } from "@/components/ui/button";
 import { getLandingPricingPlans, localizePricingPlan } from "@/lib/pricing";
 import { cn } from "@/lib/utils";
@@ -29,8 +30,10 @@ export function PricingPreview() {
         </div>
 
         <div className="grid gap-5 lg:grid-cols-3">
-          {pricingPlans.map((plan) => (
-            <PricingCard key={plan.id} plan={plan} compact />
+          {pricingPlans.map((plan, index) => (
+            <ScrollReveal key={plan.id} delay={index * 100}>
+              <PricingCard plan={plan} compact />
+            </ScrollReveal>
           ))}
         </div>
 

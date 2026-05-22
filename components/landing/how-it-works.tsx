@@ -1,5 +1,6 @@
 import { useTranslations } from "next-intl";
 import { ArrowRight } from "lucide-react";
+import { ScrollReveal } from "@/components/landing/scroll-reveal";
 
 export function HowItWorks() {
   const t = useTranslations("landing.howItWorks");
@@ -24,18 +25,20 @@ export function HowItWorks() {
 
         <div className="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-5">
           {steps.map((step, index) => (
-            <article key={step.title} className="relative rounded-2xl bg-slate-50 p-5">
-              <div className="mb-7 flex items-center justify-between">
-                <span className="flex size-10 items-center justify-center rounded-full bg-white text-sm font-semibold text-blue-700 shadow-sm">
-                  {index + 1}
-                </span>
-                {index < steps.length - 1 ? (
-                  <ArrowRight aria-hidden="true" className="hidden size-5 text-slate-300 lg:block" />
-                ) : null}
-              </div>
-              <h3 className="text-lg font-semibold tracking-tight text-slate-950">{step.title}</h3>
-              <p className="mt-2 text-sm leading-6 text-slate-600">{step.description}</p>
-            </article>
+            <ScrollReveal key={step.title} delay={index * 80}>
+              <article className="relative h-full rounded-2xl bg-slate-50 p-5">
+                <div className="mb-7 flex items-center justify-between">
+                  <span className="flex size-10 items-center justify-center rounded-full bg-white text-sm font-semibold text-blue-700 shadow-sm">
+                    {index + 1}
+                  </span>
+                  {index < steps.length - 1 ? (
+                    <ArrowRight aria-hidden="true" className="hidden size-5 text-slate-300 lg:block" />
+                  ) : null}
+                </div>
+                <h3 className="text-lg font-semibold tracking-tight text-slate-950">{step.title}</h3>
+                <p className="mt-2 text-sm leading-6 text-slate-600">{step.description}</p>
+              </article>
+            </ScrollReveal>
           ))}
         </div>
       </div>

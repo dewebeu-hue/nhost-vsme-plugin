@@ -4,6 +4,7 @@ import { HeroSection } from "@/components/landing/hero-section";
 import { HowItWorks } from "@/components/landing/how-it-works";
 import { LandingHeader } from "@/components/landing/landing-header";
 import { PricingPreview } from "@/components/landing/pricing-preview";
+import { ScrollReveal } from "@/components/landing/scroll-reveal";
 import { SocialProof } from "@/components/landing/social-proof";
 import { ValueDisclaimer } from "@/components/landing/value-disclaimer";
 
@@ -12,12 +13,24 @@ export function LandingPageContent() {
     <main className="min-h-screen overflow-hidden bg-slate-50">
       <LandingHeader />
       <HeroSection />
-      <FeatureCards />
-      <HowItWorks />
-      <ValueDisclaimer />
-      <SocialProof />
-      <PricingPreview />
-      <FinalCta />
+      <ScrollReveal>
+        <FeatureCards />
+      </ScrollReveal>
+      <ScrollReveal>
+        <HowItWorks />
+      </ScrollReveal>
+      <ScrollReveal>
+        <ValueDisclaimer />
+      </ScrollReveal>
+      <ScrollReveal>
+        <SocialProof />
+      </ScrollReveal>
+      <ScrollReveal>
+        <PricingPreview />
+      </ScrollReveal>
+      <ScrollReveal>
+        <FinalCta />
+      </ScrollReveal>
     </main>
   );
 }
