@@ -25,6 +25,20 @@ export type QuestionnaireLabels = {
   needHelpTitle: string;
   needHelpText: string;
   contactSupport: string;
+  supportRequest: {
+    contactSupport: string;
+    description: string;
+    category: string;
+    subject: string;
+    message: string;
+    sendRequest: string;
+    sending: string;
+    sent: string;
+    error: string;
+    validation: string;
+    close: string;
+    categories: Record<string, string>;
+  };
   uploadEvidence: string;
   learnMoreEnergy: string;
   evidence: string;
@@ -224,6 +238,30 @@ export const defaultQuestionnaireLabels: QuestionnaireLabels = {
   needHelpTitle: "Need help?",
   needHelpText: "Our team is here to help you complete your VSME profile.",
   contactSupport: "Contact Support",
+  supportRequest: {
+    contactSupport: "Contact support",
+    description:
+      "Send a short request to the Supplier Passport team. Email sending is not enabled; admins will review it in the support inbox.",
+    category: "Category",
+    subject: "Subject",
+    message: "Message",
+    sendRequest: "Send request",
+    sending: "Sending...",
+    sent: "Support request sent.",
+    error: "We could not send the request right now.",
+    validation: "Enter a short message before sending.",
+    close: "Close",
+    categories: {
+      general: "General",
+      questionnaire: "Questionnaire",
+      documents: "Documents",
+      evidence_links: "Evidence links",
+      sharing: "Sharing",
+      passport_pdf: "Passport / PDF",
+      account: "Account",
+      other: "Other",
+    },
+  },
   uploadEvidence: "Upload evidence",
   learnMoreEnergy: "VSME Energy guidance will be available here when linked guidance is configured.",
   relatedDocumentsUnavailable: "Templates and guidance documents will appear here when available.",

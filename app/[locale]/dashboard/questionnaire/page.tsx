@@ -33,6 +33,14 @@ export default async function QuestionnairePage({ params, searchParams }: Questi
       ...defaultQuestionnaireLabels.contextualHelp,
       ...source.contextualHelp,
     },
+    supportRequest: {
+      ...defaultQuestionnaireLabels.supportRequest,
+      ...source.supportRequest,
+      categories: {
+        ...defaultQuestionnaireLabels.supportRequest.categories,
+        ...source.supportRequest?.categories,
+      },
+    },
     helperTexts: { ...defaultQuestionnaireLabels.helperTexts, ...source.helperTexts },
     statuses: { ...defaultQuestionnaireLabels.statuses, ...source.statuses },
     documentStatuses: {

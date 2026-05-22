@@ -1,6 +1,6 @@
 import { LifeBuoy } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { EvidenceRecommendationCard } from "@/components/questionnaire/evidence-recommendation-card";
+import { SupportRequestDialog, type SupportRequestLabels } from "@/components/support/support-request-dialog";
 
 type QuestionnaireHelperPanelProps = {
   tipsTitle: string;
@@ -12,7 +12,7 @@ type QuestionnaireHelperPanelProps = {
   relatedDocumentsUnavailable: string;
   needHelpTitle: string;
   needHelpText: string;
-  contactSupportLabel: string;
+  supportRequestLabels: SupportRequestLabels;
   evidenceRecommendations: readonly string[];
   relatedDocuments: readonly {
     name: string;
@@ -31,7 +31,7 @@ export function QuestionnaireHelperPanel({
   relatedDocumentsUnavailable,
   needHelpTitle,
   needHelpText,
-  contactSupportLabel,
+  supportRequestLabels,
   evidenceRecommendations,
   relatedDocuments,
   onUploadEvidence,
@@ -86,9 +86,7 @@ export function QuestionnaireHelperPanel({
           {needHelpTitle}
         </h3>
         <p className="mt-2 text-sm leading-6 text-slate-600">{needHelpText}</p>
-        <Button variant="outline" className="mt-4 w-full bg-white" disabled>
-          {contactSupportLabel}
-        </Button>
+        <SupportRequestDialog labels={supportRequestLabels} />
       </section>
     </aside>
   );

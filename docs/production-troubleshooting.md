@@ -53,7 +53,7 @@ SHARE_LINK_COOKIE_SECRET
 
 ## Support Request Workflow
 
-- Supplier dashboard support uses `POST /api/support-requests`; it creates an internal `support_requests` row for the authenticated user's current organization.
+- Supplier dashboard and questionnaire help cards use `POST /api/support-requests`; it creates an internal `support_requests` row for the authenticated user's current organization.
 - Admin support inbox uses `/[locale]/admin/support-requests` plus `GET /api/admin/support-requests` and `PATCH /api/admin/support-requests/[id]`.
 - Support requests are internal only. They are not exposed on public Passport, buyer, share, or supplier read APIs.
 - No email is sent by this workflow. Admins review and update status inside the admin support inbox.

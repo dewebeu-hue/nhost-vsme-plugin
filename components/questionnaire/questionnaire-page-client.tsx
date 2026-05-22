@@ -939,7 +939,7 @@ export function QuestionnairePageClient({
           relatedDocumentsUnavailable={labels.relatedDocumentsUnavailable}
           needHelpTitle={labels.needHelpTitle}
           needHelpText={labels.needHelpText}
-          contactSupportLabel={labels.contactSupport}
+          supportRequestLabels={labels.supportRequest}
           evidenceRecommendations={labels.evidenceRecommendations}
           relatedDocuments={labels.relatedDocuments}
           onUploadEvidence={() => {
