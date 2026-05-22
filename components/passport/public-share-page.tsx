@@ -171,7 +171,7 @@ export function PublicSharePage({ locale, passport, token }: PublicSharePageProp
                       {translateShareDetail(detail.label, t)}
                     </span>
                     <span className="text-right text-sm font-semibold text-slate-950">
-                      {detail.value}
+                      {translateShareDetailValue(detail.value, t)}
                     </span>
                   </div>
                 ))}
@@ -450,6 +450,10 @@ function RequestAdditionalInformationDialog({
 }
 
 function translateStatusChip(chip: string, t: ReturnType<typeof useTranslations<"share">>) {
+  if (chip.startsWith("Expires:")) {
+    return `${t("expires")}: ${chip.slice("Expires:".length).trim()}`;
+  }
+
   const map: Record<string, string> = {
     "Read-only": t("readOnly"),
     "Password protected": t("passwordProtected"),
@@ -457,6 +461,17 @@ function translateStatusChip(chip: string, t: ReturnType<typeof useTranslations<
   };
 
   return map[chip] ?? chip;
+}
+
+function translateShareDetailValue(value: string, t: ReturnType<typeof useTranslations<"share">>) {
+  const map: Record<string, string> = {
+    Buyer: t("buyer"),
+    "No expiry": t("noExpiry"),
+    "Password protected": t("passwordProtected"),
+    "Read-only": t("readOnly"),
+  };
+
+  return map[value] ?? value;
 }
 
 function getReadinessLevel(score: number) {
