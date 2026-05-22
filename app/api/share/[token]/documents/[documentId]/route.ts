@@ -69,8 +69,11 @@ export async function GET(request: NextRequest, context: SharedDocumentContext) 
       status: file.status,
       headers,
     });
-  } catch (error) {
-    console.error("Unable to serve shared document", error);
+  } catch {
+    console.error("Unable to serve shared document", {
+      stage: "shared_document_access",
+      reason: "storage_proxy_failed",
+    });
 
     return NextResponse.json(
       { error: "Document access is not configured." },

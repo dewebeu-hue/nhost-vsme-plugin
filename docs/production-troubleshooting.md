@@ -3874,3 +3874,49 @@ Manual production smoke:
 Phase close:
 
 - Faza 4.3 can close when lint/build pass and production smoke confirms no accidental hard reloads, blank loading flashes, list clearing during refetch, duplicate submissions, or privacy regressions.
+
+## Faza 4.4 Public And Private Data Boundary
+
+Use this boundary map before opening the first real customer workspace or changing public, buyer, admin, or PDF surfaces.
+
+Supplier-private data:
+
+- Raw questionnaire answer values, except the small company-profile subset intentionally used in authenticated supplier PDF summaries.
+- Uploaded documents, file metadata, evidence links, document previews, buyer requests, supplier response notes, and authenticated dashboard state.
+- Authenticated supplier routes must resolve organization membership server-side before returning organization data.
+
+Buyer-safe public data:
+
+- Organization display name, readiness percentage, section completion/status, high-level evidence availability, certificate expiry status, public disclaimer, public link state, and buyer-safe company summary fields.
+- Public Passport and Buyer Portal pages should use explicit public-safe mappers that whitelist fields. Do not pass private document records or raw answer payloads to public client components.
+- Buyer compare may store only supplier share tokens in browser `localStorage` and should render only buyer-safe summary fields returned by the compare API.
+
+Admin-only data:
+
+- Concierge notes, onboarding status, portfolio labels, commercial classification, commercial notes, internal handoff summary, risk triage, review state, admin follow-up dates, and allowlist/admin diagnostics.
+- These fields should render only inside admin-gated routes and should not be copied into public Passport, buyer compare, public PDF, or supplier-facing share copy.
+
+Never public:
+
+- Private document URLs, Nhost storage IDs, storage paths, raw sensitive answers, user/member data, internal notes, admin/commercial metadata, password hashes, cookies, JWTs, access tokens, full share-token logs, admin secrets, and cookie secrets.
+
+Public Passport and Buyer Portal audit:
+
+- `getPublicShareByToken` should query only the public-safe fields needed for the public Passport summary. Public questionnaire data should include status-level readiness metadata, not answer values or internal notes.
+- Public document summary mapping should whitelist only evidence metadata needed for counts/status: document type, status, expiry date, and linked answer ids. Do not serialize file names, MIME types, storage IDs, or raw document records to public components unless a controlled document-download route intentionally serves an allowed file.
+- Public request-information and buyer-request copy messages may include supplier name, generic request text, and the current public Passport link only.
+
+PDF exposure rules:
+
+- Authenticated supplier PDF may include readiness, section status, missing-data labels, evidence counts, certificate expiry summary, and selected safe company-basics answers.
+- Authenticated supplier PDF must not include private file URLs, storage IDs, tokens, admin notes, commercial notes, concierge notes, or raw sensitive answer dumps.
+- Public PDF must use the public Passport summary only and must not expose downloadable private evidence files, storage IDs, raw answers, admin/internal notes, or token/debug metadata.
+
+Manual QA:
+
+1. Open a valid public Passport token and inspect rendered page, source, and network payloads for private URLs, storage IDs, raw answer values, user/member data, admin notes, and commercial notes.
+2. Open buyer supplier token and buyer compare pages; confirm only buyer-safe summary fields are shown.
+3. Copy the public request-information message and confirm it contains only supplier name, generic request text, and public link.
+4. Download authenticated and public PDFs; confirm no private URLs, storage IDs, tokens, admin notes, commercial notes, concierge notes, or raw sensitive answers appear.
+5. Confirm supplier dashboard still shows supplier-private data only after authenticated membership resolution.
+6. Confirm admin organization detail still shows admin-only fields and that those fields do not appear in supplier, buyer, public Passport, or PDF surfaces.

@@ -142,6 +142,13 @@ type PublicDocumentAccessResponse = {
   documents_by_pk: PublicDocumentAccessRecord | null;
 };
 
+type PublicDocumentSummaryRecord = Pick<
+  PublicDocumentRecord,
+  "document_type" | "status" | "expires_at"
+> & {
+  linked_question_answer_ids: string[];
+};
+
 export type SharedDocumentAccessResult =
   | {
       ok: true;
@@ -538,7 +545,7 @@ function mapPublicShare(
   );
 
   return {
-    token: shareLink.token,
+    token: "",
     company: {
       name: companyName,
       verified: organization?.is_verified ?? false,
@@ -594,7 +601,7 @@ function createPublicPassportSectionSummaries(
   sections: PassportSummarySection[],
   questions: PassportSummaryQuestion[],
   answers: PublicQuestionnaireAnswer[],
-  documents: ReturnType<typeof mapPublicDocumentsForSummary>,
+  documents: PublicDocumentSummaryRecord[],
 ) {
   const answerByQuestion = new Map(answers.map((answer) => [answer.question_item_id, answer]));
   const answerById = new Map(
@@ -732,7 +739,9 @@ function calculatePublicPercent(answered: number, total: number) {
 
 function mapPublicDocumentsForSummary(documents: PublicDocumentRecord[]) {
   return documents.map((document) => ({
-    ...document,
+    document_type: document.document_type,
+    status: document.status,
+    expires_at: document.expires_at,
     linked_question_answer_ids: (document.document_links ?? []).map(
       (link) => link.question_answer_id,
     ),
