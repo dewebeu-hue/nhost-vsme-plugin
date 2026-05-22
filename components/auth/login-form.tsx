@@ -129,6 +129,15 @@ export function LoginForm() {
         />
       </label>
 
+      <div className="-mt-2 text-right">
+        <Link
+          href={`/${locale}/forgot-password`}
+          className="text-sm font-semibold text-blue-700 hover:text-blue-800"
+        >
+          {t("forgotPassword")}
+        </Link>
+      </div>
+
       <Button
         type="submit"
         disabled={isSubmitting}
