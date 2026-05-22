@@ -137,6 +137,60 @@
     pointer-events: none;
   }
 
+  .restart-guide-cta {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    border-color: rgb(147 197 253 / 0.75);
+    background:
+      linear-gradient(#ffffff, #ffffff) padding-box,
+      linear-gradient(135deg, rgb(96 165 250 / 0.9), rgb(45 212 191 / 0.75), rgb(219 234 254 / 0.95)) border-box;
+    color: #0b5cff;
+    box-shadow:
+      0 0 0 1px rgb(255 255 255 / 0.65),
+      0 8px 20px rgb(37 99 235 / 0.14),
+      0 0 18px rgb(45 212 191 / 0.14);
+  }
+
+  .restart-guide-cta::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    padding: 2px;
+    background: linear-gradient(
+      135deg,
+      rgb(96 165 250 / 0.9),
+      rgb(45 212 191 / 0.72),
+      rgb(255 255 255 / 0.85),
+      rgb(96 165 250 / 0.9)
+    );
+    pointer-events: none;
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    filter: drop-shadow(0 0 8px rgb(96 165 250 / 0.28));
+  }
+
+  .restart-guide-cta:hover {
+    border-color: rgb(96 165 250 / 0.95);
+    background:
+      linear-gradient(#eff6ff, #ffffff) padding-box,
+      linear-gradient(135deg, rgb(37 99 235 / 0.95), rgb(20 184 166 / 0.82), rgb(219 234 254 / 1)) border-box;
+    box-shadow:
+      0 0 0 1px rgb(255 255 255 / 0.75),
+      0 10px 24px rgb(37 99 235 / 0.2),
+      0 0 22px rgb(45 212 191 / 0.2);
+  }
+
+  .restart-guide-cta:focus-visible {
+    outline: 2px solid #0b5cff;
+    outline-offset: 3px;
+  }
+
   .admin-workspace[data-admin-theme="dark"] {
     --background: #002b36;
     --foreground: #f8fafc;

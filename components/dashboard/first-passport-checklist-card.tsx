@@ -66,7 +66,7 @@ export function FirstPassportChecklistCard({
           variant="outline"
           size="sm"
           onClick={restartSupplierTour}
-          className="hidden sm:inline-flex"
+          className="restart-guide-cta hidden rounded-full px-4 font-semibold sm:inline-flex"
         >
           <PlayCircle aria-hidden="true" className="size-4" />
           {quickStart.startGuidedTour}
@@ -115,7 +115,7 @@ export function FirstPassportChecklistCard({
               variant="ghost"
               size="sm"
               onClick={restartSupplierTour}
-              className="sm:hidden"
+              className="restart-guide-cta rounded-full px-4 font-semibold sm:hidden"
             >
               <PlayCircle aria-hidden="true" className="size-4" />
               {quickStart.startGuidedTour}

@@ -44,7 +44,7 @@ export function ContextualHelpCard({
             <Button
               type="button"
               variant="outline"
-              className="mt-4 h-9 rounded-xl border-blue-200 bg-white text-blue-700 hover:bg-blue-50"
+              className="restart-guide-cta mt-4 h-9 rounded-full px-4 font-semibold"
               onClick={onAction}
             >
               {actionLabel}
@@ -141,7 +141,7 @@ function ContextualHelpAction({
   return (
     <button
       type="button"
-      className="font-semibold text-blue-700 underline-offset-4 hover:underline"
+      className="restart-guide-cta inline-flex h-9 items-center justify-center rounded-full border px-4 text-sm font-semibold transition"
       onClick={onAction}
     >
       {children}
