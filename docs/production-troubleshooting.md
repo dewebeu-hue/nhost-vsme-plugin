@@ -4032,3 +4032,52 @@ Manual QA:
 4. Inspect `localStorage` and `sessionStorage`; confirm only non-sensitive UI state and buyer compare public tokens appear.
 5. Search the deployed client bundle or source maps for `ADMIN_EMAIL_ALLOWLIST`, `HASURA_GRAPHQL_ADMIN_SECRET`, `NHOST_ADMIN_SECRET`, and `SHARE_LINK_COOKIE_SECRET`; none should appear as client-exposed values.
 6. Confirm admin routes and APIs still work for allowlisted admins after the logging hardening.
+
+## Faza 4.4 Final Pre-Launch Privacy QA
+
+Run this final checklist before giving the first real supplier customer access to production.
+
+Public and buyer boundary:
+
+- Public Passport, Buyer Supplier, Buyer Compare, and public PDF surfaces may show organization name, readiness percentage, section status, buyer-safe company summary, high-level evidence availability, certificate expiry status, and disclaimers.
+- They must not show raw questionnaire answer dumps, private document URLs, storage ids, storage paths, signed URLs, document contents, admin notes, concierge notes, commercial notes, buyer-request internal notes, user/member data, or admin risk data.
+- Public/buyer copy messages may include only supplier name, generic request wording, and the public Passport link.
+
+Admin boundary:
+
+- Admin pages and `/api/admin/*` must require allowlisted admin access before fetching admin data.
+- Logged-out users should receive a safe blocked/unauthorized state. Authenticated non-admin suppliers should receive a safe forbidden state.
+- `ADMIN_EMAIL_ALLOWLIST` must remain server-side only and must never appear as a `NEXT_PUBLIC_` variable or client prop.
+
+Documents, storage, and PDFs:
+
+- Supplier Data Room can show authenticated metadata after organization membership is confirmed.
+- Public/buyer routes and PDFs must not expose `file_id`, `storage_file_id`, private URLs, signed URLs, bucket/path details, raw storage responses, or document contents.
+- Server-side preview/proxy/delete helpers may use storage ids internally, but must return files through controlled routes only and must not serialize storage internals.
+
+Tokens, cookies, logs, and errors:
+
+- Do not log Authorization headers, bearer tokens, JWT payloads, cookies, share tokens, verification cookies, admin secrets, private URLs, document contents, raw GraphQL variables, raw answer values, or internal notes.
+- Safe diagnostics are stage, category, reason, boolean flags, counts, and HTTP status.
+- API errors should be JSON with safe messages/categories/stages only. Do not return raw stack traces, raw GraphQL errors, raw storage errors, or secret-bearing details.
+
+Browser storage:
+
+- Allowed: guided tour keys, admin theme preference, onboarding draft company name, and buyer compare public supplier tokens.
+- Not allowed: JWTs, cookies, private document URLs, storage ids, raw answers, admin notes, commercial notes, handoff notes, document contents, or secrets.
+
+Manual production QA:
+
+1. Deploy and open valid `/hr/passport/[token]` and `/en/passport/[token]`; inspect Network and page source for no private fields.
+2. Open `/hr/buyer/suppliers/[token]` and `/hr/buyer/compare`; confirm only buyer-safe summary data.
+3. Copy public/buyer request messages and confirm no private document fields, storage ids, raw answers, or internal notes.
+4. Download authenticated and public PDFs; inspect text for no storage URLs/ids, raw sensitive answer dump, admin notes, commercial notes, or user/member data.
+5. Log out and open `/hr/admin/organizations`; confirm blocked. Log in as non-admin supplier; confirm forbidden. Log in as allowlisted admin; confirm admin works.
+6. Trigger safe API errors, such as invalid public token and logged-out admin API request; confirm JSON is sanitized and no stack trace is returned.
+7. Inspect Vercel logs during login, questionnaire save, document upload/link, share-link create, public Passport lookup, buyer compare, PDF export, and admin save. Confirm no tokens/cookies/private URLs/storage ids/document contents are logged.
+8. Inspect browser `localStorage` and `sessionStorage`; confirm only approved non-sensitive UI state is present.
+9. Confirm docs and env examples use placeholders only and no real secrets.
+
+Phase close:
+
+- Faza 4.4 is ready to close when lint/build pass and the manual production QA confirms public/buyer surfaces are buyer-safe, admin APIs are protected, document/storage internals are not exposed, logs are sanitized, and browser storage contains no sensitive data.
