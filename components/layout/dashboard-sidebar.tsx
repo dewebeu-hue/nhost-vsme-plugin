@@ -15,8 +15,8 @@ type DashboardSidebarProps = {
 export function DashboardSidebar({ labels, localePrefix = "" }: DashboardSidebarProps) {
   return (
     <aside className="hidden min-h-screen w-72 shrink-0 border-r border-slate-200 bg-white lg:flex lg:flex-col">
-      <div className="flex h-20 items-center border-b border-slate-200 px-6">
-        <Logo />
+      <div className="flex min-h-[72px] items-center border-b border-slate-200 px-6 py-4">
+        <Logo size="sidebar" />
       </div>
 
       <div className="flex flex-1 flex-col gap-6 overflow-y-auto px-4 py-5">

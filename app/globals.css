@@ -360,6 +360,14 @@
     --tw-ring-color: rgb(207 250 254 / 0.32);
   }
 
+  .admin-workspace[data-admin-theme="dark"] .brand-logo-sidebar-title {
+    color: #f8fafc !important;
+  }
+
+  .admin-workspace[data-admin-theme="dark"] .brand-logo-sidebar-subtitle {
+    color: #b7c9cf !important;
+  }
+
   .admin-workspace[data-admin-theme="dark"] .brand-logo-light-auto {
     display: none !important;
   }
