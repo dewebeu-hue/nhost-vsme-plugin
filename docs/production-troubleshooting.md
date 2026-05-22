@@ -55,10 +55,11 @@ SHARE_LINK_COOKIE_SECRET
 
 - Supplier dashboard and questionnaire help cards use `POST /api/support-requests`; it creates an internal `support_requests` row for the authenticated user's current organization.
 - Admin support inbox uses `/[locale]/admin/support-requests` plus `GET /api/admin/support-requests` and `PATCH /api/admin/support-requests/[id]`.
+- The admin bell uses the same admin-protected `GET /api/admin/support-requests` endpoint to show up to five recent open requests in a compact dropdown. Clicking a request opens `/[locale]/admin/support-requests?requestId=<id>`, then the inbox clears filters, scrolls to the matching request, and highlights it.
 - Support requests are internal only. They are not exposed on public Passport, buyer, share, or supplier read APIs.
 - No email is sent by this workflow. Admins review and update status inside the admin support inbox.
 - Production requires applying and tracking `nhost/migrations/default/0009_add_support_requests/up.sql` in Nhost/Hasura before first use.
-- Manual QA: submit a request as a supplier, confirm the admin bell/open-request badge increments, open the support inbox, mark the request in progress/resolved, and save an internal admin note.
+- Manual QA: submit a request as a supplier, confirm the admin bell/open-request badge increments, click the bell, open the request from the dropdown, confirm the inbox highlights it, mark the request in progress/resolved, and save an internal admin note.
 
 ## Faza 4.4.1 Pre-Pilot UX Debt QA
 

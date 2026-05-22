@@ -120,6 +120,7 @@ export function AdminAccountControls({ labels = defaultAdminLabels }: { labels?:
                     <AdminSupportRequestIndicator
                       href={`/${locale}/admin/support-requests`}
                       label={labels.openSupportRequests}
+                      labels={labels}
                     />
                   ) : undefined
                 }
@@ -147,6 +148,7 @@ export function AdminAccountControls({ labels = defaultAdminLabels }: { labels?:
       <AdminSupportRequestIndicator
         href={`/${locale}/admin/support-requests`}
         label={labels.openSupportRequests}
+        labels={labels}
         mode="bell"
       />
       <div className="admin-account-pill flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-3 py-2">

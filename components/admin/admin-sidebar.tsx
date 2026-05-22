@@ -39,6 +39,7 @@ export function AdminSidebar({
                     <AdminSupportRequestIndicator
                       href={`${localePrefix}/admin/support-requests`}
                       label={labels.openSupportRequests}
+                      labels={labels}
                     />
                   ) : undefined
                 }

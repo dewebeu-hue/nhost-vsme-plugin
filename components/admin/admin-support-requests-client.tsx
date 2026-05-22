@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { CalendarDays, LifeBuoy, Search } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -38,6 +39,8 @@ const priorityOptions = ["low", "normal", "high"] as const;
 export function AdminSupportRequestsClient({
   labels = defaultAdminLabels,
 }: AdminSupportRequestsClientProps) {
+  const searchParams = useSearchParams();
+  const focusedRequestId = searchParams.get("requestId");
   const [requests, setRequests] = useState<SupportRequestSummary[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState<(typeof statusOptions)[number]>("all");
@@ -73,6 +76,21 @@ export function AdminSupportRequestsClient({
       cancelled = true;
     };
   }, [labels.loadError]);
+
+  useEffect(() => {
+    if (!focusedRequestId || isLoading) {
+      return;
+    }
+
+    const scrollTimer = window.setTimeout(() => {
+      setStatusFilter("all");
+      setSearch("");
+      const target = document.getElementById(`support-request-${focusedRequestId}`);
+      target?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 120);
+
+    return () => window.clearTimeout(scrollTimer);
+  }, [focusedRequestId, isLoading]);
 
   const filteredRequests = useMemo(() => {
     const normalizedSearch = search.trim().toLowerCase();
@@ -234,6 +252,7 @@ export function AdminSupportRequestsClient({
                     key={request.id}
                     request={request}
                     labels={labels}
+                    isFocused={request.id === focusedRequestId}
                     onUpdate={handleUpdate}
                   />
                 ))}
@@ -267,10 +286,12 @@ function SupportStat({ label, value }: { label: string; value: number }) {
 function SupportRequestCard({
   request,
   labels,
+  isFocused,
   onUpdate,
 }: {
   request: SupportRequestSummary;
   labels: AdminLabels;
+  isFocused: boolean;
   onUpdate: (
     requestId: string,
     changes: Partial<{
@@ -284,7 +305,15 @@ function SupportRequestCard({
   const requester = request.requesterName || request.requesterEmail || labels.notProvided;
 
   return (
-    <article className="rounded-2xl border border-slate-200 bg-white p-4">
+    <article
+      id={`support-request-${request.id}`}
+      className={cn(
+        "scroll-mt-28 rounded-2xl border bg-white p-4 transition",
+        isFocused
+          ? "border-blue-300 shadow-lg shadow-blue-600/15 ring-2 ring-blue-500/30"
+          : "border-slate-200",
+      )}
+    >
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">

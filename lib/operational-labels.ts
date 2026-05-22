@@ -231,6 +231,10 @@ export type AdminLabels = {
   supportRequests: string;
   supportRequestsSubtitle: string;
   openSupportRequests: string;
+  supportNotificationTitle: string;
+  supportNotificationEmpty: string;
+  supportNotificationViewAll: string;
+  supportNotificationRecent: string;
   supportRequestInboxEmpty: string;
   supportRequestInboxEmptyDescription: string;
   supportRequestCount: string;
@@ -589,6 +593,10 @@ export const defaultAdminLabels: AdminLabels = {
   supportRequests: "Support requests",
   supportRequestsSubtitle: "Review supplier support requests and update internal follow-up status.",
   openSupportRequests: "Open support requests",
+  supportNotificationTitle: "Support requests",
+  supportNotificationEmpty: "No open support requests.",
+  supportNotificationViewAll: "View all requests",
+  supportNotificationRecent: "Recent open requests",
   supportRequestInboxEmpty: "No support requests yet.",
   supportRequestInboxEmptyDescription: "Supplier support requests will appear here after they are submitted from the dashboard.",
   supportRequestCount: "Open requests",
