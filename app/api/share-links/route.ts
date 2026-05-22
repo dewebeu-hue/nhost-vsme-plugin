@@ -71,7 +71,10 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Please sign in to create a share link." }, { status: 401 });
     }
 
-    console.error("Unable to create share link", error);
+    console.error("Unable to create share link", {
+      stage: "share_link_create",
+      reason: "share_link_create_failed",
+    });
     return NextResponse.json(
       { error: "We could not create the share link right now." },
       { status: 500 },

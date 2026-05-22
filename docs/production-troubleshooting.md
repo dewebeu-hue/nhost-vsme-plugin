@@ -3959,3 +3959,39 @@ Manual QA:
 6. Inspect supplier dashboard/questionnaire/documents API payloads and confirm no admin-only fields, storage file IDs, or internal review metadata are returned.
 7. Inspect public Passport and buyer payloads and confirm no admin/concierge/commercial/handoff fields are present.
 8. Confirm Vercel has `ADMIN_EMAIL_ALLOWLIST` server-side only and no `NEXT_PUBLIC_ADMIN*` allowlist variable.
+
+## Faza 4.4 Document And Storage URL Exposure Audit
+
+Use this checklist when changing Data Room uploads, document links, public Passport, Buyer Portal, share links, or PDF export paths.
+
+Document field classification:
+
+- Safe authenticated supplier/admin metadata: document metadata row id, organization id after membership/admin checks, file name inside authenticated supplier/admin UI, file size, MIME type, document type, status, expiry date, created/updated timestamps, and linked questionnaire answer ids.
+- Buyer-safe public evidence fields: evidence availability counts, document category/type summary, reviewed/linked evidence status, certificate expiry status, and "evidence available on request" wording.
+- Never-public storage/internal fields: Nhost `file_id`, storage file ids, bucket names, storage paths, private/signed/download URLs, storage API responses, document contents, `uploaded_by`, internal review fields, raw document rows, access tokens, cookies, JWTs, share-token debug values, and secrets.
+
+Implementation rules:
+
+- Public Passport and Buyer Portal loaders should use whitelist mappers. Do not spread raw `documents` rows into public props.
+- Public evidence summaries may use document type, status, expiry date, and linked answer ids only for aggregate readiness/evidence logic.
+- Authenticated supplier document APIs may return safe metadata needed by the Data Room, but should not return the storage `file_id`, storage URL/path, `uploaded_by`, or internal review fields.
+- Server-side preview/delete/proxy helpers may read storage ids internally, but must never serialize those ids or direct Nhost Storage URLs to browser props, public APIs, copied messages, or PDFs.
+- Public and buyer copy messages may include supplier name, generic request text, and the public Passport link only.
+- PDF exports should include evidence counts/categories and certificate expiry summaries only; never include storage ids, direct storage URLs, storage paths, or document contents.
+- Logs should report stage/category and safe status only. Do not log raw document rows, storage ids, signed/private URLs, upload responses, tokens, cookies, JWTs, or document contents.
+
+Routes and APIs to inspect:
+
+- Supplier: `/api/documents`, `/api/documents/upload`, `/api/documents/[documentId]/preview`, `/api/document-links`, authenticated Passport PDF export, and `/[locale]/dashboard/documents`.
+- Public/buyer: `/[locale]/passport/[token]`, `/api/passport/public/pdf`, `/api/buyer/compare`, `/[locale]/buyer/suppliers/[token]`, buyer compare, and public request-info copy messages.
+- Admin: `/api/admin/*`, `/[locale]/admin/*`, organization detail, risk dashboard, and any concierge/commercial panels that summarize document readiness.
+
+Manual QA:
+
+1. Open a valid public Passport token and inspect page source/network responses for `file_id`, storage ids, storage paths, private URLs, signed URLs, direct download URLs, raw document rows, and document contents.
+2. Open `/hr/buyer/suppliers/[token]` and buyer compare; confirm only buyer-safe readiness/evidence summaries are present.
+3. Copy the request-information message and confirm it contains only supplier name, generic request text, and the public Passport link.
+4. Download authenticated Supplier Passport PDF and public PDF if enabled; search the file text for storage ids, URLs, paths, raw answers, and internal/admin notes.
+5. Open supplier Data Room and confirm file metadata, upload, preview placeholder, and evidence linking still work after authenticated membership resolution.
+6. Open admin organization detail and risks; confirm admin can see safe operational summaries but no raw storage internals are rendered unless a deliberate authenticated server proxy is invoked.
+7. Review production logs after upload/preview/share-link actions and confirm no storage ids, private URLs, cookies, JWTs, tokens, or document contents are printed.

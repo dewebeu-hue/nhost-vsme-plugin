@@ -53,8 +53,11 @@ export async function POST(request: Request, context: VerifyPasswordContext) {
     });
 
     return response;
-  } catch (error) {
-    console.error("Unable to verify share link password", error);
+  } catch {
+    console.error("Unable to verify share link password", {
+      stage: "share_password_verification",
+      reason: "share_password_verification_failed",
+    });
     return NextResponse.json(
       { error: "verification_failed" },
       { status: 500 },

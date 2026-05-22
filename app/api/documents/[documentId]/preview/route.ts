@@ -39,7 +39,10 @@ export async function GET(request: Request, context: PreviewRouteContext) {
       return NextResponse.json({ error: "Please sign in to preview this document." }, { status: 401 });
     }
 
-    console.error("Unable to prepare document preview", error);
+    console.error("Unable to prepare document preview", {
+      stage: "document_preview",
+      reason: "secure_preview_unavailable",
+    });
     return NextResponse.json(
       { error: "Secure preview is not available for this document." },
       { status: 404 },
