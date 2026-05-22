@@ -192,9 +192,12 @@ function renderAnswerControl(
   }
 
   if (question.type === "select") {
+    const selectedValue = resolveCanonicalSelectValue(question.value, question.options, labels);
+    const selectedLabel = resolveQuestionOptionLabel(selectedValue || question.value, labels);
+
     return (
       <Select
-        value={question.value}
+        value={selectedValue}
         onValueChange={(value) => {
           if (typeof value === "string") {
             onValueChange?.(question.id, value);
@@ -202,13 +205,13 @@ function renderAnswerControl(
         }}
       >
         <SelectTrigger className="h-12 w-full max-w-md rounded-xl bg-slate-50 px-4">
-          <SelectValue />
+          <SelectValue>{selectedLabel}</SelectValue>
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
             {question.options.map((option) => (
               <SelectItem key={option} value={option}>
-                {labels.questionOptions[option] ?? option}
+                {resolveQuestionOptionLabel(option, labels)}
               </SelectItem>
             ))}
           </SelectGroup>
@@ -228,7 +231,7 @@ function renderAnswerControl(
             className={cn("h-10 flex-1", yesNoValue === option && "shadow-md shadow-blue-600/15")}
             onClick={() => setYesNoValue(option)}
           >
-            {labels.questionOptions[option] ?? option}
+            {resolveQuestionOptionLabel(option, labels)}
           </Button>
         ))}
       </div>
@@ -274,7 +277,7 @@ function renderAnswerControl(
                 )
               }
             >
-              {labels.questionOptions[option] ?? option}
+              {resolveQuestionOptionLabel(option, labels)}
             </button>
           );
         })}
@@ -290,4 +293,38 @@ function renderAnswerControl(
       className="min-h-28 resize-none rounded-xl bg-slate-50 px-4 py-3 text-sm leading-6"
     />
   );
+}
+
+function resolveQuestionOptionLabel(value: string, labels: QuestionnaireLabels) {
+  return labels.questionOptions[value] ?? value;
+}
+
+function resolveCanonicalSelectValue(
+  value: string,
+  options: string[],
+  labels: QuestionnaireLabels,
+) {
+  if (!value) {
+    return "";
+  }
+
+  if (options.includes(value)) {
+    return value;
+  }
+
+  const normalizedValue = normalizeSelectValue(value);
+  const matchedOption = options.find((option) => {
+    const localizedLabel = resolveQuestionOptionLabel(option, labels);
+
+    return (
+      normalizeSelectValue(option) === normalizedValue ||
+      normalizeSelectValue(localizedLabel) === normalizedValue
+    );
+  });
+
+  return matchedOption ?? value;
+}
+
+function normalizeSelectValue(value: string) {
+  return value.trim().toLocaleLowerCase();
 }
