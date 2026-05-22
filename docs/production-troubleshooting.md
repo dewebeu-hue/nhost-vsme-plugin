@@ -4180,3 +4180,35 @@ Manual QA:
 6. Open admin organization detail and risks; confirm forms and dense rows are usable.
 7. Open public Passport and buyer compare pages; confirm modals/tables stay within the viewport or scroll inside their own container.
 8. Run the guided tour on a mobile-width viewport and confirm the tooltip and controls fit.
+
+## Faza 4.4.1 UX Debt Cleanup Final QA
+
+Use this as the final gate before moving from UX-debt cleanup into pilot launch preparation.
+
+Final QA scope:
+
+- Supplier production UI should not show a dead notification bell or fake notification inbox.
+- Supplier sharing has one canonical route: `/[locale]/dashboard/share`.
+- `/[locale]/dashboard/share-links` exists only as a backwards-compatible redirect to the canonical share route.
+- Login exposes a localized forgot-password link.
+- Forgot-password copy is generic and does not reveal whether an account exists.
+- Reset-password flow uses Nhost Auth and does not log emails, reset tickets, passwords, JWTs, cookies, or raw auth responses.
+- Mobile and tablet layouts should be usable at 375px, 430px, and 768px without horizontal page overflow.
+- German remains hidden from production switchers unless translations are complete.
+
+Manual production QA:
+
+1. Open `/hr/dashboard`; confirm there is no dead notification bell and no fake notification panel.
+2. Confirm the supplier sidebar/mobile drawer has one share item labeled `Dijeljenje`.
+3. Open `/hr/dashboard/share`; confirm share-link create/copy/deactivate actions still work.
+4. Open `/hr/dashboard/share-links`; confirm it redirects to `/hr/dashboard/share`.
+5. Open `/hr/login`; click `Zaboravili ste lozinku?`, submit an email, and confirm the generic success message.
+6. Open the Nhost reset email link, set a new password on `/hr/reset-password`, and log in with the new password.
+7. Inspect application and Vercel logs from the reset flow; confirm no reset ticket, password, email, JWT, cookie, or raw auth payload is logged.
+8. Check `/hr`, `/hr/plans`, `/hr/request-demo`, supplier dashboard pages, admin pages, public Passport, buyer supplier page, and buyer compare at 375px, 430px, 768px, and desktop widths.
+9. Confirm mobile nav drawers, dialogs, guided tour tooltip, request-info modal, password reset form, and admin forms fit the viewport.
+10. Quick-check `/en/login`, `/en/dashboard/share`, and `/en/admin/organizations` for English copy and layout parity.
+
+Phase close:
+
+- Faza 4.4.1 is ready to close when lint/build pass and manual production QA confirms no dead notification UI, no duplicate supplier share navigation, password reset works with configured Nhost redirects, mobile/tablet layouts are usable, and no private URLs, storage ids, reset tickets, tokens, passwords, or secrets are exposed.
