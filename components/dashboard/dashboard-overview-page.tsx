@@ -5,7 +5,6 @@ import { ActiveShareLinksCard } from "@/components/dashboard/active-share-links-
 import { BuyerRequestsCard } from "@/components/dashboard/buyer-requests-card";
 import { FirstPassportChecklistCard } from "@/components/dashboard/first-passport-checklist-card";
 import { MissingDataSummaryCard } from "@/components/dashboard/missing-data-summary-card";
-import { ModuleCompletionCard } from "@/components/dashboard/module-completion-card";
 import { OverallReadinessCard } from "@/components/dashboard/overall-readiness-card";
 import { ReadinessChartCard } from "@/components/dashboard/readiness-chart-card";
 import { RecentActivityCard } from "@/components/dashboard/recent-activity-card";
@@ -114,7 +113,7 @@ export function DashboardOverviewPage({
         subtitle={labels.subtitle}
       />
 
-      <section className="grid gap-6 xl:grid-cols-[1.15fr_0.95fr_0.8fr]">
+      <section className="grid gap-6 xl:grid-cols-[1.35fr_0.85fr]">
         <div data-tour="dashboard-readiness">
           <OverallReadinessCard
             readiness={summary?.readinessPercent ?? 0}
@@ -122,13 +121,9 @@ export function DashboardOverviewPage({
             lastUpdated={formatDate(summary?.lastUpdated, labels)}
             modules={moduleCompletion}
             labels={labels}
+            localePrefix={localePrefix}
           />
         </div>
-        <ModuleCompletionCard
-          modules={moduleCompletion}
-          labels={labels}
-          localePrefix={localePrefix}
-        />
         <MissingDataSummaryCard
           total={missingDataSummary.total}
           items={missingDataSummary.items}

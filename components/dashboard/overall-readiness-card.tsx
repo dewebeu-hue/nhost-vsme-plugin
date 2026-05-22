@@ -1,3 +1,5 @@
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { ProgressRing } from "@/components/shared/progress-ring";
 import { SectionCard } from "@/components/shared/section-card";
@@ -18,6 +20,7 @@ type OverallReadinessCardProps = {
   lastUpdated: string;
   modules: DashboardModuleCompletion[];
   labels?: DashboardOverviewLabels;
+  localePrefix?: string;
 };
 
 export function OverallReadinessCard({
@@ -26,6 +29,7 @@ export function OverallReadinessCard({
   lastUpdated,
   modules,
   labels = defaultDashboardOverviewLabels,
+  localePrefix = "",
 }: OverallReadinessCardProps) {
   const visualState = getReadinessVisualState(readiness);
 
@@ -69,12 +73,18 @@ export function OverallReadinessCard({
 
       <div className="flex flex-col gap-4">
         {modules.length ? modules.map((module) => (
-          <div key={module.name} className="grid gap-2">
-            <div className="flex items-center justify-between gap-3 text-sm">
-              <span className="font-medium text-slate-700">
+          <div
+            key={module.name}
+            className="grid gap-2 rounded-xl border border-slate-200 bg-white/80 p-3"
+          >
+            <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 text-sm">
+              <span className="font-semibold text-slate-950">
                 {labels.modules[module.name] ?? module.name}
               </span>
-              <span className="font-semibold text-slate-950">{module.percent}%</span>
+              <span className="whitespace-nowrap text-slate-500">
+                {module.completed}/{module.total} -{" "}
+                <span className="font-semibold text-slate-950">{module.percent}%</span>
+              </span>
             </div>
             <Progress value={module.percent} className="h-2" />
           </div>
@@ -85,8 +95,20 @@ export function OverallReadinessCard({
         )}
       </div>
 
-      <div className={cn("rounded-xl border px-4 py-3 text-sm font-medium", visualState.footerClassName)}>
-        {labels.lastUpdated}: {lastUpdated}
+      <div
+        className={cn(
+          "flex flex-col gap-3 rounded-xl border px-4 py-3 text-sm font-medium sm:flex-row sm:items-center sm:justify-between",
+          visualState.footerClassName,
+        )}
+      >
+        <span>{labels.lastUpdated}: {lastUpdated}</span>
+        <Link
+          href={`${localePrefix}/dashboard/questionnaire`}
+          className="inline-flex items-center gap-2 font-semibold text-blue-700 hover:text-blue-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+        >
+          {labels.viewAllSections}
+          <ArrowRight aria-hidden="true" className="size-4" />
+        </Link>
       </div>
     </SectionCard>
   );
