@@ -349,7 +349,7 @@ export function DocumentsPageClient({
         text: liveMode ? labels.linkSignInError : labels.uploadMockMessage,
       });
       setIsUploadOpen(false);
-      return;
+      return true;
     }
 
     setIsUploading(true);
@@ -411,7 +411,7 @@ export function DocumentsPageClient({
           tone: "error",
           text: labels.uploadError,
         });
-        return;
+        return false;
       }
 
       const uploadedDocument = mapLiveDocument(payload.document, labels, locale);
@@ -420,6 +420,7 @@ export function DocumentsPageClient({
       setSelectedDocumentId(uploadedDocument.id);
       setIsUploadOpen(false);
       setMessage({ tone: "success", text: labels.uploadSuccess });
+      return true;
     } catch (error) {
       if (process.env.NODE_ENV !== "production") {
         console.error("Document upload failed", error);
@@ -428,6 +429,7 @@ export function DocumentsPageClient({
         tone: "error",
         text: labels.uploadError,
       });
+      return false;
     } finally {
       setIsUploading(false);
     }

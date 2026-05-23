@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type FormEvent, type ReactElement } from "react";
+import { useCallback, useRef, useState, type FormEvent, type ReactElement } from "react";
 import { UploadCloud } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -37,7 +37,7 @@ type UploadDocumentDialogProps = {
   trigger: ReactElement;
   labels?: DocumentsLabels;
   onOpenChange: (open: boolean) => void;
-  onUpload: (values: UploadDocumentValues) => Promise<void>;
+  onUpload: (values: UploadDocumentValues) => Promise<boolean>;
 };
 
 const documentTypes = [
@@ -65,6 +65,19 @@ export function UploadDocumentDialog({
   const [expiresAt, setExpiresAt] = useState("");
   const [note, setNote] = useState("");
   const [localError, setLocalError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  const resetUploadForm = useCallback(() => {
+    setFile(null);
+    setDocumentType("certificate");
+    setExpiresAt("");
+    setNote("");
+    setLocalError(null);
+
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  }, []);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -75,21 +88,25 @@ export function UploadDocumentDialog({
       return;
     }
 
-    await onUpload({
+    const uploaded = await onUpload({
       file,
       documentType,
       expiresAt: expiresAt || undefined,
       note: note || undefined,
     });
+
+    if (uploaded) {
+      resetUploadForm();
+    }
   }
 
   function handleOpenChange(nextOpen: boolean) {
     if (!nextOpen && !isUploading) {
-      setFile(null);
-      setDocumentType("certificate");
-      setExpiresAt("");
-      setNote("");
-      setLocalError(null);
+      resetUploadForm();
+    }
+
+    if (nextOpen) {
+      resetUploadForm();
     }
 
     onOpenChange(nextOpen);
@@ -121,6 +138,7 @@ export function UploadDocumentDialog({
                 {labels.privateFilesNotice}
               </span>
               <Input
+                ref={fileInputRef}
                 type="file"
                 className="sr-only"
                 onChange={(event) => setFile(event.target.files?.[0] ?? null)}
