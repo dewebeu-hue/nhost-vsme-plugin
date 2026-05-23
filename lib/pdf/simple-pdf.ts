@@ -24,6 +24,20 @@ const footerHeight = 34;
 const lineGap = 3;
 const defaultFontSize = 9.5;
 const defaultMaxLineLength = 94;
+const latinExtendedEncoding =
+  "<< /Type /Encoding /BaseEncoding /WinAnsiEncoding /Differences [128 /ccaron /Ccaron /cacute /Cacute /dcroat /Dcroat /scaron /Scaron /zcaron /Zcaron] >>";
+const customGlyphCodes = new Map<string, number>([
+  ["č", 128],
+  ["Č", 129],
+  ["ć", 130],
+  ["Ć", 131],
+  ["đ", 132],
+  ["Đ", 133],
+  ["š", 134],
+  ["Š", 135],
+  ["ž", 136],
+  ["Ž", 137],
+]);
 
 export function createTextPdf(title: string, chunks: TextChunk[], options: PdfOptions = {}) {
   const pages = paginate(chunks);
@@ -34,8 +48,8 @@ export function createTextPdf(title: string, chunks: TextChunk[], options: PdfOp
 
   objects.push("<< /Type /Catalog /Pages 2 0 R >>");
   objects.push("<< /Type /Pages /Kids [] /Count 0 >>");
-  objects.push("<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>");
-  objects.push("<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>");
+  objects.push(`<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding ${latinExtendedEncoding} >>`);
+  objects.push(`<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding ${latinExtendedEncoding} >>`);
 
   for (const page of pages) {
     const content = createPageContent(page, pages.length, pageObjectIds.length + 1, options);
@@ -125,7 +139,7 @@ function createPageContent(page: PdfPage, totalPages: number, pageNumber: number
       commands.push("0.74 0.78 0.82 RG");
       commands.push("0.8 w");
       commands.push(`${marginX} ${y.toFixed(2)} m ${pageWidth - marginX} ${y.toFixed(2)} l S`);
-      y -= 8;
+      y -= 16;
       continue;
     }
 
@@ -137,7 +151,7 @@ function createPageContent(page: PdfPage, totalPages: number, pageNumber: number
     commands.push(getTextColor(line.variant));
     commands.push(`/${font} ${size} Tf`);
     commands.push(`${x} ${y.toFixed(2)} Td`);
-    commands.push(`(${escapePdfString(normalizePdfText(line.text))}) Tj`);
+    commands.push(`<${encodePdfHexString(normalizePdfText(line.text))}> Tj`);
     commands.push("ET");
     y -= getChunkHeight(line);
   }
@@ -158,13 +172,13 @@ function addFooter(commands: string[], totalPages: number, pageNumber: number, f
   commands.push("0.45 0.49 0.55 rg");
   commands.push("/F1 8 Tf");
   commands.push(`${marginX} ${y} Td`);
-  commands.push(`(${escapePdfString(footer)}) Tj`);
+  commands.push(`<${encodePdfHexString(footer)}> Tj`);
   commands.push("ET");
 }
 
 function getChunkHeight(chunk: TextChunk) {
   if (chunk.variant === "rule") {
-    return 12;
+    return 20;
   }
 
   return getFontSize(chunk.variant) + getExtraGap(chunk.variant);
@@ -258,31 +272,64 @@ function buildPdf(objects: string[], title: string) {
   const xrefOffset = Buffer.byteLength(pdf, "binary");
   pdf += `xref\n0 ${objects.length + 1}\n0000000000 65535 f \n`;
   pdf += offsets.map((offset) => `${String(offset).padStart(10, "0")} 00000 n \n`).join("");
-  pdf += `trailer\n<< /Size ${objects.length + 1} /Root 1 0 R /Info << /Title (${escapePdfString(normalizePdfText(title))}) >> >>\nstartxref\n${xrefOffset}\n%%EOF`;
+  pdf += `trailer\n<< /Size ${objects.length + 1} /Root 1 0 R /Info << /Title ${createPdfInfoString(title)} >> >>\nstartxref\n${xrefOffset}\n%%EOF`;
 
   return pdf;
 }
 
 function normalizePdfText(value: string) {
   return value
+    .replace(/â€“|â€”/g, "-")
+    .replace(/â€œ|â€/g, '"')
+    .replace(/â€˜|â€™/g, "'")
     .replace(/–|—/g, "-")
-    .replace(/“|”/g, '"')
-    .replace(/‘|’/g, "'")
-    .replace(/ć/g, "c")
-    .replace(/Ć/g, "C")
-    .replace(/č/g, "c")
-    .replace(/Č/g, "C")
-    .replace(/đ/g, "dj")
-    .replace(/Đ/g, "Dj")
-    .replace(/š/g, "s")
-    .replace(/Š/g, "S")
-    .replace(/ž/g, "z")
-    .replace(/Ž/g, "Z")
-    .normalize("NFKD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^\x09\x0A\x0D\x20-\x7E]/g, "");
+    .replace(/[“”]/g, '"')
+    .replace(/[‘’]/g, "'")
+    .replace(/₂/g, "2")
+    .replace(/\u00A0/g, " ");
 }
 
-function escapePdfString(value: string) {
-  return value.replace(/\\/g, "\\\\").replace(/\(/g, "\\(").replace(/\)/g, "\\)");
+function encodePdfHexString(value: string) {
+  return Buffer.from(encodePdfBytes(value)).toString("hex").toUpperCase();
+}
+
+function encodePdfBytes(value: string) {
+  const bytes: number[] = [];
+
+  for (const character of Array.from(value)) {
+    const customCode = customGlyphCodes.get(character);
+
+    if (customCode !== undefined) {
+      bytes.push(customCode);
+      continue;
+    }
+
+    const code = character.charCodeAt(0);
+
+    if ((code >= 32 && code <= 126) || (code >= 160 && code <= 255)) {
+      bytes.push(code);
+      continue;
+    }
+
+    const fallback = character.normalize("NFKD").replace(/[\u0300-\u036f]/g, "");
+    const fallbackCode = fallback.charCodeAt(0);
+
+    if (fallback.length === 1 && fallbackCode >= 32 && fallbackCode <= 126) {
+      bytes.push(fallbackCode);
+    }
+  }
+
+  return bytes;
+}
+
+function createPdfInfoString(value: string) {
+  const encoded = Buffer.from(`\uFEFF${normalizePdfText(value)}`, "utf16le");
+
+  for (let index = 0; index < encoded.length; index += 2) {
+    const first = encoded[index];
+    encoded[index] = encoded[index + 1] ?? 0;
+    encoded[index + 1] = first ?? 0;
+  }
+
+  return `<${encoded.toString("hex").toUpperCase()}>`;
 }
