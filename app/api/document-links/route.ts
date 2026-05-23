@@ -29,6 +29,8 @@ type AnswerScope = {
   id: string;
   organization_id: string;
   question_item_id: string;
+  value: unknown;
+  status: string;
 };
 
 type QuestionItemScope = {
@@ -175,6 +177,8 @@ const verifyDocumentLinkScopeQuery = `
       id
       organization_id
       question_item_id
+      value
+      status
     }
   }
 `;
@@ -192,6 +196,8 @@ const createMissingAnswersMutation = `
         id
         organization_id
         question_item_id
+        value
+        status
       }
     }
   }
@@ -212,6 +218,20 @@ const linkDocumentsToAnswersMutation = `
         question_answer_id
         created_at
       }
+    }
+  }
+`;
+
+const markLinkedAnswersCompletedMutation = `
+  mutation MarkLinkedAnswersCompleted($questionAnswerIds: [uuid!]!) {
+    update_question_answers(
+      where: {
+        id: { _in: $questionAnswerIds }
+        status: { _eq: "needs_evidence" }
+      }
+      _set: { status: "completed" }
+    ) {
+      affected_rows
     }
   }
 `;
@@ -427,6 +447,27 @@ export async function POST(request: Request) {
           variables: { documentId, status: "linked" },
         });
       }
+
+      const answerStatusResult = await executeDocumentLinksAdminGraphql({
+        operationName: "MarkLinkedAnswersCompleted",
+        query: markLinkedAnswersCompletedMutation,
+        variables: { questionAnswerIds },
+      });
+
+      if (!answerStatusResult.ok) {
+        return documentLinksError(
+          "question_answer_status_update_graphql_error",
+          "answer_status_update",
+          502,
+          {
+            hasUserId: true,
+            hasCurrentOrganizationId: true,
+            hasMembership: true,
+            selectedQuestionItemCount: questionItemIds.length,
+            safeGraphqlMessage: answerStatusResult.safeGraphqlMessage,
+          },
+        );
+      }
     }
 
     if (action === "unlink") {
@@ -451,6 +492,8 @@ export async function POST(request: Request) {
               id
               organization_id
               question_item_id
+              value
+              status
             }
           }
         `,
