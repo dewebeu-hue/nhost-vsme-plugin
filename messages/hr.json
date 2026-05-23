@@ -2393,7 +2393,20 @@
     "notProvided": "Još nije uneseno",
     "loadFailed": "Podatke nije moguće učitati.",
     "contextualHelpTitle": "Kako se popunjava Profil tvrtke",
-    "contextualHelpText": "Profil tvrtke koristi odabrane odgovore iz Osnovnih podataka i povezanih sekcija upitnika. Ove vrijednosti ažurirajte u upitniku."
+    "contextualHelpText": "Profil tvrtke koristi odabrane odgovore iz Osnovnih podataka i povezanih sekcija upitnika. Ove vrijednosti ažurirajte u upitniku.",
+    "companyLogo": "Logo tvrtke",
+    "uploadLogo": "Učitaj logo",
+    "changeLogo": "Promijeni logo",
+    "removeLogo": "Ukloni logo",
+    "logoDescription": "Logo će se prikazivati na Supplier Passport izvještajima i javnom linku za kupce.",
+    "logoFormats": "Podržani formati: PNG, JPG ili WEBP. Maksimalno 2 MB.",
+    "logoUploadSuccess": "Logo tvrtke je učitan.",
+    "logoUploadError": "Trenutno ne možemo učitati logo tvrtke.",
+    "logoRemoveSuccess": "Logo tvrtke je uklonjen.",
+    "logoRemoveError": "Trenutno ne možemo ukloniti logo tvrtke.",
+    "logoMissingSession": "Prijavite se prije učitavanja logotipa.",
+    "logoAltText": "Alternativni tekst logotipa",
+    "logoAltTextPlaceholder": "Primjer: logo naziva tvrtke"
   },
   "requestDemo": {
     "eyebrow": "Pilot uvođenje",

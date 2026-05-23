@@ -151,6 +151,9 @@ export const GET_PUBLIC_SHARE_ORGANIZATION = `
       headquarters_city
       headquarters_country
       countries_served
+      logo_file_id
+      logo_uploaded_at
+      logo_alt_text
       is_verified
     }
     company_profiles(where: { organization_id: { _eq: $organizationId } }, limit: 1) {

@@ -4376,3 +4376,26 @@ If the legacy `/api/passports` endpoint is called directly and returns `category
 - `passport_readiness_items` or `passport_readiness_answers`: questionnaire tables are not tracked, are missing columns used by the shared fragments, or server-side admin GraphQL is not configured.
 - `passport_graphql`: the `supplier_passports` table, mutation input, or status/readiness columns do not match the migration.
 - `unknown`: authentication or organization lookup failed before the Passport data stage; check the HTTP status and auth diagnostics.
+
+## Supplier Company Logo Upload
+
+Supplier logos are organization-level branding metadata, separate from Evidence Data Room documents. Apply migration `nhost/migrations/default/0010_add_organization_logo` before enabling the feature in production and track the added `organizations.logo_file_id`, `logo_content_type`, `logo_uploaded_at`, and `logo_alt_text` columns in Hasura.
+
+Storage and access model:
+
+- Upload endpoint: `POST /api/organization/logo`, authenticated supplier organization members with `owner`, `editor`, or `admin` role only.
+- Accepted formats: PNG, JPG/JPEG, or WEBP up to 2 MB. SVG uploads are rejected.
+- The UI and public Passport use controlled API routes for display. Public and buyer routes receive safe logo URLs, not raw Nhost storage file IDs.
+- Evidence documents remain private and continue to use the Evidence Data Room flow. Logo metadata must not be inserted into `documents`.
+- Public PDF and authenticated PDF render PNG/JPG logos when available; unsupported image rendering failure must not block PDF generation.
+
+Manual QA:
+
+1. Apply the migration and confirm Hasura tracks the new organization logo columns.
+2. Sign in as a supplier and open `/hr/dashboard/company-profile`.
+3. Upload a PNG or JPG logo under 2 MB and confirm the preview appears.
+4. Open `/hr/dashboard/passport`, `/hr/passport/[token]`, and `/hr/buyer/suppliers/[token]`; confirm the logo appears near the supplier name.
+5. Download the authenticated and public PDFs; confirm the logo appears for PNG/JPG uploads and the PDF remains readable if the image cannot be rendered.
+6. Replace the logo and confirm all surfaces update after refresh.
+7. Try an SVG or oversized file and confirm a safe validation error.
+8. Inspect public network payloads and PDF text for no `storage_file_id`, `file_url`, `privateUrl`, signed URLs, evidence document URLs, admin notes, support notes, or secrets.

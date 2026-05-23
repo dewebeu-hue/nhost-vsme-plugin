@@ -68,6 +68,8 @@ type OrganizationRecord = {
   headquarters_country: string | null;
   countries_served: string[] | null;
   is_verified: boolean;
+  logoUrl?: string | null;
+  logoAltText?: string | null;
 };
 
 type QuestionnairePayload = {
@@ -488,6 +490,8 @@ function createEmptyCompanyProfile(labels: PassportLabels): PassportCompanyProfi
   return {
     name: labels.notProvided,
     verified: false,
+    logoUrl: null,
+    logoAltText: null,
     industries: [],
     countriesServed: labels.notProvided,
     employeeCount: labels.notProvided,
@@ -521,6 +525,8 @@ function createCompanyProfile(
   return {
     name: summary.organizationName || labels.notProvided,
     verified: organization.is_verified,
+    logoUrl: organization.logoUrl ?? summary.logoUrl ?? null,
+    logoAltText: organization.logoAltText ?? summary.logoAltText ?? summary.organizationName ?? null,
     industries: summary.industry ? [summary.industry] : [],
     countriesServed: summary.countriesServed || labels.notProvided,
     employeeCount: summary.employeeCount || labels.notProvided,

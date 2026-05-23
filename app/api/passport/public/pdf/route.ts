@@ -1,5 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getPublicShareByToken, getShareVerificationCookieName } from "@/lib/data/share-links";
+import { getPublicShareByToken, getShareLinkByToken, getShareVerificationCookieName } from "@/lib/data/share-links";
+import {
+  getOrganizationLogoMetadata,
+  getOrganizationLogoPdfImage,
+} from "@/lib/data/organization-logo";
 import { createTextPdf } from "@/lib/pdf/simple-pdf";
 import type { publicSharePassport } from "@/lib/mock-data";
 
@@ -24,8 +28,16 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: labels.unavailable, category: "unavailable" }, { status: 404 });
     }
 
+    const shareLink = await getShareLinkByToken(token);
+    const logoMetadata = shareLink
+      ? await getOrganizationLogoMetadata(shareLink.organization_id).catch(() => null)
+      : null;
+    const logoImage = await getOrganizationLogoPdfImage(logoMetadata);
     const report = createPublicPdfReport(result.share, labels);
-    const pdf = createTextPdf(report.title, report.lines, { footerLabel: labels.title });
+    const pdf = createTextPdf(report.title, report.lines, {
+      footerLabel: labels.title,
+      logoImage,
+    });
 
     if (pdf.byteLength < 1000) {
       throw new Error("Public PDF render returned an unexpectedly small buffer.");

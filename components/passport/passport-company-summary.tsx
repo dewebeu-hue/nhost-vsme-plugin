@@ -32,8 +32,17 @@ export function PassportCompanySummary({
       <div className="flex flex-col gap-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div className="flex items-center gap-4">
-            <div className="flex size-14 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">
-              <Building2 aria-hidden="true" />
+            <div className="flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-blue-100 bg-white text-blue-600 shadow-sm">
+              {profile.logoUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={profile.logoUrl}
+                  alt={profile.logoAltText || profile.name}
+                  className="h-full w-full object-contain p-1.5"
+                />
+              ) : (
+                <Building2 aria-hidden="true" />
+              )}
             </div>
             <div>
               <div className="flex flex-wrap items-center gap-2">

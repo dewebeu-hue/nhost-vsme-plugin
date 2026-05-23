@@ -4,6 +4,7 @@ import {
   requireCurrentUser,
 } from "@/lib/auth/session";
 import { getPrimaryOrganizationForUserWithAdmin } from "@/lib/data/organizations";
+import { getOrganizationLogoPdfImage } from "@/lib/data/organization-logo";
 import { executeHasuraGraphql } from "@/lib/graphql/client";
 import { getNhostGraphqlUrl } from "@/lib/nhost/config";
 import {
@@ -195,7 +196,11 @@ export async function GET(request: Request) {
       documentLinks: links.document_links,
       locale,
     });
-    const pdf = createTextPdf(report.title, report.lines, { footerLabel: report.footerLabel });
+    const logoImage = await getOrganizationLogoPdfImage(organization);
+    const pdf = createTextPdf(report.title, report.lines, {
+      footerLabel: report.footerLabel,
+      logoImage,
+    });
     const filename = createFilename(organization.slug || organization.name);
 
     return new Response(pdf, {

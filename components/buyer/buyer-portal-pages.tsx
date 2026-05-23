@@ -223,7 +223,20 @@ export function BuyerSupplierSummary({ passport, token }: BuyerSupplierSummaryPr
 
         <section className="overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-xl shadow-slate-200/70">
           <div className="grid gap-8 p-6 lg:grid-cols-[minmax(0,1fr)_320px] lg:p-8">
-            <div>
+            <div className="flex min-w-0 flex-col gap-5 sm:flex-row sm:items-center">
+              <div className="flex size-20 shrink-0 items-center justify-center overflow-hidden rounded-3xl border border-slate-200 bg-white text-xl font-semibold tracking-[0.16em] text-slate-900 shadow-lg shadow-slate-200">
+                {passport.company.logoUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={passport.company.logoUrl}
+                    alt={passport.company.logoAltText || passport.company.name}
+                    className="h-full w-full object-contain p-2"
+                  />
+                ) : (
+                  getCompanyInitials(passport.company.name)
+                )}
+              </div>
+              <div className="min-w-0">
               <div className="flex flex-wrap gap-2">
                 <Badge className="rounded-full border-blue-100 bg-blue-50 px-3 py-1 text-blue-700">
                   {t("sharedSupplierPassport")}
@@ -241,6 +254,7 @@ export function BuyerSupplierSummary({ passport, token }: BuyerSupplierSummaryPr
               <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-500">
                 {t("supportingEvidence")}
               </p>
+              </div>
             </div>
 
             <aside className="rounded-3xl border border-slate-200 bg-slate-50 p-5">
@@ -328,6 +342,15 @@ function MetricCard({ icon: Icon, label, value }: { icon: LucideIcon; label: str
       <p className="mt-2 text-3xl font-semibold tracking-tight text-slate-950">{value}</p>
     </article>
   );
+}
+
+function getCompanyInitials(name: string) {
+  return name
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase())
+    .join("") || "SP";
 }
 
 function translateSectionTitle(title: string, t: ReturnType<typeof useTranslations<"buyerPortal">>) {

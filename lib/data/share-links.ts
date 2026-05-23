@@ -24,6 +24,7 @@ import {
   getNhostStorageUrl,
   getShareLinkCookieSecret,
 } from "@/lib/nhost/config";
+import { createPublicOrganizationLogoDisplayUrl } from "@/lib/data/organization-logo";
 import { activeShareLinks, publicSharePassport } from "@/lib/mock-data";
 import type { SupplierPassportRecord } from "@/lib/data/passports";
 import {
@@ -85,6 +86,9 @@ type PublicOrganizationResponse = {
     headquarters_city: string | null;
     headquarters_country: string | null;
     countries_served: string[] | null;
+    logo_file_id: string | null;
+    logo_uploaded_at: string | null;
+    logo_alt_text: string | null;
     is_verified: boolean;
   } | null;
   company_profiles: Array<{
@@ -549,6 +553,10 @@ function mapPublicShare(
     company: {
       name: companyName,
       verified: organization?.is_verified ?? false,
+      logoUrl: organization?.logo_file_id
+        ? createPublicOrganizationLogoDisplayUrl(shareLink.token, organization.logo_uploaded_at)
+        : null,
+      logoAltText: organization?.logo_alt_text || companyName,
       industries,
       countriesServed: countries.length ? countries.join(", ") : "Not provided",
       employeeCount:
@@ -833,7 +841,7 @@ function createShareVerificationCookieValue(
   return `${payload}.${signature}`;
 }
 
-function isValidShareVerificationCookie(
+export function isValidShareVerificationCookie(
   token: string,
   shareLink: ShareLinkRecord,
   cookieValue?: string,

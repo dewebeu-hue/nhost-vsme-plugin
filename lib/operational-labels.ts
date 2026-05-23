@@ -354,6 +354,19 @@ export type CompanyProfileLabels = {
   loadFailed: string;
   contextualHelpTitle: string;
   contextualHelpText: string;
+  companyLogo: string;
+  uploadLogo: string;
+  changeLogo: string;
+  removeLogo: string;
+  logoDescription: string;
+  logoFormats: string;
+  logoUploadSuccess: string;
+  logoUploadError: string;
+  logoRemoveSuccess: string;
+  logoRemoveError: string;
+  logoMissingSession: string;
+  logoAltText: string;
+  logoAltTextPlaceholder: string;
 };
 
 export const defaultOnboardingLabels: OnboardingLabels = {
@@ -761,6 +774,19 @@ export const defaultCompanyProfileLabels: CompanyProfileLabels = {
   loadFailed: "We could not load company profile data.",
   contextualHelpTitle: "How Company Profile is filled",
   contextualHelpText: "Company Profile uses selected answers from Company Basics and related questionnaire sections. Update these values in the questionnaire.",
+  companyLogo: "Company logo",
+  uploadLogo: "Upload logo",
+  changeLogo: "Change logo",
+  removeLogo: "Remove logo",
+  logoDescription: "The logo will appear on Supplier Passport reports and buyer-facing public links.",
+  logoFormats: "Supported formats: PNG, JPG or WEBP. Maximum 2 MB.",
+  logoUploadSuccess: "Company logo uploaded.",
+  logoUploadError: "We could not upload the company logo right now.",
+  logoRemoveSuccess: "Company logo removed.",
+  logoRemoveError: "We could not remove the company logo right now.",
+  logoMissingSession: "Please sign in before uploading a logo.",
+  logoAltText: "Logo alt text",
+  logoAltTextPlaceholder: "Example: Company name logo",
 };
 
 export function interpolate(template: string, values: Record<string, string | number>) {

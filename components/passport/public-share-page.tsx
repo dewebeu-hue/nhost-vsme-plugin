@@ -104,8 +104,17 @@ export function PublicSharePage({ locale, passport, token }: PublicSharePageProp
           <div className="grid gap-8 p-6 lg:grid-cols-[minmax(0,1fr)_320px] lg:p-8">
             <div className="flex flex-col gap-6">
               <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
-                <div className="flex size-20 shrink-0 items-center justify-center rounded-3xl bg-slate-950 text-xl font-semibold tracking-[0.16em] text-white shadow-lg shadow-slate-300">
-                  {getCompanyInitials(passport.company.name)}
+                <div className="flex size-20 shrink-0 items-center justify-center overflow-hidden rounded-3xl border border-slate-200 bg-white text-xl font-semibold tracking-[0.16em] text-slate-900 shadow-lg shadow-slate-300">
+                  {passport.company.logoUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={passport.company.logoUrl}
+                      alt={passport.company.logoAltText || passport.company.name}
+                      className="h-full w-full object-contain p-2"
+                    />
+                  ) : (
+                    getCompanyInitials(passport.company.name)
+                  )}
                 </div>
                 <div>
                   <div className="mb-3 flex flex-wrap items-center gap-2">

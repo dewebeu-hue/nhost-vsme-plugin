@@ -8,12 +8,20 @@ type TextChunk = {
   weight?: "bold" | "normal";
 };
 
+export type PdfLogoImage = {
+  bytes: Buffer;
+  format: "jpeg" | "rgb";
+  height: number;
+  width: number;
+};
+
 type PdfPage = {
   lines: TextChunk[];
 };
 
 type PdfOptions = {
   footerLabel?: string;
+  logoImage?: PdfLogoImage | null;
 };
 
 const pageWidth = 595.28;
@@ -48,20 +56,26 @@ export function createTextPdf(title: string, chunks: TextChunk[], options: PdfOp
   const pageObjectIds: number[] = [];
   const fontNormalId = 3;
   const fontBoldId = 4;
+  const logoObjectId = options.logoImage ? 5 : null;
 
   objects.push("<< /Type /Catalog /Pages 2 0 R >>");
   objects.push("<< /Type /Pages /Kids [] /Count 0 >>");
   objects.push(`<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding ${latinExtendedEncoding} >>`);
   objects.push(`<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding ${latinExtendedEncoding} >>`);
 
+  if (options.logoImage && logoObjectId) {
+    objects.push(createJpegImageObject(options.logoImage));
+  }
+
   for (const page of pages) {
     const content = createPageContent(page, pages.length, pageObjectIds.length + 1, options);
     const contentId = objects.length + 2;
     const pageId = objects.length + 1;
+    const xObjectResources = logoObjectId ? ` /XObject << /Logo ${logoObjectId} 0 R >>` : "";
 
     pageObjectIds.push(pageId);
     objects.push(
-      `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${pageWidth} ${pageHeight}] /Resources << /Font << /F1 ${fontNormalId} 0 R /F2 ${fontBoldId} 0 R >> >> /Contents ${contentId} 0 R >>`,
+      `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${pageWidth} ${pageHeight}] /Resources << /Font << /F1 ${fontNormalId} 0 R /F2 ${fontBoldId} 0 R >>${xObjectResources} >> /Contents ${contentId} 0 R >>`,
     );
     objects.push(`<< /Length ${Buffer.byteLength(content, "binary")} >>\nstream\n${content}\nendstream`);
   }
@@ -136,6 +150,10 @@ function createPageContent(page: PdfPage, totalPages: number, pageNumber: number
   const commands: string[] = [];
   let y = pageHeight - marginTop;
 
+  if (pageNumber === 1 && options.logoImage) {
+    addLogo(commands, options.logoImage);
+  }
+
   for (const line of page.lines) {
     if (line.variant === "rule") {
       y -= 4;
@@ -164,6 +182,21 @@ function createPageContent(page: PdfPage, totalPages: number, pageNumber: number
   addFooter(commands, totalPages, pageNumber, options.footerLabel);
 
   return commands.join("\n");
+}
+
+function addLogo(commands: string[], image: PdfLogoImage) {
+  const maxWidth = 96;
+  const maxHeight = 48;
+  const scale = Math.min(maxWidth / image.width, maxHeight / image.height, 1);
+  const width = image.width * scale;
+  const height = image.height * scale;
+  const x = pageWidth - marginX - width;
+  const y = pageHeight - marginTop - height + 4;
+
+  commands.push("q");
+  commands.push(`${width.toFixed(2)} 0 0 ${height.toFixed(2)} ${x.toFixed(2)} ${y.toFixed(2)} cm`);
+  commands.push("/Logo Do");
+  commands.push("Q");
 }
 
 function addFooter(commands: string[], totalPages: number, pageNumber: number, footerLabel = "Supplier Passport draft") {
@@ -280,6 +313,19 @@ function buildPdf(objects: string[], title: string) {
   pdf += `trailer\n<< /Size ${objects.length + 1} /Root 1 0 R /Info << /Title ${createPdfInfoString(title)} >> >>\nstartxref\n${xrefOffset}\n%%EOF`;
 
   return pdf;
+}
+
+function createJpegImageObject(image: PdfLogoImage) {
+  const filter = image.format === "jpeg" ? "/DCTDecode" : "/FlateDecode";
+
+  return [
+    `<< /Type /XObject /Subtype /Image /Width ${image.width} /Height ${image.height}`,
+    `/ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter ${filter}`,
+    `/Length ${image.bytes.length} >>`,
+    "stream",
+    image.bytes.toString("binary"),
+    "endstream",
+  ].join("\n");
 }
 
 function normalizePdfText(value: unknown) {

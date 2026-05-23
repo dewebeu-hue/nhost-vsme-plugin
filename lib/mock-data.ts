@@ -1148,6 +1148,8 @@ export const evidenceRoomReview = {
 export type PassportCompanyProfile = {
   name: string;
   verified: boolean;
+  logoUrl?: string | null;
+  logoAltText?: string | null;
   industries: string[];
   countriesServed: string;
   employeeCount: string;

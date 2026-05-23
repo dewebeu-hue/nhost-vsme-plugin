@@ -12,6 +12,10 @@ type Organization = {
   headquarters_city: string | null;
   headquarters_country: string | null;
   countries_served: string[] | null;
+  logo_file_id: string | null;
+  logo_content_type: string | null;
+  logo_uploaded_at: string | null;
+  logo_alt_text: string | null;
   is_verified: boolean;
   plan_key: string;
   billing_interval: string;
@@ -62,6 +66,10 @@ const getOrganizationQuery = `
       headquarters_city
       headquarters_country
       countries_served
+      logo_file_id
+      logo_content_type
+      logo_uploaded_at
+      logo_alt_text
       is_verified
       plan_key
       billing_interval
@@ -280,7 +288,29 @@ export async function POST(request: Request) {
 
     return NextResponse.json({
       configured: true,
-      organization,
+      organization: {
+        id: organization.id,
+        name: organization.name,
+        slug: organization.slug,
+        vat_id: organization.vat_id,
+        industry: organization.industry,
+        employee_count_range: organization.employee_count_range,
+        headquarters_city: organization.headquarters_city,
+        headquarters_country: organization.headquarters_country,
+        countries_served: organization.countries_served,
+        is_verified: organization.is_verified,
+        plan_key: organization.plan_key,
+        billing_interval: organization.billing_interval,
+        subscription_status: organization.subscription_status,
+        created_at: organization.created_at,
+        updated_at: organization.updated_at,
+        logoUrl: organization.logo_file_id
+          ? `/api/organization/logo?organizationId=${encodeURIComponent(organization.id)}&version=${encodeURIComponent(organization.logo_uploaded_at ?? organization.updated_at)}`
+          : null,
+        logoUploadedAt: organization.logo_uploaded_at,
+        logoAltText: organization.logo_alt_text,
+        logoContentType: organization.logo_content_type,
+      },
       category: "current_org_success",
       stage: "organization_lookup",
       hasAdminSecret: true,

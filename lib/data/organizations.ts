@@ -14,6 +14,10 @@ export type OrganizationBasics = {
   headquarters_city?: string | null;
   headquarters_country?: string | null;
   countries_served?: string[] | null;
+  logo_file_id?: string | null;
+  logo_content_type?: string | null;
+  logo_uploaded_at?: string | null;
+  logo_alt_text?: string | null;
   plan_key?: string;
   billing_interval?: string;
   subscription_status?: string;
@@ -152,6 +156,10 @@ const organizationByIdAdminQuery = `
       headquarters_city
       headquarters_country
       countries_served
+      logo_file_id
+      logo_content_type
+      logo_uploaded_at
+      logo_alt_text
       is_verified
       plan_key
       billing_interval

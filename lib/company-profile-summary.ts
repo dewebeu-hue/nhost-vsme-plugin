@@ -1,10 +1,14 @@
 export type CompanySummaryOrganization = {
   name?: string | null;
+  id?: string | null;
   industry?: string | null;
   employee_count_range?: string | null;
   headquarters_city?: string | null;
   headquarters_country?: string | null;
   countries_served?: string[] | null;
+  logo_file_id?: string | null;
+  logo_uploaded_at?: string | null;
+  logo_alt_text?: string | null;
 };
 
 export type CompanySummaryProfile = {
@@ -29,6 +33,8 @@ export type CompanyProfileSummary = {
   reportingPeriodEnd: string | null;
   countriesServed: string | null;
   keyCertifications: string[];
+  logoUrl: string | null;
+  logoAltText: string | null;
 };
 
 export const companyProfileSummaryQuestionCodes = [
@@ -101,6 +107,14 @@ export function buildCompanyProfileSummary({
     reportingPeriodEnd: readCompanyAnswerText(answersByCode.get("company_period_end")),
     countriesServed,
     keyCertifications: createCertificationList(answersByCode),
+    logoUrl: organization?.logo_file_id
+      ? `/api/organization/logo?organizationId=${encodeURIComponent(
+        organization.id ?? "",
+      )}&version=${encodeURIComponent(
+        organization.logo_uploaded_at ?? organization.name ?? "logo",
+      )}`
+      : null,
+    logoAltText: organization?.logo_alt_text || organization?.name || null,
   };
 }
 
