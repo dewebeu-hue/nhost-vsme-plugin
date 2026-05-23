@@ -43,7 +43,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ configured: true, organization, passport });
     }
 
-    const passport = await getLatestPassport(organization.id, accessToken);
+    const passport = await getLatestPassport(organization.id, { useAdminSecret: true });
 
     return NextResponse.json({ configured: true, organization, passport });
   } catch (error) {

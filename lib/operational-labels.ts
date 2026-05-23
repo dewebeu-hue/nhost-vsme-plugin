@@ -688,7 +688,7 @@ export const defaultAdminLabels: AdminLabels = {
   quickActions: "Quick actions",
   markReviewed: "Mark reviewed",
   addNote: "Add note",
-  generatePassport: "Generate passport",
+  generatePassport: "Update passport",
   emailClient: "Email client",
   pendingReviews: "Pending reviews",
   documentsNeedingValidation: "Documents needing validation",

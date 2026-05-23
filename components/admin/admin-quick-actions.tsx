@@ -5,7 +5,7 @@ import { defaultAdminLabels, type AdminLabels } from "@/lib/operational-labels";
 const actions = [
   { label: "Mark reviewed", icon: CheckCheck },
   { label: "Add note", icon: NotebookPen },
-  { label: "Generate passport", icon: FilePlus2 },
+  { label: "Update passport", icon: FilePlus2 },
   { label: "Email client", icon: Mail },
 ];
 
@@ -13,7 +13,7 @@ export function AdminQuickActions({ labels = defaultAdminLabels }: { labels?: Ad
   const labelMap: Record<string, string> = {
     "Mark reviewed": labels.markReviewed,
     "Add note": labels.addNote,
-    "Generate passport": labels.generatePassport,
+    "Update passport": labels.generatePassport,
     "Email client": labels.emailClient,
   };
 

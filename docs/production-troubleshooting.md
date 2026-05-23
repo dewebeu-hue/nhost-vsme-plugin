@@ -556,22 +556,22 @@ Fix:
 - Return an empty real state when the organization has no documents.
 - Do not silently show mock documents for authenticated production users when live loading fails.
 
-## Passport Page Says Generate Passport First
+## Passport Page Says Update Passport First
 
 Likely causes:
 
-- Passport has not been generated yet.
+- Passport snapshot has not been updated yet.
 - Answers are not completed or reviewed.
-- `supplier_passports` query permission is missing.
+- Server-side Nhost GraphQL or Hasura admin secret configuration is missing.
 - Wrong organization context is loaded.
 
 Fix:
 
-- Click Generate Passport.
+- Click `Update Passport` / `Ažuriraj Passport`.
 - Confirm a `supplier_passports` row exists.
 - Confirm `readiness_score` and `generated_at` are set.
 - Confirm the row belongs to the current organization.
-- Confirm Hasura permissions for `supplier_passports`.
+- Confirm `NHOST_ADMIN_SECRET` or `HASURA_GRAPHQL_ADMIN_SECRET` is configured server-side.
 
 ## Public Share Link Empty Or Blocked
 
@@ -4354,3 +4354,19 @@ Manual QA:
 4. Open Certifications and check ISO/certificate guidance.
 5. Repeat a quick `/en/dashboard/questionnaire` check.
 6. Confirm the tooltip does not affect save/load, completion counters, evidence linking, the guided tour, or mobile layout.
+
+## Passport Update, PDF, and Share-Link Flow
+
+The authenticated Passport page uses two related data paths:
+
+- `Ažuriraj Passport` / `Update Passport` refreshes the `supplier_passports` snapshot row for the authenticated supplier organization. The API first resolves the current user and organization membership with the user session, then writes the snapshot with the server-side Hasura admin secret so supplier UI permissions do not block the refresh.
+- `Preuzmi PDF` / `Download PDF` builds the PDF from current questionnaire, company, and evidence metadata. It does not require a prior manual Passport update.
+- Share-link creation still requires a current Supplier Passport snapshot. If a share link cannot be created, first use `Ažuriraj Passport`, then retry `Kreiraj share link`.
+
+Troubleshooting checklist:
+
+1. Confirm Nhost GraphQL URL and Hasura admin secret are configured in Vercel.
+2. Open `/hr/dashboard/passport`, click `Ažuriraj Passport`, and confirm the success message `Passport je ažuriran.`
+3. Click `Preuzmi PDF` and confirm the PDF downloads using current questionnaire/evidence data.
+4. Click `Kreiraj share link` and confirm the public `/hr/passport/[token]` page opens.
+5. Confirm public Passport/PDF output does not include private file URLs, storage ids, support notes, admin notes, or raw internal notes.

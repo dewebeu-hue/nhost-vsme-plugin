@@ -100,8 +100,8 @@ export const defaultPassportLabels: PassportLabels = {
   title: "Supplier Passport",
   subtitle:
     "Review your VSME readiness profile, evidence metadata, and buyer-facing passport before sharing.",
-  generatePassport: "Generate Passport",
-  generatingPassport: "Generating Passport...",
+  generatePassport: "Update Passport",
+  generatingPassport: "Updating Passport...",
   createShareLink: "Create Share Link",
   exportPdf: "Download PDF",
   exportPdfGenerating: "Generating PDF...",
@@ -163,9 +163,9 @@ export const defaultPassportLabels: PassportLabels = {
   noPassportTitle: "Your Supplier Passport draft is not ready yet.",
   noPassportText:
     "Complete the questionnaire and link evidence documents to improve readiness.",
-  generateSuccess: "Supplier Passport generated successfully.",
-  generateError: "We could not generate the Supplier Passport right now.",
-  shareLinkGenerateFirst: "Generate a Supplier Passport before creating a buyer share link.",
+  generateSuccess: "Passport updated.",
+  generateError: "We could not update the Passport right now. Please try again.",
+  shareLinkGenerateFirst: "Update the Supplier Passport before creating a buyer share link.",
   createShareLinkTitle: "Create buyer share link",
   createShareLinkDescription:
     "Create a secure read-only link that can be sent to a buyer or procurement contact.",

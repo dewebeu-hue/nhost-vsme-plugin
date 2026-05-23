@@ -42,6 +42,10 @@ type UpdatePassportResponse = {
   update_supplier_passports_by_pk: SupplierPassportRecord | null;
 };
 
+type PassportGraphqlAuth =
+  | { accessToken: string }
+  | { useAdminSecret: true };
+
 export function isPassportsBackendConfigured() {
   return Boolean(getNhostGraphqlUrl());
 }
@@ -58,11 +62,14 @@ export async function getPassportPreviewData() {
   };
 }
 
-export async function getLatestPassport(organizationId: string, accessToken?: string) {
+export async function getLatestPassport(
+  organizationId: string,
+  auth?: string | PassportGraphqlAuth,
+) {
   const data = await executePassportGraphql<LatestPassportResponse>(
     GET_LATEST_SUPPLIER_PASSPORT,
     { organizationId },
-    accessToken,
+    normalizePassportAuth(auth),
   );
 
   return data.supplier_passports[0] ?? null;
@@ -84,7 +91,8 @@ export async function generateSupplierPassport(
 ) {
   const readinessScore = await calculateReadinessScore(organizationId, accessToken);
   const generatedAt = new Date().toISOString();
-  const latestPassport = await getLatestPassport(organizationId, accessToken);
+  const adminAuth = { useAdminSecret: true } as const;
+  const latestPassport = await getLatestPassport(organizationId, adminAuth);
 
   if (latestPassport) {
     const data = await executePassportGraphql<UpdatePassportResponse>(
@@ -99,7 +107,7 @@ export async function generateSupplierPassport(
           generated_at: generatedAt,
         },
       },
-      accessToken,
+      adminAuth,
     );
 
     if (!data.update_supplier_passports_by_pk) {
@@ -121,7 +129,7 @@ export async function generateSupplierPassport(
         generated_at: generatedAt,
       },
     },
-    accessToken,
+    adminAuth,
   );
 
   if (!data.insert_supplier_passports_one) {
@@ -134,11 +142,19 @@ export async function generateSupplierPassport(
 async function executePassportGraphql<TData>(
   query: string,
   variables: Record<string, unknown>,
-  accessToken?: string,
+  auth?: PassportGraphqlAuth,
 ): Promise<TData> {
-  if (!getNhostGraphqlUrl() || !accessToken) {
+  if (!getNhostGraphqlUrl() || !auth) {
     throw new Error("Nhost GraphQL is not configured.");
   }
 
-  return executeHasuraGraphql<TData>(query, variables, { accessToken });
+  return executeHasuraGraphql<TData>(query, variables, auth);
+}
+
+function normalizePassportAuth(auth?: string | PassportGraphqlAuth): PassportGraphqlAuth | undefined {
+  if (typeof auth === "string") {
+    return auth ? { accessToken: auth } : undefined;
+  }
+
+  return auth;
 }
