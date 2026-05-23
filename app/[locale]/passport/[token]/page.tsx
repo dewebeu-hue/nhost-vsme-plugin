@@ -14,10 +14,15 @@ type PassportTokenPageProps = {
   }>;
 };
 
-export async function generateMetadata() {
+export async function generateMetadata({ params }: PassportTokenPageProps) {
+  const { locale } = await params;
+  const isCroatian = locale === "hr";
+
   return {
-    title: "Shared Supplier Passport",
-    description: "Secure read-only Supplier Passport shared with a buyer.",
+    title: isCroatian ? "Dijeljeni Supplier Passport" : "Shared Supplier Passport",
+    description: isCroatian
+      ? "Siguran Supplier Passport dostupan kupcu samo za pregled."
+      : "Secure read-only Supplier Passport shared with a buyer.",
   };
 }
 

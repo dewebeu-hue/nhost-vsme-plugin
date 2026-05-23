@@ -219,9 +219,18 @@ export function PublicSharePage({ locale, passport, token }: PublicSharePageProp
                   label={t("industries")}
                   value={passport.company.industries.length ? passport.company.industries.join(", ") : t("notProvided")}
                 />
-                <InfoBlock label={t("countriesServed")} value={passport.company.countriesServed} />
-                <InfoBlock label={t("employeeCount")} value={passport.company.employeeCount} />
-                <InfoBlock label={t("headquarters")} value={passport.company.headquarters} />
+                <InfoBlock
+                  label={t("countriesServed")}
+                  value={translatePublicValue(passport.company.countriesServed, t)}
+                />
+                <InfoBlock
+                  label={t("employeeCount")}
+                  value={translatePublicValue(passport.company.employeeCount, t)}
+                />
+                <InfoBlock
+                  label={t("headquarters")}
+                  value={translatePublicValue(passport.company.headquarters, t)}
+                />
               </div>
             </div>
             <div className="mt-6 border-t border-slate-100 pt-5">
@@ -467,11 +476,16 @@ function translateShareDetailValue(value: string, t: ReturnType<typeof useTransl
   const map: Record<string, string> = {
     Buyer: t("buyer"),
     "No expiry": t("noExpiry"),
+    "Not provided": t("notProvided"),
     "Password protected": t("passwordProtected"),
     "Read-only": t("readOnly"),
   };
 
   return map[value] ?? value;
+}
+
+function translatePublicValue(value: string, t: ReturnType<typeof useTranslations<"share">>) {
+  return value === "Not provided" ? t("notProvided") : value;
 }
 
 function getReadinessLevel(score: number) {

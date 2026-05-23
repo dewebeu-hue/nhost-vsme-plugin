@@ -22,23 +22,26 @@ export function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: SharePageProps) {
-  const { token } = await params;
+  const { locale, token } = await params;
+  const isCroatian = locale === "hr";
 
   if (token === "expired") {
     return {
-      title: "Expired Supplier Passport Link",
+      title: isCroatian ? "Istekao Supplier Passport link" : "Expired Supplier Passport Link",
     };
   }
 
   if (token !== publicSharePassport.token) {
     return {
-      title: "Shared Supplier Passport",
+      title: isCroatian ? "Dijeljeni Supplier Passport" : "Shared Supplier Passport",
     };
   }
 
   return {
     title: `${publicSharePassport.company.name} | Supplier Passport`,
-    description: "Secure read-only Supplier Passport shared with a buyer.",
+    description: isCroatian
+      ? "Siguran Supplier Passport dostupan kupcu samo za pregled."
+      : "Secure read-only Supplier Passport shared with a buyer.",
   };
 }
 

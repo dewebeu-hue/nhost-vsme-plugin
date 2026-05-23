@@ -71,7 +71,7 @@ function createPublicPdfReport(
       { text: "", variant: "rule" as const },
       { text: labels.sectionSummary, variant: "heading" as const },
       ...readinessSections.map((section) => ({
-        text: `${translateSectionTitle(section.title, labels)} | ${section.metricLabel}: ${section.metricValue} | ${translateAction(section.actionLabel, labels)}`,
+        text: `${translateSectionTitle(section.title, labels)} | ${translateMetricLabel(section.metricLabel, labels)}: ${section.metricValue} | ${translateAction(section.actionLabel, labels)}`,
         indent: 10,
       })),
       { text: "", variant: "rule" as const },
@@ -131,6 +131,10 @@ function translateAction(value: string, labels: PublicPdfLabels) {
   return labels.actions[value] ?? value;
 }
 
+function translateMetricLabel(value: string, labels: PublicPdfLabels) {
+  return labels.metricLabels[value] ?? value;
+}
+
 function translateCertificateStatus(status: string, labels: PublicPdfLabels) {
   return labels.certificateStatuses[status] ?? labels.noCertificateWarnings;
 }
@@ -179,6 +183,10 @@ const publicPdfLabels = {
       Governance: "Governance",
       "Supplier information": "Supplier information",
     } as Record<string, string>,
+    metricLabels: {
+      Completion: "Completion",
+      "Evidence files": "Evidence files",
+    } as Record<string, string>,
     actions: {
       "Evidence available": "Evidence available",
       "Evidence recommended": "Evidence recommended",
@@ -193,30 +201,30 @@ const publicPdfLabels = {
   },
   hr: {
     locale: "hr",
-    title: "Javni Supplier Passport sazetak",
-    publicSummary: "Javni sazetak uskladen s VSME okvirom",
+    title: "Javni Supplier Passport sažetak",
+    publicSummary: "Javni sažetak usklađen s VSME okvirom",
     generated: "Generirano",
-    lastUpdated: "Zadnje azuriranje",
-    vsmeAligned: "Uskladeno s VSME okvirom",
-    readinessSummary: "Sazetak spremnosti",
+    lastUpdated: "Zadnje ažurirano",
+    vsmeAligned: "Usklađeno s VSME okvirom",
+    readinessSummary: "Sažetak spremnosti",
     overallReadiness: "Ukupna spremnost",
-    scoreExplanation: "Ovaj rezultat odrazava ispunjene stavke upitnika i metapodatke dokazne dokumentacije sigurne za kupce. To je pokazatelj spremnosti, a ne rezultat revizije.",
-    companySummary: "Sazetak tvrtke",
+    scoreExplanation: "Ovaj rezultat odražava ispunjene stavke upitnika i metapodatke dokazne dokumentacije sigurne za kupce. To je pokazatelj spremnosti, a ne rezultat revizije.",
+    companySummary: "Sažetak tvrtke",
     organization: "Organizacija",
     industries: "Industrije",
-    headquarters: "Sjediste",
+    headquarters: "Sjedište",
     employeeCount: "Broj zaposlenika",
-    sectionSummary: "Sazetak po sekcijama",
+    sectionSummary: "Sažetak po sekcijama",
     evidenceSummary: "Dokazna dokumentacija",
     evidenceAvailable: "Dostupni dokazi",
     evidenceOnRequest: "Dokazni dokumenti dostupni su na zahtjev.",
     privateFilesNotDownloadable: "Privatni dokazni dokumenti nisu dostupni za preuzimanje iz ovog javnog PDF-a.",
     certificateStatus: "Status certifikata",
-    disclaimerTitle: "Vazna napomena",
-    disclaimer: "Supplier Passport je sazetak spremnosti dobavljaca uskladen s VSME okvirom, temeljen na podacima i metapodacima dokazne dokumentacije koje je dostavio dobavljac. Nije revizijsko misljenje, pravni certifikat niti izvjesce s neovisnim uvjerenjem.",
+    disclaimerTitle: "Važna napomena",
+    disclaimer: "Supplier Passport je sažetak spremnosti dobavljača usklađen s VSME okvirom, temeljen na podacima i metapodacima dokazne dokumentacije koje je dostavio dobavljač. Nije revizijsko mišljenje, pravni certifikat niti izvješće s neovisnim uvjerenjem.",
     unavailable: "Ovaj Supplier Passport link nije dostupan.",
-    error: "Trenutno ne mozemo generirati javni PDF.",
-    notProvided: "Jos nije uneseno",
+    error: "Trenutno ne možemo generirati javni PDF.",
+    notProvided: "Još nije uneseno",
     needsAttention: "Potrebna dorada",
     inProgress: "U tijeku",
     buyerReadyDraft: "Nacrt spreman za kupce",
@@ -228,21 +236,25 @@ const publicPdfLabels = {
       Energy: "Energija",
       Fuel: "Gorivo",
       Waste: "Otpad",
-      "Environmental policies": "Okolisne politike",
+      "Environmental policies": "Okolišne politike",
       "Health and safety": "Zdravlje i sigurnost",
       Certifications: "Certifikati",
       Governance: "Upravljanje",
-      "Supplier information": "Podaci o dobavljacima",
+      "Supplier information": "Podaci o dobavljačima",
+    } as Record<string, string>,
+    metricLabels: {
+      Completion: "Dovršenost",
+      "Evidence files": "Dokazni dokumenti",
     } as Record<string, string>,
     actions: {
       "Evidence available": "Dokazna dokumentacija dostupna",
-      "Evidence recommended": "Preporucuje se dokazna dokumentacija",
+      "Evidence recommended": "Preporučuje se dokazna dokumentacija",
       "Evidence documents are available on request": "Dokazni dokumenti dostupni su na zahtjev",
     } as Record<string, string>,
     certificateStatuses: {
       none: "Nema upozorenja o isteku certifikata",
       available: "Dokaz o certifikaciji dostupan",
-      expires_soon: "Certifikat uskoro istjece",
+      expires_soon: "Certifikat uskoro istječe",
       expired: "Certifikat je istekao",
     } as Record<string, string>,
   },
@@ -289,6 +301,10 @@ const publicPdfLabels = {
       Governance: "Governance",
       "Supplier information": "Lieferantendaten",
     } as Record<string, string>,
+    metricLabels: {
+      Completion: "Fertigstellung",
+      "Evidence files": "Nachweisdokumente",
+    } as Record<string, string>,
     actions: {
       "Evidence available": "Nachweise verfuegbar",
       "Evidence recommended": "Nachweise empfohlen",
@@ -333,6 +349,7 @@ const publicPdfLabels = {
   strongReadiness: string;
   noCertificateWarnings: string;
   sections: Record<string, string>;
+  metricLabels: Record<string, string>;
   actions: Record<string, string>;
   certificateStatuses: Record<string, string>;
 }>;
