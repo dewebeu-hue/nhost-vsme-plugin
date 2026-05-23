@@ -1,4 +1,6 @@
 import "server-only";
+import { readFileSync } from "node:fs";
+import path from "node:path";
 
 type TextChunk = {
   indent?: number;
@@ -32,36 +34,22 @@ const footerHeight = 34;
 const lineGap = 3;
 const defaultFontSize = 9.5;
 const defaultMaxLineLength = 94;
-// Keep Croatian Latin Extended glyphs explicit. Do not normalize these to ASCII;
-// buyer-facing HR PDFs must render č, ć, đ, š, and ž correctly.
-const customGlyphCodes = new Map<string, number>([
-  ["\u010D", 128],
-  ["\u010C", 129],
-  ["\u0107", 130],
-  ["\u0106", 131],
-  ["\u0111", 132],
-  ["\u0110", 133],
-  ["\u0161", 134],
-  ["\u0160", 135],
-  ["\u017E", 136],
-  ["\u017D", 137],
-]);
-
-const latinExtendedEncoding = "<< /Type /Encoding /BaseEncoding /WinAnsiEncoding /Differences [128 /ccaron /Ccaron /cacute /Cacute /dcroat /Dcroat /scaron /Scaron /zcaron /Zcaron] >>";
-
 
 export function createTextPdf(title: string, chunks: TextChunk[], options: PdfOptions = {}) {
   const pages = paginate(chunks);
   const objects: string[] = [];
   const pageObjectIds: number[] = [];
-  const fontNormalId = 3;
-  const fontBoldId = 4;
-  const logoObjectId = options.logoImage ? 5 : null;
 
   objects.push("<< /Type /Catalog /Pages 2 0 R >>");
   objects.push("<< /Type /Pages /Kids [] /Count 0 >>");
-  objects.push(`<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding ${latinExtendedEncoding} >>`);
-  objects.push(`<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding ${latinExtendedEncoding} >>`);
+
+  const fontResources = createUnicodeFontResources(collectPdfText(title, pages, options.footerLabel), objects.length + 1);
+  const fontNormalId = fontResources.normalId;
+  const fontBoldId = fontResources.boldId;
+
+  objects.push(...fontResources.objects);
+
+  const logoObjectId = options.logoImage ? objects.length + 1 : null;
 
   if (options.logoImage && logoObjectId) {
     objects.push(createJpegImageObject(options.logoImage));
@@ -174,7 +162,7 @@ function createPageContent(page: PdfPage, totalPages: number, pageNumber: number
     commands.push(getTextColor(line.variant));
     commands.push(`/${font} ${size} Tf`);
     commands.push(`${x} ${y.toFixed(2)} Td`);
-    commands.push(`<${encodePdfHexString(text)}> Tj`);
+    commands.push(`<${encodeUtf16BeHexString(text)}> Tj`);
     commands.push("ET");
     y -= getChunkHeight(line);
   }
@@ -210,7 +198,7 @@ function addFooter(commands: string[], totalPages: number, pageNumber: number, f
   commands.push("0.45 0.49 0.55 rg");
   commands.push("/F1 8 Tf");
   commands.push(`${marginX} ${y} Td`);
-  commands.push(`<${encodePdfHexString(footer)}> Tj`);
+  commands.push(`<${encodeUtf16BeHexString(footer)}> Tj`);
   commands.push("ET");
 }
 
@@ -328,6 +316,205 @@ function createJpegImageObject(image: PdfLogoImage) {
   ].join("\n");
 }
 
+function collectPdfText(title: string, pages: PdfPage[], footerLabel = "Supplier Passport draft") {
+  const values = [title, footerLabel, `Page 1 / ${Math.max(1, pages.length)}`];
+
+  for (const page of pages) {
+    for (const line of page.lines) {
+      values.push(line.text);
+    }
+  }
+
+  return normalizePdfText(values.join("\n"));
+}
+
+function createUnicodeFontResources(text: string, firstObjectId: number) {
+  const fontBytes = readPdfFont();
+  const fontFileId = firstObjectId;
+  const descriptorId = firstObjectId + 1;
+  const cidToGidId = firstObjectId + 2;
+  const toUnicodeId = firstObjectId + 3;
+  const cidFontId = firstObjectId + 4;
+  const type0FontId = firstObjectId + 5;
+  const codepoints = Array.from(new Set(Array.from(normalizePdfText(text)).map((character) => character.codePointAt(0) ?? 0)))
+    .filter((codepoint) => codepoint > 0 && codepoint <= 0xffff)
+    .sort((first, second) => first - second);
+  const glyphMap = createCidToGidMap(fontBytes, codepoints);
+  const toUnicode = createToUnicodeCMap(codepoints);
+
+  return {
+    normalId: type0FontId,
+    boldId: type0FontId,
+    objects: [
+      createFontFileObject(fontBytes),
+      `<< /Type /FontDescriptor /FontName /GeistPDF /Flags 32 /FontBBox [-500 -300 1200 1100] /ItalicAngle 0 /Ascent 950 /Descent -250 /CapHeight 720 /StemV 80 /FontFile2 ${fontFileId} 0 R >>`,
+      createBinaryStreamObject(glyphMap),
+      createTextStreamObject(toUnicode),
+      `<< /Type /Font /Subtype /CIDFontType2 /BaseFont /GeistPDF /CIDSystemInfo << /Registry (Adobe) /Ordering (Identity) /Supplement 0 >> /FontDescriptor ${descriptorId} 0 R /CIDToGIDMap ${cidToGidId} 0 R /DW 520 >>`,
+      `<< /Type /Font /Subtype /Type0 /BaseFont /GeistPDF /Encoding /Identity-H /DescendantFonts [${cidFontId} 0 R] /ToUnicode ${toUnicodeId} 0 R >>`,
+    ],
+  };
+}
+
+function readPdfFont() {
+  return readFileSync(path.join(process.cwd(), "node_modules", "next", "dist", "compiled", "@vercel", "og", "Geist-Regular.ttf"));
+}
+
+function createFontFileObject(fontBytes: Buffer) {
+  return [
+    `<< /Length ${fontBytes.length} /Length1 ${fontBytes.length} >>`,
+    "stream",
+    fontBytes.toString("binary"),
+    "endstream",
+  ].join("\n");
+}
+
+function createBinaryStreamObject(bytes: Buffer) {
+  return [
+    `<< /Length ${bytes.length} >>`,
+    "stream",
+    bytes.toString("binary"),
+    "endstream",
+  ].join("\n");
+}
+
+function createTextStreamObject(text: string) {
+  return [
+    `<< /Length ${Buffer.byteLength(text, "binary")} >>`,
+    "stream",
+    text,
+    "endstream",
+  ].join("\n");
+}
+
+function createCidToGidMap(fontBytes: Buffer, codepoints: number[]) {
+  const glyphIdForCodepoint = createGlyphMapper(fontBytes);
+  const maxCodepoint = Math.max(0, ...codepoints, 0x20, 0x3f);
+  const cidToGidMap = Buffer.alloc((maxCodepoint + 1) * 2);
+
+  for (const codepoint of codepoints) {
+    const glyphId = glyphIdForCodepoint(codepoint) || glyphIdForCodepoint(0x3f) || 0;
+    cidToGidMap.writeUInt16BE(glyphId, codepoint * 2);
+  }
+
+  return cidToGidMap;
+}
+
+function createGlyphMapper(fontBytes: Buffer) {
+  const cmapOffset = findTableOffset(fontBytes, "cmap");
+  const subtableOffset = findBestCmapSubtable(fontBytes, cmapOffset);
+  const format = fontBytes.readUInt16BE(subtableOffset);
+
+  if (format !== 4) {
+    return () => 0;
+  }
+
+  const segCount = fontBytes.readUInt16BE(subtableOffset + 6) / 2;
+  const endCodesOffset = subtableOffset + 14;
+  const startCodesOffset = endCodesOffset + segCount * 2 + 2;
+  const idDeltasOffset = startCodesOffset + segCount * 2;
+  const idRangeOffsetsOffset = idDeltasOffset + segCount * 2;
+
+  return (codepoint: number) => {
+    for (let index = 0; index < segCount; index += 1) {
+      const endCode = fontBytes.readUInt16BE(endCodesOffset + index * 2);
+      const startCode = fontBytes.readUInt16BE(startCodesOffset + index * 2);
+
+      if (codepoint < startCode || codepoint > endCode) {
+        continue;
+      }
+
+      const idDelta = fontBytes.readInt16BE(idDeltasOffset + index * 2);
+      const idRangeOffset = fontBytes.readUInt16BE(idRangeOffsetsOffset + index * 2);
+
+      if (idRangeOffset === 0) {
+        return (codepoint + idDelta) & 0xffff;
+      }
+
+      const glyphIndexAddress = idRangeOffsetsOffset + index * 2 + idRangeOffset + (codepoint - startCode) * 2;
+
+      if (glyphIndexAddress + 1 >= fontBytes.length) {
+        return 0;
+      }
+
+      const glyphId = fontBytes.readUInt16BE(glyphIndexAddress);
+
+      return glyphId === 0 ? 0 : (glyphId + idDelta) & 0xffff;
+    }
+
+    return 0;
+  };
+}
+
+function findTableOffset(fontBytes: Buffer, tag: string) {
+  const numTables = fontBytes.readUInt16BE(4);
+
+  for (let index = 0; index < numTables; index += 1) {
+    const recordOffset = 12 + index * 16;
+    const tableTag = fontBytes.toString("ascii", recordOffset, recordOffset + 4);
+
+    if (tableTag === tag) {
+      return fontBytes.readUInt32BE(recordOffset + 8);
+    }
+  }
+
+  throw new Error(`PDF font table ${tag} is missing.`);
+}
+
+function findBestCmapSubtable(fontBytes: Buffer, cmapOffset: number) {
+  const tableCount = fontBytes.readUInt16BE(cmapOffset + 2);
+  let fallbackOffset = 0;
+
+  for (let index = 0; index < tableCount; index += 1) {
+    const recordOffset = cmapOffset + 4 + index * 8;
+    const platformId = fontBytes.readUInt16BE(recordOffset);
+    const encodingId = fontBytes.readUInt16BE(recordOffset + 2);
+    const subtableOffset = cmapOffset + fontBytes.readUInt32BE(recordOffset + 4);
+    const format = fontBytes.readUInt16BE(subtableOffset);
+
+    if (format === 4 && platformId === 3 && (encodingId === 1 || encodingId === 0)) {
+      return subtableOffset;
+    }
+
+    if (format === 4 && fallbackOffset === 0) {
+      fallbackOffset = subtableOffset;
+    }
+  }
+
+  if (fallbackOffset) {
+    return fallbackOffset;
+  }
+
+  throw new Error("PDF font does not include a supported BMP cmap.");
+}
+
+function createToUnicodeCMap(codepoints: number[]) {
+  const mappings = codepoints.map((codepoint) => `<${toFourDigitHex(codepoint)}> <${toFourDigitHex(codepoint)}>`);
+  const chunks: string[] = [];
+
+  for (let index = 0; index < mappings.length; index += 100) {
+    const slice = mappings.slice(index, index + 100);
+    chunks.push(`${slice.length} beginbfchar\n${slice.join("\n")}\nendbfchar`);
+  }
+
+  return [
+    "/CIDInit /ProcSet findresource begin",
+    "12 dict begin",
+    "begincmap",
+    "/CIDSystemInfo << /Registry (Adobe) /Ordering (Identity) /Supplement 0 >> def",
+    "/CMapName /GeistPDF-Identity-H def",
+    "/CMapType 2 def",
+    "1 begincodespacerange",
+    "<0000> <FFFF>",
+    "endcodespacerange",
+    ...chunks,
+    "endcmap",
+    "CMapName currentdict /CMap defineresource pop",
+    "end",
+    "end",
+  ].join("\n");
+}
+
 function normalizePdfText(value: unknown) {
   if (value == null) {
     return "";
@@ -342,32 +529,20 @@ function normalizePdfText(value: unknown) {
     .normalize("NFC");
 }
 
-function encodePdfHexString(value: string) {
-  return Buffer.from(encodePdfBytes(value)).toString("hex").toUpperCase();
-}
-
-function encodePdfBytes(value: string) {
+function encodeUtf16BeHexString(value: string) {
   const bytes: number[] = [];
 
   for (const character of Array.from(normalizePdfText(value))) {
-    const customCode = customGlyphCodes.get(character);
-
-    if (customCode) {
-      bytes.push(customCode);
-      continue;
-    }
-
-    const code = character.charCodeAt(0);
-
-    if ((code >= 32 && code <= 126) || (code >= 160 && code <= 255)) {
-      bytes.push(code);
-      continue;
-    }
-
-    bytes.push(63);
+    const codepoint = character.codePointAt(0) ?? 0x3f;
+    const safeCodepoint = codepoint <= 0xffff ? codepoint : 0x3f;
+    bytes.push((safeCodepoint >> 8) & 0xff, safeCodepoint & 0xff);
   }
 
-  return bytes;
+  return Buffer.from(bytes).toString("hex").toUpperCase();
+}
+
+function toFourDigitHex(value: number) {
+  return value.toString(16).toUpperCase().padStart(4, "0");
 }
 
 function createPdfInfoString(value: string) {

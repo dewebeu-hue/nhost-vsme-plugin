@@ -710,7 +710,7 @@ const pdfLabels = {
     missingData: "Nedostajući ili preporučeni podaci",
     recommendedEvidence: "preporučena dokazna dokumentacija",
     missingAnswer: "nedostaje odgovor",
-    noPriorityGaps: "Nisu pronadene prioritetne stavke koje nedostaju u trenutnom stanju upitnika.",
+    noPriorityGaps: "Nisu pronađene prioritetne stavke koje nedostaju u trenutnom stanju upitnika.",
     footer: "Generirano",
     footerDisclaimer: "Nacrt spremnosti temeljen na podacima dobavljača, nije izvješće s neovisnim uvjerenjem",
     unknownSection: "Nepoznata sekcija",
