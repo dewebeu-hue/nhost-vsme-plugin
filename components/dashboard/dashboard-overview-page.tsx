@@ -129,7 +129,10 @@ export function DashboardOverviewPage({
               </p>
             </div>
           </div>
-          <div className="rounded-2xl border border-teal-100 bg-gradient-to-br from-teal-50/90 to-white p-5">
+          <div
+            data-tour="dashboard-next-step"
+            className="rounded-2xl border border-teal-100 bg-gradient-to-br from-teal-50/90 to-white p-5"
+          >
             <p className="text-sm font-semibold uppercase tracking-[0.16em] text-teal-700">
               {labels.setupChecklist.nextRecommendedStep}
             </p>

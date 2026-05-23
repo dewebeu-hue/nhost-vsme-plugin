@@ -97,10 +97,11 @@ export function SupplierOnboardingTour({ locale, labels }: SupplierOnboardingTou
     window.localStorage.removeItem(completedKey);
     window.localStorage.removeItem(dismissedKey);
     window.localStorage.setItem(stepKey, "0");
+    updateTargetRect(null);
     setStepIndex(0);
     setIsPromptOpen(false);
     setIsRunning(true);
-  }, []);
+  }, [updateTargetRect]);
 
   const dismissTour = useCallback(() => {
     window.localStorage.setItem(dismissedKey, "true");
@@ -119,8 +120,9 @@ export function SupplierOnboardingTour({ locale, labels }: SupplierOnboardingTou
   const goToStep = useCallback((nextIndex: number) => {
     const boundedIndex = Math.min(Math.max(nextIndex, 0), tourSteps.length - 1);
     window.localStorage.setItem(stepKey, String(boundedIndex));
+    updateTargetRect(null);
     setStepIndex(boundedIndex);
-  }, []);
+  }, [updateTargetRect]);
 
   useEffect(() => {
     const timeoutId = window.setTimeout(() => {
@@ -161,10 +163,15 @@ export function SupplierOnboardingTour({ locale, labels }: SupplierOnboardingTou
 
     const targetRoute = localizedRoute(currentStep.route);
     const currentUrl = `${pathname}${window.location.search}`;
+    const targetPathname = targetRoute.split("?")[0];
+
+    if (pathname !== targetPathname) {
+      router.push(targetRoute);
+      return;
+    }
 
     if (currentUrl !== targetRoute) {
       router.push(targetRoute);
-      return;
     }
 
     let cancelled = false;
