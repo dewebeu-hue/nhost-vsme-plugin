@@ -1,3 +1,5 @@
+import { doesAnswerRequireEvidence } from "@/lib/evidence-requirements";
+
 export type PassportSummarySection = {
   id: string;
   code: string;
@@ -9,6 +11,7 @@ export type PassportSummaryQuestion = {
   section_id: string;
   code: string;
   title: string;
+  answer_type?: string | null;
   evidence_required?: boolean;
 };
 
@@ -170,16 +173,36 @@ export function createMissingEvidenceItems(
   limit = 5,
 ): PassportMissingDataItemSummary[] {
   const answersByQuestion = new Map(answers.map((answer) => [answer.question_item_id, answer]));
+  const linkedEvidenceCountByAnswerId = new Map<string, number>();
+
+  for (const document of documents) {
+    if (!isEvidenceDocumentAvailable(document)) {
+      continue;
+    }
+
+    for (const answerId of document.linked_question_answer_ids ?? []) {
+      linkedEvidenceCountByAnswerId.set(
+        answerId,
+        (linkedEvidenceCountByAnswerId.get(answerId) ?? 0) + 1,
+      );
+    }
+  }
 
   return sections
     .filter((section) => {
       const sectionQuestions = questions.filter((question) => question.section_id === section.id);
-      const hasAnsweredQuestion = sectionQuestions.some((question) =>
-        isQuestionAnswered(answersByQuestion.get(question.id)),
-      );
+      const hasMissingRequiredEvidence = sectionQuestions.some((question) => {
+        const answer = answersByQuestion.get(question.id);
+
+        return Boolean(
+          answer &&
+            doesAnswerRequireEvidence(question, answer.value) &&
+            (answer.id ? linkedEvidenceCountByAnswerId.get(answer.id) ?? 0 : 0) === 0,
+        );
+      });
 
       return (
-        hasAnsweredQuestion &&
+        hasMissingRequiredEvidence &&
         countEvidenceDocumentsForSectionCodes([section.code], sections, questions, answers, documents) === 0
       );
     })

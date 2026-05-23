@@ -15,6 +15,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { AnswerStatusPill } from "@/components/questionnaire/answer-status-pill";
 import { QuestionHelp } from "@/components/questionnaire/question-help";
+import { doesAnswerRequireEvidence } from "@/lib/evidence-requirements";
 import type { QuestionnaireEnergyQuestion } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
 import {
@@ -37,10 +38,9 @@ export function QuestionnaireQuestionCard({
   onAttachEvidence,
   labels = defaultQuestionnaireLabels,
 }: QuestionnaireQuestionCardProps) {
-  const requiresEvidence =
-    question.evidenceRequired ||
-    question.status === "Needs evidence" ||
-    Boolean(question.linkedDocuments?.length);
+  const answerValue = getQuestionAnswerValue(question);
+  const answerRequiresEvidence = doesAnswerRequireEvidence(question, answerValue);
+  const showEvidenceBlock = answerRequiresEvidence || Boolean(question.linkedDocuments?.length);
 
   return (
     <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
@@ -81,7 +81,7 @@ export function QuestionnaireQuestionCard({
           },
           onValueChange,
         )}
-        {requiresEvidence ? (
+        {showEvidenceBlock ? (
           <div className="mt-5 rounded-2xl border border-slate-200 bg-slate-50 p-4">
             <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
               <div>
@@ -128,17 +128,25 @@ export function QuestionnaireQuestionCard({
                     />
                   </div>
                 ))
-              ) : (
+              ) : answerRequiresEvidence ? (
                 <div className="rounded-xl border border-dashed border-amber-200 bg-amber-50/70 p-3 text-sm font-medium text-amber-800">
                   {labels.evidenceRequired}
                 </div>
-              )}
+              ) : null}
             </div>
           </div>
         ) : null}
       </div>
     </article>
   );
+}
+
+function getQuestionAnswerValue(question: QuestionnaireEnergyQuestion) {
+  if (question.type === "chips") {
+    return question.values;
+  }
+
+  return question.value;
 }
 
 function resolveQuestionHelpText(

@@ -3,12 +3,12 @@ import "server-only";
 import { getCurrentUser } from "@/lib/auth/session";
 import { getPrimaryOrganizationForUserWithAdmin, type OrganizationBasics } from "@/lib/data/organizations";
 import type { GraphqlJson } from "@/lib/data/questionnaire";
+import { doesAnswerRequireEvidence } from "@/lib/evidence-requirements";
 import { executeHasuraGraphql } from "@/lib/graphql/client";
 import { getNhostGraphqlUrl } from "@/lib/nhost/config";
 import {
   calculateOverallCompletion,
   calculateSectionCompletion,
-  isQuestionAnswered,
 } from "@/lib/questionnaire-completion";
 
 type DashboardQuestionSection = {
@@ -21,6 +21,7 @@ type DashboardQuestionSection = {
 type DashboardQuestionItem = {
   id: string;
   section_id: string;
+  answer_type: string;
   evidence_required: boolean;
 };
 
@@ -150,6 +151,7 @@ const dashboardSetupDataQuery = `
     question_items(order_by: { sort_order: asc }) {
       id
       section_id
+      answer_type
       evidence_required
     }
     question_answers(
@@ -261,11 +263,18 @@ export async function getDashboardSetupSummaryForOrganization(
     )
     : { document_links: [] };
 
-  const completeAnswerQuestionIds = new Set(
-    data.question_answers
-      .filter((answer) => isQuestionAnswered(answer))
-      .map((answer) => answer.question_item_id),
+  const answerByQuestionId = new Map(
+    data.question_answers.map((answer) => [answer.question_item_id, answer]),
   );
+  const linkedEvidenceCountByAnswerId = new Map<string, number>();
+
+  for (const link of links.document_links) {
+    linkedEvidenceCountByAnswerId.set(
+      link.question_answer_id,
+      (linkedEvidenceCountByAnswerId.get(link.question_answer_id) ?? 0) + 1,
+    );
+  }
+
   const questionsBySection = new Map<string, DashboardQuestionItem[]>();
 
   data.question_items.forEach((question) => {
@@ -281,9 +290,15 @@ export async function getDashboardSetupSummaryForOrganization(
       data.question_answers,
     );
     const questions = questionsBySection.get(section.id) ?? [];
-    const evidenceRequiredMissing = questions.filter((question) =>
-      question.evidence_required && !completeAnswerQuestionIds.has(question.id),
-    ).length;
+    const evidenceRequiredMissing = questions.filter((question) => {
+      const answer = answerByQuestionId.get(question.id);
+
+      return Boolean(
+        answer &&
+          doesAnswerRequireEvidence(question, answer.value) &&
+          (linkedEvidenceCountByAnswerId.get(answer.id) ?? 0) === 0,
+      );
+    }).length;
 
     return {
       code: section.code,

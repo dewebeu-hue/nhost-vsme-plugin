@@ -33,6 +33,7 @@ import {
   normalizeQuestionItemIds,
   resolveEvidenceDocumentId,
 } from "@/lib/document-linking-client";
+import { doesAnswerRequireEvidence } from "@/lib/evidence-requirements";
 import { calculateSectionCompletion } from "@/lib/questionnaire-completion";
 import type { QuestionAnswerStatus } from "@/lib/types";
 import {
@@ -1027,7 +1028,7 @@ function mapLiveQuestions(
     const value = values[item.id] ?? defaultValueForQuestion(item);
     const linkedDocuments = answer ? linkedDocumentsForAnswer(answer.id, documentLinks) : [];
     const status = toDisplayStatus(
-      answer?.status ?? inferGraphqlStatus(item, value, linkedDocuments.length),
+      normalizeGraphqlStatus(item, value, linkedDocuments.length, answer?.status),
     );
     const evidenceFields = {
       answerId: answer?.id,
@@ -1244,11 +1245,28 @@ function inferDisplayStatus(
     return "Not started";
   }
 
-  if (question.evidenceRequired && !question.linkedDocuments?.length) {
+  if (doesAnswerRequireEvidence(question, value) && !question.linkedDocuments?.length) {
     return "Needs evidence";
   }
 
   return "Completed";
+}
+
+function normalizeGraphqlStatus(
+  question: QuestionItemRecord,
+  value: AnswerValue,
+  linkedDocumentCount = 0,
+  savedStatus?: QuestionAnswerStatus,
+): QuestionAnswerStatus {
+  if (isEmptyValue(value)) {
+    return "not_started";
+  }
+
+  if (doesAnswerRequireEvidence(question, value) && linkedDocumentCount === 0) {
+    return "needs_evidence";
+  }
+
+  return savedStatus === "reviewed" ? "reviewed" : "completed";
 }
 
 function inferGraphqlStatus(
@@ -1256,15 +1274,7 @@ function inferGraphqlStatus(
   value: AnswerValue,
   linkedDocumentCount = 0,
 ): QuestionAnswerStatus {
-  if (isEmptyValue(value)) {
-    return "not_started";
-  }
-
-  if (question.evidence_required && linkedDocumentCount === 0) {
-    return "needs_evidence";
-  }
-
-  return "completed";
+  return normalizeGraphqlStatus(question, value, linkedDocumentCount);
 }
 
 function serializeAnswerValue(question: QuestionItemRecord, value: AnswerValue): GraphqlJson {
