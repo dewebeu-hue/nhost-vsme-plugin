@@ -82,6 +82,9 @@ export type QuestionnaireLabels = {
   attachSuccess: string;
   noAnswersSaved: string;
   startFirstSection: string;
+  unknownSize: string;
+  recently: string;
+  workspaceUser: string;
   questionHelpLabel: string;
   questionHelpCloseLabel: string;
   questionHelpFallback: string;
@@ -296,12 +299,12 @@ export const defaultQuestionnaireLabels: QuestionnaireLabels = {
   saveError: "We could not save your answers right now. Please try again.",
   saveSuccess: "Questionnaire answers saved.",
   liveQuestionnaireLoadFailed: "We could not load live questionnaire data.",
-  mockDataAvailable: "Mock data is still available.",
+  mockDataAvailable: "Preview data remains available.",
   questionnairePermissionDenied: "You do not have permission to update this questionnaire.",
   questionnaireSaved: "Questionnaire saved.",
   sessionExpired: "Your session has expired. Please sign in again.",
   loadFallbackError: "We could not load live questionnaire data.",
-  seedFallbackMessage: "Questionnaire seed data is not available yet. Showing mock data.",
+  seedFallbackMessage: "Questionnaire data is not available yet.",
   attachSaveFirstMessage: "Save this answer once before attaching evidence.",
   attachSelectDocumentFirst: "Select or upload a document before linking evidence.",
   attachMockSuccess: "Evidence attached locally in mock mode.",
@@ -310,6 +313,9 @@ export const defaultQuestionnaireLabels: QuestionnaireLabels = {
   attachSuccess: "Evidence attached to questionnaire answer.",
   noAnswersSaved: "No answers saved yet.",
   startFirstSection: "Start with the first section to build your Supplier Passport.",
+  unknownSize: "Unknown size",
+  recently: "Recently",
+  workspaceUser: "Workspace user",
   questionHelpLabel: "Question help",
   questionHelpCloseLabel: "Close question help",
   questionHelpFallback: "Provide the value requested for this field. Use the reporting period and evidence available to your organization.",

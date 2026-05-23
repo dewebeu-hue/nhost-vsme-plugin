@@ -316,7 +316,9 @@ export function QuestionnairePageClient({
         const activeLiveItems = payload.questions ?? allLiveItems;
         const nextValues = valuesFromAnswers(allLiveItems, payload.answers ?? []);
         const nextDocumentLinks = payload.documentLinks ?? [];
-        const nextDocuments = (payload.documents ?? []).map(mapLiveDocument);
+        const nextDocuments = (payload.documents ?? []).map((document) =>
+          mapLiveDocument(document, labels, locale),
+        );
         const nextQuestions = mapLiveQuestions(
           activeLiveItems,
           payload.answers ?? [],
@@ -1414,16 +1416,20 @@ function linkedDocumentsForAnswer(answerId: string, links: DocumentLinkRecord[])
     });
 }
 
-function mapLiveDocument(document: LiveDocument): EvidenceRoomDocument {
+function mapLiveDocument(
+  document: LiveDocument,
+  labels: QuestionnaireLabels,
+  locale: string,
+): EvidenceRoomDocument {
   return {
     id: document.id,
     title: createDocumentTitle(document.file_name),
     fileName: document.file_name,
-    fileSize: formatFileSize(document.file_size_bytes),
+    fileSize: formatFileSize(document.file_size_bytes, labels),
     type: documentTypeLabels[document.document_type] ?? "Other",
     linkedTo: [],
-    uploaded: formatDate(document.created_at),
-    uploadedBy: "Workspace user",
+    uploaded: formatDate(document.created_at, labels, locale),
+    uploadedBy: labels.workspaceUser,
     status: documentStatusLabels[document.status] ?? "Uploaded",
   };
 }
@@ -1462,9 +1468,9 @@ function createDocumentTitle(fileName: string) {
     .replace(/\b\w/g, (letter) => letter.toUpperCase());
 }
 
-function formatFileSize(size: number | null) {
+function formatFileSize(size: number | null, labels: QuestionnaireLabels) {
   if (!size || size <= 0) {
-    return "Unknown size";
+    return labels.unknownSize;
   }
 
   if (size < 1024 * 1024) {
@@ -1474,14 +1480,14 @@ function formatFileSize(size: number | null) {
   return `${(size / (1024 * 1024)).toFixed(1)} MB`;
 }
 
-function formatDate(value: string) {
+function formatDate(value: string, labels: QuestionnaireLabels, locale: string) {
   const date = new Date(value);
 
   if (Number.isNaN(date.getTime())) {
-    return "Recently";
+    return labels.recently;
   }
 
-  return new Intl.DateTimeFormat("en", {
+  return new Intl.DateTimeFormat(locale, {
     month: "short",
     day: "numeric",
     year: "numeric",
