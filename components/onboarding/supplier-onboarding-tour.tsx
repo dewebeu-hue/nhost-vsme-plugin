@@ -178,6 +178,7 @@ export function SupplierOnboardingTour({ locale, labels }: SupplierOnboardingTou
     let retryTimeoutId: number | null = null;
     let animationFrameId: number | null = null;
     let mutationTimeoutId: number | null = null;
+    let scrollSettleTimeoutId: number | null = null;
     let resizeObserver: ResizeObserver | null = null;
     let mutationObserver: MutationObserver | null = null;
 
@@ -202,7 +203,18 @@ export function SupplierOnboardingTour({ locale, labels }: SupplierOnboardingTou
       }
     }
 
-    function measureElementAfterLayout(element: HTMLElement, shouldScrollIntoView = false) {
+    function clearScrollSettleTimeout() {
+      if (scrollSettleTimeoutId !== null) {
+        window.clearTimeout(scrollSettleTimeoutId);
+        scrollSettleTimeoutId = null;
+      }
+    }
+
+    function measureElementAfterLayout(
+      element: HTMLElement,
+      shouldScrollIntoView = false,
+      visibilityAttempts = 0,
+    ) {
       if (cancelled) {
         return;
       }
@@ -213,7 +225,11 @@ export function SupplierOnboardingTour({ locale, labels }: SupplierOnboardingTou
       }
 
       if (shouldScrollIntoView) {
-        element.scrollIntoView({ block: "center", inline: "nearest", behavior: "smooth" });
+        element.scrollIntoView({
+          block: "center",
+          inline: "nearest",
+          behavior: prefersReducedMotion() ? "auto" : "smooth",
+        });
       }
 
       clearAnimationFrame();
@@ -233,6 +249,14 @@ export function SupplierOnboardingTour({ locale, labels }: SupplierOnboardingTou
             if (!targetRectRef.current) {
               findTargetAndMeasure(performance.now(), shouldScrollIntoView);
             }
+            return;
+          }
+
+          if (shouldScrollIntoView && !isTargetMostlyVisible(rect) && visibilityAttempts < 10) {
+            clearScrollSettleTimeout();
+            scrollSettleTimeoutId = window.setTimeout(() => {
+              measureElementAfterLayout(element, true, visibilityAttempts + 1);
+            }, 90);
             return;
           }
 
@@ -330,6 +354,7 @@ export function SupplierOnboardingTour({ locale, labels }: SupplierOnboardingTou
       clearRetryTimeout();
       clearAnimationFrame();
       clearMutationTimeout();
+      clearScrollSettleTimeout();
       resizeObserver?.disconnect();
       mutationObserver?.disconnect();
       window.removeEventListener("resize", remeasureVisibleTarget);
@@ -572,6 +597,24 @@ function getSpotlightBorderRadius(
   const maxRadius = Math.max(0, Math.min(spotlightWidth, spotlightHeight) / 2);
 
   return `${Math.min(expandedRadius, maxRadius)}px`;
+}
+
+function isTargetMostlyVisible(rect: DOMRect) {
+  const viewportHeight = window.innerHeight;
+  const visibleTop = Math.max(0, rect.top);
+  const visibleBottom = Math.min(viewportHeight, rect.bottom);
+  const visibleHeight = Math.max(0, visibleBottom - visibleTop);
+  const targetHeight = Math.max(1, rect.height);
+  const visibleRatio = visibleHeight / targetHeight;
+
+  return (
+    (rect.top >= 12 && rect.bottom <= viewportHeight - 12) ||
+    visibleRatio >= 0.82
+  );
+}
+
+function prefersReducedMotion() {
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
 function getSmartPopoverRect(
