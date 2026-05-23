@@ -1346,7 +1346,7 @@ export type PublicSharePassport = {
   company: PassportCompanyProfile;
   readinessScore: number;
   certificateStatus?: "none" | "available" | "expires_soon" | "expired";
-  documentVisibility?: "summary_only" | "approved_only" | "all_linked_documents" | "all_metadata";
+  documentVisibility?: "approved_only" | "all_linked_documents";
   lastUpdated: string;
   sharedWith: string;
   sharedOn: string;

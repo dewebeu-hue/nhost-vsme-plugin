@@ -612,7 +612,7 @@ type ShareLinkFormValues = {
   expiresAt: string;
   password: string;
   passwordProtected: boolean;
-  documentVisibility: "summary_only" | "approved_only" | "all_metadata";
+  documentVisibility: "approved_only" | "all_linked_documents";
 };
 
 function CreateShareLinkDialog({
@@ -690,9 +690,8 @@ function CreateShareLinkDialog({
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="summary_only">{labels.summaryOnly}</SelectItem>
                   <SelectItem value="approved_only">{labels.approvedOnly}</SelectItem>
-                  <SelectItem value="all_metadata">{labels.allDocumentMetadata}</SelectItem>
+                  <SelectItem value="all_linked_documents">{labels.allLinkedDocuments}</SelectItem>
                 </SelectContent>
               </Select>
               <p className="text-xs leading-5 text-slate-500">{labels.documentVisibilityHelp}</p>

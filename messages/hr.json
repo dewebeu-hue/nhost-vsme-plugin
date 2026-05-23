@@ -1647,6 +1647,7 @@
     "documentVisibility": "Vidljivost dokumenata",
     "summaryOnly": "Samo sažetak",
     "approvedOnly": "Odobreni dokumenti kao indeks",
+    "allLinkedDocuments": "Povezani i odobreni dokumenti kao indeks",
     "allDocumentMetadata": "Svi metapodaci dokumenata kao indeks",
     "documentVisibilityHelp": "Dokumenti nisu dostupni za preuzimanje. Kupac vidi samo strukturirani indeks dokazne dokumentacije kada je uključen.",
     "createLink": "Kreiraj link",

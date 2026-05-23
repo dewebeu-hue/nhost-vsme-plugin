@@ -4402,7 +4402,7 @@ Manual QA:
 
 ## Buyer-Specific Share Link Access Rules
 
-Supplier Passport share links enforce the settings collected in the share modal. Apply migration `nhost/migrations/default/0011_expand_share_link_document_visibility` before using the expanded visibility choices in production and confirm the `share_links.document_visibility` check constraint accepts `summary_only`, `approved_only`, `all_linked_documents`, and `all_metadata`.
+Supplier Passport share links enforce the settings collected in the share modal using the existing `share_links` schema. The production `share_links.document_visibility` constraint currently accepts `approved_only` and `all_linked_documents`; do not send expanded visibility values unless a later migration intentionally updates that constraint and Hasura schema cache.
 
 Access model:
 
@@ -4414,11 +4414,11 @@ Access model:
 
 Document visibility:
 
-- `summary_only`: public pages show only the buyer-safe Passport summary and evidence counts.
 - `approved_only`: public pages show a safe Evidence Index for reviewed documents.
-- `all_metadata`: public pages show broader safe document metadata.
+- `all_linked_documents`: public pages show a safe Evidence Index for linked or reviewed document metadata.
 - Evidence Index rows may include document name, type/category, expiry date, upload date, and "Available on request"; they must not include download URLs, storage IDs, signed URLs, raw document contents, or private paths.
 - Evidence document downloads are intentionally not enabled by this step.
+- If `share_link_insert_graphql_error` appears immediately after changing visibility options, check Vercel logs for the sanitized GraphQL message and confirm the submitted `document_visibility` value is one of the two values allowed by the live database constraint.
 
 Manual QA:
 
@@ -4428,5 +4428,5 @@ Manual QA:
 4. Enter the correct password and confirm the Passport opens.
 5. Create or force an expired/inactive link and confirm the public route blocks it.
 6. Set document visibility to `approved_only` and confirm the Evidence Index appears without download links.
-7. Set document visibility to `summary_only` and confirm the Evidence Index is hidden.
+7. Set document visibility to `all_linked_documents` and confirm linked/reviewed metadata appears without download links.
 8. Inspect Network responses for no `password_hash`, `storage_file_id`, `file_url`, `privateUrl`, `signedUrl`, evidence download URL, share token logs, or secrets.

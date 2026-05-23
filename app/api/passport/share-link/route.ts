@@ -46,7 +46,7 @@ type ShareLink = {
 
 type GraphqlResponse<T> = {
   data?: T;
-  errors?: Array<{ message?: string }>;
+  errors?: Array<{ message?: string; extensions?: { code?: string } }>;
 };
 
 type UserResolution =
@@ -61,7 +61,7 @@ type AdminGraphqlResult<T> =
   | { ok: true; data: T }
   | { ok: false; safeGraphqlMessage: string };
 
-type DocumentVisibility = "summary_only" | "approved_only" | "all_linked_documents" | "all_metadata";
+type DocumentVisibility = "approved_only" | "all_linked_documents";
 
 type ShareLinkRequestOptions = {
   action: "create" | "deactivate" | "regenerate";
@@ -678,6 +678,10 @@ async function executeAdminGraphql<TData>({
     console.error("Passport share admin GraphQL returned errors", {
       operationName,
       reason: "graphql_returned_errors",
+      message: sanitizeGraphqlMessage(firstError),
+      code: payload.errors?.[0]?.extensions?.code ?? null,
+      variableKeys: Object.keys(variables),
+      insertFieldKeys: getInsertFieldKeys(variables),
     });
     return { ok: false, safeGraphqlMessage: firstError };
   }
@@ -716,7 +720,13 @@ function shareLinkResponse(request: Request, shareLink: ShareLink | null, organi
 }
 
 function shareLinkError(category: string, stage: string, status: number, safeGraphqlMessage?: string) {
-  void safeGraphqlMessage;
+  if (safeGraphqlMessage) {
+    console.error("Passport share request failed", {
+      category,
+      stage,
+      message: sanitizeGraphqlMessage(safeGraphqlMessage),
+    });
+  }
 
   return NextResponse.json(
     {
@@ -726,6 +736,23 @@ function shareLinkError(category: string, stage: string, status: number, safeGra
     },
     { status },
   );
+}
+
+function getInsertFieldKeys(variables: Record<string, unknown>) {
+  const object = variables.object;
+
+  if (!object || typeof object !== "object" || Array.isArray(object)) {
+    return [];
+  }
+
+  return Object.keys(object);
+}
+
+function sanitizeGraphqlMessage(message: string) {
+  return message
+    .replace(/Bearer\s+[A-Za-z0-9._~-]+/g, "Bearer [redacted]")
+    .replace(/pbkdf2_sha256\$[^\s"']+/g, "pbkdf2_sha256$[redacted]")
+    .replace(/[A-Za-z0-9_-]{24,}/g, "[redacted]");
 }
 
 function createPublicPath(request: Request, token: string) {
@@ -775,10 +802,8 @@ function readExpiryDate(value: unknown) {
 
 function readDocumentVisibility(value: unknown): DocumentVisibility {
   if (
-    value === "summary_only" ||
     value === "approved_only" ||
-    value === "all_linked_documents" ||
-    value === "all_metadata"
+    value === "all_linked_documents"
   ) {
     return value;
   }

@@ -42,7 +42,7 @@ export type ShareLinkRecord = {
   password_hash: string | null;
   expires_at: string | null;
   is_active: boolean;
-  document_visibility: "summary_only" | "approved_only" | "all_linked_documents" | "all_metadata";
+  document_visibility: "approved_only" | "all_linked_documents";
   created_by: string | null;
   created_at: string;
 };
@@ -55,7 +55,7 @@ export type CreateShareLinkInput = {
   buyerEmail?: string;
   expiresAt?: string;
   password?: string;
-  documentVisibility: "summary_only" | "approved_only" | "all_linked_documents" | "all_metadata";
+  documentVisibility: "approved_only" | "all_linked_documents";
   locale?: string;
 };
 
@@ -676,16 +676,8 @@ function isPublicEvidenceAvailable(status: string) {
 }
 
 function getPublicDocumentStatuses(visibility: ShareLinkRecord["document_visibility"]) {
-  if (visibility === "summary_only") {
-    return [];
-  }
-
   if (visibility === "approved_only") {
     return ["reviewed"];
-  }
-
-  if (visibility === "all_metadata") {
-    return ["uploaded", "linked", "reviewed", "needs_review", "expiring_soon"];
   }
 
   return ["reviewed", "linked"];

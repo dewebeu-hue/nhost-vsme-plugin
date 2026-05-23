@@ -73,6 +73,7 @@ export type PassportLabels = {
   documentVisibility: string;
   summaryOnly: string;
   approvedOnly: string;
+  allLinkedDocuments: string;
   allDocumentMetadata: string;
   documentVisibilityHelp: string;
   createLink: string;
@@ -181,6 +182,7 @@ export const defaultPassportLabels: PassportLabels = {
   documentVisibility: "Document visibility",
   summaryOnly: "Summary only",
   approvedOnly: "Approved documents as index",
+  allLinkedDocuments: "Linked and reviewed documents as index",
   allDocumentMetadata: "All document metadata as index",
   documentVisibilityHelp: "Documents are not downloadable. The buyer sees only a structured evidence index when enabled.",
   createLink: "Create link",

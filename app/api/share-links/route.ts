@@ -94,10 +94,8 @@ function readDocumentVisibility(value: unknown) {
   const visibility = readString(value);
 
   if (
-    visibility === "summary_only" ||
     visibility === "approved_only" ||
-    visibility === "all_linked_documents" ||
-    visibility === "all_metadata"
+    visibility === "all_linked_documents"
   ) {
     return visibility;
   }
