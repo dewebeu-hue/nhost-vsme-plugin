@@ -74,6 +74,42 @@ Use this checklist before inviting pilot users:
 - Branding and dark mode: confirm landing/sidebar logos are readable at 100% zoom and admin dark mode keeps controls readable on `#002B36`.
 - Privacy: inspect public Passport, buyer pages, PDFs, and copied messages for private document URLs, storage IDs, raw sensitive answers, admin notes, support notes, tokens, or secrets.
 
+## Faza 4.4.2 Landing, Logo, And Branding Final QA
+
+Use this checklist before pilot launch to confirm the first visitor experience is professional and does not imply billing, certification, or private-data exposure.
+
+Branding surfaces:
+
+- Landing header, `/[locale]/plans`, `/[locale]/request-demo`, auth screens, supplier sidebar, admin sidebar, public Passport header, and Buyer Portal header should use the current Supplier Passport brand mark.
+- The landing header should use the dedicated landing logo variant so the mark and `Supplier Passport / VSME READY` lockup are readable at 100% desktop zoom.
+- Supplier and admin sidebars should keep the larger sidebar logo variant; admin dark mode must keep the logo readable on `#002B36`.
+- Do not replace the favicon during this phase unless it is separately requested.
+
+CTA route map:
+
+- Landing primary CTA: `Start Supplier Passport` / `Započni Supplier Passport` routes to localized signup.
+- Demo CTA: `Request demo` / `Zatražite demo` routes to the localized request-demo page or mailto demo path already used by the app.
+- Plans CTA: `View plans` / `Pogledaj planove` routes to localized plans/pricing.
+- Login and language switcher should preserve the active locale.
+- No CTA should route to checkout, payment, billing setup, Stripe, invoices, or subscription management.
+
+Copy and claims:
+
+- Croatian landing and plans copy should avoid unnecessary English terms such as `workflow`, `workspace`, `buyer pilot`, `buyer-safe`, `Concierge dashboard`, `onboarding`, and `handoff` when natural Croatian wording exists.
+- Allowed product terms include `Supplier Passport`, `VSME`, `ESG`, `PDF`, and `Buyer Portal` where intentionally used as product names.
+- Public marketing copy may say readiness, VSME-aligned / usklađeno s VSME okvirom, evidence summary, and buyer-safe summary.
+- Do not claim the product certifies, audits, approves, legally guarantees, or provides assurance. Disclaimers may explicitly say Supplier Passport is not certification, audit, legal advice, or assurance.
+
+Responsive and animation QA:
+
+1. Open `/hr` and `/en` at desktop width and 100% zoom; confirm the logo, nav, language switcher, login link, and primary CTA align without clipping.
+2. Test 375px, 430px, and 768px widths; confirm the header does not overflow and CTAs wrap cleanly.
+3. Confirm landing animations are calm scroll/entrance reveals only, with no shake and no layout shift.
+4. Confirm reduced-motion users see stable content without distracting movement.
+5. Open `/hr/plans` and `/en/plans`; confirm plan cards and the feature matrix are readable and do not imply active billing.
+6. Open `/hr/request-demo` and `/en/request-demo`; confirm demo copy does not suggest backend email sending unless the CTA intentionally opens the user's email client.
+7. Open `/hr/dashboard`, `/hr/admin`, `/hr/passport/[token]`, and `/hr/buyer`; confirm logo usage is consistent and no private URLs, storage ids, share tokens, admin data, or user/member data are exposed on public routes.
+
 ## Login Fails
 
 Likely causes:
