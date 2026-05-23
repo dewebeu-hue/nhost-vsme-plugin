@@ -900,23 +900,23 @@
   },
   "landing": {
     "hero": {
-      "badge": "VSME-aligned spremnost dobavljača",
+      "badge": "Spremnost dobavljača usklađena s VSME okvirom",
       "titlePrefix": "Izradite",
       "titleEmphasis": "Supplier Passport spreman za kupce.",
-      "description": "Prikupite odgovore iz upitnika, dokaznu dokumentaciju i status spremnosti u jednom VSME-aligned profilu dobavljača.",
+      "description": "Prikupite odgovore iz upitnika, dokaznu dokumentaciju i status spremnosti u jednom profilu dobavljača usklađenom s VSME okvirom.",
       "trustChips": [
-        "VSME-aligned",
+        "Usklađeno s VSME okvirom",
         "Privatni dokazi prema zadanim postavkama",
         "Sažetak dokazne dokumentacije"
       ]
     },
     "features": {
       "eyebrow": "Što možete napraviti",
-      "title": "Jedan workspace za odgovore, dokaze, nedostatke spremnosti i dijeljenje s kupcima.",
+      "title": "Jedan radni prostor za odgovore, dokaze, nedostatke spremnosti i dijeljenje s kupcima.",
       "items": [
         {
           "title": "Radni prostor za upitnik",
-          "description": "Ispunite strukturirana Supplier Passport pitanja i pratite napredak kroz VSME-aligned sekcije."
+          "description": "Ispunite strukturirana Supplier Passport pitanja i pratite napredak kroz sekcije usklađene s VSME okvirom."
         },
         {
           "title": "Dokumentacijski Data Room",
@@ -935,7 +935,7 @@
     "howItWorks": {
       "eyebrow": "Kako funkcionira",
       "title": "Od prvih odgovora do Supplier Passporta koji možete podijeliti.",
-      "description": "Praktičan workflow za dobavljačke timove koji pripremaju VSME-aligned podatke o spremnosti.",
+      "description": "Praktičan tijek rada za dobavljačke timove koji pripremaju podatke o spremnosti usklađene s VSME okvirom.",
       "steps": [
         {
           "title": "Ispunite upitnik",
@@ -982,7 +982,7 @@
       ],
       "disclaimerEyebrow": "Važno ograničenje",
       "disclaimerTitle": "Spremnost, ne certifikacija",
-      "disclaimerText": "Supplier Passport je VSME-aligned i namijenjen je procesima spremnosti dobavljača. Nije revizijsko mišljenje, pravni certifikat niti izvješće s neovisnim uvjerenjem."
+      "disclaimerText": "Supplier Passport je usklađen s VSME okvirom i namijenjen je procesima spremnosti dobavljača. Nije revizijsko mišljenje, pravni certifikat niti izvješće s neovisnim uvjerenjem."
     },
     "socialProof": {
       "logos": [
@@ -999,8 +999,8 @@
     "pricingPreview": {
       "eyebrow": "Planovi",
       "title": "Planovi za spremnost dobavljača",
-      "description": "Jasno komercijalno pozicioniranje za dobavljače, partnere i buyer pilot projekte. Online naplata i checkout nisu omogućeni.",
-      "note": "Trebate upravljati s više klijenata ili dobavljača? Pogledajte Partner i Buyer pozicioniranje."
+      "description": "Jasno komercijalno pozicioniranje za dobavljače, partnere i pilot projekte za kupce. Online naplata i plaćanje nisu omogućeni.",
+      "note": "Trebate upravljati s više klijenata ili dobavljača? Pogledajte pakete za partnere i kupce."
     },
     "finalCta": {
       "eyebrow": "Supplier Passport",
@@ -1009,7 +1009,7 @@
     },
     "preview": {
       "supplierReadiness": "Spremnost dobavljača",
-      "dashboardPreview": "Pregled dashboarda",
+      "dashboardPreview": "Pregled nadzorne ploče",
       "liveProfile": "Aktivan profil",
       "ready": "Spremno",
       "vsme": "VSME",
@@ -1043,10 +1043,10 @@
     "hero": {
       "eyebrow": "Paketi za demo i prodajne razgovore",
       "title": "Planovi za spremnost dobavljača",
-      "description": "Jasno komercijalno pozicioniranje za dobavljače, partnere i buyer pilot projekte. Online naplata i checkout nisu omogućeni.",
+      "description": "Jasno komercijalno pozicioniranje za dobavljače, partnere i pilot projekte za kupce. Online naplata i plaćanje nisu omogućeni.",
       "annualNote": "Ovo su komercijalni paketi za razgovore o uvođenju, a ne aktivne plaćene pretplate.",
       "setupNote": "Online naplata nije omogućena. Oznake planova ne blokiraju i ne otključavaju značajke.",
-      "pricingStance": "Cijene se dogovaraju ručno tijekom pilot uvođenja. Online checkout nije omogućen.",
+      "pricingStance": "Cijene se dogovaraju ručno tijekom pilot uvođenja. Online plaćanje nije omogućeno.",
       "primaryCta": "Započni Supplier Passport",
       "secondaryCta": "Zatraži demo"
     },
@@ -1070,18 +1070,18 @@
       "description": "Naplata nije omogućena u ovoj verziji."
     },
     "sections": {
-      "partnerEyebrow": "Buyer planovi",
-      "partnerTitle": "Buyer-side planovi su buduće pozicioniranje.",
-      "partnerDescription": "Buyer Pilot i Buyer Pro prikazani su samo za komercijalno istraživanje. Buyer računi, buyer login i upravljanje buyer organizacijama još nisu implementirani."
+      "partnerEyebrow": "Paketi za kupce",
+      "partnerTitle": "Paketi za kupce su buduće pozicioniranje.",
+      "partnerDescription": "Paketi za pilot kupce i napredne kupce prikazani su samo za komercijalno istraživanje. Računi kupaca, prijava kupaca i upravljanje organizacijama kupaca još nisu implementirani."
     },
     "plans": {
       "starter": {
         "name": "Starter",
         "displayLabel": "Zatražite demo",
         "audience": "Dobavljači koji pripremaju prvi Supplier Passport spreman za kupce.",
-        "description": "Fokusiran workspace za postavljanje osnovnog Supplier Passport toka.",
+        "description": "Fokusiran radni prostor za postavljanje osnovnog tijeka Supplier Passporta.",
         "features": [
-          "Supplier Passport workspace",
+          "Radni prostor za Supplier Passport",
           "Tok spremnosti upitnika",
           "Učitavanje dokazne dokumentacije",
           "Javni link",
@@ -1096,12 +1096,12 @@
         "audience": "Dobavljači koji upravljaju ponavljajućim zahtjevima kupaca i spremnošću dokaza.",
         "description": "Pozicionirano za dobavljače kojima treba jača priprema odgovora i operativno praćenje.",
         "features": [
-          "Buyer Request Workspace",
+          "Radni prostor za zahtjeve kupaca",
           "Spremnost traženih sekcija",
           "Povezivanje dokaza i nedostajući koraci",
           "Praćenje isteka certifikata",
           "Priprema paketa odgovora",
-          "Concierge podrška kao pozicioniranje"
+          "Asistirana podrška pri uvođenju"
         ],
         "setup": "Samo komercijalna oznaka. Ograničenja planova se ne provode.",
         "badge": "Rast dobavljača",
@@ -1111,40 +1111,40 @@
         "name": "Partner",
         "displayLabel": "Zatražite demo",
         "audience": "Konzultanti, agencije i partnerski timovi koji podržavaju više dobavljača.",
-        "description": "Pozicionirano za asistirani onboarding, upravljanje portfeljem i handoff klijenata.",
+        "description": "Pozicionirano za asistirano uvođenje, upravljanje portfeljem i primopredaju klijenata.",
         "features": [
           "Grupiranje asistiranog portfelja",
-          "Concierge dashboard za više klijenata",
-          "Interne onboarding bilješke",
+          "Nadzorna ploča za podršku više klijenata",
+          "Interne bilješke za uvođenje klijenta",
           "Praćenje kontakata",
-          "Interni handoff sažetak",
+          "Interni sažetak primopredaje",
           "Admin pregled rizika"
         ],
         "setup": "Partner računi i partner login su odgođeni.",
         "ctaLabel": "Zatražite partner demo"
       },
       "buyer-pilot": {
-        "name": "Buyer Pilot",
+        "name": "Pilot za kupce",
         "displayLabel": "Zatražite demo",
-        "audience": "Buyer-side discovery razgovori i definiranje pilota.",
-        "description": "Pozicionirano za kupce koji istražuju pregled spremnosti dobavljača prije autentificiranih buyer workspaceova.",
+        "audience": "Istraživački razgovori s kupcima i definiranje pilota.",
+        "description": "Pozicionirano za kupce koji istražuju pregled spremnosti dobavljača prije autentificiranih radnih prostora za kupce.",
         "features": [
           "Koncept praćenja zahtjeva kupaca",
           "Sažeci spremnosti dobavljača",
           "Dokazna dokumentacija dostupna na zahtjev",
           "Pregled javnog Supplier Passporta",
-          "Definiranje pilot workflowa"
+          "Definiranje pilot tijeka rada"
         ],
-        "setup": "Buyer računi, buyer login i slanje emailova još nisu uključeni.",
-        "ctaLabel": "Zatražite buyer pilot"
+        "setup": "Računi kupaca, prijava kupaca i slanje emailova još nisu uključeni.",
+        "ctaLabel": "Zatražite pilot za kupce"
       },
       "buyer-pro": {
-        "name": "Buyer Pro",
+        "name": "Napredni paket za kupce",
         "displayLabel": "Buduće",
-        "audience": "Budući buyer-side workspace za mrežu dobavljača.",
-        "description": "Odgođeno pozicioniranje plana za veće buyer mreže i praćenje portfelja dobavljača.",
+        "audience": "Budući radni prostor za kupce s mrežom dobavljača.",
+        "description": "Odgođeno pozicioniranje plana za veće mreže kupaca i praćenje portfelja dobavljača.",
         "features": [
-          "Buyer-side dashboard buduće",
+          "Nadzorna ploča za kupce u budućoj verziji",
           "Lista dobavljača buduće",
           "Koordinacija zahtjeva kupaca buduće",
           "Mrežno izvještavanje buduće"
@@ -1162,7 +1162,7 @@
         "starter": "Starter",
         "pro": "Supplier Pro",
         "partner": "Partner",
-        "buyer": "Buyer Pilot / Pro"
+        "buyer": "Paketi za kupce"
       },
       "rows": [
         {
@@ -1173,7 +1173,7 @@
           "buyer": "Javni pregled"
         },
         {
-          "feature": "VSME-aligned upitnik",
+          "feature": "Upitnik usklađen s VSME okvirom",
           "starter": "Uključeno",
           "pro": "Uključeno",
           "partner": "Pregled klijenata",
@@ -1215,21 +1215,21 @@
           "buyer": "Dostavlja dobavljač"
         },
         {
-          "feature": "Buyer Request Workspace",
+          "feature": "Radni prostor za zahtjeve kupaca",
           "starter": "Dostupno",
           "pro": "Uključeno",
           "partner": "Pregled klijenata",
-          "buyer": "Pilot workflow"
+          "buyer": "Pilot tijek rada"
         },
         {
-          "feature": "Admin/Concierge Workspace",
+          "feature": "Admin radni prostor za asistiranu podršku",
           "starter": "Nije uključeno",
           "pro": "Asistirana opcija",
           "partner": "Uključeno",
           "buyer": "Nije uključeno"
         },
         {
-          "feature": "Asistirani onboarding",
+          "feature": "Asistirano uvođenje",
           "starter": "Kontaktirajte nas",
           "pro": "Kontaktirajte nas",
           "partner": "Uključeno",
@@ -1243,14 +1243,14 @@
           "buyer": "Buduće"
         },
         {
-          "feature": "Interni handoff sažeci",
+          "feature": "Interni sažeci primopredaje",
           "starter": "Nije uključeno",
           "pro": "Asistirana opcija",
           "partner": "Uključeno",
           "buyer": "Nije uključeno"
         },
         {
-          "feature": "Buyer-side dashboard",
+          "feature": "Nadzorna ploča za kupce",
           "starter": "Nije uključeno",
           "pro": "Nije uključeno",
           "partner": "Nije uključeno",
@@ -1271,15 +1271,15 @@
       "items": [
         {
           "question": "Je li naplata omogućena?",
-          "answer": "Ne. Ovi planovi su komercijalne oznake za prodajne i demo razgovore. Stripe, naplata, checkout i računi nisu implementirani."
+          "answer": "Ne. Ovi planovi su komercijalne oznake za prodajne i demo razgovore. Stripe, naplata, online plaćanje i računi nisu implementirani."
         },
         {
           "question": "Provode li se ograničenja planova?",
-          "answer": "Ne. Starter, Supplier Pro, Partner, Buyer Pilot i Buyer Pro su samo oznake u ovoj verziji. Ne mijenjaju pristup proizvodu i ne provode ograničenja."
+          "answer": "Ne. Starter, Supplier Pro, Partner i paketi za kupce samo su oznake u ovoj verziji. Ne mijenjaju pristup proizvodu i ne provode ograničenja."
         },
         {
-          "question": "Je li Buyer Pro sada dostupan?",
-          "answer": "Ne. Buyer Pro je budući/odgođeni buyer-side koncept. Ova verzija ne uključuje buyer račune, buyer login ni upravljanje buyer organizacijama."
+          "question": "Je li napredni paket za kupce sada dostupan?",
+          "answer": "Ne. Napredni paket za kupce je budući i odgođeni koncept. Ova verzija ne uključuje račune kupaca, prijavu kupaca ni upravljanje organizacijama kupaca."
         },
         {
           "question": "Je li Supplier Passport certifikacija?",
@@ -1291,9 +1291,9 @@
   "auth": {
     "shell": {
       "headline": "Spremnost dobavljača bez spreadsheet kaosa.",
-      "subtitle": "Pripremite VSME-aligned profil, organizirajte dokaznu dokumentaciju i upravljajte Supplier Passport sažecima za kupce iz jednog workspacea.",
+      "subtitle": "Pripremite profil usklađen s VSME okvirom, organizirajte dokaznu dokumentaciju i upravljajte Supplier Passport sažecima za kupce iz jednog radnog prostora.",
       "benefits": [
-        "Workflow za upitnik i dokaze",
+        "Tijek rada za upitnik i dokaze",
         "Javni sažetak siguran za kupce",
         "Izvoz PDF nacrta"
       ]
@@ -1311,7 +1311,7 @@
       "createAccount": "Kreiraj račun",
       "notConfigured": "Nhost nije konfiguriran. Aplikaciju trenutno pregledavate u demo načinu.",
       "previewMode": "Nhost nije konfiguriran. Aplikaciju trenutno pregledavate u demo načinu.",
-      "success": "Prijavljeni ste. Preusmjeravanje na dashboard...",
+      "success": "Prijavljeni ste. Preusmjeravanje na nadzornu ploču...",
       "needsStep": "Prijavite se za nastavak.",
       "error": "Nismo vas mogli prijaviti. Provjerite email i lozinku.",
       "requiredFields": "Unesite email i lozinku.",
@@ -1325,9 +1325,9 @@
       "sessionExpired": "Vaša sesija je istekla. Prijavite se ponovno."
     },
     "signup": {
-      "eyebrow": "Supplier workspace",
+      "eyebrow": "Radni prostor dobavljača",
       "title": "Izradite svoj Supplier Passport radni prostor.",
-      "subtitle": "Započnite pripremu VSME-aligned profila dobavljača i pregleda spremnosti dokazne dokumentacije.",
+      "subtitle": "Započnite pripremu profila dobavljača usklađenog s VSME okvirom i pregleda spremnosti dokazne dokumentacije.",
       "fullName": "Ime i prezime",
       "workEmail": "Poslovni email",
       "password": "Lozinka",
@@ -1340,7 +1340,7 @@
       "notConfigured": "Nhost nije konfiguriran. Aplikaciju trenutno pregledavate u demo načinu.",
       "authNotConfigured": "Nhost Auth nije konfiguriran.",
       "previewMode": "Nhost nije konfiguriran. Aplikaciju trenutno pregledavate u demo načinu.",
-      "success": "Račun je kreiran. Preusmjeravanje na dashboard...",
+      "success": "Račun je kreiran. Preusmjeravanje na nadzornu ploču...",
       "received": "Zahtjev je zaprimljen. Provjerite email ako Nhost traži verifikaciju.",
       "error": "Nismo mogli kreirati račun. Pokušajte ponovno.",
       "signupFailed": "Nismo mogli kreirati račun. Pokušajte ponovno.",
@@ -1392,7 +1392,7 @@
     "loginTitle": "Prijavite se za nastavak rada na Supplier Passportu.",
     "loginSubtitle": "Pristupite upitniku, dokaznoj dokumentaciji, javnom linku i PDF nacrtu.",
     "signupTitle": "Izradite svoj Supplier Passport radni prostor.",
-    "signupSubtitle": "Započnite pripremu VSME-aligned profila dobavljača i pregleda spremnosti dokazne dokumentacije.",
+    "signupSubtitle": "Započnite pripremu profila dobavljača usklađenog s VSME okvirom i pregleda spremnosti dokazne dokumentacije.",
     "email": "Poslovni email",
     "password": "Lozinka",
     "fullName": "Ime i prezime",
@@ -2398,14 +2398,14 @@
   "requestDemo": {
     "eyebrow": "Pilot uvođenje",
     "title": "Zatražite Supplier Passport demo",
-    "description": "Recite nam jeste li dobavljač, konzultant/partner ili buyer tim. Pomoći ćemo vam odabrati pravi način uvođenja.",
-    "pilotNote": "Tijekom pilot uvođenja cijene i onboarding dogovaraju se ručno. Online naplata nije omogućena.",
+    "description": "Recite nam jeste li dobavljač, konzultant, partner ili tim kupca. Pomoći ćemo vam odabrati pravi način uvođenja.",
+    "pilotNote": "Tijekom pilot uvođenja cijene i proces uvođenja dogovaraju se ručno. Online naplata nije omogućena.",
     "contactCta": "Kontaktirajte nas za demo",
     "whoTitle": "Za koga je namijenjeno",
     "audiences": [
       "Dobavljači koji pripremaju prvi Supplier Passport",
       "Konzultanti/partneri koji podržavaju više klijenata",
-      "Buyer timovi koji istražuju pilote spremnosti dobavljača"
+      "Timovi kupaca koji istražuju pilote spremnosti dobavljača"
     ],
     "noFormNote": "Na ovoj stranici ne prikupljamo podatke kroz obrazac. Demo CTA otvara vaš email klijent kako biste poslali samo podatke koje sami odaberete."
   },
