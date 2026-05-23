@@ -29,9 +29,11 @@ export function ProductPreview() {
 
   return (
     <div className="relative mx-auto flex w-full max-w-[620px] flex-col gap-6 overflow-visible lg:mx-0 lg:block lg:min-h-[760px] xl:min-h-[790px]">
-      <div className="absolute inset-x-6 top-2 h-72 rounded-[2rem] bg-blue-600/10 blur-3xl" />
+      <div className="absolute -inset-x-8 top-2 h-80 rounded-[2.5rem] bg-blue-600/10 blur-3xl" />
+      <div className="absolute right-6 top-28 h-80 w-80 rounded-full bg-teal-400/16 blur-3xl" />
+      <div className="absolute right-20 top-10 h-52 w-52 rounded-full bg-white/70 blur-2xl" />
 
-      <section className="landing-preview-card-back supplier-surface relative z-10 w-full rounded-[2rem] border-0 p-5 shadow-[0_24px_64px_rgba(15,23,42,0.10)] sm:p-6 lg:w-[88%] lg:max-w-[620px]">
+      <section className="landing-preview-card-back supplier-surface relative z-10 w-full rounded-[2rem] border-0 p-5 shadow-[0_28px_70px_rgba(15,23,42,0.11),0_0_40px_rgba(37,99,235,0.08)] sm:p-6 lg:w-[88%] lg:max-w-[620px]">
         <div className="mb-6 flex items-center justify-between gap-4">
           <div>
             <p className="text-sm font-medium text-slate-500">{t("supplierReadiness")}</p>
@@ -84,12 +86,12 @@ export function ProductPreview() {
           />
         </div>
 
-        <div className="mt-5 rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600">
+        <div className="mt-5 rounded-2xl border border-slate-200 bg-slate-50/90 p-4 text-sm text-slate-600 shadow-inner shadow-white/50">
           {t("lastUpdated")}
         </div>
       </section>
 
-      <section className="landing-preview-card-front supplier-surface relative z-20 w-full rounded-[2rem] border-0 p-5 shadow-[-12px_-12px_30px_rgba(15,23,42,0.10),-4px_-4px_12px_rgba(15,23,42,0.06),0_30px_70px_rgba(15,23,42,0.12)] sm:p-6 lg:absolute lg:bottom-0 lg:right-0 lg:w-[78%] lg:max-w-[460px]">
+      <section className="landing-preview-card-front supplier-surface relative z-20 w-full rounded-[2rem] border-0 p-5 shadow-[-12px_-12px_30px_rgba(15,23,42,0.10),-4px_-4px_12px_rgba(15,23,42,0.06),0_34px_80px_rgba(15,23,42,0.14),0_0_42px_rgba(20,184,166,0.10)] sm:p-6 lg:absolute lg:bottom-0 lg:right-0 lg:w-[78%] lg:max-w-[460px]">
         <div className="flex items-start justify-between gap-4">
           <div>
             <p className="text-sm font-medium text-slate-500">{t("passportPreview")}</p>
@@ -102,7 +104,7 @@ export function ProductPreview() {
           </Badge>
         </div>
 
-        <div className="mt-5 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+        <div className="mt-5 rounded-2xl border border-blue-100 bg-gradient-to-br from-slate-50 to-blue-50/60 p-4">
           <div className="flex items-center justify-between gap-4">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
@@ -120,7 +122,7 @@ export function ProductPreview() {
           {passportSections.map((section) => (
             <div
               key={section}
-              className="flex items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm"
+              className="flex items-center justify-between rounded-xl border border-slate-200 bg-white/90 px-4 py-3 text-sm shadow-sm shadow-slate-950/5"
             >
               <span className="font-medium text-slate-700">{section}</span>
               <CheckCircle2 aria-hidden="true" className="size-4 text-emerald-500" />
@@ -147,7 +149,7 @@ type PreviewStatProps = {
 
 function PreviewStat({ label, value, icon: Icon, tone = "text-blue-600" }: PreviewStatProps) {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+    <div className="rounded-2xl border border-slate-200 bg-white/90 p-4 shadow-sm shadow-slate-950/5">
       <Icon aria-hidden="true" className={`mb-3 size-5 ${tone}`} />
       <p className="text-2xl font-semibold tracking-tight text-slate-950">{value}</p>
       <p className="mt-1 text-xs font-medium text-slate-500">{label}</p>
@@ -165,10 +167,10 @@ function StablePreviewProgress({ value }: { value: number }) {
       aria-valuemax={100}
       aria-valuenow={safeValue}
       aria-valuetext={`${safeValue}%`}
-      className="h-2 overflow-hidden rounded-full bg-slate-100"
+      className="h-2.5 overflow-hidden rounded-full bg-slate-100 shadow-inner shadow-slate-200/60"
     >
       <div
-        className="h-full rounded-full bg-blue-600 transition-all"
+        className="h-full rounded-full bg-gradient-to-r from-blue-600 to-teal-500 transition-all duration-500"
         style={{ width: `${safeValue}%` }}
       />
     </div>

@@ -20,6 +20,8 @@ export function HeroSection() {
     >
       <div className="absolute inset-0 supplier-subtle-grid opacity-45" />
       <div className="absolute left-1/2 top-0 h-[540px] w-[760px] -translate-x-1/2 rounded-full bg-blue-100/70 blur-3xl" />
+      <div className="absolute right-[-8rem] top-24 hidden h-[520px] w-[520px] rounded-full bg-teal-200/30 blur-3xl lg:block" />
+      <div className="absolute right-[10%] top-28 hidden h-[360px] w-[360px] rounded-full bg-blue-500/10 blur-3xl lg:block" />
 
       <div className="relative mx-auto grid w-full max-w-7xl items-start gap-12 lg:grid-cols-[0.95fr_1.05fr]">
         <div className="flex flex-col items-start gap-8">
@@ -51,7 +53,7 @@ export function HeroSection() {
                 href={`/${locale}/signup`}
                 className={cn(
                   buttonVariants({ size: "lg" }),
-                  "h-12 px-5 shadow-xl shadow-blue-600/20",
+                  "landing-premium-cta h-12 px-5",
                 )}
               >
                 {common("startPassport")}
@@ -61,7 +63,7 @@ export function HeroSection() {
                 href={`/${locale}/request-demo`}
                 className={cn(
                   buttonVariants({ variant: "outline", size: "lg" }),
-                  "h-12 border-slate-200 bg-white px-5",
+                  "h-12 border-slate-200 bg-white/90 px-5 shadow-sm transition-all hover:-translate-y-0.5 hover:border-blue-200 hover:bg-white hover:shadow-md focus-visible:ring-3 focus-visible:ring-blue-600/20",
                 )}
               >
                 {common("requestDemo")}
@@ -72,7 +74,7 @@ export function HeroSection() {
           <div className="flex flex-wrap gap-3">
             {trustChips.map((chip, index) => (
               <ScrollReveal key={chip} delay={300 + index * 90}>
-                <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-600 shadow-sm">
+                <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-white/90 px-4 py-2 text-sm font-medium text-slate-600 shadow-sm shadow-slate-950/5 backdrop-blur transition-colors hover:border-blue-200 hover:text-slate-800">
                   <CheckCircle2 aria-hidden="true" className="size-4 text-teal-500" />
                   {chip}
                 </div>

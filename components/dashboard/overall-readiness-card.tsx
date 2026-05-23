@@ -86,10 +86,10 @@ export function OverallReadinessCard({
                 <span className="font-semibold text-slate-950">{module.percent}%</span>
               </span>
             </div>
-            <Progress value={module.percent} className="h-2" />
+            <Progress value={module.percent} className="premium-progress" />
           </div>
         )) : (
-          <p className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-500">
+          <p className="premium-empty-state rounded-xl border border-slate-200 px-4 py-3 text-sm font-medium text-slate-500">
             {labels.setupChecklist.neutralFallback}
           </p>
         )}

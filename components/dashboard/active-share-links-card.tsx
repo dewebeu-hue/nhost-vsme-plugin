@@ -46,7 +46,7 @@ export function ActiveShareLinksCard({
         {links.length ? links.slice(0, compact ? 3 : links.length).map((link) => (
           <div
             key={`${link.buyer}-${link.expires}`}
-            className="flex gap-3 rounded-xl border border-slate-200 bg-white p-3"
+            className="premium-surface-interactive flex gap-3 rounded-xl border border-slate-200 bg-white p-3"
           >
             <div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-teal-50 text-teal-700">
               <Link2 aria-hidden="true" className="size-4" />
@@ -68,9 +68,12 @@ export function ActiveShareLinksCard({
             </div>
           </div>
         )) : (
-          <p className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-500">
-            {labels.noActiveShareLinks}
-          </p>
+          <div className="premium-empty-state flex gap-3 rounded-xl border border-slate-200 px-4 py-3 text-sm font-medium text-slate-500">
+            <span className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-700">
+              <Link2 aria-hidden="true" className="size-4" />
+            </span>
+            <span>{labels.noActiveShareLinks}</span>
+          </div>
         )}
       </div>
     </SectionCard>

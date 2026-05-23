@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Building2 } from "lucide-react";
 import { SectionCard } from "@/components/shared/section-card";
 import { DashboardStatusPill } from "@/components/dashboard/dashboard-status-pill";
 import { defaultDashboardOverviewLabels, type DashboardOverviewLabels } from "@/lib/dashboard-labels";
@@ -51,7 +52,7 @@ export function BuyerRequestsCard({
           <Link
             key={request.id}
             href={`${localePrefix}/dashboard/buyer-requests/${request.id}`}
-            className="grid gap-3 py-3 transition first:pt-0 last:pb-0 hover:bg-blue-50/40 sm:grid-cols-[1fr_auto]"
+            className="grid gap-3 rounded-xl px-2 py-3 transition first:pt-0 last:pb-0 hover:bg-blue-50/50 sm:grid-cols-[1fr_auto]"
           >
             <div>
               <p className="font-semibold text-slate-950">{request.buyer}</p>
@@ -69,9 +70,12 @@ export function BuyerRequestsCard({
             </div>
           </Link>
         )) : (
-          <p className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-500">
-            {labels.noBuyerRequests}
-          </p>
+          <div className="premium-empty-state flex gap-3 rounded-xl border border-slate-200 px-4 py-3 text-sm font-medium text-slate-500">
+            <span className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-teal-50 text-teal-700">
+              <Building2 aria-hidden="true" className="size-4" />
+            </span>
+            <span>{labels.noBuyerRequests}</span>
+          </div>
         )}
       </div>
     </SectionCard>

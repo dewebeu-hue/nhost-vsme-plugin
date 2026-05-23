@@ -39,7 +39,7 @@ export function RecentUploadsCard({
     >
       <div className={compact ? "flex flex-col gap-2.5" : "flex flex-col gap-3"}>
         {uploads.length ? uploads.slice(0, compact ? 3 : uploads.length).map((upload) => (
-          <div key={upload.name} className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white p-3">
+          <div key={upload.name} className="premium-surface-interactive flex items-center gap-3 rounded-xl border border-slate-200 bg-white p-3">
             <div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-700">
               <FileText aria-hidden="true" className="size-4" />
             </div>
@@ -54,9 +54,12 @@ export function RecentUploadsCard({
             </DashboardStatusPill>
           </div>
         )) : (
-          <p className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-500">
-            {labels.noRecentUploads}
-          </p>
+          <div className="premium-empty-state flex gap-3 rounded-xl border border-slate-200 px-4 py-3 text-sm font-medium text-slate-500">
+            <span className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-700">
+              <FileText aria-hidden="true" className="size-4" />
+            </span>
+            <span>{labels.noRecentUploads}</span>
+          </div>
         )}
       </div>
     </SectionCard>

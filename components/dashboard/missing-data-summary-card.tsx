@@ -43,7 +43,7 @@ export function MissingDataSummaryCard({
             <Link
               key={item.area}
               href={`${localePrefix}/dashboard/questionnaire?section=${encodeURIComponent(item.code)}`}
-              className="group flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white px-3 py-2.5 transition-colors hover:border-blue-200 hover:bg-blue-50/50"
+              className="premium-surface-interactive group flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white px-3 py-2.5 hover:border-blue-200 hover:bg-blue-50/50"
             >
               <span className="min-w-0">
                 <span className="block truncate text-sm font-semibold text-slate-950">
@@ -59,7 +59,7 @@ export function MissingDataSummaryCard({
               </span>
             </Link>
           )) : (
-            <p className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-500">
+            <p className="premium-empty-state rounded-xl border border-slate-200 px-4 py-3 text-sm font-medium text-slate-500">
               {labels.setupChecklist.neutralFallback}
             </p>
           )}

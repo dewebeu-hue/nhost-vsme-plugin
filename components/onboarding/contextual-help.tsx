@@ -29,7 +29,7 @@ export function ContextualHelpCard({
   return (
     <section
       className={cn(
-        "rounded-2xl border border-blue-100 bg-blue-50/80 p-5 text-blue-950 shadow-sm shadow-blue-950/5",
+        "rounded-2xl border border-blue-100 bg-gradient-to-br from-blue-50/90 to-teal-50/50 p-5 text-blue-950 shadow-sm shadow-blue-950/5",
         className,
       )}
     >

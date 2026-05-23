@@ -26,8 +26,8 @@ export function FeatureCards() {
 
             return (
               <ScrollReveal key={feature.title} delay={index * 90}>
-                <article className="supplier-surface h-full rounded-2xl border-0 p-6 transition-transform duration-200 hover:-translate-y-1">
-                  <div className="mb-8 flex size-12 items-center justify-center rounded-xl bg-blue-50 text-blue-700">
+                <article className="premium-surface-interactive supplier-surface h-full rounded-2xl border-0 p-6">
+                  <div className="mb-8 flex size-12 items-center justify-center rounded-xl bg-gradient-to-br from-blue-50 to-teal-50 text-blue-700 shadow-sm">
                     <Icon aria-hidden="true" className="size-6" />
                   </div>
                   <h3 className="text-xl font-semibold tracking-tight text-slate-950">

@@ -50,6 +50,7 @@ export function DashboardOverviewPage({
     })) ?? [],
   };
   const tasks = createDashboardTasks(summary, labels);
+  const nextTask = tasks.find((task) => !task.completed) ?? tasks.at(-1);
   const readinessData = summary
     ? [{ day: labels.lastUpdated, readiness: summary.readinessPercent }]
     : [];
@@ -112,6 +113,35 @@ export function DashboardOverviewPage({
         title={labels.title.replace("{name}", welcomeName)}
         subtitle={labels.subtitle}
       />
+
+      <section className="supplier-surface overflow-hidden rounded-3xl border-0 p-5 sm:p-6">
+        <div className="grid gap-4 lg:grid-cols-[1.05fr_0.95fr]">
+          <div className="rounded-2xl border border-blue-100 bg-gradient-to-br from-blue-50/90 to-white p-5">
+            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-blue-700">
+              {labels.overallReadiness}
+            </p>
+            <div className="mt-3 flex flex-wrap items-end gap-3">
+              <p className="text-5xl font-semibold tracking-tight text-slate-950">
+                {summary?.readinessPercent ?? 0}%
+              </p>
+              <p className="pb-2 text-sm font-semibold text-slate-600">
+                {getReadinessLabel(summary?.readinessPercent ?? 0, labels)}
+              </p>
+            </div>
+          </div>
+          <div className="rounded-2xl border border-teal-100 bg-gradient-to-br from-teal-50/90 to-white p-5">
+            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-teal-700">
+              {labels.setupChecklist.nextRecommendedStep}
+            </p>
+            <p className="mt-3 text-lg font-semibold tracking-tight text-slate-950">
+              {nextTask?.title ?? labels.setupChecklist.neutralFallback}
+            </p>
+            <p className="mt-1 text-sm font-medium text-slate-600">
+              {labels.readinessHelper}
+            </p>
+          </div>
+        </div>
+      </section>
 
       <section className="grid items-start gap-6 lg:grid-cols-2 xl:grid-cols-[minmax(0,1.15fr)_minmax(0,0.95fr)_minmax(280px,0.75fr)]">
         <div data-tour="dashboard-readiness">
