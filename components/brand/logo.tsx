@@ -5,7 +5,7 @@ type LogoProps = {
   ariaLabel?: string;
   className?: string;
   markClassName?: string;
-  size?: "sm" | "md" | "lg" | "sidebar";
+  size?: "sm" | "md" | "lg" | "sidebar" | "landing";
   theme?: "auto" | "light" | "dark";
   variant?: "full" | "icon";
 };
@@ -34,6 +34,7 @@ const markSizeClasses = {
   md: "size-10 rounded-xl",
   lg: "size-12 rounded-2xl",
   sidebar: "size-11 rounded-[14px]",
+  landing: "size-11 rounded-[14px] md:size-12 md:rounded-2xl",
 } as const;
 
 const logoThemeClasses = {
@@ -75,18 +76,25 @@ export function Logo({
     );
   }
 
-  if (size === "sidebar") {
+  if (size === "sidebar" || size === "landing") {
+    const isLanding = size === "landing";
+    const isDark = theme === "dark";
+
     return (
       <span
         className={cn(
-          "brand-logo brand-logo-sidebar inline-flex min-w-0 shrink-0 items-center gap-3",
+          "brand-logo inline-flex min-w-0 shrink-0 items-center",
+          isLanding
+            ? "brand-logo-landing gap-3"
+            : "brand-logo-sidebar gap-3",
           logoThemeClasses[theme],
           className,
         )}
       >
         <span
           className={cn(
-            "brand-logo-mark relative inline-flex size-11 shrink-0 overflow-hidden rounded-[14px] bg-white shadow-md ring-1 ring-slate-200",
+            "brand-logo-mark relative inline-flex shrink-0 overflow-hidden bg-white shadow-md ring-1 ring-slate-200",
+            isLanding ? "size-11 rounded-[14px] md:size-12 md:rounded-2xl" : "size-11 rounded-[14px]",
             markClassName,
           )}
         >
@@ -94,16 +102,32 @@ export function Logo({
             src="/brand/supplier-passport-mark.svg"
             alt=""
             fill
-            sizes="44px"
+            sizes={isLanding ? "(min-width: 768px) 48px, 44px" : "44px"}
             className="object-contain"
             priority
           />
         </span>
         <span className="min-w-0">
-          <span className="brand-logo-sidebar-title block truncate text-[16px] font-bold leading-5 text-slate-950">
+          <span
+            className={cn(
+              "block truncate font-bold text-slate-950",
+              isLanding
+                ? "brand-logo-landing-title text-[15px] leading-5 md:text-[17px] md:leading-[22px]"
+                : "brand-logo-sidebar-title text-[16px] leading-5",
+              isDark && "text-white",
+            )}
+          >
             Supplier Passport
           </span>
-          <span className="brand-logo-sidebar-subtitle mt-0.5 block truncate text-[11px] font-semibold uppercase leading-[14px] tracking-[0.18em] text-slate-500">
+          <span
+            className={cn(
+              "mt-0.5 block truncate font-semibold uppercase text-slate-500",
+              isLanding
+                ? "brand-logo-landing-subtitle text-[10px] leading-[13px] tracking-[0.18em] md:text-[11px] md:leading-[14px]"
+                : "brand-logo-sidebar-subtitle text-[11px] leading-[14px] tracking-[0.18em]",
+              isDark && "text-slate-300",
+            )}
+          >
             VSME READY
           </span>
         </span>

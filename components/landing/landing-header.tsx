@@ -22,7 +22,7 @@ export function LandingHeader() {
     <header className="sticky top-0 z-30 border-b border-slate-200/70 bg-white/85 backdrop-blur-xl">
       <div className="mx-auto flex h-20 w-full max-w-7xl items-center justify-between gap-6 px-6 lg:px-8">
         <Link href={`/${locale}`} aria-label="Supplier Passport home" className="shrink-0">
-          <Logo size="lg" className="max-sm:h-11 max-sm:w-[184px]" />
+          <Logo size="landing" />
         </Link>
 
         <nav className="hidden items-center gap-8 lg:flex">
