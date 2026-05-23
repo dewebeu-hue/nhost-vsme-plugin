@@ -110,6 +110,61 @@ Responsive and animation QA:
 6. Open `/hr/request-demo` and `/en/request-demo`; confirm demo copy does not suggest backend email sending unless the CTA intentionally opens the user's email client.
 7. Open `/hr/dashboard`, `/hr/admin`, `/hr/passport/[token]`, and `/hr/buyer`; confirm logo usage is consistent and no private URLs, storage ids, share tokens, admin data, or user/member data are exposed on public routes.
 
+## Faza 4.4.2 Final Pre-Pilot Cleanup QA
+
+Use this as the final close-out checklist before moving to pilot launch operations.
+
+Support workflow:
+
+- Supplier dashboard and questionnaire help cards should open the localized support request form.
+- Supplier support requests should create internal `support_requests` rows only for the authenticated user's current organization.
+- Admin bell badge should count open support requests. Clicking the bell should show recent open requests and link to `/[locale]/admin/support-requests?requestId=<id>`.
+- Admins can update status, priority, and internal admin notes. Supplier/public/buyer routes must not show admin support notes.
+
+Sharing:
+
+- Supplier navigation has one canonical sharing route: `/[locale]/dashboard/share`.
+- `/[locale]/dashboard/share-links` redirects to `/[locale]/dashboard/share`; legacy `/dashboard/share-links` redirects safely as well.
+- Public link create, copy, deactivate/regenerate, protected-link verification, and public Passport token routes should remain functional.
+
+Dashboard and questionnaire:
+
+- Dashboard readiness, questionnaire completion, and Passport readiness should use the same live completion data.
+- Dashboard missing data should be real and actionable, not a false zero or stale placeholder.
+- Questionnaire `?section=company_basics` should open Company Basics / Osnovni podaci; without a section parameter it should open the first incomplete section or a safe first section fallback.
+- Text, number, date, select, localized selected labels, help tooltips, evidence attach/link, Save, and Save & Continue should survive refresh without data loss.
+
+Public Passport and buyer routes:
+
+- Croatian public Passport must not show English fragments such as `Read-only`, `No expiry`, `permissioned`, `shared passport`, or literal placeholders like `{date}`.
+- Request-additional-information copy should be localized and contain only buyer-safe public-link text.
+- Public Passport, Buyer Portal, buyer supplier token, buyer compare, and public PDF routes must not expose private document URLs, storage IDs, raw sensitive answers, admin notes, support notes, commercial notes, user/member data, or secrets.
+
+Landing, auth, mobile, and admin:
+
+- Landing and plans pages should keep the visible Supplier Passport brand, subtle card/section animations, clear localized CTAs, and no billing/checkout/certification overclaims.
+- Forgot-password and reset-password routes should use safe non-enumerating copy and should not log reset tickets, passwords, JWTs, cookies, or raw auth payloads.
+- 375px, 430px, 768px, and desktop layouts should have reachable navigation, usable forms, fitting modals, readable public Passport pages, and usable admin pages.
+- Admin dark mode should keep `#002B36` background, readable controls, readable form fields, and a readable logo.
+
+Final manual production QA:
+
+1. Deploy the latest build.
+2. Log in as a supplier, submit `Kontaktiraj podršku`, then log in as admin and open the request from the bell dropdown.
+3. Mark the support request in progress/resolved and confirm supplier/public routes do not show admin notes.
+4. Open `/hr/dashboard/share`, create/copy/deactivate/regenerate a public link, and confirm `/hr/dashboard/share-links` redirects.
+5. Compare `/hr/dashboard`, `/hr/dashboard/questionnaire`, and `/hr/dashboard/passport` readiness values.
+6. Open `/hr/dashboard/questionnaire?section=company_basics`, save text/date/select answers, refresh, and confirm selected labels/help tooltips remain Croatian.
+7. Open a valid `/hr/passport/[token]`, click `Zatraži dodatne informacije`, copy the message, and inspect it for only buyer-safe text.
+8. Open `/hr`, `/hr/plans`, `/hr/request-demo`, `/en`, `/en/plans`, and `/en/request-demo`; confirm CTAs work and no billing/certification overclaims appear.
+9. Test 375px and 768px widths across landing, dashboard, questionnaire, public Passport, buyer compare, and admin support requests.
+10. Test `/hr/login`, `/hr/forgot-password`, and `/hr/reset-password`; confirm safe copy and no reset-token/password logging.
+11. Inspect Network, page source, browser storage, and Vercel logs for no private URLs, storage IDs, raw sensitive answers, admin/internal/support/commercial notes, JWTs, cookies, share tokens, or secrets.
+
+Phase close:
+
+- Faza 4.4.2 is ready to close when lint/build pass and production QA confirms support, share, dashboard, questionnaire, public Passport, landing/plans, auth, mobile/tablet, admin dark mode, localization, and privacy/security checks above.
+
 ## Login Fails
 
 Likely causes:
