@@ -11,7 +11,6 @@ import {
 import {
   GET_PUBLIC_SHARE_DOCUMENTS,
   GET_PUBLIC_SHARE_DOCUMENT_LINKS,
-  GET_PUBLIC_SHARE_DOCUMENT_ACCESS,
   GET_PUBLIC_SHARE_ORGANIZATION,
   GET_PUBLIC_SHARE_PASSPORT,
   GET_PUBLIC_SHARE_QUESTIONNAIRE,
@@ -43,7 +42,7 @@ export type ShareLinkRecord = {
   password_hash: string | null;
   expires_at: string | null;
   is_active: boolean;
-  document_visibility: "approved_only" | "all_linked_documents";
+  document_visibility: "summary_only" | "approved_only" | "all_linked_documents" | "all_metadata";
   created_by: string | null;
   created_at: string;
 };
@@ -56,7 +55,7 @@ export type CreateShareLinkInput = {
   buyerEmail?: string;
   expiresAt?: string;
   password?: string;
-  documentVisibility: "approved_only" | "all_linked_documents";
+  documentVisibility: "summary_only" | "approved_only" | "all_linked_documents" | "all_metadata";
   locale?: string;
 };
 
@@ -142,10 +141,6 @@ type PublicDocumentAccessRecord = PublicDocumentRecord & {
   document_links: Array<{ id: string; question_answer_id: string }>;
 };
 
-type PublicDocumentAccessResponse = {
-  documents_by_pk: PublicDocumentAccessRecord | null;
-};
-
 type PublicDocumentSummaryRecord = Pick<
   PublicDocumentRecord,
   "document_type" | "status" | "expires_at"
@@ -228,6 +223,7 @@ export async function getPublicShareByToken(
     return { state: "password" as const, source: "live" as const };
   }
 
+  const documentStatuses = getPublicDocumentStatuses(shareLink.document_visibility);
   const [organizationData, passportData, documentsData, questionnaireData] = await Promise.all([
     executeHasuraGraphql<PublicOrganizationResponse>(
       GET_PUBLIC_SHARE_ORGANIZATION,
@@ -243,10 +239,7 @@ export async function getPublicShareByToken(
       GET_PUBLIC_SHARE_DOCUMENTS,
       {
         organizationId: shareLink.organization_id,
-        statuses:
-          shareLink.document_visibility === "all_linked_documents"
-            ? ["reviewed", "linked"]
-            : ["reviewed"],
+        statuses: documentStatuses,
       },
       { useAdminSecret: true },
     ),
@@ -431,29 +424,9 @@ export async function canAccessSharedDocument(input: {
     return { ok: false, reason: "password_required" };
   }
 
-  const data = await executeHasuraGraphql<PublicDocumentAccessResponse>(
-    GET_PUBLIC_SHARE_DOCUMENT_ACCESS,
-    {
-      documentId: input.documentId,
-      organizationId: shareLink.organization_id,
-    },
-    { useAdminSecret: true },
-  );
-  const document = data.documents_by_pk;
-
-  if (!document || document.organization_id !== shareLink.organization_id) {
-    return { ok: false, reason: "not_found" };
-  }
-
-  if (!document.file_id) {
-    return { ok: false, reason: "missing_file" };
-  }
-
-  if (!isDocumentBuyerVisible(shareLink, document)) {
-    return { ok: false, reason: "not_allowed" };
-  }
-
-  return { ok: true, shareLink, document };
+  // Buyer-facing share links expose a safe Evidence Index only. Evidence file
+  // downloads stay disabled until a separate document-release workflow exists.
+  return { ok: false, reason: "not_allowed" };
 }
 
 export async function getSharedDocumentFile(document: PublicDocumentAccessRecord) {
@@ -593,7 +566,16 @@ function mapPublicShare(
             ? "Evidence available"
             : "Evidence recommended",
     })),
-    documents: [],
+    documentVisibility: shareLink.document_visibility,
+    documents: documents.map((document) => ({
+      id: document.id,
+      name: document.file_name,
+      category: document.document_type,
+      fileType: "PDF" as const,
+      uploaded: formatDate(document.created_at),
+      status: document.status,
+      expiresAt: document.expires_at ? formatDate(document.expires_at) : null,
+    })),
     details: [
       { label: "Shared on", value: formatDate(shareLink.created_at) },
       { label: "Shared with", value: shareLink.buyer_name || "Buyer" },
@@ -693,6 +675,22 @@ function isPublicEvidenceAvailable(status: string) {
   return ["reviewed", "linked", "uploaded", "needs_review", "expiring_soon"].includes(status);
 }
 
+function getPublicDocumentStatuses(visibility: ShareLinkRecord["document_visibility"]) {
+  if (visibility === "summary_only") {
+    return [];
+  }
+
+  if (visibility === "approved_only") {
+    return ["reviewed"];
+  }
+
+  if (visibility === "all_metadata") {
+    return ["uploaded", "linked", "reviewed", "needs_review", "expiring_soon"];
+  }
+
+  return ["reviewed", "linked"];
+}
+
 function calculatePublicReadinessScore(
   questions: PassportSummaryQuestion[],
   answers: PublicQuestionnaireAnswer[],
@@ -781,24 +779,6 @@ function getDaysUntilDate(value: string) {
   startOfTarget.setHours(0, 0, 0, 0);
 
   return Math.ceil((startOfTarget.getTime() - startOfToday.getTime()) / 86_400_000);
-}
-
-function isDocumentBuyerVisible(
-  shareLink: ShareLinkRecord,
-  document: Pick<PublicDocumentRecord, "status" | "expires_at" | "document_links">,
-) {
-  if (document.expires_at && new Date(document.expires_at).getTime() <= Date.now()) {
-    return false;
-  }
-
-  if (shareLink.document_visibility === "approved_only") {
-    return document.status === "reviewed";
-  }
-
-  return (
-    (document.status === "linked" || document.status === "reviewed") &&
-    (document.document_links?.length ?? 0) > 0
-  );
 }
 
 function createShareToken() {

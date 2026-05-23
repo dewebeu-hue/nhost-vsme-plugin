@@ -4399,3 +4399,34 @@ Manual QA:
 6. Replace the logo and confirm all surfaces update after refresh.
 7. Try an SVG or oversized file and confirm a safe validation error.
 8. Inspect public network payloads and PDF text for no `storage_file_id`, `file_url`, `privateUrl`, signed URLs, evidence document URLs, admin notes, support notes, or secrets.
+
+## Buyer-Specific Share Link Access Rules
+
+Supplier Passport share links enforce the settings collected in the share modal. Apply migration `nhost/migrations/default/0011_expand_share_link_document_visibility` before using the expanded visibility choices in production and confirm the `share_links.document_visibility` check constraint accepts `summary_only`, `approved_only`, `all_linked_documents`, and `all_metadata`.
+
+Access model:
+
+- Password protection stores only a PBKDF2 password hash in `share_links.password_hash`. The plaintext password is never returned to the client.
+- Password-protected `/[locale]/passport/[token]`, `/[locale]/share/[token]`, and `/[locale]/buyer/suppliers/[token]` links show a localized password gate before any Passport data is loaded.
+- Successful verification sets a short-lived httpOnly verification cookie scoped by a hashed token name. Passwords and share tokens must not be logged.
+- Expired or inactive links are rejected by the public loaders and show safe unavailable/expired states.
+- Buyer name/email can be stored for supplier/admin context. Public pages may show buyer name, but should not expose buyer email.
+
+Document visibility:
+
+- `summary_only`: public pages show only the buyer-safe Passport summary and evidence counts.
+- `approved_only`: public pages show a safe Evidence Index for reviewed documents.
+- `all_metadata`: public pages show broader safe document metadata.
+- Evidence Index rows may include document name, type/category, expiry date, upload date, and "Available on request"; they must not include download URLs, storage IDs, signed URLs, raw document contents, or private paths.
+- Evidence document downloads are intentionally not enabled by this step.
+
+Manual QA:
+
+1. Create a share link without a password and confirm the public Passport opens normally.
+2. Create a share link with password protection, open the public link in a fresh browser, and confirm the password gate appears.
+3. Enter an incorrect password and confirm the safe localized error.
+4. Enter the correct password and confirm the Passport opens.
+5. Create or force an expired/inactive link and confirm the public route blocks it.
+6. Set document visibility to `approved_only` and confirm the Evidence Index appears without download links.
+7. Set document visibility to `summary_only` and confirm the Evidence Index is hidden.
+8. Inspect Network responses for no `password_hash`, `storage_file_id`, `file_url`, `privateUrl`, `signedUrl`, evidence download URL, share token logs, or secrets.

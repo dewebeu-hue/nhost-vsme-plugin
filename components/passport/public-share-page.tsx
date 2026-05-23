@@ -361,6 +361,10 @@ export function PublicSharePage({ locale, passport, token }: PublicSharePageProp
             </div>
           </article>
         </section>
+
+        {passport.documents.length ? (
+          <EvidenceIndex documents={passport.documents} />
+        ) : null}
       </main>
 
       <footer className="border-t border-slate-200 bg-white">
@@ -381,6 +385,52 @@ export function PublicSharePage({ locale, passport, token }: PublicSharePageProp
         onOpenChange={setIsRequestOpen}
       />
     </div>
+  );
+}
+
+function EvidenceIndex({
+  documents,
+}: {
+  documents: typeof publicSharePassport.documents;
+}) {
+  const t = useTranslations("share");
+
+  return (
+    <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm shadow-slate-200/70">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <h2 className="text-2xl font-semibold tracking-tight text-slate-950">
+            {t("evidenceIndex")}
+          </h2>
+          <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
+            {t("evidenceIndexDescription")}
+          </p>
+        </div>
+        <Badge variant="outline" className="w-fit rounded-full border-blue-100 bg-blue-50 px-3 py-1 text-blue-700">
+          {t("privateFilesNotDownloadable")}
+        </Badge>
+      </div>
+      <div className="mt-5 grid gap-3">
+        {documents.map((document) => (
+          <article
+            key={document.id}
+            className="grid gap-3 rounded-2xl border border-slate-200 bg-slate-50/70 p-4 md:grid-cols-[minmax(0,1.4fr)_minmax(0,0.8fr)_minmax(0,0.8fr)_auto] md:items-center"
+          >
+            <div className="min-w-0">
+              <p className="truncate text-sm font-semibold text-slate-950">{document.name}</p>
+              <p className="mt-1 text-xs font-medium text-slate-500">{document.uploaded}</p>
+            </div>
+            <p className="text-sm font-medium text-slate-700">{translateDocumentCategory(document.category, t)}</p>
+            <p className="text-sm font-medium text-slate-500">
+              {document.expiresAt ? `${t("expiryDate")}: ${document.expiresAt}` : t("notProvided")}
+            </p>
+            <Badge className="w-fit rounded-full border-emerald-100 bg-emerald-50 px-3 py-1 text-emerald-700">
+              {t("availableOnRequest")}
+            </Badge>
+          </article>
+        ))}
+      </div>
+    </section>
   );
 }
 
@@ -620,6 +670,22 @@ function translateShareMetricLabel(label: string, t: ReturnType<typeof useTransl
   };
 
   return map[label] ?? label;
+}
+
+function translateDocumentCategory(category: string, t: ReturnType<typeof useTranslations<"share">>) {
+  const map: Record<string, string> = {
+    certificate: t("certifications"),
+    utility_bill: t("energy"),
+    policy: t("environmentalPolicies"),
+    waste_report: t("waste"),
+    safety: t("healthSafety"),
+    customer_questionnaire: t("supplierInformation"),
+    report: t("evidenceSummary"),
+    training: t("employees"),
+    other: t("evidenceSummary"),
+  };
+
+  return map[category] ?? category.replace(/_/g, " ");
 }
 
 function translateSectionStatus(

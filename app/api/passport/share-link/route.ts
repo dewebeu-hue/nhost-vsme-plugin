@@ -1,4 +1,4 @@
-import { randomBytes } from "node:crypto";
+import { pbkdf2Sync, randomBytes } from "node:crypto";
 import { NextResponse } from "next/server";
 import { getNhostAuthUrl, getNhostGraphqlUrl } from "@/lib/nhost/config";
 import { calculatePassportReadinessScore } from "@/lib/passport-summary";
@@ -35,8 +35,12 @@ type ShareLink = {
   passport_id: string;
   organization_id: string;
   token: string;
+  buyer_name: string | null;
+  buyer_email: string | null;
+  password_hash: string | null;
   is_active: boolean;
   expires_at: string | null;
+  document_visibility: DocumentVisibility;
   created_at: string;
 };
 
@@ -56,6 +60,18 @@ type OrganizationResolution =
 type AdminGraphqlResult<T> =
   | { ok: true; data: T }
   | { ok: false; safeGraphqlMessage: string };
+
+type DocumentVisibility = "summary_only" | "approved_only" | "all_linked_documents" | "all_metadata";
+
+type ShareLinkRequestOptions = {
+  action: "create" | "deactivate" | "regenerate";
+  buyerName: string | null;
+  buyerEmail: string | null;
+  expiresAt: string | null;
+  password: string;
+  passwordProtected: boolean;
+  documentVisibility: DocumentVisibility;
+};
 
 const writableRoles = new Set(["owner", "editor", "admin"]);
 
@@ -118,8 +134,12 @@ const getActiveShareLinkQuery = `
       passport_id
       organization_id
       token
+      buyer_name
+      buyer_email
+      password_hash
       is_active
       expires_at
+      document_visibility
       created_at
     }
   }
@@ -166,8 +186,12 @@ const insertShareLinkMutation = `
       passport_id
       organization_id
       token
+      buyer_name
+      buyer_email
+      password_hash
       is_active
       expires_at
+      document_visibility
       created_at
     }
   }
@@ -200,10 +224,11 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  return handleShareLinkRequest(request, await readShareLinkAction(request));
+  return handleShareLinkRequest(request, await readShareLinkOptions(request));
 }
 
-async function handleShareLinkRequest(request: Request, action: "load" | "create" | "deactivate" | "regenerate") {
+async function handleShareLinkRequest(request: Request, input: "load" | ShareLinkRequestOptions) {
+  const action = input === "load" ? "load" : input.action;
   const organizationResult = await resolveOrganizationForRequest(request);
 
   if (!organizationResult.ok) {
@@ -242,6 +267,10 @@ async function handleShareLinkRequest(request: Request, action: "load" | "create
       return shareLinkError("permission_denied", "membership_lookup", 403);
     }
 
+    if (input !== "load" && input.passwordProtected && !input.password) {
+      return shareLinkError("password_missing", "validation", 400);
+    }
+
     const deactivateResult = await deactivateActiveShareLinks(organizationResult.organization.id);
 
     if (!deactivateResult.ok) {
@@ -261,6 +290,7 @@ async function handleShareLinkRequest(request: Request, action: "load" | "create
       organizationId: organizationResult.organization.id,
       passportId: passportResult.passport.id,
       userId: organizationResult.userId,
+      options: input === "load" ? defaultShareLinkOptions("regenerate") : input,
     });
 
     if (!createdLinkResult.ok) {
@@ -272,7 +302,7 @@ async function handleShareLinkRequest(request: Request, action: "load" | "create
     return shareLinkResponse(request, createdLinkResult.data.insert_share_links_one, organizationResult.organization);
   }
 
-  if (existingLink) {
+  if (existingLink && action === "load") {
     return shareLinkResponse(request, existingLinkResult.data.share_links[0], organizationResult.organization);
   }
 
@@ -290,6 +320,18 @@ async function handleShareLinkRequest(request: Request, action: "load" | "create
     return shareLinkError("permission_denied", "membership_lookup", 403);
   }
 
+  if (existingLink) {
+    const deactivateResult = await deactivateActiveShareLinks(organizationResult.organization.id);
+
+    if (!deactivateResult.ok) {
+      return shareLinkError("share_link_deactivate_graphql_error", "share_link_deactivate", 502, deactivateResult.safeGraphqlMessage);
+    }
+  }
+
+  if (input !== "load" && input.passwordProtected && !input.password) {
+    return shareLinkError("password_missing", "validation", 400);
+  }
+
   const passportResult = await getOrCreatePassport({
     organizationId: organizationResult.organization.id,
     userId: organizationResult.userId,
@@ -303,6 +345,7 @@ async function handleShareLinkRequest(request: Request, action: "load" | "create
     organizationId: organizationResult.organization.id,
     passportId: passportResult.passport.id,
     userId: organizationResult.userId,
+    options: input === "load" ? defaultShareLinkOptions("create") : input,
   });
 
   if (!createdLinkResult.ok) {
@@ -314,24 +357,31 @@ async function handleShareLinkRequest(request: Request, action: "load" | "create
   return shareLinkResponse(request, createdLinkResult.data.insert_share_links_one, organizationResult.organization);
 }
 
-async function readShareLinkAction(request: Request): Promise<"create" | "deactivate" | "regenerate"> {
+async function readShareLinkOptions(request: Request): Promise<ShareLinkRequestOptions> {
   const contentType = request.headers.get("content-type") ?? "";
 
   if (!contentType.includes("application/json")) {
-    return "create";
+    return defaultShareLinkOptions("create");
   }
 
   try {
-    const payload = (await request.json()) as { action?: unknown };
+    const payload = (await request.json()) as Record<string, unknown>;
+    const action = payload.action === "deactivate" || payload.action === "regenerate"
+      ? payload.action
+      : "create";
 
-    if (payload.action === "deactivate" || payload.action === "regenerate") {
-      return payload.action;
-    }
+    return {
+      action,
+      buyerName: readOptionalText(payload.buyerName, 160),
+      buyerEmail: readOptionalText(payload.buyerEmail, 254),
+      expiresAt: readExpiryDate(payload.expiresAt),
+      password: readOptionalText(payload.password, 256) ?? "",
+      passwordProtected: payload.passwordProtected === true || Boolean(readOptionalText(payload.password, 256)),
+      documentVisibility: readDocumentVisibility(payload.documentVisibility),
+    };
   } catch {
-    return "create";
+    return defaultShareLinkOptions("create");
   }
-
-  return "create";
 }
 
 async function resolveOrganizationForRequest(request: Request): Promise<OrganizationResolution> {
@@ -541,7 +591,12 @@ async function calculateReadinessScore(organizationId: string) {
   );
 }
 
-async function createShareLink(input: { organizationId: string; passportId: string; userId: string }) {
+async function createShareLink(input: {
+  organizationId: string;
+  passportId: string;
+  userId: string;
+  options: ShareLinkRequestOptions;
+}) {
   return executeAdminGraphql<{ insert_share_links_one: ShareLink }>({
     operationName: "InsertPassportShareLink",
     query: insertShareLinkMutation,
@@ -550,7 +605,13 @@ async function createShareLink(input: { organizationId: string; passportId: stri
         passport_id: input.passportId,
         organization_id: input.organizationId,
         token: createShareToken(),
-        document_visibility: "approved_only",
+        buyer_name: input.options.buyerName,
+        buyer_email: input.options.buyerEmail,
+        password_hash: input.options.passwordProtected && input.options.password
+          ? hashPassword(input.options.password)
+          : null,
+        expires_at: input.options.expiresAt,
+        document_visibility: input.options.documentVisibility,
         created_by: input.userId,
       },
     },
@@ -634,7 +695,21 @@ function shareLinkResponse(request: Request, shareLink: ShareLink | null, organi
   return NextResponse.json({
     configured: true,
     organization,
-    shareLink,
+    shareLink: shareLink
+      ? {
+        id: shareLink.id,
+        passport_id: shareLink.passport_id,
+        organization_id: shareLink.organization_id,
+        token: shareLink.token,
+        buyer_name: shareLink.buyer_name,
+        buyer_email: shareLink.buyer_email,
+        passwordProtected: Boolean(shareLink.password_hash),
+        expires_at: shareLink.expires_at,
+        is_active: shareLink.is_active,
+        document_visibility: shareLink.document_visibility,
+        created_at: shareLink.created_at,
+      }
+      : null,
     publicPath,
     publicUrl: publicPath ? new URL(publicPath, request.url).toString() : null,
   });
@@ -662,6 +737,61 @@ function createPublicPath(request: Request, token: string) {
 
 function createShareToken() {
   return randomBytes(18).toString("base64url");
+}
+
+function defaultShareLinkOptions(action: ShareLinkRequestOptions["action"]): ShareLinkRequestOptions {
+  return {
+    action,
+    buyerName: null,
+    buyerEmail: null,
+    expiresAt: null,
+    password: "",
+    passwordProtected: false,
+    documentVisibility: "approved_only",
+  };
+}
+
+function readOptionalText(value: unknown, maxLength: number) {
+  if (typeof value !== "string") {
+    return null;
+  }
+
+  const trimmed = value.trim();
+
+  return trimmed ? trimmed.slice(0, maxLength) : null;
+}
+
+function readExpiryDate(value: unknown) {
+  const raw = readOptionalText(value, 32);
+
+  if (!raw) {
+    return null;
+  }
+
+  const parsed = new Date(`${raw}T23:59:59.999Z`);
+
+  return Number.isNaN(parsed.getTime()) ? null : parsed.toISOString();
+}
+
+function readDocumentVisibility(value: unknown): DocumentVisibility {
+  if (
+    value === "summary_only" ||
+    value === "approved_only" ||
+    value === "all_linked_documents" ||
+    value === "all_metadata"
+  ) {
+    return value;
+  }
+
+  return "approved_only";
+}
+
+function hashPassword(password: string) {
+  const salt = randomBytes(16).toString("hex");
+  const iterations = 100000;
+  const hash = pbkdf2Sync(password, salt, iterations, 32, "sha256").toString("hex");
+
+  return `pbkdf2_sha256$${iterations}$${salt}$${hash}`;
 }
 
 function isTokenExpired(token: string) {

@@ -1330,6 +1330,8 @@ export type PublicShareDocument = {
   category: string;
   fileType: "PDF";
   uploaded: string;
+  status?: string;
+  expiresAt?: string | null;
   accessUrl?: string;
   downloadUrl?: string;
 };
@@ -1344,6 +1346,7 @@ export type PublicSharePassport = {
   company: PassportCompanyProfile;
   readinessScore: number;
   certificateStatus?: "none" | "available" | "expires_soon" | "expired";
+  documentVisibility?: "summary_only" | "approved_only" | "all_linked_documents" | "all_metadata";
   lastUpdated: string;
   sharedWith: string;
   sharedOn: string;

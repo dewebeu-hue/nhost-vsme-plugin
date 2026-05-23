@@ -324,14 +324,21 @@ export function PassportPageClient({
     setMessage(null);
 
     try {
-      void values;
       const response = await fetch(`/api/passport/share-link?locale=${encodeURIComponent(locale)}`, {
         method: "POST",
         headers: {
           "content-type": "application/json",
           authorization: `Bearer ${session.accessToken}`,
         },
-        body: JSON.stringify({ action: "create" }),
+        body: JSON.stringify({
+          action: "create",
+          buyerName: values.buyerName,
+          buyerEmail: values.buyerEmail,
+          expiresAt: values.expiresAt,
+          password: values.password,
+          passwordProtected: values.passwordProtected,
+          documentVisibility: values.documentVisibility,
+        }),
       });
       const payload = (await response.json()) as ShareLinkPayload;
       const publicUrl = payload.publicUrl ?? payload.shareUrl ?? "";
@@ -604,7 +611,8 @@ type ShareLinkFormValues = {
   buyerEmail: string;
   expiresAt: string;
   password: string;
-  documentVisibility: "approved_only" | "all_linked_documents";
+  passwordProtected: boolean;
+  documentVisibility: "summary_only" | "approved_only" | "all_metadata";
 };
 
 function CreateShareLinkDialog({
@@ -638,6 +646,7 @@ function CreateShareLinkDialog({
       buyerEmail,
       expiresAt,
       password: passwordProtected ? password : "",
+      passwordProtected,
       documentVisibility,
     });
   }
@@ -681,17 +690,22 @@ function CreateShareLinkDialog({
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
+                  <SelectItem value="summary_only">{labels.summaryOnly}</SelectItem>
                   <SelectItem value="approved_only">{labels.approvedOnly}</SelectItem>
-                  <SelectItem value="all_linked_documents">{labels.allLinkedDocuments}</SelectItem>
+                  <SelectItem value="all_metadata">{labels.allDocumentMetadata}</SelectItem>
                 </SelectContent>
               </Select>
+              <p className="text-xs leading-5 text-slate-500">{labels.documentVisibilityHelp}</p>
             </div>
             <label className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700">
               <Checkbox checked={passwordProtected} onCheckedChange={(checked) => setPasswordProtected(checked === true)} />
               {labels.passwordProtected}
             </label>
             {passwordProtected ? (
-              <InputWithLabel label={labels.password} type="password" value={password} onChange={setPassword} />
+              <div className="grid gap-2">
+                <InputWithLabel label={labels.password} type="password" value={password} onChange={setPassword} required />
+                <p className="text-xs leading-5 text-slate-500">{labels.passwordHelp}</p>
+              </div>
             ) : null}
             {shareUrl ? (
               <div className="rounded-2xl border border-teal-100 bg-teal-50 p-4">
@@ -737,11 +751,13 @@ function InputWithLabel({
   label,
   value,
   type = "text",
+  required = false,
   onChange,
 }: {
   label: string;
   value: string;
   type?: string;
+  required?: boolean;
   onChange: (value: string) => void;
 }) {
   return (
@@ -752,6 +768,7 @@ function InputWithLabel({
         value={value}
         onChange={(event) => onChange(event.target.value)}
         className="h-11 rounded-xl bg-white"
+        required={required}
       />
     </div>
   );

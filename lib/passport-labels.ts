@@ -69,9 +69,12 @@ export type PassportLabels = {
   expiryDate: string;
   passwordProtected: string;
   password: string;
+  passwordHelp: string;
   documentVisibility: string;
+  summaryOnly: string;
   approvedOnly: string;
-  allLinkedDocuments: string;
+  allDocumentMetadata: string;
+  documentVisibilityHelp: string;
   createLink: string;
   creatingLink: string;
   generatedLink: string;
@@ -174,9 +177,12 @@ export const defaultPassportLabels: PassportLabels = {
   expiryDate: "Expiry date",
   passwordProtected: "Password protected",
   password: "Password",
+  passwordHelp: "The buyer will need this password before viewing the Passport.",
   documentVisibility: "Document visibility",
-  approvedOnly: "Summary only",
-  allLinkedDocuments: "All linked documents",
+  summaryOnly: "Summary only",
+  approvedOnly: "Approved documents as index",
+  allDocumentMetadata: "All document metadata as index",
+  documentVisibilityHelp: "Documents are not downloadable. The buyer sees only a structured evidence index when enabled.",
   createLink: "Create link",
   creatingLink: "Creating link...",
   generatedLink: "Generated link",

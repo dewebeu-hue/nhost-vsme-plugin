@@ -284,6 +284,37 @@ export function BuyerSupplierSummary({ passport, token }: BuyerSupplierSummaryPr
           <BuyerRequestEvidencePanel supplierName={passport.company.name} token={token} />
         ) : null}
 
+        {passport.documents.length ? (
+          <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+            <h2 className="text-2xl font-semibold tracking-tight text-slate-950">
+              {t("evidenceIndex")}
+            </h2>
+            <p className="mt-3 max-w-4xl text-sm leading-7 text-slate-600">
+              {t("evidenceIndexDescription")}
+            </p>
+            <div className="mt-5 grid gap-3">
+              {passport.documents.map((document) => (
+                <article
+                  key={document.id}
+                  className="grid gap-3 rounded-2xl border border-slate-200 bg-slate-50/70 p-4 md:grid-cols-[minmax(0,1.4fr)_minmax(0,0.8fr)_minmax(0,0.8fr)_auto] md:items-center"
+                >
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-semibold text-slate-950">{document.name}</p>
+                    <p className="mt-1 text-xs font-medium text-slate-500">{document.uploaded}</p>
+                  </div>
+                  <p className="text-sm font-medium text-slate-700">{translateDocumentCategory(document.category, t)}</p>
+                  <p className="text-sm font-medium text-slate-500">
+                    {document.expiresAt ? `${t("expiryDate")}: ${document.expiresAt}` : t("notProvided")}
+                  </p>
+                  <Badge className="w-fit rounded-full border-emerald-100 bg-emerald-50 px-3 py-1 text-emerald-700">
+                    {t("availableOnRequest")}
+                  </Badge>
+                </article>
+              ))}
+            </div>
+          </section>
+        ) : null}
+
         <section>
           <h2 className="text-2xl font-semibold tracking-tight text-slate-950">
             {t("sectionReadiness")}
@@ -351,6 +382,25 @@ function getCompanyInitials(name: string) {
     .slice(0, 2)
     .map((part) => part[0]?.toUpperCase())
     .join("") || "SP";
+}
+
+function translateDocumentCategory(
+  category: string,
+  t: ReturnType<typeof useTranslations<"buyerPortal">>,
+) {
+  const map: Record<string, string> = {
+    certificate: t("certifications"),
+    utility_bill: t("energy"),
+    policy: t("environmentalPolicies"),
+    waste_report: t("waste"),
+    safety: t("healthSafety"),
+    customer_questionnaire: t("supplierInformation"),
+    report: t("evidenceOnRequest"),
+    training: t("employees"),
+    other: t("evidenceOnRequest"),
+  };
+
+  return map[category] ?? category.replace(/_/g, " ");
 }
 
 function translateSectionTitle(title: string, t: ReturnType<typeof useTranslations<"buyerPortal">>) {
