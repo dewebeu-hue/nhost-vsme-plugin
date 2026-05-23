@@ -510,7 +510,7 @@ export function AdminOrganizationDetailClient({
         </div>
       </section>
 
-      <section id="admin-first-customer-onboarding" className="supplier-surface rounded-2xl border-0 p-5">
+      <section id="admin-pilot-readiness" className="supplier-surface rounded-2xl border-0 p-5">
         <div className="flex flex-col justify-between gap-4 xl:flex-row xl:items-start">
           <div>
             <div className="flex flex-wrap items-center gap-2">
@@ -1078,7 +1078,7 @@ function createFirstCustomerChecklist(
       companyBasics.answeredQuestions >= companyBasics.totalQuestions,
   );
   const realOrganizationName = isRealOrganizationName(organization.name);
-  const handoffReady = isFirstCustomerHandoffReady(organization);
+  const hasPassportData = organization.answeredQuestions > 0 || organization.readinessPercent > 0;
 
   return [
     {
@@ -1103,7 +1103,7 @@ function createFirstCustomerChecklist(
       key: "company-basics",
       title: labels.firstCustomerCompanyBasics,
       description: labels.firstCustomerCompanyBasicsDescription,
-      done: companyBasicsDone,
+      done: realOrganizationName && companyBasicsDone,
       status: "derived",
       href: "#admin-section-readiness",
       cta: labels.firstCustomerOpenSections,
@@ -1113,6 +1113,15 @@ function createFirstCustomerChecklist(
       title: labels.firstCustomerQuestionnaireStarted,
       description: labels.firstCustomerQuestionnaireStartedDescription,
       done: organization.answeredQuestions > 0,
+      status: "derived",
+      href: "#admin-section-readiness",
+      cta: labels.firstCustomerOpenSections,
+    },
+    {
+      key: "questionnaire-complete",
+      title: labels.firstCustomerQuestionnaireComplete,
+      description: labels.firstCustomerQuestionnaireCompleteDescription,
+      done: organization.totalQuestions > 0 && organization.answeredQuestions >= organization.totalQuestions,
       status: "derived",
       href: "#admin-section-readiness",
       cta: labels.firstCustomerOpenSections,
@@ -1136,11 +1145,20 @@ function createFirstCustomerChecklist(
       cta: labels.firstCustomerOpenSupport,
     },
     {
+      key: "logo-uploaded",
+      title: labels.firstCustomerLogoUploaded,
+      description: labels.firstCustomerLogoUploadedDescription,
+      done: organization.logoUploaded,
+      status: "recommended",
+      href: "#admin-assisted-onboarding",
+      cta: labels.firstCustomerOpenOnboarding,
+    },
+    {
       key: "passport-reviewed",
       title: labels.firstCustomerPassportReviewed,
       description: labels.firstCustomerPassportReviewedDescription,
-      done: organization.activeShareLink,
-      status: "recommended",
+      done: hasPassportData,
+      status: "derived",
       href: "#admin-support-checklist",
       cta: labels.firstCustomerOpenSupport,
     },
@@ -1154,6 +1172,15 @@ function createFirstCustomerChecklist(
       cta: labels.firstCustomerOpenSupport,
     },
     {
+      key: "public-passport-tested",
+      title: labels.firstCustomerPublicPassportTested,
+      description: labels.firstCustomerPublicPassportTestedDescription,
+      done: false,
+      status: "manual",
+      href: "#admin-support-checklist",
+      cta: labels.firstCustomerOpenSupport,
+    },
+    {
       key: "pdf-tested",
       title: labels.firstCustomerPdfTested,
       description: labels.firstCustomerPdfTestedDescription,
@@ -1163,22 +1190,13 @@ function createFirstCustomerChecklist(
       cta: labels.firstCustomerOpenSupport,
     },
     {
-      key: "buyer-request",
-      title: labels.firstCustomerBuyerRequest,
-      description: labels.firstCustomerBuyerRequestDescription,
-      done: organization.buyerRequestCount > 0,
-      status: "optional",
+      key: "support-available",
+      title: labels.firstCustomerSupportAvailable,
+      description: labels.firstCustomerSupportAvailableDescription,
+      done: true,
+      status: "derived",
       href: "#admin-support-checklist",
       cta: labels.firstCustomerOpenSupport,
-    },
-    {
-      key: "handoff-ready",
-      title: labels.firstCustomerHandoffReady,
-      description: labels.firstCustomerHandoffReadyDescription,
-      done: handoffReady,
-      status: "derived",
-      href: "#admin-first-customer-onboarding",
-      cta: labels.firstCustomerOpenHandoff,
     },
   ];
 }
@@ -1189,16 +1207,17 @@ function getFirstCustomerReadiness(
   labels: AdminLabels,
 ) {
   const companyBasics = checklist.find((item) => item.key === "company-basics");
+  const questionnaireComplete = checklist.find((item) => item.key === "questionnaire-complete");
 
   if (!companyBasics?.done || organization.answeredQuestions === 0) {
     return { label: labels.needsOnboarding, tone: "amber" as const };
   }
 
-  if (organization.documentCount === 0 || organization.linkedEvidenceCount === 0) {
+  if (!questionnaireComplete?.done || organization.documentCount === 0 || organization.linkedEvidenceCount === 0) {
     return { label: labels.needsEvidence, tone: "red" as const };
   }
 
-  if (!organization.activeShareLink || !isFirstCustomerHandoffReady(organization)) {
+  if (!organization.activeShareLink) {
     return { label: labels.needsReview, tone: "blue" as const };
   }
 
@@ -1211,9 +1230,14 @@ function getNextFirstCustomerAction(
   labels: AdminLabels,
 ) {
   const companyBasics = checklist.find((item) => item.key === "company-basics");
+  const questionnaireComplete = checklist.find((item) => item.key === "questionnaire-complete");
 
   if (!companyBasics?.done) {
     return labels.firstCustomerAskCompanyBasics;
+  }
+
+  if (!questionnaireComplete?.done) {
+    return labels.firstCustomerAskQuestionnaireComplete;
   }
 
   if (organization.documentCount === 0) {
@@ -1228,20 +1252,7 @@ function getNextFirstCustomerAction(
     return labels.firstCustomerReviewPublicPassport;
   }
 
-  if (!isFirstCustomerHandoffReady(organization)) {
-    return labels.firstCustomerPrepareHandoff;
-  }
-
   return labels.firstCustomerReadyAction;
-}
-
-function isFirstCustomerHandoffReady(organization: AdminOrganizationDetail) {
-  const concierge = organization.concierge;
-  return Boolean(
-    concierge?.onboardingNextAction &&
-      concierge.nextFollowUpDate &&
-      (concierge.onboardingOwnerNote || concierge.internalNote),
-  );
 }
 
 function isRealOrganizationName(name: string) {

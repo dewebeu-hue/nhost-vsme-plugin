@@ -78,6 +78,7 @@ export type AdminOrganizationSummary = {
   commercialPlanLabel: string;
   createdAt: string | null;
   updatedAt: string | null;
+  logoUploaded: boolean;
   readinessPercent: number;
   answeredQuestions: number;
   totalQuestions: number;
@@ -160,6 +161,7 @@ type OrganizationRecord = {
   plan_key?: string | null;
   created_at?: string | null;
   updated_at?: string | null;
+  logo_file_id?: string | null;
 };
 
 type SectionRecord = {
@@ -255,6 +257,7 @@ const adminOverviewQuery = `
       plan_key
       created_at
       updated_at
+      logo_file_id
     }
     question_sections(order_by: { sort_order: asc }) {
       id
@@ -636,6 +639,7 @@ function buildOrganizationSummaries(context: AdminGraphqlData): AdminOrganizatio
       commercialPlanLabel: formatCommercialPlanLabel(organization.plan_key),
       createdAt: organization.created_at ?? null,
       updatedAt: organization.updated_at ?? null,
+      logoUploaded: Boolean(organization.logo_file_id),
       readinessPercent: readiness.readinessPercent,
       answeredQuestions: readiness.answeredQuestions,
       totalQuestions: readiness.totalQuestions,

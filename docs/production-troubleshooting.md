@@ -4430,3 +4430,49 @@ Manual QA:
 6. Set document visibility to `approved_only` and confirm the Evidence Index appears without download links.
 7. Set document visibility to `all_linked_documents` and confirm linked/reviewed metadata appears without download links.
 8. Inspect Network responses for no `password_hash`, `storage_file_id`, `file_url`, `privateUrl`, `signedUrl`, evidence download URL, share token logs, or secrets.
+
+## Pilot Launch Clean Production Checklist
+
+Use this checklist before moving a first real supplier into pilot operations. The admin organization detail page shows the internal `Pilot readiness` panel for each organization; it uses real workspace data where possible and labels untracked checks as manual.
+
+Production environment:
+
+- Vercel production deploy is green.
+- Required Vercel/Nhost environment variables exist.
+- Nhost migrations are applied.
+- Hasura tables, columns, and relationships used by admin, questionnaire, documents, support, share links, public Passport, logo, and PDF routes are tracked.
+- Admin allowlist is configured.
+- Password reset redirect is configured for production.
+- Support request table/API works.
+- Share link creation works.
+- Public Passport token route works.
+- Public and authenticated PDF download works.
+- Supplier logo display works if the pilot supplier uploaded one.
+
+Production data cleanup:
+
+- Remove fake/test organizations not needed for the pilot.
+- Remove accidental mock documents or test uploads from the pilot organization.
+- Confirm the first pilot organization name, profile, questionnaire answers, documents, logo, and share links are intentional.
+- Confirm no `Acme`, `Anna`, `Munich`, placeholder organization, or mock data appears in production UI.
+
+Manual pilot test:
+
+1. Sign in as the supplier.
+2. Complete company profile basics.
+3. Fill the questionnaire.
+4. Upload evidence documents.
+5. Link evidence to evidence-required answers.
+6. Open the Supplier Passport preview.
+7. Create a buyer public share link.
+8. Open the public link in an incognito/private browser.
+9. If password protection is enabled, verify the password gate.
+10. Download the public PDF and authenticated PDF.
+11. Submit a support request as supplier.
+12. Sign in as admin and confirm the support request appears in the admin inbox/bell.
+
+Privacy and buyer-safe output:
+
+- Public Passport and public PDF must not include `storage_file_id`, `file_url`, `privateUrl`, signed URLs, raw document storage paths, support notes, admin notes, commercial/internal notes, passwords, password hashes, JWTs, cookies, or secrets.
+- Evidence document downloads remain disabled unless a later phase explicitly adds a safe download workflow.
+- Pilot readiness is an internal operations checklist only. It is not certification, approval, audit, or assurance.
