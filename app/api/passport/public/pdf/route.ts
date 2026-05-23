@@ -26,6 +26,11 @@ export async function GET(request: NextRequest) {
 
     const report = createPublicPdfReport(result.share, labels);
     const pdf = createTextPdf(report.title, report.lines, { footerLabel: labels.title });
+
+    if (pdf.byteLength < 1000) {
+      throw new Error("Public PDF render returned an unexpectedly small buffer.");
+    }
+
     const filename = createPublicFilename(result.share.company.name);
 
     return new Response(pdf, {
