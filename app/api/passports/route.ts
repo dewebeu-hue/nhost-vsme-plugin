@@ -38,7 +38,7 @@ export async function POST(request: Request) {
     }
 
     if (action === "generate") {
-      const passport = await generateSupplierPassport(organization.id, user.id, accessToken);
+      const passport = await generateSupplierPassport(organization.id, user.id);
 
       return NextResponse.json({ configured: true, organization, passport });
     }
@@ -56,9 +56,11 @@ export async function POST(request: Request) {
     }
 
     const category = classifyPassportError(error);
+    const stage = getPassportErrorStage(error);
 
     logSafeDiagnostic("passport_error", {
       category,
+      stage,
     });
 
     return NextResponse.json(
@@ -80,4 +82,11 @@ function classifyPassportError(error: unknown) {
   }
 
   return "graphql_error";
+}
+
+function getPassportErrorStage(error: unknown) {
+  const message = error instanceof Error ? error.message : "";
+  const [stage] = message.split(":");
+
+  return stage && stage.startsWith("passport_") ? stage : "unknown";
 }
