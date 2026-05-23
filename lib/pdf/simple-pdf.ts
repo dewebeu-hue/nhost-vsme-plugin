@@ -26,6 +26,8 @@ const defaultFontSize = 9.5;
 const defaultMaxLineLength = 94;
 const latinExtendedEncoding =
   "<< /Type /Encoding /BaseEncoding /WinAnsiEncoding /Differences [128 /ccaron /Ccaron /cacute /Cacute /dcroat /Dcroat /scaron /Scaron /zcaron /Zcaron] >>";
+// Keep Croatian Latin Extended glyphs explicit. Do not normalize these to ASCII;
+// buyer-facing HR PDFs must render č, ć, đ, š, and ž correctly.
 const customGlyphCodes = new Map<string, number>([
   ["č", 128],
   ["Č", 129],
