@@ -40,7 +40,6 @@ import type {
   PassportShareSetting,
 } from "@/lib/mock-data";
 import {
-  getBrowserNhostClient,
   getFreshBrowserNhostSession,
 } from "@/lib/nhost/client";
 import { defaultPassportLabels, type PassportLabels } from "@/lib/passport-labels";
@@ -53,13 +52,6 @@ import {
   createPassportSectionSummaries,
 } from "@/lib/passport-summary";
 import { buildCompanyProfileSummary } from "@/lib/company-profile-summary";
-
-type SupplierPassportPayload = {
-  configured?: boolean;
-  organization?: { id: string; name: string } | null;
-  passport?: SupplierPassportRecord | null;
-  error?: string;
-};
 
 type CurrentOrganizationPayload = {
   organization?: OrganizationRecord | null;
@@ -125,18 +117,9 @@ type DocumentLinkRecord = {
 
 type ShareLinkPayload = {
   configured?: boolean;
+  publicUrl?: string | null;
   shareUrl?: string;
   error?: string;
-};
-
-type SupplierPassportRecord = {
-  id: string;
-  organization_id: string;
-  title: string;
-  status: "draft" | "generated" | "shared" | "archived";
-  readiness_score: number;
-  generated_at: string | null;
-  updated_at: string;
 };
 
 type MessageState = {
@@ -154,8 +137,6 @@ export function PassportPageClient({
   labels = defaultPassportLabels,
 }: PassportPageClientProps) {
   const locale = useLocale();
-  const [passport, setPassport] = useState<SupplierPassportRecord | null>(null);
-  const [organizationId, setOrganizationId] = useState<string | null>(null);
   const [companyProfile, setCompanyProfile] = useState<PassportCompanyProfile>(() =>
     createEmptyCompanyProfile(labels),
   );
@@ -183,7 +164,7 @@ export function PassportPageClient({
       }
 
       try {
-        const [organizationResponse, questionnaireResponse, passportResponse] = await Promise.all([
+        const [organizationResponse, questionnaireResponse] = await Promise.all([
           fetch("/api/organizations/current", {
             method: "POST",
             headers: { authorization: `Bearer ${session.accessToken}` },
@@ -192,20 +173,11 @@ export function PassportPageClient({
             method: "GET",
             headers: { authorization: `Bearer ${session.accessToken}` },
           }),
-          fetch("/api/passports", {
-            method: "POST",
-            headers: {
-              "content-type": "application/json",
-              authorization: `Bearer ${session.accessToken}`,
-            },
-            body: JSON.stringify({ action: "latest" }),
-          }),
         ]);
         const organizationPayload =
           (await organizationResponse.json()) as CurrentOrganizationPayload;
         const questionnairePayload =
           (await questionnaireResponse.json()) as QuestionnairePayload;
-        const payload = (await passportResponse.json()) as SupplierPassportPayload;
 
         if (cancelled) {
           return;
@@ -221,7 +193,6 @@ export function PassportPageClient({
             questionnairePayload.documentLinks ?? [],
           );
 
-          setOrganizationId(organization.id);
           setCompanyProfile(createCompanyProfile(organization, questionnairePayload, labels));
           setReadiness({
             score: calculatePassportReadinessScore(questionItems, questionAnswers),
@@ -247,10 +218,6 @@ export function PassportPageClient({
             ...createMissingDataItems(questionSections, questionItems, questionAnswers),
           ].slice(0, 5));
         }
-
-        if (passportResponse.ok && payload.configured !== false && payload.organization) {
-          setPassport(payload.passport ?? null);
-        }
       } catch {
         if (!cancelled) {
           setMessage({ tone: "info", text: labels.draftStateText });
@@ -271,7 +238,7 @@ export function PassportPageClient({
   );
 
   async function handleGeneratePassport() {
-    const session = getBrowserNhostClient()?.getUserSession();
+    const session = await getFreshBrowserNhostSession();
 
     if (!session?.accessToken) {
       setMessage({ tone: "info", text: labels.draftStateText });
@@ -282,22 +249,59 @@ export function PassportPageClient({
     setMessage(null);
 
     try {
-      const response = await fetch("/api/passports", {
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
-          authorization: `Bearer ${session.accessToken}`,
-        },
-        body: JSON.stringify({ action: "generate" }),
-      });
-      const payload = (await response.json()) as SupplierPassportPayload;
+      const [organizationResponse, questionnaireResponse] = await Promise.all([
+        fetch("/api/organizations/current", {
+          method: "POST",
+          headers: { authorization: `Bearer ${session.accessToken}` },
+        }),
+        fetch("/api/questionnaire", {
+          method: "GET",
+          headers: { authorization: `Bearer ${session.accessToken}` },
+        }),
+      ]);
 
-      if (!response.ok || payload.configured === false || !payload.passport) {
-        throw new Error(payload.error || labels.generateError);
+      const organizationPayload =
+        (await organizationResponse.json()) as CurrentOrganizationPayload;
+      const questionnairePayload =
+        (await questionnaireResponse.json()) as QuestionnairePayload;
+
+      if (!organizationResponse.ok || !organizationPayload.organization || !questionnaireResponse.ok) {
+        throw new Error(labels.generateError);
       }
 
-      setOrganizationId(payload.organization?.id ?? payload.passport.organization_id);
-      setPassport(payload.passport);
+      const organization = organizationPayload.organization;
+      const questionSections = questionnairePayload.sections ?? [];
+      const questionItems = questionnairePayload.items ?? [];
+      const questionAnswers = questionnairePayload.answers ?? [];
+      const documents = attachQuestionLinksToDocuments(
+        questionnairePayload.documents ?? [],
+        questionnairePayload.documentLinks ?? [],
+      );
+
+      setCompanyProfile(createCompanyProfile(organization, questionnairePayload, labels));
+      setReadiness({
+        score: calculatePassportReadinessScore(questionItems, questionAnswers),
+        modules: createPassportReadinessModules(questionSections, questionItems, questionAnswers),
+      });
+      setSections(
+        createPassportSectionSummaries(questionSections, questionItems, questionAnswers, documents),
+      );
+      setApprovedDocuments(createApprovedDocuments(documents));
+      setMissingDataChecklist([
+        ...createCertificateExpiryItems(documents, {
+          expired: labels.certificateExpired,
+          within30Days: labels.certificateExpiresWithin30Days,
+          within90Days: labels.certificateExpiresWithin90Days,
+        }),
+        ...createMissingEvidenceItems(
+          questionSections,
+          questionItems,
+          questionAnswers,
+          documents,
+          labels.evidenceMissingBySection,
+        ),
+        ...createMissingDataItems(questionSections, questionItems, questionAnswers),
+      ].slice(0, 5));
       setMessage({ tone: "success", text: labels.generateSuccess });
     } catch {
       setMessage({ tone: "error", text: labels.generateError });
@@ -307,10 +311,10 @@ export function PassportPageClient({
   }
 
   async function handleCreateShareLink(values: ShareLinkFormValues) {
-    const session = getBrowserNhostClient()?.getUserSession();
+    const session = await getFreshBrowserNhostSession();
 
-    if (!session?.accessToken || !passport || !organizationId) {
-      setMessage({ tone: "error", text: labels.shareLinkGenerateFirst });
+    if (!session?.accessToken) {
+      setMessage({ tone: "info", text: labels.draftStateText });
       return;
     }
 
@@ -318,26 +322,23 @@ export function PassportPageClient({
     setMessage(null);
 
     try {
-      const response = await fetch("/api/share-links", {
+      void values;
+      const response = await fetch(`/api/passport/share-link?locale=${encodeURIComponent(locale)}`, {
         method: "POST",
         headers: {
           "content-type": "application/json",
           authorization: `Bearer ${session.accessToken}`,
         },
-        body: JSON.stringify({
-          passportId: passport.id,
-          organizationId,
-          ...values,
-          locale,
-        }),
+        body: JSON.stringify({ action: "create" }),
       });
       const payload = (await response.json()) as ShareLinkPayload;
+      const publicUrl = payload.publicUrl ?? payload.shareUrl ?? "";
 
-      if (!response.ok || payload.configured === false || !payload.shareUrl) {
+      if (!response.ok || payload.configured === false || !publicUrl) {
         throw new Error(payload.error || labels.shareLinkError);
       }
 
-      setShareUrl(payload.shareUrl);
+      setShareUrl(publicUrl);
       setMessage({ tone: "success", text: labels.shareLinkSuccess });
     } catch {
       setMessage({ tone: "error", text: labels.shareLinkError });
@@ -402,7 +403,7 @@ export function PassportPageClient({
         </div>
         <div className="grid gap-3 sm:grid-cols-3 xl:flex">
           <Button
-            className="h-11 rounded-xl bg-blue-600 px-5 hover:bg-blue-700"
+            className="h-11 rounded-xl px-5 shadow-soft"
             disabled={isGenerating}
             onClick={handleGeneratePassport}
           >
@@ -412,14 +413,7 @@ export function PassportPageClient({
           <Button
             variant="outline"
             className="h-11 rounded-xl bg-white px-5"
-            onClick={() => {
-              if (!passport) {
-                setMessage({ tone: "error", text: labels.shareLinkGenerateFirst });
-                return;
-              }
-
-              setIsShareOpen(true);
-            }}
+            onClick={() => setIsShareOpen(true)}
           >
             <Link2 data-icon="inline-start" />
             {labels.createShareLink}
@@ -439,12 +433,6 @@ export function PassportPageClient({
 
       {message ? (
         <StateCard title={message.text} description="" tone={message.tone === "error" ? "warning" : message.tone} />
-      ) : passport ? (
-        <StateCard
-          title={`${labels.passportStatus}: ${passport.status}`}
-          description={`${labels.generatedAt}: ${formatDate(passport.generated_at ?? passport.updated_at)}`}
-          tone="success"
-        />
       ) : (
         <StateCard title={labels.noPassportTitle} description={labels.noPassportText} tone="info" />
       )}
@@ -761,14 +749,6 @@ function InputWithLabel({
       />
     </div>
   );
-}
-
-function formatDate(value: string) {
-  return new Intl.DateTimeFormat("en", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  }).format(new Date(value));
 }
 
 function readFilenameFromContentDisposition(value: string) {

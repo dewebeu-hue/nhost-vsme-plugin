@@ -21,17 +21,26 @@ export async function POST(request: Request) {
     return NextResponse.json({ configured: false });
   }
 
+  const diagnosticContext = {
+    action: "unknown",
+    hasUserId: false,
+    hasOrganizationId: false,
+  };
+
   try {
     const user = await requireCurrentUser(request);
     const accessToken = await getAuthTokenForGraphQL(request);
     const payload = (await request.json()) as PassportRequest;
     const action = typeof payload.action === "string" ? payload.action : "latest";
+    diagnosticContext.action = action;
+    diagnosticContext.hasUserId = Boolean(user.id);
 
     if (!accessToken) {
       return NextResponse.json({ error: "Please sign in to manage Supplier Passports." }, { status: 401 });
     }
 
     const organization = await getPrimaryOrganizationForUser(user.id, accessToken);
+    diagnosticContext.hasOrganizationId = Boolean(organization?.id);
 
     if (!organization) {
       return NextResponse.json({ configured: true, organization: null }, { status: 404 });
@@ -61,6 +70,8 @@ export async function POST(request: Request) {
     logSafeDiagnostic("passport_error", {
       category,
       stage,
+      safeMessage: sanitizePassportErrorMessage(error),
+      ...diagnosticContext,
     });
 
     return NextResponse.json(
@@ -89,4 +100,13 @@ function getPassportErrorStage(error: unknown) {
   const [stage] = message.split(":");
 
   return stage && stage.startsWith("passport_") ? stage : "unknown";
+}
+
+function sanitizePassportErrorMessage(error: unknown) {
+  const message = error instanceof Error ? error.message : "Unknown Passport error.";
+
+  return message
+    .replace(/Bearer\s+[A-Za-z0-9._-]+/gi, "Bearer [redacted]")
+    .replace(/x-hasura-admin-secret["':\s]+[A-Za-z0-9._-]+/gi, "x-hasura-admin-secret [redacted]")
+    .slice(0, 500);
 }

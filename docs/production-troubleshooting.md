@@ -4359,9 +4359,9 @@ Manual QA:
 
 The authenticated Passport page uses two related data paths:
 
-- `Ažuriraj Passport` / `Update Passport` refreshes the `supplier_passports` snapshot row for the authenticated supplier organization. The API first resolves the current user and organization membership with the user session, then reads questionnaire readiness and writes the snapshot with the server-side Hasura admin secret so supplier UI permissions do not block the refresh.
+- `Ažuriraj Passport` / `Update Passport` refreshes the live Passport summary shown in the authenticated dashboard from the current organization, questionnaire answers, and linked evidence metadata. It does not call the legacy `/api/passports` snapshot mutation.
 - `Preuzmi PDF` / `Download PDF` builds the PDF from current questionnaire, company, and evidence metadata. It does not require a prior manual Passport update.
-- Share-link creation still requires a current Supplier Passport snapshot. If a share link cannot be created, first use `Ažuriraj Passport`, then retry `Kreiraj share link`.
+- `Kreiraj share link` / `Create share link` uses the canonical `/api/passport/share-link` endpoint. That endpoint resolves the authenticated supplier organization and prepares the buyer-safe public Passport link without requiring the dashboard update button to write a snapshot first.
 
 Troubleshooting checklist:
 
@@ -4371,7 +4371,7 @@ Troubleshooting checklist:
 4. Click `Kreiraj share link` and confirm the public `/hr/passport/[token]` page opens.
 5. Confirm public Passport/PDF output does not include private file URLs, storage ids, support notes, admin notes, or raw internal notes.
 
-If `/api/passports` returns `category: "graphql_error"`, inspect the safe server diagnostic `stage`:
+If the legacy `/api/passports` endpoint is called directly and returns `category: "graphql_error"`, inspect the safe server diagnostic `stage`:
 
 - `passport_readiness_items` or `passport_readiness_answers`: questionnaire tables are not tracked, are missing columns used by the shared fragments, or server-side admin GraphQL is not configured.
 - `passport_graphql`: the `supplier_passports` table, mutation input, or status/readiness columns do not match the migration.
