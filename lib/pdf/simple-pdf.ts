@@ -27,30 +27,20 @@ const defaultMaxLineLength = 94;
 // Keep Croatian Latin Extended glyphs explicit. Do not normalize these to ASCII;
 // buyer-facing HR PDFs must render č, ć, đ, š, and ž correctly.
 const customGlyphCodes = new Map<string, number>([
-  ["č", 128],
-  ["Č", 129],
-  ["ć", 130],
-  ["Ć", 131],
-  ["đ", 132],
-  ["Đ", 133],
-  ["š", 134],
-  ["Š", 135],
-  ["ž", 136],
-  ["Ž", 137],
+  ["\u010D", 128],
+  ["\u010C", 129],
+  ["\u0107", 130],
+  ["\u0106", 131],
+  ["\u0111", 132],
+  ["\u0110", 133],
+  ["\u0161", 134],
+  ["\u0160", 135],
+  ["\u017E", 136],
+  ["\u017D", 137],
 ]);
 
-const croatianMarks: Record<string, { base: string; mark: "acute" | "caron" | "stroke" }> = {
-  "\u010D": { base: "c", mark: "caron" },
-  "\u010C": { base: "C", mark: "caron" },
-  "\u0107": { base: "c", mark: "acute" },
-  "\u0106": { base: "C", mark: "acute" },
-  "\u0111": { base: "d", mark: "stroke" },
-  "\u0110": { base: "D", mark: "stroke" },
-  "\u0161": { base: "s", mark: "caron" },
-  "\u0160": { base: "S", mark: "caron" },
-  "\u017E": { base: "z", mark: "caron" },
-  "\u017D": { base: "Z", mark: "caron" },
-};
+const latinExtendedEncoding = "<< /Type /Encoding /BaseEncoding /WinAnsiEncoding /Differences [128 /ccaron /Ccaron /cacute /Cacute /dcroat /Dcroat /scaron /Scaron /zcaron /Zcaron] >>";
+
 
 export function createTextPdf(title: string, chunks: TextChunk[], options: PdfOptions = {}) {
   const pages = paginate(chunks);
@@ -61,8 +51,8 @@ export function createTextPdf(title: string, chunks: TextChunk[], options: PdfOp
 
   objects.push("<< /Type /Catalog /Pages 2 0 R >>");
   objects.push("<< /Type /Pages /Kids [] /Count 0 >>");
-  objects.push("<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>");
-  objects.push("<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>");
+  objects.push(`<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding ${latinExtendedEncoding} >>`);
+  objects.push(`<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding ${latinExtendedEncoding} >>`);
 
   for (const page of pages) {
     const content = createPageContent(page, pages.length, pageObjectIds.length + 1, options);
@@ -166,9 +156,8 @@ function createPageContent(page: PdfPage, totalPages: number, pageNumber: number
     commands.push(getTextColor(line.variant));
     commands.push(`/${font} ${size} Tf`);
     commands.push(`${x} ${y.toFixed(2)} Td`);
-    commands.push(`<${encodePdfHexString(toPdfBaseText(text))}> Tj`);
+    commands.push(`<${encodePdfHexString(text)}> Tj`);
     commands.push("ET");
-    addCroatianMarks(commands, text, line.variant, size, x, y);
     y -= getChunkHeight(line);
   }
 
@@ -188,9 +177,8 @@ function addFooter(commands: string[], totalPages: number, pageNumber: number, f
   commands.push("0.45 0.49 0.55 rg");
   commands.push("/F1 8 Tf");
   commands.push(`${marginX} ${y} Td`);
-  commands.push(`<${encodePdfHexString(toPdfBaseText(footer))}> Tj`);
+  commands.push(`<${encodePdfHexString(footer)}> Tj`);
   commands.push("ET");
-  addCroatianMarks(commands, footer, "footer", 8, marginX, y);
 }
 
 function getChunkHeight(chunk: TextChunk) {
@@ -277,10 +265,6 @@ function getTextColor(variant: TextChunk["variant"]) {
   }
 }
 
-function getStrokeColor(variant: TextChunk["variant"]) {
-  return getTextColor(variant).replace(" rg", " RG");
-}
-
 function buildPdf(objects: string[], title: string) {
   const offsets: number[] = [];
   let pdf = "%PDF-1.4\n%\xE2\xE3\xCF\xD3\n";
@@ -298,16 +282,18 @@ function buildPdf(objects: string[], title: string) {
   return pdf;
 }
 
-function normalizePdfText(value: string) {
-  return value
-    .replace(/â€“|â€”/g, "-")
-    .replace(/â€œ|â€/g, '"')
-    .replace(/â€˜|â€™/g, "'")
-    .replace(/–|—/g, "-")
-    .replace(/[“”]/g, '"')
-    .replace(/[‘’]/g, "'")
-    .replace(/₂/g, "2")
-    .replace(/\u00A0/g, " ");
+function normalizePdfText(value: unknown) {
+  if (value == null) {
+    return "";
+  }
+
+  return String(value)
+    .replace(/[\u2013\u2014]/g, "-")
+    .replace(/[\u201C\u201D]/g, '"')
+    .replace(/[\u2018\u2019]/g, "'")
+    .replace(/\u2082/g, "2")
+    .replace(/\u00A0/g, " ")
+    .normalize("NFC");
 }
 
 function encodePdfHexString(value: string) {
@@ -317,7 +303,14 @@ function encodePdfHexString(value: string) {
 function encodePdfBytes(value: string) {
   const bytes: number[] = [];
 
-  for (const character of Array.from(value)) {
+  for (const character of Array.from(normalizePdfText(value))) {
+    const customCode = customGlyphCodes.get(character);
+
+    if (customCode) {
+      bytes.push(customCode);
+      continue;
+    }
+
     const code = character.charCodeAt(0);
 
     if ((code >= 32 && code <= 126) || (code >= 160 && code <= 255)) {
@@ -325,103 +318,10 @@ function encodePdfBytes(value: string) {
       continue;
     }
 
-    const fallback = character.normalize("NFKD").replace(/[\u0300-\u036f]/g, "");
-    const fallbackCode = fallback.charCodeAt(0);
-
-    if (fallback.length === 1 && fallbackCode >= 32 && fallbackCode <= 126) {
-      bytes.push(fallbackCode);
-    }
+    bytes.push(63);
   }
 
   return bytes;
-}
-
-function toPdfBaseText(value: string) {
-  return Array.from(value)
-    .map((character) => croatianMarks[character]?.base ?? (customGlyphCodes.has(character) ? character : character))
-    .join("");
-}
-
-function addCroatianMarks(
-  commands: string[],
-  value: string,
-  variant: TextChunk["variant"],
-  size: number,
-  x: number,
-  y: number,
-) {
-  let offset = 0;
-
-  for (const character of Array.from(value)) {
-    const mark = croatianMarks[character];
-    const base = mark?.base ?? character;
-    const width = estimateCharacterWidth(base, size);
-
-    if (mark?.mark === "stroke") {
-      addStrokeMark(commands, variant, x + offset, y, width, size);
-    } else if (mark) {
-      addAccentMark(commands, mark.mark, variant, x + offset, y, width, size);
-    }
-
-    offset += width;
-  }
-}
-
-function addAccentMark(
-  commands: string[],
-  mark: "acute" | "caron",
-  variant: TextChunk["variant"],
-  x: number,
-  y: number,
-  width: number,
-  size: number,
-) {
-  const markSize = Math.max(4, size * 0.42);
-  const markX = x + width * 0.22;
-  const markY = y + size * 0.72;
-  const text = mark === "acute" ? "'" : "v";
-
-  commands.push("BT");
-  commands.push(getTextColor(variant));
-  commands.push(`/F1 ${markSize.toFixed(2)} Tf`);
-  commands.push(`${markX.toFixed(2)} ${markY.toFixed(2)} Td`);
-  commands.push(`<${encodePdfHexString(text)}> Tj`);
-  commands.push("ET");
-}
-
-function addStrokeMark(
-  commands: string[],
-  variant: TextChunk["variant"],
-  x: number,
-  y: number,
-  width: number,
-  size: number,
-) {
-  commands.push(getStrokeColor(variant));
-  commands.push("0.45 w");
-  commands.push(
-    `${(x + width * 0.18).toFixed(2)} ${(y + size * 0.5).toFixed(2)} m ${(x + width * 0.78).toFixed(2)} ${(y + size * 0.62).toFixed(2)} l S`,
-  );
-}
-
-function estimateCharacterWidth(character: string, size: number) {
-  if (character === " ") {
-    return size * 0.28;
-  }
-
-  if (/[ilI.,:;|!']/u.test(character)) {
-    return size * 0.24;
-  }
-
-  if (/[mwMW@%]/u.test(character)) {
-    return size * 0.78;
-  }
-
-  if (/[A-Z]/u.test(character)) {
-    return size * 0.62;
-  }
-
-  return size * 0.5;
 }
 
 function createPdfInfoString(value: string) {
