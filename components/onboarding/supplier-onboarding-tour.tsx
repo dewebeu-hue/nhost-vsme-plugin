@@ -65,7 +65,7 @@ const tourSteps: TourStep[] = [
   { route: "/dashboard/documents", target: "documents-page" },
   { route: "/dashboard/documents", target: "documents-upload" },
   { route: "/dashboard/documents", target: "documents-link-evidence" },
-  { route: "/dashboard/passport", target: "passport-summary" },
+  { route: "/dashboard/passport", target: "passport-readiness-summary" },
   { route: "/dashboard/share", target: "share-public-link" },
   { route: "/dashboard/passport", target: "passport-pdf" },
 ];
@@ -404,7 +404,12 @@ export function SupplierOnboardingTour({ locale, labels }: SupplierOnboardingTou
             </h2>
             <p className="mt-3 text-sm leading-6 text-white/85">{labels.promptText}</p>
             <div className="mt-6 flex flex-col gap-2 sm:flex-row sm:justify-end">
-              <Button type="button" variant="outline" onClick={dismissTour}>
+              <Button
+                type="button"
+                variant="outline"
+                className="border-white/70 bg-white text-[#002B36] hover:border-white hover:bg-slate-100 hover:text-slate-950 focus-visible:border-white focus-visible:ring-white/60"
+                onClick={dismissTour}
+              >
                 {labels.skipForNow}
               </Button>
               <Button type="button" onClick={startTour}>

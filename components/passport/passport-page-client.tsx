@@ -454,7 +454,7 @@ export function PassportPageClient({
       <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
         <main className="flex min-w-0 flex-col gap-6">
           <PassportCompanySummary profile={companyProfile} labels={labels} />
-          <div data-tour="passport-summary">
+          <div data-tour="passport-readiness-summary">
             <PassportReadinessSummary
               score={readinessView.score}
               modules={readinessView.modules}
