@@ -24,7 +24,7 @@ export function PricingCard({
   return (
     <article
       className={cn(
-        "relative flex h-full flex-col rounded-2xl border bg-white p-6 shadow-[0_18px_45px_rgba(15,23,42,0.07)]",
+        "plan-card-interactive relative flex h-full flex-col rounded-2xl border bg-white p-6 shadow-[0_18px_45px_rgba(15,23,42,0.07)]",
         plan.highlighted
           ? "border-blue-200 ring-4 ring-blue-100"
           : "border-slate-200",

@@ -191,6 +191,68 @@
     outline-offset: 3px;
   }
 
+  .plan-card-interactive {
+    position: relative;
+    isolation: isolate;
+    transition:
+      border-color 240ms cubic-bezier(0.16, 1, 0.3, 1),
+      box-shadow 240ms cubic-bezier(0.16, 1, 0.3, 1),
+      transform 260ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .plan-card-interactive::after {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    z-index: 1;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(
+      135deg,
+      rgb(37 99 235 / 0.42),
+      rgb(20 184 166 / 0.32),
+      rgb(191 219 254 / 0.5)
+    );
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 240ms cubic-bezier(0.16, 1, 0.3, 1);
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+  }
+
+  .plan-card-interactive:hover,
+  .plan-card-interactive:focus-within {
+    border-color: rgb(147 197 253);
+    box-shadow:
+      0 24px 56px rgb(15 23 42 / 0.12),
+      0 0 24px rgb(59 130 246 / 0.1);
+  }
+
+  .plan-card-interactive:hover::after,
+  .plan-card-interactive:focus-within::after {
+    opacity: 1;
+  }
+
+  @media (hover: hover) and (pointer: fine) and (min-width: 768px) {
+    .plan-card-interactive:hover {
+      transform: translate3d(0, -6px, 0) scale(1.015);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .plan-card-interactive,
+    .plan-card-interactive::after {
+      transition: none;
+    }
+
+    .plan-card-interactive:hover {
+      transform: none;
+    }
+  }
+
   .landing-preview-card-back {
     animation: landingPreviewBackEnter 760ms cubic-bezier(0.16, 1, 0.3, 1) 120ms both;
     transform-origin: 50% 42%;
