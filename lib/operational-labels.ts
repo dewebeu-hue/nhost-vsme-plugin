@@ -223,6 +223,11 @@ export type AdminLabels = {
   firstCustomerReviewPublicPassport: string;
   firstCustomerPrepareHandoff: string;
   firstCustomerReadyAction: string;
+  copyPilotInstructions: string;
+  pilotInstructionsCopied: string;
+  pilotInstructionsCopyError: string;
+  pilotInvitationSubject: string;
+  pilotInvitationBody: string;
   saveConciergeStatus: string;
   conciergeSaved: string;
   conciergeSaveError: string;
@@ -603,6 +608,12 @@ export const defaultAdminLabels: AdminLabels = {
   firstCustomerReviewPublicPassport: "Create a buyer public link.",
   firstCustomerPrepareHandoff: "Prepare handoff summary.",
   firstCustomerReadyAction: "Test the public Passport and PDF before sending.",
+  copyPilotInstructions: "Copy pilot instructions",
+  pilotInstructionsCopied: "Pilot invitation instructions copied.",
+  pilotInstructionsCopyError: "We could not copy the pilot instructions right now.",
+  pilotInvitationSubject: "Invitation to complete your Supplier Passport profile",
+  pilotInvitationBody:
+    "Hello,\n\nwe have prepared access to your Supplier Passport workspace.\n\nThe goal is to enter your basic company information, complete the VSME questionnaire, upload available supporting evidence and prepare a buyer-safe summary that you can share with customers.\n\nSuggested order:\n1. Complete Company Basics\n2. Complete the questionnaire sections\n3. Upload available documents and certificates\n4. Link documents to answers where required\n5. Review Supplier Passport\n6. Create a public link or download the PDF summary\n\nPrivate evidence documents are not publicly downloadable without additional approval. The public link shows a buyer-safe summary and evidence availability.\n\nIf you get stuck, use the \"Contact support\" option inside the application.\n\nBest regards,",
   saveConciergeStatus: "Save concierge status",
   conciergeSaved: "Concierge status saved.",
   conciergeSaveError: "We could not save concierge status right now.",

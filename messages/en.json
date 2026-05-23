@@ -241,6 +241,32 @@
         "text": "Follow the steps below to complete the questionnaire, add evidence and prepare a buyer-safe Passport summary.",
         "restartGuide": "Restart onboarding guide"
       },
+      "beforeStart": {
+        "title": "Before you start",
+        "text": "To complete your Supplier Passport faster, prepare basic company information and supporting evidence documents.",
+        "cta": "Start with Company Basics",
+        "privacyNote": "The public link does not automatically give the buyer access to private documents. The buyer sees a summary and evidence availability.",
+        "items": [
+          "Basic company information",
+          "Reporting period",
+          "Employee count",
+          "Energy and fuel data",
+          "Supporting evidence documents",
+          "Certificates if available",
+          "Contact person for buyer requests"
+        ],
+        "guideTitle": "Pilot completion flow",
+        "steps": [
+          "Complete Company Basics",
+          "Complete the questionnaire sections",
+          "Upload supporting evidence",
+          "Link evidence to answers",
+          "Review Supplier Passport",
+          "Create a buyer public link",
+          "Download the PDF summary",
+          "Contact support if you get stuck"
+        ]
+      },
       "quickStart": {
         "title": "First Supplier Passport checklist",
         "subtitle": "Complete these steps to create a useful first draft for buyers.",
@@ -863,6 +889,73 @@
       "linkedToAnswerText": "A linked document supports a specific questionnaire answer.",
       "expiringSoonLabel": "Expiring soon",
       "expiringSoonText": "Documents with expiry dates, such as certificates, are highlighted before they expire."
+    },
+    "evidencePreparation": {
+      "title": "Which documents should you prepare?",
+      "note": "You do not need every document. Upload what exists and link it to the relevant answers.",
+      "groups": [
+        {
+          "title": "Company",
+          "items": [
+            "Company register excerpt or basic company information",
+            "Internal company profile"
+          ]
+        },
+        {
+          "title": "Employees",
+          "items": [
+            "Employee count report",
+            "HR policy if available"
+          ]
+        },
+        {
+          "title": "Energy",
+          "items": [
+            "Electricity invoices",
+            "Meter readings",
+            "Renewable energy certificates if available"
+          ]
+        },
+        {
+          "title": "Fuel",
+          "items": [
+            "Fuel invoices",
+            "Vehicle or fuel consumption records"
+          ]
+        },
+        {
+          "title": "Waste",
+          "items": [
+            "Waste disposal report",
+            "Waste service provider confirmation"
+          ]
+        },
+        {
+          "title": "Policies",
+          "items": [
+            "Environmental policy",
+            "Health and safety policy",
+            "Code of conduct",
+            "Risk management policy"
+          ]
+        },
+        {
+          "title": "Certificates",
+          "items": [
+            "ISO 9001",
+            "ISO 14001",
+            "ISO 45001",
+            "Other relevant certificates"
+          ]
+        },
+        {
+          "title": "Supplier chain",
+          "items": [
+            "Supplier overview",
+            "Supplier code of conduct if available"
+          ]
+        }
+      ]
     },
     "statuses": {
       "Reviewed": "Reviewed",
@@ -1984,6 +2077,11 @@
     "firstCustomerReviewPublicPassport": "Create a buyer public link.",
     "firstCustomerPrepareHandoff": "Prepare handoff summary.",
     "firstCustomerReadyAction": "Test the public Passport and PDF before sending.",
+    "copyPilotInstructions": "Copy pilot instructions",
+    "pilotInstructionsCopied": "Pilot invitation instructions copied.",
+    "pilotInstructionsCopyError": "We could not copy the pilot instructions right now.",
+    "pilotInvitationSubject": "Invitation to complete your Supplier Passport profile",
+    "pilotInvitationBody": "Hello,\n\nwe have prepared access to your Supplier Passport workspace.\n\nThe goal is to enter your basic company information, complete the VSME questionnaire, upload available supporting evidence and prepare a buyer-safe summary that you can share with customers.\n\nSuggested order:\n1. Complete Company Basics\n2. Complete the questionnaire sections\n3. Upload available documents and certificates\n4. Link documents to answers where required\n5. Review Supplier Passport\n6. Create a public link or download the PDF summary\n\nPrivate evidence documents are not publicly downloadable without additional approval. The public link shows a buyer-safe summary and evidence availability.\n\nIf you get stuck, use the \"Contact support\" option inside the application.\n\nBest regards,",
     "saveConciergeStatus": "Save concierge status",
     "conciergeSaved": "Concierge status saved.",
     "conciergeSaveError": "We could not save concierge status right now.",

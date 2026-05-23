@@ -240,6 +240,32 @@
         "text": "Slijedite korake u nastavku kako biste ispunili upitnik, dodali dokaze i pripremili buyer-safe sažetak Passporta.",
         "restartGuide": "Ponovno pokreni vodič"
       },
+      "beforeStart": {
+        "title": "Prije nego započnete",
+        "text": "Za bržu izradu Supplier Passporta pripremite osnovne podatke o tvrtki i dokaznu dokumentaciju.",
+        "cta": "Započni s Osnovnim podacima",
+        "privacyNote": "Javni link ne daje kupcu automatski pristup privatnim dokumentima. Kupac vidi sažetak i dostupnost dokaza.",
+        "items": [
+          "Osnovni podaci o tvrtki",
+          "Razdoblje izvještavanja",
+          "Broj zaposlenih",
+          "Podaci o energiji i gorivu",
+          "Dokazna dokumentacija",
+          "Certifikati ako postoje",
+          "Kontakt osoba za zahtjeve kupaca"
+        ],
+        "guideTitle": "Tijek pilot pripreme",
+        "steps": [
+          "Ispunite Osnovne podatke",
+          "Ispunite upitnik po sekcijama",
+          "Učitajte dokaznu dokumentaciju",
+          "Povežite dokaze s odgovorima",
+          "Pregledajte Supplier Passport",
+          "Kreirajte javni link za kupca",
+          "Preuzmite PDF sažetak",
+          "Javite se podršci ako zapnete"
+        ]
+      },
       "quickStart": {
         "title": "Kontrolna lista za prvi Supplier Passport",
         "subtitle": "Dovršite ove korake kako biste pripremili koristan prvi nacrt za kupce.",
@@ -851,6 +877,73 @@
       "linkedToAnswerText": "Povezani dokument podržava konkretan odgovor iz upitnika.",
       "expiringSoonLabel": "Uskoro istječe",
       "expiringSoonText": "Dokumenti s datumom isteka, poput certifikata, istaknuti su prije isteka."
+    },
+    "evidencePreparation": {
+      "title": "Koje dokumente pripremiti?",
+      "note": "Ne morate imati sve dokumente. Učitajte ono što postoji i povežite s relevantnim odgovorima.",
+      "groups": [
+        {
+          "title": "Tvrtka",
+          "items": [
+            "Izvadak iz registra ili osnovni podaci o tvrtki",
+            "Interni profil tvrtke"
+          ]
+        },
+        {
+          "title": "Zaposlenici",
+          "items": [
+            "Izvještaj o broju zaposlenih",
+            "HR politika ako postoji"
+          ]
+        },
+        {
+          "title": "Energija",
+          "items": [
+            "Računi za električnu energiju",
+            "Očitanja brojila",
+            "Certifikati o obnovljivoj energiji ako postoje"
+          ]
+        },
+        {
+          "title": "Gorivo",
+          "items": [
+            "Računi za gorivo",
+            "Evidencija vozila ili potrošnje goriva"
+          ]
+        },
+        {
+          "title": "Otpad",
+          "items": [
+            "Izvještaj o zbrinjavanju otpada",
+            "Potvrda dobavljača usluge zbrinjavanja otpada"
+          ]
+        },
+        {
+          "title": "Politike",
+          "items": [
+            "Okolišna politika",
+            "Politika zdravlja i sigurnosti",
+            "Kodeks ponašanja",
+            "Politika upravljanja rizicima"
+          ]
+        },
+        {
+          "title": "Certifikati",
+          "items": [
+            "ISO 9001",
+            "ISO 14001",
+            "ISO 45001",
+            "Drugi relevantni certifikati"
+          ]
+        },
+        {
+          "title": "Dobavljački lanac",
+          "items": [
+            "Pregled dobavljača",
+            "Kodeks ponašanja za dobavljače ako postoji"
+          ]
+        }
+      ]
     },
     "documentTypes": {
       "Certificate": "Certifikati",
@@ -1983,6 +2076,11 @@
     "firstCustomerReviewPublicPassport": "Kreirajte javni link za kupca.",
     "firstCustomerPrepareHandoff": "Pripremite handoff sažetak.",
     "firstCustomerReadyAction": "Testirajte javni Passport i PDF prije slanja.",
+    "copyPilotInstructions": "Kopiraj pilot upute",
+    "pilotInstructionsCopied": "Pilot upute su kopirane.",
+    "pilotInstructionsCopyError": "Trenutno ne možemo kopirati pilot upute.",
+    "pilotInvitationSubject": "Poziv za izradu Supplier Passport profila",
+    "pilotInvitationBody": "Pozdrav,\n\npripremili smo vam pristup Supplier Passport radnom prostoru.\n\nCilj je da na jednom mjestu unesete osnovne podatke o tvrtki, ispunite VSME upitnik, učitate dostupnu dokaznu dokumentaciju i pripremite sažetak siguran za prikaz kupcima.\n\nPredloženi redoslijed:\n1. Ispunite Osnovne podatke\n2. Ispunite upitnik po sekcijama\n3. Učitajte dostupne dokumente i certifikate\n4. Povežite dokumente s odgovorima gdje je to potrebno\n5. Pregledajte Supplier Passport\n6. Kreirajte javni link ili preuzmite PDF sažetak\n\nPrivatni dokazni dokumenti nisu javno dostupni za preuzimanje bez dodatnog odobrenja. Javni link prikazuje sažetak siguran za prikaz kupcima i dostupnost dokaza.\n\nAko zapnete, u aplikaciji koristite opciju \"Kontaktiraj podršku\".\n\nSrdačno,",
     "saveConciergeStatus": "Spremi concierge status",
     "conciergeSaved": "Concierge status je spremljen.",
     "conciergeSaveError": "Trenutno ne možemo spremiti concierge status.",

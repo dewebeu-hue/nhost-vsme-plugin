@@ -71,6 +71,15 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
       text: t("contextualHelp.text"),
       restartGuide: t("contextualHelp.restartGuide"),
     },
+    beforeStart: {
+      title: t("beforeStart.title"),
+      text: t("beforeStart.text"),
+      cta: t("beforeStart.cta"),
+      privacyNote: t("beforeStart.privacyNote"),
+      items: t.raw("beforeStart.items") as string[],
+      guideTitle: t("beforeStart.guideTitle"),
+      steps: t.raw("beforeStart.steps") as string[],
+    },
     quickStart: {
       title: t("quickStart.title"),
       subtitle: t("quickStart.subtitle"),

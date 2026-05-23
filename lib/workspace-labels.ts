@@ -214,6 +214,14 @@ export type DocumentsLabels = {
     expiringSoonLabel: string;
     expiringSoonText: string;
   };
+  evidencePreparation: {
+    title: string;
+    note: string;
+    groups: {
+      title: string;
+      items: string[];
+    }[];
+  };
   statuses: Record<EvidenceRoomStatus, string>;
   answerStatuses: Record<QuestionnaireAnswerStatus, string>;
   documentTypes: Record<EvidenceRoomDocument["type"], string>;
@@ -512,6 +520,53 @@ export const defaultDocumentsLabels: DocumentsLabels = {
     linkedToAnswerText: "A linked document supports a specific questionnaire answer.",
     expiringSoonLabel: "Expiring soon",
     expiringSoonText: "Documents with expiry dates, such as certificates, are highlighted before they expire.",
+  },
+  evidencePreparation: {
+    title: "Which documents should you prepare?",
+    note: "You do not need every document. Upload what exists and link it to the relevant answers.",
+    groups: [
+      {
+        title: "Company",
+        items: ["Company register excerpt or basic company information", "Internal company profile"],
+      },
+      {
+        title: "Employees",
+        items: ["Employee count report", "HR policy if available"],
+      },
+      {
+        title: "Energy",
+        items: [
+          "Electricity invoices",
+          "Meter readings",
+          "Renewable energy certificates if available",
+        ],
+      },
+      {
+        title: "Fuel",
+        items: ["Fuel invoices", "Vehicle or fuel consumption records"],
+      },
+      {
+        title: "Waste",
+        items: ["Waste disposal report", "Waste service provider confirmation"],
+      },
+      {
+        title: "Policies",
+        items: [
+          "Environmental policy",
+          "Health and safety policy",
+          "Code of conduct",
+          "Risk management policy",
+        ],
+      },
+      {
+        title: "Certificates",
+        items: ["ISO 9001", "ISO 14001", "ISO 45001", "Other relevant certificates"],
+      },
+      {
+        title: "Supplier chain",
+        items: ["Supplier overview", "Supplier code of conduct if available"],
+      },
+    ],
   },
   statuses: {
     Reviewed: "Reviewed",

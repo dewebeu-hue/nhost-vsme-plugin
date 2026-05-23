@@ -135,6 +135,15 @@ export type DashboardOverviewLabels = {
     text: string;
     restartGuide: string;
   };
+  beforeStart: {
+    title: string;
+    text: string;
+    cta: string;
+    privacyNote: string;
+    items: string[];
+    guideTitle: string;
+    steps: string[];
+  };
   quickStart: {
     title: string;
     subtitle: string;
@@ -267,6 +276,33 @@ export const defaultDashboardOverviewLabels: DashboardOverviewLabels = {
     title: "How to complete your Supplier Passport",
     text: "Follow the steps below to complete the questionnaire, add evidence and prepare a buyer-safe Passport summary.",
     restartGuide: "Restart onboarding guide",
+  },
+  beforeStart: {
+    title: "Before you start",
+    text: "To complete your Supplier Passport faster, prepare basic company information and supporting evidence documents.",
+    cta: "Start with Company Basics",
+    privacyNote:
+      "The public link does not automatically give the buyer access to private documents. The buyer sees a summary and evidence availability.",
+    items: [
+      "Basic company information",
+      "Reporting period",
+      "Employee count",
+      "Energy and fuel data",
+      "Supporting evidence documents",
+      "Certificates if available",
+      "Contact person for buyer requests",
+    ],
+    guideTitle: "Pilot completion flow",
+    steps: [
+      "Complete Company Basics",
+      "Complete the questionnaire sections",
+      "Upload supporting evidence",
+      "Link evidence to answers",
+      "Review Supplier Passport",
+      "Create a buyer public link",
+      "Download the PDF summary",
+      "Contact support if you get stuck",
+    ],
   },
   quickStart: {
     title: "First Supplier Passport checklist",

@@ -4476,3 +4476,94 @@ Privacy and buyer-safe output:
 - Public Passport and public PDF must not include `storage_file_id`, `file_url`, `privateUrl`, signed URLs, raw document storage paths, support notes, admin notes, commercial/internal notes, passwords, password hashes, JWTs, cookies, or secrets.
 - Evidence document downloads remain disabled unless a later phase explicitly adds a safe download workflow.
 - Pilot readiness is an internal operations checklist only. It is not certification, approval, audit, or assurance.
+
+## First Customer Onboarding Instructions
+
+Supplier-facing onboarding now appears in the supplier dashboard and Evidence Data Room:
+
+- `/[locale]/dashboard` shows `Before you start` / `Prije nego započnete` with the core preparation checklist and a CTA to `questionnaire?section=company_basics`.
+- `/[locale]/dashboard/documents` shows `Which documents should you prepare?` / `Koje dokumente pripremiti?` grouped by company, employees, energy, fuel, waste, policies, certificates, and supplier chain.
+- The dashboard guide explains the suggested pilot flow: Company Basics, questionnaire sections, evidence upload, evidence linking, Passport review, public link, PDF summary, and support.
+- Supplier copy explicitly says that the public link does not automatically give buyers access to private documents. Buyers see a summary and evidence availability.
+
+Admin pilot invitation:
+
+- The admin organization detail page includes a copy-only `Copy pilot instructions` / `Kopiraj pilot upute` button in the Pilot readiness panel.
+- This only writes a prepared invitation message to the clipboard. It does not send email and does not include tokens, passwords, private URLs, or organization secrets.
+
+HR subject:
+
+`Poziv za izradu Supplier Passport profila`
+
+HR body:
+
+```text
+Pozdrav,
+
+pripremili smo vam pristup Supplier Passport radnom prostoru.
+
+Cilj je da na jednom mjestu unesete osnovne podatke o tvrtki, ispunite VSME upitnik, učitate dostupnu dokaznu dokumentaciju i pripremite sažetak siguran za prikaz kupcima.
+
+Predloženi redoslijed:
+1. Ispunite Osnovne podatke
+2. Ispunite upitnik po sekcijama
+3. Učitajte dostupne dokumente i certifikate
+4. Povežite dokumente s odgovorima gdje je to potrebno
+5. Pregledajte Supplier Passport
+6. Kreirajte javni link ili preuzmite PDF sažetak
+
+Privatni dokazni dokumenti nisu javno dostupni za preuzimanje bez dodatnog odobrenja. Javni link prikazuje sažetak siguran za prikaz kupcima i dostupnost dokaza.
+
+Ako zapnete, u aplikaciji koristite opciju "Kontaktiraj podršku".
+
+Srdačno,
+```
+
+EN subject:
+
+`Invitation to complete your Supplier Passport profile`
+
+EN body:
+
+```text
+Hello,
+
+we have prepared access to your Supplier Passport workspace.
+
+The goal is to enter your basic company information, complete the VSME questionnaire, upload available supporting evidence and prepare a buyer-safe summary that you can share with customers.
+
+Suggested order:
+1. Complete Company Basics
+2. Complete the questionnaire sections
+3. Upload available documents and certificates
+4. Link documents to answers where required
+5. Review Supplier Passport
+6. Create a public link or download the PDF summary
+
+Private evidence documents are not publicly downloadable without additional approval. The public link shows a buyer-safe summary and evidence availability.
+
+If you get stuck, use the "Contact support" option inside the application.
+
+Best regards,
+```
+
+First customer success checklist:
+
+1. Invite the supplier with the prepared pilot instructions.
+2. Confirm login works.
+3. Confirm password reset works.
+4. Supplier completes basic profile and Company Basics.
+5. Supplier completes the questionnaire sections.
+6. Supplier uploads at least 5-12 real evidence documents where available.
+7. Supplier links evidence to evidence-required answers.
+8. Admin reviews Pilot readiness on the organization detail page.
+9. Supplier creates a share link.
+10. Admin opens the public link in an incognito/private browser.
+11. Supplier downloads the PDF summary.
+12. Supplier submits a support request and admin confirms it appears in the support inbox.
+
+Operational guardrails:
+
+- Do not send pilot invitation email automatically from the app.
+- Do not paste tokens, passwords, private evidence URLs, storage IDs, signed URLs, or internal notes into the invitation.
+- Evidence guidance is illustrative. Suppliers do not need every listed document; they should upload what exists and link it to relevant answers.

@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
-import { UploadCloud } from "lucide-react";
+import { ClipboardList, UploadCloud } from "lucide-react";
 import { DocumentsMetricCards } from "@/components/documents/documents-metric-cards";
 import { DocumentsToolbar } from "@/components/documents/documents-toolbar";
 import { EvidenceDataRoom } from "@/components/documents/evidence-data-room";
@@ -621,6 +621,8 @@ export function DocumentsPageClient({
         text={labels.contextualHelp.text}
       />
 
+      <EvidencePreparationGuide labels={labels} />
+
       <section className="flex flex-wrap gap-3">
         <HelpChip label={labels.contextualHelp.documentTypeLabel}>
           <TerminologyTooltip
@@ -706,6 +708,39 @@ export function DocumentsPageClient({
       />
 
     </div>
+  );
+}
+
+function EvidencePreparationGuide({ labels }: { labels: DocumentsLabels }) {
+  const guide = labels.evidencePreparation;
+
+  return (
+    <section className="supplier-surface rounded-3xl border-0 p-5 sm:p-6">
+      <div className="flex items-start gap-3">
+        <span className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-teal-50 text-teal-700">
+          <ClipboardList aria-hidden="true" className="size-5" />
+        </span>
+        <div>
+          <h2 className="text-xl font-semibold tracking-tight text-slate-950">{guide.title}</h2>
+          <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">{guide.note}</p>
+        </div>
+      </div>
+      <div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        {guide.groups.map((group) => (
+          <article key={group.title} className="rounded-2xl border border-slate-100 bg-white/85 p-4">
+            <h3 className="text-sm font-semibold text-slate-950">{group.title}</h3>
+            <ul className="mt-3 grid gap-2 text-sm leading-5 text-slate-600">
+              {group.items.map((item) => (
+                <li key={item} className="flex gap-2">
+                  <span aria-hidden="true" className="mt-2 size-1.5 shrink-0 rounded-full bg-blue-500" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </article>
+        ))}
+      </div>
+    </section>
   );
 }
 

@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
+import { ArrowRight, CheckCircle2, ClipboardList } from "lucide-react";
 import { ActiveShareLinksCard } from "@/components/dashboard/active-share-links-card";
 import { BuyerRequestsCard } from "@/components/dashboard/buyer-requests-card";
 import { FirstPassportChecklistCard } from "@/components/dashboard/first-passport-checklist-card";
@@ -191,6 +193,7 @@ export function DashboardOverviewPage({
         labels={labels}
         localePrefix={localePrefix}
       />
+      <BeforeYouStartCard labels={labels} localePrefix={localePrefix} />
       <ContextualHelpCard
         title={labels.contextualHelp.title}
         text={labels.contextualHelp.text}
@@ -209,6 +212,79 @@ export function DashboardOverviewPage({
         />
       </section>
     </div>
+  );
+}
+
+function BeforeYouStartCard({
+  labels,
+  localePrefix,
+}: {
+  labels: DashboardOverviewLabels;
+  localePrefix: string;
+}) {
+  const beforeStart = labels.beforeStart;
+
+  return (
+    <section className="supplier-surface rounded-3xl border-0 p-5 sm:p-6">
+      <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_minmax(280px,0.7fr)]">
+        <div>
+          <div className="flex items-start gap-3">
+            <span className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-blue-50 text-blue-700">
+              <ClipboardList aria-hidden="true" className="size-5" />
+            </span>
+            <div>
+              <h2 className="text-xl font-semibold tracking-tight text-slate-950">
+                {beforeStart.title}
+              </h2>
+              <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
+                {beforeStart.text}
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-5 grid gap-3 sm:grid-cols-2">
+            {beforeStart.items.map((item) => (
+              <div
+                key={item}
+                className="flex items-center gap-3 rounded-2xl border border-slate-100 bg-white/85 px-4 py-3 text-sm font-medium text-slate-700"
+              >
+                <CheckCircle2 aria-hidden="true" className="size-4 shrink-0 text-teal-600" />
+                <span>{item}</span>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-5">
+            <Link
+              href={`${localePrefix}/dashboard/questionnaire?section=company_basics`}
+              className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 text-sm font-semibold text-white shadow-lg shadow-blue-600/15 transition hover:-translate-y-0.5 hover:bg-blue-700 hover:shadow-blue-600/25 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-blue-600/20 motion-reduce:transform-none"
+            >
+              {beforeStart.cta}
+              <ArrowRight aria-hidden="true" className="size-4" />
+            </Link>
+          </div>
+        </div>
+
+        <aside className="rounded-2xl border border-blue-100 bg-gradient-to-br from-blue-50/80 to-white p-5">
+          <h3 className="text-sm font-semibold uppercase tracking-[0.14em] text-blue-700">
+            {beforeStart.guideTitle}
+          </h3>
+          <ol className="mt-4 grid gap-3">
+            {beforeStart.steps.map((step, index) => (
+              <li key={step} className="flex gap-3 text-sm leading-6 text-slate-700">
+                <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-white text-xs font-semibold text-blue-700 shadow-sm ring-1 ring-blue-100">
+                  {index + 1}
+                </span>
+                <span>{step}</span>
+              </li>
+            ))}
+          </ol>
+          <p className="mt-4 rounded-xl border border-teal-100 bg-teal-50/70 px-3 py-2 text-xs leading-5 text-teal-800">
+            {beforeStart.privacyNote}
+          </p>
+        </aside>
+      </div>
+    </section>
   );
 }
 

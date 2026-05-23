@@ -240,6 +240,32 @@
         "text": "Folgen Sie den Schritten unten, um den Fragebogen auszufuellen, Nachweise hinzuzufuegen und eine kaeufergeeignete Passport-Zusammenfassung vorzubereiten.",
         "restartGuide": "Onboarding-Tour neu starten"
       },
+      "beforeStart": {
+        "title": "Bevor Sie starten",
+        "text": "Bereiten Sie grundlegende Unternehmensdaten und Nachweisdokumente vor, um den Supplier Passport schneller abzuschliessen.",
+        "cta": "Mit Unternehmensgrundlagen starten",
+        "privacyNote": "Der oeffentliche Link gibt Kaeufern keinen automatischen Zugriff auf private Dokumente. Kaeufer sehen eine Zusammenfassung und die Nachweisverfuegbarkeit.",
+        "items": [
+          "Grundlegende Unternehmensdaten",
+          "Berichtszeitraum",
+          "Mitarbeiterzahl",
+          "Energie- und Kraftstoffdaten",
+          "Nachweisdokumente",
+          "Zertifikate, falls vorhanden",
+          "Kontaktperson fuer Kaeuferanfragen"
+        ],
+        "guideTitle": "Pilot-Ablauf",
+        "steps": [
+          "Unternehmensgrundlagen ausfuellen",
+          "Fragebogenabschnitte ausfuellen",
+          "Nachweisdokumente hochladen",
+          "Nachweise mit Antworten verknuepfen",
+          "Supplier Passport pruefen",
+          "Oeffentlichen Link fuer Kaeufer erstellen",
+          "PDF-Zusammenfassung herunterladen",
+          "Support kontaktieren, wenn Sie feststecken"
+        ]
+      },
       "quickStart": {
         "title": "Checkliste fuer den ersten Supplier Passport",
         "subtitle": "Schliessen Sie diese Schritte ab, um einen nuetzlichen ersten Entwurf fuer Kaeufer vorzubereiten.",
@@ -829,6 +855,73 @@
     "unknownSize": "Unbekannte Größe",
     "recently": "Kürzlich",
     "notLinked": "Noch nicht verknüpft",
+    "evidencePreparation": {
+      "title": "Welche Dokumente sollten vorbereitet werden?",
+      "note": "Es muessen nicht alle Dokumente vorhanden sein. Laden Sie hoch, was existiert, und verknuepfen Sie es mit den relevanten Antworten.",
+      "groups": [
+        {
+          "title": "Unternehmen",
+          "items": [
+            "Registerauszug oder grundlegende Unternehmensdaten",
+            "Internes Unternehmensprofil"
+          ]
+        },
+        {
+          "title": "Mitarbeiter",
+          "items": [
+            "Bericht zur Mitarbeiterzahl",
+            "HR-Richtlinie, falls vorhanden"
+          ]
+        },
+        {
+          "title": "Energie",
+          "items": [
+            "Stromrechnungen",
+            "Zaehlerstaende",
+            "Zertifikate fuer erneuerbare Energie, falls vorhanden"
+          ]
+        },
+        {
+          "title": "Kraftstoff",
+          "items": [
+            "Kraftstoffrechnungen",
+            "Fahrzeug- oder Kraftstoffverbrauchsaufzeichnungen"
+          ]
+        },
+        {
+          "title": "Abfall",
+          "items": [
+            "Abfallentsorgungsbericht",
+            "Bestaetigung des Entsorgungsdienstleisters"
+          ]
+        },
+        {
+          "title": "Richtlinien",
+          "items": [
+            "Umweltrichtlinie",
+            "Gesundheits- und Sicherheitsrichtlinie",
+            "Verhaltenskodex",
+            "Risikomanagement-Richtlinie"
+          ]
+        },
+        {
+          "title": "Zertifikate",
+          "items": [
+            "ISO 9001",
+            "ISO 14001",
+            "ISO 45001",
+            "Andere relevante Zertifikate"
+          ]
+        },
+        {
+          "title": "Lieferkette",
+          "items": [
+            "Lieferantenuebersicht",
+            "Supplier Code of Conduct, falls vorhanden"
+          ]
+        }
+      ]
+    },
     "documentTypes": {
       "Certificate": "Zertifikate",
       "Utility Bill": "Energie",
@@ -1973,6 +2066,11 @@
     "firstCustomerReviewPublicPassport": "Pruefen Sie den oeffentlichen Supplier Passport vor dem Teilen.",
     "firstCustomerPrepareHandoff": "Bereiten Sie die Handoff-Zusammenfassung vor.",
     "firstCustomerReadyAction": "Workspace ist fuer die erste Kundenpruefung bereit.",
+    "copyPilotInstructions": "Pilot-Anweisungen kopieren",
+    "pilotInstructionsCopied": "Pilot-Einladung kopiert.",
+    "pilotInstructionsCopyError": "Pilot-Anweisungen konnten gerade nicht kopiert werden.",
+    "pilotInvitationSubject": "Invitation to complete your Supplier Passport profile",
+    "pilotInvitationBody": "Hello,\n\nwe have prepared access to your Supplier Passport workspace.\n\nThe goal is to enter your basic company information, complete the VSME questionnaire, upload available supporting evidence and prepare a buyer-safe summary that you can share with customers.\n\nSuggested order:\n1. Complete Company Basics\n2. Complete the questionnaire sections\n3. Upload available documents and certificates\n4. Link documents to answers where required\n5. Review Supplier Passport\n6. Create a public link or download the PDF summary\n\nPrivate evidence documents are not publicly downloadable without additional approval. The public link shows a buyer-safe summary and evidence availability.\n\nIf you get stuck, use the \"Contact support\" option inside the application.\n\nBest regards,",
     "saveConciergeStatus": "Concierge-Status speichern",
     "conciergeSaved": "Concierge-Status gespeichert.",
     "conciergeSaveError": "Concierge-Status konnte gerade nicht gespeichert werden.",

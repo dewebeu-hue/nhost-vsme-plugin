@@ -82,6 +82,7 @@ export function AdminOrganizationDetailClient({
   const [isSaving, setIsSaving] = useState(false);
   const [savingAction, setSavingAction] = useState<AdminSaveAction>(null);
   const [isCopyingHandoff, setIsCopyingHandoff] = useState(false);
+  const [isCopyingPilotInstructions, setIsCopyingPilotInstructions] = useState(false);
   const [status, setStatus] = useState<"loading" | "ready" | "unauthorized" | "error">("loading");
   const [message, setMessage] = useState<string | null>(null);
 
@@ -247,6 +248,28 @@ export function AdminOrganizationDetailClient({
       setMessage(labels.handoffCopyError);
     } finally {
       setIsCopyingHandoff(false);
+    }
+  }
+
+  async function handleCopyPilotInstructions() {
+    if (!organization) {
+      setMessage(labels.missingOrganizationContext);
+      return;
+    }
+
+    if (isCopyingPilotInstructions) {
+      return;
+    }
+
+    setIsCopyingPilotInstructions(true);
+
+    try {
+      await navigator.clipboard.writeText(buildPilotInvitationText(labels));
+      setMessage(labels.pilotInstructionsCopied);
+    } catch {
+      setMessage(labels.pilotInstructionsCopyError);
+    } finally {
+      setIsCopyingPilotInstructions(false);
     }
   }
 
@@ -536,6 +559,17 @@ export function AdminOrganizationDetailClient({
             <p className="mt-2 text-sm text-slate-500">
               {firstCustomerDoneCount}/{firstCustomerChecklist.length} {labels.statusCompleted.toLowerCase()}
             </p>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="mt-4 w-full rounded-full bg-white font-semibold"
+              onClick={handleCopyPilotInstructions}
+              disabled={isCopyingPilotInstructions}
+            >
+              <ClipboardCopy aria-hidden="true" className="size-4" />
+              {isCopyingPilotInstructions ? labels.copying : labels.copyPilotInstructions}
+            </Button>
           </div>
         </div>
         <div className="mt-5 grid gap-3 lg:grid-cols-2">
@@ -1477,6 +1511,10 @@ function buildHandoffSummaryText({
     `${labels.internalNote}: ${internalNoteExcerpt || labels.notProvided}`,
     `${labels.notes}: ${labels.internalUseOnly}`,
   ].join("\n");
+}
+
+function buildPilotInvitationText(labels: AdminLabels) {
+  return [`Subject: ${labels.pilotInvitationSubject}`, "", labels.pilotInvitationBody].join("\n");
 }
 
 function truncateText(value: string, maxLength: number) {
