@@ -119,6 +119,7 @@ export type DashboardBuyerRequestSummary = {
 };
 
 export type DashboardSetupSummary = {
+  organizationId: string;
   organizationName: string;
   answeredQuestions: number;
   totalQuestions: number;
@@ -334,6 +335,7 @@ export async function getDashboardSetupSummaryForOrganization(
   const activeShareLinks = data.share_links.filter((link) => isShareLinkActive(link));
 
   return {
+    organizationId: organization.id,
     organizationName: organization.name,
     answeredQuestions,
     totalQuestions,

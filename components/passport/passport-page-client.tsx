@@ -42,6 +42,7 @@ import type {
 import {
   getFreshBrowserNhostSession,
 } from "@/lib/nhost/client";
+import { markPassportChecklistProgress } from "@/lib/passport-checklist-progress";
 import { defaultPassportLabels, type PassportLabels } from "@/lib/passport-labels";
 import {
   calculatePassportReadinessScore,
@@ -154,6 +155,7 @@ export function PassportPageClient({
   const [isShareOpen, setIsShareOpen] = useState(false);
   const [isCreatingShare, setIsCreatingShare] = useState(false);
   const [shareUrl, setShareUrl] = useState("");
+  const [currentOrganizationId, setCurrentOrganizationId] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -195,6 +197,8 @@ export function PassportPageClient({
             questionnairePayload.documentLinks ?? [],
           );
 
+          setCurrentOrganizationId(organization.id);
+          markPassportChecklistProgress(organization.id, { passportViewed: true });
           setCompanyProfile(createCompanyProfile(organization, questionnairePayload, labels));
           setReadiness({
             score: calculatePassportReadinessScore(questionItems, questionAnswers),
@@ -280,6 +284,8 @@ export function PassportPageClient({
         questionnairePayload.documentLinks ?? [],
       );
 
+      setCurrentOrganizationId(organization.id);
+      markPassportChecklistProgress(organization.id, { passportViewed: true });
       setCompanyProfile(createCompanyProfile(organization, questionnairePayload, labels));
       setReadiness({
         score: calculatePassportReadinessScore(questionItems, questionAnswers),
@@ -391,6 +397,7 @@ export function PassportPageClient({
       link.click();
       link.remove();
       URL.revokeObjectURL(url);
+      markPassportChecklistProgress(currentOrganizationId, { pdfDownloaded: true });
       setMessage({ tone: "success", text: labels.exportPdfSuccess });
     } catch {
       setMessage({ tone: "error", text: labels.exportPdfError });

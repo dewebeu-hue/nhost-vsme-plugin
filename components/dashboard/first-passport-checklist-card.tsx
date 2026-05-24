@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo, useSyncExternalStore } from "react";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -20,6 +21,12 @@ import {
   type DashboardOverviewLabels,
 } from "@/lib/dashboard-labels";
 import type { DashboardSetupSummary } from "@/lib/data/dashboard";
+import {
+  createEmptyPassportChecklistProgress,
+  getPassportChecklistProgressSnapshot,
+  subscribePassportChecklistProgress,
+  type PassportChecklistProgress,
+} from "@/lib/passport-checklist-progress";
 
 type FirstPassportChecklistCardProps = {
   summary: DashboardSetupSummary | null;
@@ -44,15 +51,30 @@ export function FirstPassportChecklistCard({
   localePrefix = "",
 }: FirstPassportChecklistCardProps) {
   const quickStart = labels.quickStart;
-  const items = createQuickStartItems(summary, labels, localePrefix);
+  const actionProgressSnapshot = useSyncExternalStore(
+    subscribePassportChecklistProgress,
+    () => getPassportChecklistProgressSnapshot(summary?.organizationId),
+    () => "loading",
+  );
+  const actionProgress = useMemo(
+    () => parseActionProgressSnapshot(actionProgressSnapshot),
+    [actionProgressSnapshot],
+  );
+
+  if (actionProgressSnapshot === "loading") {
+    return <ChecklistLoadingCard labels={labels} localePrefix={localePrefix} />;
+  }
+
+  const items = createQuickStartItems(summary, labels, localePrefix, actionProgress);
   const completedSteps = items.filter((item) => item.completed).length;
   const progressPercent = Math.round((completedSteps / items.length) * 100);
-  const nextItem = items.find((item) => !item.completed) ?? items.at(-1);
-  const mainHref = nextItem?.completed
+  const allStepsComplete = completedSteps === items.length;
+  const nextItem = items.find((item) => !item.completed);
+  const mainHref = allStepsComplete
     ? `${localePrefix}/dashboard/passport`
     : nextItem?.href ?? `${localePrefix}/dashboard`;
   const mainLabel =
-    completedSteps === items.length ? quickStart.reviewAndSharePassport : quickStart.continueSetup;
+    allStepsComplete ? quickStart.reviewAndSharePassport : quickStart.continueSetup;
 
   return (
     <SectionCard
@@ -84,12 +106,12 @@ export function FirstPassportChecklistCard({
                 })}
               </p>
               <p className="mt-1 text-sm leading-6 text-slate-600">
-                {nextItem
+                {nextItem && !allStepsComplete
                   ? formatTemplate(quickStart.next, { title: nextItem.title })
                   : quickStart.reviewAndSharePassport}
               </p>
             </div>
-            <DashboardStatusPill tone={completedSteps === items.length ? "green" : "blue"}>
+            <DashboardStatusPill tone={allStepsComplete ? "green" : "blue"}>
               {`${progressPercent}%`}
             </DashboardStatusPill>
           </div>
@@ -127,6 +149,49 @@ export function FirstPassportChecklistCard({
           {items.map((item) => (
             <QuickStartChecklistItem key={item.key} item={item} labels={labels} />
           ))}
+        </div>
+      </div>
+    </SectionCard>
+  );
+}
+
+function parseActionProgressSnapshot(snapshot: string): PassportChecklistProgress {
+  if (!snapshot) {
+    return createEmptyPassportChecklistProgress();
+  }
+
+  try {
+    const parsed = JSON.parse(snapshot) as Partial<PassportChecklistProgress>;
+
+    return {
+      passportViewed: parsed.passportViewed === true,
+      pdfDownloaded: parsed.pdfDownloaded === true,
+    };
+  } catch {
+    return createEmptyPassportChecklistProgress();
+  }
+}
+
+function ChecklistLoadingCard({
+  labels,
+  localePrefix,
+}: {
+  labels: DashboardOverviewLabels;
+  localePrefix: string;
+}) {
+  const loadingLabel = localePrefix.startsWith("/hr") ? "Učitavanje kontrolne liste..." : "Loading checklist...";
+
+  return (
+    <SectionCard
+      title={labels.quickStart.title}
+      description={labels.quickStart.subtitle}
+      className="border border-emerald-100 bg-gradient-to-br from-white to-emerald-50/40"
+      contentClassName="flex flex-col gap-5"
+    >
+      <div className="flex min-h-32 items-center justify-center rounded-xl border border-emerald-100 bg-white p-4">
+        <div className="flex items-center gap-3 text-sm font-semibold text-slate-600">
+          <span className="size-5 rounded-full border-2 border-emerald-100 border-t-emerald-500 motion-safe:animate-spin" />
+          {loadingLabel}
         </div>
       </div>
     </SectionCard>
@@ -183,6 +248,7 @@ function createQuickStartItems(
   summary: DashboardSetupSummary | null,
   labels: DashboardOverviewLabels,
   localePrefix: string,
+  actionProgress: PassportChecklistProgress,
 ): QuickStartItem[] {
   const quickStart = labels.quickStart;
   const companyBasics = summary?.sectionProgress.find(
@@ -237,8 +303,8 @@ function createQuickStartItems(
       description: quickStart.reviewPassportDescription,
       href: `${localePrefix}/dashboard/passport`,
       cta: quickStart.openPassport,
-      completed: false,
-      recommended: hasPassportSummary,
+      completed: actionProgress.passportViewed,
+      recommended: hasPassportSummary && !actionProgress.passportViewed,
       icon: FileText,
     },
     {
@@ -256,8 +322,8 @@ function createQuickStartItems(
       description: quickStart.downloadPdfDescription,
       href: `${localePrefix}/dashboard/passport`,
       cta: quickStart.openPassport,
-      completed: false,
-      recommended: Boolean(summary?.pdfAvailable),
+      completed: actionProgress.pdfDownloaded,
+      recommended: Boolean(summary?.pdfAvailable) && !actionProgress.pdfDownloaded,
       icon: Download,
     },
   ];
