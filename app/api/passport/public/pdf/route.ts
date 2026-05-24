@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getPublicShareByToken, getShareVerificationCookieName } from "@/lib/data/share-links";
-import { createTextPdf } from "@/lib/pdf/simple-pdf";
+import { logSafeDiagnostic } from "@/lib/diagnostics/server-env";
+import { arePdfFontsAvailable, createTextPdf, getPdfRendererName } from "@/lib/pdf/simple-pdf";
 import type { publicSharePassport } from "@/lib/mock-data";
 
 type Locale = "en" | "hr" | "de";
@@ -35,7 +36,14 @@ export async function GET(request: NextRequest) {
         "cache-control": "no-store",
       },
     });
-  } catch {
+  } catch (error) {
+    logSafeDiagnostic("public_pdf_export_error", {
+      stage: getPdfErrorStage(error),
+      renderer: getPdfRendererName(),
+      fontLoaded: arePdfFontsAvailable(),
+      safeMessage: sanitizePdfErrorMessage(error),
+    });
+
     return NextResponse.json(
       { error: labels.error, category: "public_pdf_export_error" },
       { status: 500 },
@@ -137,6 +145,23 @@ function translateMetricLabel(value: string, labels: PublicPdfLabels) {
 
 function translateCertificateStatus(status: string, labels: PublicPdfLabels) {
   return labels.certificateStatuses[status] ?? labels.noCertificateWarnings;
+}
+
+function getPdfErrorStage(error: unknown) {
+  const message = error instanceof Error ? error.message : "";
+  const [stage] = message.split(":");
+
+  return stage?.startsWith("pdf_") ? stage : "public_pdf_export";
+}
+
+function sanitizePdfErrorMessage(error: unknown) {
+  const message = error instanceof Error ? error.message : "Unknown public PDF error.";
+
+  return message
+    .replace(/Bearer\s+[A-Za-z0-9._-]+/gi, "Bearer [redacted]")
+    .replace(/token[=:]\s*[A-Za-z0-9._-]+/gi, "token=[redacted]")
+    .replace(/password[=:]\s*[^,\s]+/gi, "password=[redacted]")
+    .slice(0, 300);
 }
 
 const publicPdfLabels = {

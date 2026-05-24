@@ -11,7 +11,8 @@ import {
   type PassportSummaryQuestion,
   type PassportSummarySection,
 } from "@/lib/passport-summary";
-import { createTextPdf } from "@/lib/pdf/simple-pdf";
+import { logSafeDiagnostic } from "@/lib/diagnostics/server-env";
+import { arePdfFontsAvailable, createTextPdf, getPdfRendererName } from "@/lib/pdf/simple-pdf";
 
 type Locale = "en" | "hr" | "de";
 
@@ -209,6 +210,13 @@ export async function GET(request: Request) {
     if (error instanceof AuthenticationRequiredError) {
       return NextResponse.json({ error: "Please sign in to export a Supplier Passport PDF." }, { status: 401 });
     }
+
+    logSafeDiagnostic("passport_pdf_export_error", {
+      stage: getPdfErrorStage(error),
+      renderer: getPdfRendererName(),
+      fontLoaded: arePdfFontsAvailable(),
+      safeMessage: sanitizePdfErrorMessage(error),
+    });
 
     return NextResponse.json(
       { error: "We could not generate the PDF right now.", category: classifyExportError(error) },
@@ -557,6 +565,23 @@ function classifyExportError(error: unknown) {
   }
 
   return "pdf_export_error";
+}
+
+function getPdfErrorStage(error: unknown) {
+  const message = error instanceof Error ? error.message : "";
+  const [stage] = message.split(":");
+
+  return stage?.startsWith("pdf_") ? stage : "passport_pdf_export";
+}
+
+function sanitizePdfErrorMessage(error: unknown) {
+  const message = error instanceof Error ? error.message : "Unknown PDF export error.";
+
+  return message
+    .replace(/Bearer\s+[A-Za-z0-9._-]+/gi, "Bearer [redacted]")
+    .replace(/token[=:]\s*[A-Za-z0-9._-]+/gi, "token=[redacted]")
+    .replace(/password[=:]\s*[^,\s]+/gi, "password=[redacted]")
+    .slice(0, 300);
 }
 
 function translateSection(code: string, fallback: string, labels: PdfLabels) {

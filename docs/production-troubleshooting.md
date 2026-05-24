@@ -4791,3 +4791,31 @@ QA checklist:
 7. Confirm DPA is clearly marked as a working draft/overview, not a signed contract.
 8. Inspect Network and page source for no private document URLs, storage IDs, share tokens, admin data, user/member data, JWTs, cookies or secrets.
 9. Confirm no optional analytics, marketing pixel or tracking script loads before consent.
+
+## Faza 4.5 Pilot Launch QA Close
+
+Status as of 24.5.2026.: PDF blocker resolved in code; production PDF download QA still required after deployment.
+
+PDF rendering fix:
+
+- HR and EN public/authenticated PDF exports use the committed open-source Noto Sans fonts at `public/fonts/NotoSans-Regular.ttf` and `public/fonts/NotoSans-Bold.ttf`.
+- The active PDF helper embeds Noto Sans as Unicode Type0/CID fonts and no longer uses Helvetica/WinAnsi for active PDF text.
+- PDF display text is normalized with NFC only. Do not reintroduce NFD/NFKD normalization, ASCII conversion, or diacritic stripping.
+- If font loading or rendering fails, the PDF API should return a safe non-200 JSON error and log only sanitized diagnostics.
+
+QA notes:
+
+- The visible Passport page refresh action is live-derived from current organization and questionnaire data, so the main supplier UI no longer depends on the legacy `/api/passports` generate mutation.
+- Share link creation, password protection, expiry handling, support requests, admin pilot tracking and legal/GDPR pages still require production manual QA with a real supplier workspace before pilot launch.
+- Legal/GDPR pages use deweb j.d.o.o. details, but legal counsel review and provider DPA/region verification remain required before commercial launch.
+
+Manual pilot gate:
+
+1. Create or select a clean supplier organization.
+2. Complete Company Basics and a representative questionnaire set.
+3. Upload and link evidence, then refresh the questionnaire and confirm evidence-required questions remain complete.
+4. Upload a supplier logo and confirm it appears on Passport views.
+5. Create a simple share link and a password-protected share link; test both in an incognito browser.
+6. Download HR and EN public PDFs and confirm visible, buyer-safe output. HR must show Croatian diacritics correctly before pilot.
+7. Submit a support request as supplier and resolve it as admin.
+8. Confirm legal pages, cookie consent and footer links work on HR and EN routes.
