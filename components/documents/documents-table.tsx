@@ -1,4 +1,4 @@
-import { Link2 } from "lucide-react";
+import { Download, Link2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -19,6 +19,8 @@ type DocumentsTableProps = {
   documents: EvidenceRoomDocument[];
   selectedDocumentId: string;
   onSelectDocument: (document: EvidenceRoomDocument) => void;
+  onDownloadDocument?: (document: EvidenceRoomDocument) => void;
+  downloadingDocumentId?: string | null;
   onLinkToAnswer?: (document: EvidenceRoomDocument) => void;
   labels?: DocumentsLabels;
 };
@@ -27,6 +29,8 @@ export function DocumentsTable({
   documents,
   selectedDocumentId,
   onSelectDocument,
+  onDownloadDocument,
+  downloadingDocumentId,
   onLinkToAnswer,
   labels = defaultDocumentsLabels,
 }: DocumentsTableProps) {
@@ -93,16 +97,33 @@ export function DocumentsTable({
                   />
                 </TableCell>
                 <TableCell className="text-right" onClick={(event) => event.stopPropagation()}>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    className="bg-white"
-                    onClick={() => onLinkToAnswer?.(document)}
-                  >
-                    <Link2 data-icon="inline-start" />
-                    {labels.linkToAnswer}
-                  </Button>
+                  <div className="flex flex-col justify-end gap-2 sm:flex-row">
+                    {onDownloadDocument ? (
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        className="bg-white"
+                        disabled={downloadingDocumentId === document.id}
+                        onClick={() => onDownloadDocument(document)}
+                      >
+                        <Download data-icon="inline-start" />
+                        {downloadingDocumentId === document.id
+                          ? labels.downloadingDocument
+                          : labels.downloadDocument}
+                      </Button>
+                    ) : null}
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      className="bg-white"
+                      onClick={() => onLinkToAnswer?.(document)}
+                    >
+                      <Link2 data-icon="inline-start" />
+                      {labels.linkToAnswer}
+                    </Button>
+                  </div>
                 </TableCell>
               </TableRow>
             );

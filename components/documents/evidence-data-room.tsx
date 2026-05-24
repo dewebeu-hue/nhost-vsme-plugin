@@ -12,6 +12,8 @@ type EvidenceDataRoomProps = {
   initialSelectedDocumentId: string;
   linkedQuestions: EvidenceRoomLinkedQuestion[];
   linkedQuestionsByDocument?: Record<string, EvidenceRoomLinkedQuestion[]>;
+  downloadingDocumentId?: string | null;
+  onDownloadDocument?: (document: EvidenceRoomDocument) => void;
   onLinkToAnswer?: (document: EvidenceRoomDocument) => void;
   labels?: DocumentsLabels;
 };
@@ -21,6 +23,8 @@ export function EvidenceDataRoom({
   initialSelectedDocumentId,
   linkedQuestions,
   linkedQuestionsByDocument,
+  downloadingDocumentId,
+  onDownloadDocument,
   onLinkToAnswer,
   labels = defaultDocumentsLabels,
 }: EvidenceDataRoomProps) {
@@ -46,6 +50,8 @@ export function EvidenceDataRoom({
         documents={documents}
         selectedDocumentId={selectedDocument.id}
         onSelectDocument={(document) => setSelectedDocumentId(document.id)}
+        onDownloadDocument={onDownloadDocument}
+        downloadingDocumentId={downloadingDocumentId}
         onLinkToAnswer={onLinkToAnswer}
         labels={labels}
       />

@@ -134,6 +134,9 @@ export type DocumentsLabels = {
   columnUploaded: string;
   columnStatus: string;
   columnActions: string;
+  downloadDocument: string;
+  downloadingDocument: string;
+  downloadError: string;
   selectAllDocuments: string;
   selectDocument: string;
   actionsFor: string;
@@ -435,6 +438,9 @@ export const defaultDocumentsLabels: DocumentsLabels = {
   columnUploaded: "Uploaded",
   columnStatus: "Status",
   columnActions: "Actions",
+  downloadDocument: "Download",
+  downloadingDocument: "Downloading...",
+  downloadError: "We could not download this document right now.",
   selectAllDocuments: "Select all documents",
   selectDocument: "Select {title}",
   actionsFor: "Actions for {title}",

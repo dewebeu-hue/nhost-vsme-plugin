@@ -169,6 +169,7 @@ export function DocumentsPageClient({
   );
   const [isLinkDialogOpen, setIsLinkDialogOpen] = useState(false);
   const [isLinking, setIsLinking] = useState(false);
+  const [downloadingDocumentId, setDownloadingDocumentId] = useState<string | null>(null);
   const [documentToLink, setDocumentToLink] = useState<EvidenceRoomDocument | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTypeFilter, setSelectedTypeFilter] = useState<string>(
@@ -566,6 +567,65 @@ export function DocumentsPageClient({
     }
   }
 
+  async function handleDownloadDocument(document: EvidenceRoomDocument) {
+    const session = await getFreshBrowserNhostSession();
+
+    if (!liveMode || !session?.accessToken) {
+      setMessage({
+        tone: "error",
+        text: liveMode ? labels.linkSignInError : labels.downloadError,
+      });
+      return;
+    }
+
+    setDownloadingDocumentId(document.id);
+    setMessage(null);
+
+    try {
+      let response = await fetch(`/api/documents/${encodeURIComponent(document.id)}/download`, {
+        method: "GET",
+        headers: {
+          authorization: `Bearer ${session.accessToken}`,
+        },
+      });
+
+      if (response.status === 401) {
+        const refreshedSession = await forceRefreshBrowserNhostSession();
+
+        if (refreshedSession?.accessToken) {
+          response = await fetch(`/api/documents/${encodeURIComponent(document.id)}/download`, {
+            method: "GET",
+            headers: {
+              authorization: `Bearer ${refreshedSession.accessToken}`,
+            },
+          });
+        }
+      }
+
+      if (!response.ok) {
+        throw new Error("download_failed");
+      }
+
+      const blob = await response.blob();
+      const objectUrl = URL.createObjectURL(blob);
+      const anchor = window.document.createElement("a");
+
+      anchor.href = objectUrl;
+      anchor.download = getDownloadFilename(response.headers.get("content-disposition"), document.fileName);
+      window.document.body.appendChild(anchor);
+      anchor.click();
+      anchor.remove();
+      URL.revokeObjectURL(objectUrl);
+    } catch (error) {
+      if (process.env.NODE_ENV !== "production") {
+        console.error("Document download failed", error);
+      }
+      setMessage({ tone: "error", text: labels.downloadError });
+    } finally {
+      setDownloadingDocumentId(null);
+    }
+  }
+
   return (
     <div data-tour="documents-page" className="flex flex-col gap-6">
       <div className="flex flex-col justify-between gap-4 xl:flex-row xl:items-end">
@@ -665,6 +725,8 @@ export function DocumentsPageClient({
             initialSelectedDocumentId={visibleSelectedDocumentId}
             linkedQuestions={liveMode ? [] : evidenceRoomLinkedQuestions}
             linkedQuestionsByDocument={linkedQuestionsByDocument}
+            onDownloadDocument={liveMode ? handleDownloadDocument : undefined}
+            downloadingDocumentId={downloadingDocumentId}
             onLinkToAnswer={(document) => {
               const documentId = resolveEvidenceDocumentId(document);
 
@@ -709,6 +771,18 @@ export function DocumentsPageClient({
 
     </div>
   );
+}
+
+function getDownloadFilename(contentDisposition: string | null, fallback: string) {
+  const utf8Match = contentDisposition?.match(/filename\*=UTF-8''([^;]+)/i);
+
+  if (utf8Match?.[1]) {
+    return decodeURIComponent(utf8Match[1]);
+  }
+
+  const quotedMatch = contentDisposition?.match(/filename="([^"]+)"/i);
+
+  return quotedMatch?.[1] || fallback || "document";
 }
 
 function EvidencePreparationGuide({ labels }: { labels: DocumentsLabels }) {
