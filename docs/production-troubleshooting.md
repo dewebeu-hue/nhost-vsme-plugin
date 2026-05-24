@@ -4567,3 +4567,40 @@ Operational guardrails:
 - Do not send pilot invitation email automatically from the app.
 - Do not paste tokens, passwords, private evidence URLs, storage IDs, signed URLs, or internal notes into the invitation.
 - Evidence guidance is illustrative. Suppliers do not need every listed document; they should upload what exists and link it to relevant answers.
+
+## Admin Pilot Tracking Workflow
+
+Pilot tracking lives on the admin-only organization concierge record. Apply migration `nhost/migrations/default/0011_add_pilot_tracking_fields` before using the workflow in production and track the added `organization_concierge_notes` columns in Hasura.
+
+Tracked fields:
+
+- `pilot_status`: one of `not_started`, `invited`, `onboarding`, `waiting_on_supplier`, `ready_for_review`, `buyer_demo_ready`, `completed`, or `paused`.
+- `pilot_start_date` and `pilot_target_date`: date-only pilot schedule fields.
+- `next_follow_up_date`: existing admin follow-up date reused by the pilot panel.
+- `last_contact_summary`, `main_blocker`, `next_action`, and `customer_success_note`: admin-only text fields.
+- `public_link_tested_at`, `pdf_tested_at`, and `buyer_demo_ready_at`: admin timestamp markers for manual QA completion.
+
+Recommended pilot status flow:
+
+1. `invited`: pilot invitation sent manually.
+2. `onboarding`: supplier is actively completing profile, questionnaire, and evidence steps.
+3. `waiting_on_supplier`: admin is waiting for missing supplier input.
+4. `ready_for_review`: questionnaire/evidence/share link are ready for admin QA.
+5. `buyer_demo_ready`: public link and PDF have been tested and the supplier can be shown to a buyer.
+6. `completed`: pilot handoff or first buyer demo is complete.
+7. `paused`: pilot is intentionally on hold.
+
+Manual QA:
+
+1. Sign in as admin and open `/hr/admin/organizations/[id]`.
+2. In `Pilot praćenje`, set status to `Pozvan`, add pilot dates, next follow-up, last contact summary, main blocker, next action, and customer success note.
+3. Save and refresh; confirm values persist.
+4. Click `Označi javni link testiranim`, `Označi PDF testiranim`, and `Označi spremno za buyer demo`.
+5. Open `/hr/admin/organizations` and confirm the compact pilot status, blocker, next follow-up, and buyer demo ready indicators are visible.
+6. Confirm supplier dashboard, public Passport, buyer view, and PDFs do not show pilot tracking notes.
+
+Security notes:
+
+- Pilot tracking is admin-only. Do not surface these fields in supplier, public, buyer, share-link, or PDF mappers.
+- Do not store private file URLs, storage IDs, passwords, tokens, buyer secrets, or raw document content in pilot tracking notes.
+- This workflow is manual customer success tracking only; it does not send emails, create billing, or act as a CRM replacement.

@@ -22,6 +22,7 @@ import type {
   ConciergePriority,
   ConciergeStatus,
   OnboardingStatus,
+  PilotStatus,
 } from "@/lib/admin-workspace";
 import { cn } from "@/lib/utils";
 
@@ -447,6 +448,21 @@ export function AdminOrganizationsClient({ labels = defaultAdminLabels }: AdminO
                       {formatDate(organization.concierge.pilotTargetDate, locale, labels.notProvided)}
                     </p>
                   ) : null}
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <Badge variant="outline" className="w-fit rounded-full border-blue-200 bg-blue-50 text-blue-700">
+                      {formatPilotStatus(organization.concierge?.pilotStatus, labels)}
+                    </Badge>
+                    {organization.concierge?.mainBlocker ? (
+                      <Badge variant="outline" className="w-fit rounded-full border-amber-200 bg-amber-50 text-amber-700">
+                        {labels.blocker}
+                      </Badge>
+                    ) : null}
+                    {organization.concierge?.buyerDemoReadyAt ? (
+                      <Badge variant="outline" className="w-fit rounded-full border-emerald-200 bg-emerald-50 text-emerald-700">
+                        {labels.buyerDemoReady}
+                      </Badge>
+                    ) : null}
+                  </div>
                 </div>
 
                 <div>
@@ -550,6 +566,21 @@ function formatOnboardingStatus(status: OnboardingStatus | undefined, labels: Ad
     waiting_on_supplier: labels.statusWaitingOnSupplier,
     ready_for_review: labels.statusReadyForReview,
     demo_ready: labels.statusDemoReady,
+    completed: labels.statusCompleted,
+    paused: labels.statusPaused,
+  };
+
+  return status ? statusLabels[status] : labels.statusNotStarted;
+}
+
+function formatPilotStatus(status: PilotStatus | undefined, labels: AdminLabels) {
+  const statusLabels: Record<PilotStatus, string> = {
+    not_started: labels.statusNotStarted,
+    invited: labels.statusInvited,
+    onboarding: labels.statusOnboarding,
+    waiting_on_supplier: labels.statusWaitingOnSupplier,
+    ready_for_review: labels.statusReadyForReview,
+    buyer_demo_ready: labels.pilotStatusBuyerDemoReady,
     completed: labels.statusCompleted,
     paused: labels.statusPaused,
   };

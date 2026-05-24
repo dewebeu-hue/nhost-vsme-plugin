@@ -26,6 +26,15 @@ export type OnboardingStatus =
 export type CommercialPlan = "starter" | "supplier_pro" | "partner" | "buyer_pilot" | "buyer_pro_future";
 export type CommercialSegment = "supplier" | "partner" | "buyer" | "consultant" | "internal_demo";
 export type CommercialStatus = "lead" | "pilot" | "active" | "paused" | "churn_risk" | "closed";
+export type PilotStatus =
+  | "not_started"
+  | "invited"
+  | "onboarding"
+  | "waiting_on_supplier"
+  | "ready_for_review"
+  | "buyer_demo_ready"
+  | "completed"
+  | "paused";
 
 export type AdminConciergeNote = {
   status: ConciergeStatus;
@@ -46,8 +55,16 @@ export type AdminConciergeNote = {
   commercialSegment: CommercialSegment | null;
   commercialStatus: CommercialStatus | null;
   commercialNote: string | null;
+  pilotStatus: PilotStatus;
   pilotStartDate: string | null;
   pilotTargetDate: string | null;
+  lastContactSummary: string | null;
+  mainBlocker: string | null;
+  nextAction: string | null;
+  customerSuccessNote: string | null;
+  publicLinkTestedAt: string | null;
+  pdfTestedAt: string | null;
+  buyerDemoReadyAt: string | null;
   updatedAt: string | null;
 };
 
@@ -232,8 +249,16 @@ type ConciergeRecord = {
   commercial_segment?: string | null;
   commercial_status?: string | null;
   commercial_note?: string | null;
+  pilot_status?: string | null;
   pilot_start_date?: string | null;
   pilot_target_date?: string | null;
+  last_contact_summary?: string | null;
+  main_blocker?: string | null;
+  next_action?: string | null;
+  customer_success_note?: string | null;
+  public_link_tested_at?: string | null;
+  pdf_tested_at?: string | null;
+  buyer_demo_ready_at?: string | null;
   updated_at?: string | null;
 };
 
@@ -320,8 +345,16 @@ const adminOverviewQuery = `
       commercial_segment
       commercial_status
       commercial_note
+      pilot_status
       pilot_start_date
       pilot_target_date
+      last_contact_summary
+      main_blocker
+      next_action
+      customer_success_note
+      public_link_tested_at
+      pdf_tested_at
+      buyer_demo_ready_at
       updated_at
     }
   }
@@ -336,6 +369,9 @@ const organizationExistsQuery = `
       reviewed_at
       reviewed_by_user_id
       onboarding_completed_at
+      public_link_tested_at
+      pdf_tested_at
+      buyer_demo_ready_at
     }
   }
 `;
@@ -365,8 +401,16 @@ const upsertConciergeNoteMutation = `
           commercial_segment
           commercial_status
           commercial_note
+          pilot_status
           pilot_start_date
           pilot_target_date
+          last_contact_summary
+          main_blocker
+          next_action
+          customer_success_note
+          public_link_tested_at
+          pdf_tested_at
+          buyer_demo_ready_at
           updated_by_user_id
           updated_at
         ]
@@ -391,8 +435,16 @@ const upsertConciergeNoteMutation = `
       commercial_segment
       commercial_status
       commercial_note
+      pilot_status
       pilot_start_date
       pilot_target_date
+      last_contact_summary
+      main_blocker
+      next_action
+      customer_success_note
+      public_link_tested_at
+      pdf_tested_at
+      buyer_demo_ready_at
       updated_at
     }
   }
@@ -524,8 +576,16 @@ export async function updateAdminConciergeNote(
     commercialSegment?: unknown;
     commercialStatus?: unknown;
     commercialNote?: unknown;
+    pilotStatus?: unknown;
     pilotStartDate?: unknown;
     pilotTargetDate?: unknown;
+    lastContactSummary?: unknown;
+    mainBlocker?: unknown;
+    nextAction?: unknown;
+    customerSuccessNote?: unknown;
+    publicLinkTestedAt?: unknown;
+    pdfTestedAt?: unknown;
+    buyerDemoReadyAt?: unknown;
   },
 ) {
   const user = await requireAdminUser(request);
@@ -535,6 +595,9 @@ export async function updateAdminConciergeNote(
       reviewed_at?: string | null;
       reviewed_by_user_id?: string | null;
       onboarding_completed_at?: string | null;
+      public_link_tested_at?: string | null;
+      pdf_tested_at?: string | null;
+      buyer_demo_ready_at?: string | null;
     }>;
   }>(
     organizationExistsQuery,
@@ -575,8 +638,16 @@ export async function updateAdminConciergeNote(
         commercial_segment: normalizeCommercialSegment(input.commercialSegment),
         commercial_status: normalizeCommercialStatus(input.commercialStatus),
         commercial_note: normalizeOptionalText(input.commercialNote, 5000),
+        pilot_status: normalizePilotStatus(input.pilotStatus),
         pilot_start_date: normalizeDate(input.pilotStartDate),
         pilot_target_date: normalizeDate(input.pilotTargetDate),
+        last_contact_summary: normalizeOptionalText(input.lastContactSummary, 2000),
+        main_blocker: normalizeOptionalText(input.mainBlocker, 1000),
+        next_action: normalizeOptionalText(input.nextAction, 1000),
+        customer_success_note: normalizeOptionalText(input.customerSuccessNote, 5000),
+        public_link_tested_at: normalizeOptionalDateTime(input.publicLinkTestedAt) ?? currentNote?.public_link_tested_at ?? null,
+        pdf_tested_at: normalizeOptionalDateTime(input.pdfTestedAt) ?? currentNote?.pdf_tested_at ?? null,
+        buyer_demo_ready_at: normalizeOptionalDateTime(input.buyerDemoReadyAt) ?? currentNote?.buyer_demo_ready_at ?? null,
         updated_by_user_id: user.id,
         updated_at: new Date().toISOString(),
       },
@@ -966,8 +1037,16 @@ function normalizeConcierge(record: ConciergeRecord): AdminConciergeNote {
     commercialSegment: normalizeCommercialSegment(record.commercial_segment),
     commercialStatus: normalizeCommercialStatus(record.commercial_status),
     commercialNote: record.commercial_note ?? null,
+    pilotStatus: normalizePilotStatus(record.pilot_status),
     pilotStartDate: record.pilot_start_date ?? null,
     pilotTargetDate: record.pilot_target_date ?? null,
+    lastContactSummary: record.last_contact_summary ?? null,
+    mainBlocker: record.main_blocker ?? null,
+    nextAction: record.next_action ?? null,
+    customerSuccessNote: record.customer_success_note ?? null,
+    publicLinkTestedAt: record.public_link_tested_at ?? null,
+    pdfTestedAt: record.pdf_tested_at ?? null,
+    buyerDemoReadyAt: record.buyer_demo_ready_at ?? null,
     updatedAt: record.updated_at ?? null,
   };
 }
@@ -1018,6 +1097,22 @@ function normalizeCommercialStatus(value: unknown): CommercialStatus | null {
   return typeof value === "string" && ["lead", "pilot", "active", "paused", "churn_risk", "closed"].includes(value)
     ? (value as CommercialStatus)
     : null;
+}
+
+function normalizePilotStatus(value: unknown): PilotStatus {
+  return typeof value === "string" &&
+    [
+      "not_started",
+      "invited",
+      "onboarding",
+      "waiting_on_supplier",
+      "ready_for_review",
+      "buyer_demo_ready",
+      "completed",
+      "paused",
+    ].includes(value)
+    ? (value as PilotStatus)
+    : "not_started";
 }
 
 function normalizeOnboardingChecklist(value: unknown) {
@@ -1073,6 +1168,15 @@ function normalizeDate(value: unknown) {
 
   const date = new Date(`${value}T00:00:00.000Z`);
   return Number.isNaN(date.getTime()) ? null : value;
+}
+
+function normalizeOptionalDateTime(value: unknown) {
+  if (typeof value !== "string" || !value.trim()) {
+    return null;
+  }
+
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? null : date.toISOString();
 }
 
 function startOfToday() {

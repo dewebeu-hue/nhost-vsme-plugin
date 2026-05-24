@@ -33,6 +33,7 @@ import type {
   ConciergePriority,
   ConciergeStatus,
   OnboardingStatus,
+  PilotStatus,
 } from "@/lib/admin-workspace";
 import { cn } from "@/lib/utils";
 
@@ -52,7 +53,7 @@ type FirstCustomerChecklistItem = {
   cta?: string;
 };
 
-type AdminSaveAction = "commercial" | "portfolio" | "onboarding" | "concierge" | "reviewed" | null;
+type AdminSaveAction = "commercial" | "portfolio" | "onboarding" | "concierge" | "pilot" | "reviewed" | null;
 
 export function AdminOrganizationDetailClient({
   organizationId,
@@ -77,8 +78,16 @@ export function AdminOrganizationDetailClient({
   const [commercialSegment, setCommercialSegment] = useState<CommercialSegment | "">("");
   const [commercialStatus, setCommercialStatus] = useState<CommercialStatus | "">("");
   const [commercialNote, setCommercialNote] = useState("");
+  const [pilotStatus, setPilotStatus] = useState<PilotStatus>("not_started");
   const [pilotStartDate, setPilotStartDate] = useState("");
   const [pilotTargetDate, setPilotTargetDate] = useState("");
+  const [lastContactSummary, setLastContactSummary] = useState("");
+  const [mainBlocker, setMainBlocker] = useState("");
+  const [nextAction, setNextAction] = useState("");
+  const [customerSuccessNote, setCustomerSuccessNote] = useState("");
+  const [publicLinkTestedAt, setPublicLinkTestedAt] = useState("");
+  const [pdfTestedAt, setPdfTestedAt] = useState("");
+  const [buyerDemoReadyAt, setBuyerDemoReadyAt] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const [savingAction, setSavingAction] = useState<AdminSaveAction>(null);
   const [isCopyingHandoff, setIsCopyingHandoff] = useState(false);
@@ -101,8 +110,16 @@ export function AdminOrganizationDetailClient({
     setCommercialSegment(concierge?.commercialSegment ?? "");
     setCommercialStatus(concierge?.commercialStatus ?? "");
     setCommercialNote(concierge?.commercialNote ?? "");
+    setPilotStatus(concierge?.pilotStatus ?? "not_started");
     setPilotStartDate(concierge?.pilotStartDate ?? "");
     setPilotTargetDate(concierge?.pilotTargetDate ?? "");
+    setLastContactSummary(concierge?.lastContactSummary ?? "");
+    setMainBlocker(concierge?.mainBlocker ?? "");
+    setNextAction(concierge?.nextAction ?? "");
+    setCustomerSuccessNote(concierge?.customerSuccessNote ?? "");
+    setPublicLinkTestedAt(concierge?.publicLinkTestedAt ?? "");
+    setPdfTestedAt(concierge?.pdfTestedAt ?? "");
+    setBuyerDemoReadyAt(concierge?.buyerDemoReadyAt ?? "");
   }
 
   async function loadOrganization() {
@@ -135,6 +152,12 @@ export function AdminOrganizationDetailClient({
     successMessage = labels.conciergeSaved,
     errorMessage = labels.conciergeSaveError,
     action: AdminSaveAction = "concierge",
+    overrides: Partial<{
+      pilotStatus: PilotStatus;
+      publicLinkTestedAt: string;
+      pdfTestedAt: string;
+      buyerDemoReadyAt: string;
+    }> = {},
   ) {
     if (!organizationId) {
       setMessage(labels.missingOrganizationContext);
@@ -167,8 +190,16 @@ export function AdminOrganizationDetailClient({
           commercialSegment: commercialSegment || null,
           commercialStatus: commercialStatus || null,
           commercialNote,
+          pilotStatus: overrides.pilotStatus ?? pilotStatus,
           pilotStartDate,
           pilotTargetDate,
+          lastContactSummary,
+          mainBlocker,
+          nextAction,
+          customerSuccessNote,
+          publicLinkTestedAt: overrides.publicLinkTestedAt ?? publicLinkTestedAt,
+          pdfTestedAt: overrides.pdfTestedAt ?? pdfTestedAt,
+          buyerDemoReadyAt: overrides.buyerDemoReadyAt ?? buyerDemoReadyAt,
         }),
       });
     } catch {
@@ -216,6 +247,48 @@ export function AdminOrganizationDetailClient({
       labels.commercialClassificationSaved,
       labels.commercialClassificationSaveError,
       "commercial",
+    );
+  }
+
+  function handlePilotSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    void saveAdminSupportState(false, labels.pilotStatusSaved, labels.pilotStatusSaveError, "pilot");
+  }
+
+  function handleMarkPublicLinkTested() {
+    const timestamp = new Date().toISOString();
+    setPublicLinkTestedAt(timestamp);
+    void saveAdminSupportState(
+      false,
+      labels.pilotStatusSaved,
+      labels.pilotStatusSaveError,
+      "pilot",
+      { publicLinkTestedAt: timestamp },
+    );
+  }
+
+  function handleMarkPdfTested() {
+    const timestamp = new Date().toISOString();
+    setPdfTestedAt(timestamp);
+    void saveAdminSupportState(
+      false,
+      labels.pilotStatusSaved,
+      labels.pilotStatusSaveError,
+      "pilot",
+      { pdfTestedAt: timestamp },
+    );
+  }
+
+  function handleMarkBuyerDemoReady() {
+    const timestamp = new Date().toISOString();
+    setPilotStatus("buyer_demo_ready");
+    setBuyerDemoReadyAt(timestamp);
+    void saveAdminSupportState(
+      false,
+      labels.pilotStatusSaved,
+      labels.pilotStatusSaveError,
+      "pilot",
+      { pilotStatus: "buyer_demo_ready", buyerDemoReadyAt: timestamp },
     );
   }
 
@@ -370,6 +443,9 @@ export function AdminOrganizationDetailClient({
   const nextFirstCustomerAction = organization
     ? getNextFirstCustomerAction(organization, firstCustomerChecklist, labels)
     : labels.firstCustomerAskCompanyBasics;
+  const nextPilotAction = organization
+    ? getNextPilotAction(organization, labels)
+    : labels.pilotActionSendInstructions;
   const handoffStatus = organization
     ? getHandoffStatus(organization, labels)
     : { label: labels.needsUpdate, tone: "warning" as const };
@@ -648,6 +724,165 @@ export function AdminOrganizationDetailClient({
       </div>
 
       <div className="grid gap-6 xl:grid-cols-2">
+          <section id="admin-pilot-tracking" className="supplier-surface rounded-2xl border-0 p-5">
+            <div className="flex flex-col justify-between gap-3 md:flex-row md:items-start">
+              <div>
+                <h2 className="text-lg font-semibold text-slate-950">{labels.pilotTracking}</h2>
+                <p className="mt-1 text-xs leading-5 text-slate-500">{labels.pilotTrackingDescription}</p>
+              </div>
+              <Badge
+                variant="outline"
+                className={
+                  pilotStatus === "buyer_demo_ready" || pilotStatus === "completed"
+                    ? "w-fit rounded-full border-emerald-200 bg-emerald-50 text-emerald-700"
+                    : "w-fit rounded-full border-blue-200 bg-blue-50 text-blue-700"
+                }
+              >
+                {formatPilotStatus(pilotStatus, labels)}
+              </Badge>
+            </div>
+            <div className="mt-4 rounded-xl border border-blue-100 bg-blue-50/70 p-3">
+              <p className="text-xs font-semibold uppercase tracking-[0.12em] text-blue-700">
+                {labels.nextPilotAction}
+              </p>
+              <p className="mt-1 text-sm font-semibold leading-6 text-slate-800">{nextPilotAction}</p>
+            </div>
+            <form className="mt-4 grid gap-4" onSubmit={handlePilotSubmit}>
+              <div className="grid gap-2 text-sm font-medium text-slate-700">
+                {labels.pilotStatus}
+                <Select
+                  name="pilotStatus"
+                  value={pilotStatus}
+                  onValueChange={(value) => setPilotStatus(value as PilotStatus)}
+                >
+                  <SelectTrigger id="admin-pilot-status" className="h-10 rounded-xl bg-white">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      {([
+                        "not_started",
+                        "invited",
+                        "onboarding",
+                        "waiting_on_supplier",
+                        "ready_for_review",
+                        "buyer_demo_ready",
+                        "completed",
+                        "paused",
+                      ] as const).map((value) => (
+                        <SelectItem key={value} value={value}>
+                          {formatPilotStatus(value, labels)}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="grid gap-4 md:grid-cols-3">
+                <label htmlFor="admin-pilot-start-date" className="grid gap-2 text-sm font-medium text-slate-700">
+                  {labels.pilotStartDate}
+                  <Input
+                    id="admin-pilot-start-date"
+                    name="pilotStartDate"
+                    type="date"
+                    value={pilotStartDate}
+                    onChange={(event) => setPilotStartDate(event.target.value)}
+                    className="h-10 rounded-xl bg-white"
+                  />
+                </label>
+                <label htmlFor="admin-pilot-target-date" className="grid gap-2 text-sm font-medium text-slate-700">
+                  {labels.targetEnd}
+                  <Input
+                    id="admin-pilot-target-date"
+                    name="pilotTargetDate"
+                    type="date"
+                    value={pilotTargetDate}
+                    onChange={(event) => setPilotTargetDate(event.target.value)}
+                    className="h-10 rounded-xl bg-white"
+                  />
+                </label>
+                <label htmlFor="admin-pilot-follow-up-date" className="grid gap-2 text-sm font-medium text-slate-700">
+                  {labels.nextFollowUp}
+                  <Input
+                    id="admin-pilot-follow-up-date"
+                    name="nextFollowUpDate"
+                    type="date"
+                    value={nextFollowUpDate}
+                    onChange={(event) => setNextFollowUpDate(event.target.value)}
+                    className="h-10 rounded-xl bg-white"
+                  />
+                </label>
+              </div>
+              <label htmlFor="admin-last-contact-summary" className="grid gap-2 text-sm font-medium text-slate-700">
+                {labels.lastContactSummary}
+                <Textarea
+                  id="admin-last-contact-summary"
+                  name="lastContactSummary"
+                  value={lastContactSummary}
+                  onChange={(event) => setLastContactSummary(event.target.value)}
+                  rows={3}
+                  className="rounded-xl bg-white"
+                />
+              </label>
+              <div className="grid gap-4 md:grid-cols-2">
+                <label htmlFor="admin-main-blocker" className="grid gap-2 text-sm font-medium text-slate-700">
+                  {labels.mainBlocker}
+                  <Textarea
+                    id="admin-main-blocker"
+                    name="mainBlocker"
+                    value={mainBlocker}
+                    onChange={(event) => setMainBlocker(event.target.value)}
+                    rows={3}
+                    className="rounded-xl bg-white"
+                  />
+                </label>
+                <label htmlFor="admin-next-action" className="grid gap-2 text-sm font-medium text-slate-700">
+                  {labels.nextAction}
+                  <Textarea
+                    id="admin-next-action"
+                    name="nextAction"
+                    value={nextAction}
+                    onChange={(event) => setNextAction(event.target.value)}
+                    rows={3}
+                    className="rounded-xl bg-white"
+                  />
+                </label>
+              </div>
+              <label htmlFor="admin-customer-success-note" className="grid gap-2 text-sm font-medium text-slate-700">
+                {labels.customerSuccessNote}
+                <Textarea
+                  id="admin-customer-success-note"
+                  name="customerSuccessNote"
+                  value={customerSuccessNote}
+                  onChange={(event) => setCustomerSuccessNote(event.target.value)}
+                  rows={4}
+                  className="rounded-xl bg-white"
+                />
+              </label>
+              <div className="grid gap-3 rounded-xl bg-slate-50 p-3 text-sm text-slate-600 md:grid-cols-3">
+                <PilotCheck label={labels.publicLinkTested} value={publicLinkTestedAt} locale={locale} fallback={labels.notProvided} />
+                <PilotCheck label={labels.pdfTested} value={pdfTestedAt} locale={locale} fallback={labels.notProvided} />
+                <PilotCheck label={labels.buyerDemoReady} value={buyerDemoReadyAt} locale={locale} fallback={labels.notProvided} />
+              </div>
+              {message ? <p className="text-sm text-slate-600">{message}</p> : null}
+              <div className="flex flex-wrap gap-2">
+                <Button type="submit" disabled={isSaving} className="w-fit rounded-xl">
+                  <Save data-icon="inline-start" />
+                  {savingAction === "pilot" ? labels.saving : labels.savePilotStatus}
+                </Button>
+                <Button type="button" variant="outline" disabled={isSaving} onClick={handleMarkPublicLinkTested} className="admin-secondary-action w-fit rounded-xl bg-white">
+                  {labels.markPublicLinkTested}
+                </Button>
+                <Button type="button" variant="outline" disabled={isSaving} onClick={handleMarkPdfTested} className="admin-secondary-action w-fit rounded-xl bg-white">
+                  {labels.markPdfTested}
+                </Button>
+                <Button type="button" variant="outline" disabled={isSaving} onClick={handleMarkBuyerDemoReady} className="admin-secondary-action w-fit rounded-xl bg-white">
+                  {labels.markBuyerDemoReady}
+                </Button>
+              </div>
+            </form>
+          </section>
+
           <section id="admin-assisted-onboarding" className="supplier-surface rounded-2xl border-0 p-5">
             <h2 className="text-lg font-semibold text-slate-950">{labels.commercialClassification}</h2>
             <p className="mt-1 text-xs leading-5 text-slate-500">{labels.commercialLabelsInternalNote}</p>
@@ -703,28 +938,6 @@ export function AdminOrganizationDetailClient({
                   <option value="churn_risk">{labels.commercialStatusChurnRisk}</option>
                   <option value="closed">{labels.commercialStatusClosed}</option>
                 </select>
-              </label>
-              <label htmlFor="admin-pilot-start-date" className="grid gap-2 text-sm font-medium text-slate-700">
-                {labels.pilotStartDate}
-                <Input
-                  id="admin-pilot-start-date"
-                  name="pilotStartDate"
-                  type="date"
-                  value={pilotStartDate}
-                  onChange={(event) => setPilotStartDate(event.target.value)}
-                  className="h-10 rounded-xl bg-white"
-                />
-              </label>
-              <label htmlFor="admin-pilot-target-date" className="grid gap-2 text-sm font-medium text-slate-700">
-                {labels.pilotTargetDate}
-                <Input
-                  id="admin-pilot-target-date"
-                  name="pilotTargetDate"
-                  type="date"
-                  value={pilotTargetDate}
-                  onChange={(event) => setPilotTargetDate(event.target.value)}
-                  className="h-10 rounded-xl bg-white"
-                />
               </label>
               <label htmlFor="admin-commercial-note" className="grid gap-2 text-sm font-medium text-slate-700">
                 {labels.commercialNote}
@@ -936,17 +1149,6 @@ export function AdminOrganizationDetailClient({
                   </SelectContent>
                 </Select>
               </div>
-              <label htmlFor="admin-next-follow-up-date" className="grid gap-2 text-sm font-medium text-slate-700">
-                {labels.nextFollowUp}
-                <Input
-                  id="admin-next-follow-up-date"
-                  name="nextFollowUpDate"
-                  type="date"
-                  value={nextFollowUpDate}
-                  onChange={(event) => setNextFollowUpDate(event.target.value)}
-                  className="h-10 rounded-xl bg-white"
-                />
-              </label>
               <label htmlFor="admin-internal-note" className="grid gap-2 text-sm font-medium text-slate-700">
                 {labels.internalNote}
                 <Textarea
@@ -1289,6 +1491,32 @@ function getNextFirstCustomerAction(
   return labels.firstCustomerReadyAction;
 }
 
+function getNextPilotAction(organization: AdminOrganizationDetail, labels: AdminLabels) {
+  const concierge = organization.concierge;
+
+  if (!concierge || concierge.pilotStatus === "not_started") {
+    return labels.pilotActionSendInstructions;
+  }
+
+  if (organization.readinessPercent < 100) {
+    return labels.pilotActionCompleteQuestionnaire;
+  }
+
+  if (organization.linkedEvidenceCount === 0) {
+    return labels.pilotActionLinkEvidence;
+  }
+
+  if (!concierge.publicLinkTestedAt) {
+    return labels.pilotActionTestPublicLink;
+  }
+
+  if (!concierge.pdfTestedAt) {
+    return labels.pilotActionTestPdf;
+  }
+
+  return labels.pilotActionReadyForBuyerDemo;
+}
+
 function isRealOrganizationName(name: string) {
   const normalized = name.trim().toLowerCase();
 
@@ -1322,6 +1550,21 @@ function formatOnboardingStatus(status: OnboardingStatus, labels: AdminLabels) {
     waiting_on_supplier: labels.statusWaitingOnSupplier,
     ready_for_review: labels.statusReadyForReview,
     demo_ready: labels.statusDemoReady,
+    completed: labels.statusCompleted,
+    paused: labels.statusPaused,
+  };
+
+  return statusLabels[status];
+}
+
+function formatPilotStatus(status: PilotStatus, labels: AdminLabels) {
+  const statusLabels: Record<PilotStatus, string> = {
+    not_started: labels.statusNotStarted,
+    invited: labels.statusInvited,
+    onboarding: labels.statusOnboarding,
+    waiting_on_supplier: labels.statusWaitingOnSupplier,
+    ready_for_review: labels.statusReadyForReview,
+    buyer_demo_ready: labels.pilotStatusBuyerDemoReady,
     completed: labels.statusCompleted,
     paused: labels.statusPaused,
   };
@@ -1393,6 +1636,25 @@ function HandoffMetric({ label, value }: { label: string; value: string }) {
     <div className="rounded-xl bg-slate-50 p-4">
       <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">{label}</p>
       <p className="mt-2 text-sm font-semibold text-slate-950">{value}</p>
+    </div>
+  );
+}
+
+function PilotCheck({
+  label,
+  value,
+  locale,
+  fallback,
+}: {
+  label: string;
+  value: string | null;
+  locale: string;
+  fallback: string;
+}) {
+  return (
+    <div>
+      <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">{label}</p>
+      <p className="mt-1 font-semibold text-slate-800">{formatDate(value, locale, fallback)}</p>
     </div>
   );
 }

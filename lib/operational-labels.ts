@@ -88,6 +88,32 @@ export type AdminLabels = {
   commercialStatusPaused: string;
   commercialStatusChurnRisk: string;
   commercialStatusClosed: string;
+  pilotTracking: string;
+  pilotTrackingDescription: string;
+  pilotStatus: string;
+  targetEnd: string;
+  lastContactSummary: string;
+  mainBlocker: string;
+  nextAction: string;
+  customerSuccessNote: string;
+  savePilotStatus: string;
+  pilotStatusSaved: string;
+  pilotStatusSaveError: string;
+  markPublicLinkTested: string;
+  markPdfTested: string;
+  markBuyerDemoReady: string;
+  publicLinkTested: string;
+  pdfTested: string;
+  buyerDemoReady: string;
+  blocker: string;
+  pilotStatusBuyerDemoReady: string;
+  nextPilotAction: string;
+  pilotActionSendInstructions: string;
+  pilotActionCompleteQuestionnaire: string;
+  pilotActionLinkEvidence: string;
+  pilotActionTestPublicLink: string;
+  pilotActionTestPdf: string;
+  pilotActionReadyForBuyerDemo: string;
   allPlans: string;
   allSegments: string;
   activePilots: string;
@@ -470,6 +496,32 @@ export const defaultAdminLabels: AdminLabels = {
   commercialStatusPaused: "Paused",
   commercialStatusChurnRisk: "Churn risk",
   commercialStatusClosed: "Closed",
+  pilotTracking: "Pilot tracking",
+  pilotTrackingDescription: "Track first-customer pilot follow-up, blockers, and buyer demo readiness. Admin-only.",
+  pilotStatus: "Pilot status",
+  targetEnd: "Target end",
+  lastContactSummary: "Last contact summary",
+  mainBlocker: "Main blocker",
+  nextAction: "Next action",
+  customerSuccessNote: "Customer success note",
+  savePilotStatus: "Save pilot status",
+  pilotStatusSaved: "Pilot status saved.",
+  pilotStatusSaveError: "We could not save pilot status right now.",
+  markPublicLinkTested: "Mark public link tested",
+  markPdfTested: "Mark PDF tested",
+  markBuyerDemoReady: "Mark buyer demo ready",
+  publicLinkTested: "Public link tested",
+  pdfTested: "PDF tested",
+  buyerDemoReady: "Buyer demo ready",
+  blocker: "Blocker",
+  pilotStatusBuyerDemoReady: "Buyer demo ready",
+  nextPilotAction: "Next pilot action",
+  pilotActionSendInstructions: "Send pilot instructions to the supplier.",
+  pilotActionCompleteQuestionnaire: "Ask the supplier to complete the questionnaire.",
+  pilotActionLinkEvidence: "Ask the supplier to link evidence.",
+  pilotActionTestPublicLink: "Test the public link.",
+  pilotActionTestPdf: "Test the PDF.",
+  pilotActionReadyForBuyerDemo: "Ready for buyer demo.",
   allPlans: "All plans",
   allSegments: "All segments",
   activePilots: "Active pilots",
