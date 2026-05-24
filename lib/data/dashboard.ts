@@ -123,6 +123,10 @@ export type DashboardBuyerRequestSummary = {
 export type DashboardSetupSummary = {
   organizationId: string;
   organizationName: string;
+  companyLegalName: string | null;
+  companyLocation: string | null;
+  companyIndustry: string | null;
+  companyEmployeeCount: string | null;
   answeredQuestions: number;
   totalQuestions: number;
   questionnairePercent: number;
@@ -336,10 +340,20 @@ export async function getDashboardSetupSummaryForOrganization(
     .sort()
     .at(-1) ?? null;
   const activeShareLinks = data.share_links.filter((link) => isShareLinkActive(link));
+  const companyLocation = [
+    organization.headquarters_city,
+    organization.headquarters_country,
+  ]
+    .filter(Boolean)
+    .join(", ") || null;
 
   return {
     organizationId: organization.id,
     organizationName: organization.name,
+    companyLegalName: organization.name,
+    companyLocation,
+    companyIndustry: organization.industry ?? null,
+    companyEmployeeCount: organization.employee_count_range ?? null,
     answeredQuestions,
     totalQuestions,
     questionnairePercent: overallCompletion.percent,

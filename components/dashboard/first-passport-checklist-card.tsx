@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, useSyncExternalStore } from "react";
+import { useMemo, useState, useSyncExternalStore } from "react";
+import type { ReactNode } from "react";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -60,6 +61,7 @@ export function FirstPassportChecklistCard({
     () => parseActionProgressSnapshot(actionProgressSnapshot),
     [actionProgressSnapshot],
   );
+  const [copyState, setCopyState] = useState<"idle" | "copied" | "error">("idle");
 
   if (actionProgressSnapshot === "loading") {
     return <ChecklistLoadingCard labels={labels} localePrefix={localePrefix} />;
@@ -70,11 +72,30 @@ export function FirstPassportChecklistCard({
   const progressPercent = Math.round((completedSteps / items.length) * 100);
   const allStepsComplete = completedSteps === items.length;
   const nextItem = items.find((item) => !item.completed);
+  const activePublicSharePath = summary?.activeShareLinks[0]?.publicPath ?? null;
+  const publicShareUrl = activePublicSharePath
+    ? `${localePrefix}${activePublicSharePath}`
+    : null;
   const mainHref = allStepsComplete
     ? `${localePrefix}/dashboard/passport`
     : nextItem?.href ?? `${localePrefix}/dashboard`;
   const mainLabel =
     allStepsComplete ? quickStart.reviewAndSharePassport : quickStart.continueSetup;
+  const handleCopyPublicLink = async () => {
+    if (!publicShareUrl || typeof navigator === "undefined") {
+      return;
+    }
+
+    try {
+      const absoluteUrl = new URL(publicShareUrl, window.location.origin).toString();
+      await navigator.clipboard.writeText(absoluteUrl);
+      setCopyState("copied");
+      window.setTimeout(() => setCopyState("idle"), 1800);
+    } catch {
+      setCopyState("error");
+      window.setTimeout(() => setCopyState("idle"), 1800);
+    }
+  };
 
   return (
     <SectionCard
@@ -143,6 +164,15 @@ export function FirstPassportChecklistCard({
               {quickStart.startGuidedTour}
             </Button>
           </div>
+          <BuyerPreviewCard
+            summary={summary}
+            labels={labels}
+            localePrefix={localePrefix}
+            isComplete={allStepsComplete}
+            publicShareUrl={publicShareUrl}
+            copyState={copyState}
+            onCopyPublicLink={handleCopyPublicLink}
+          />
         </div>
 
         <div className="grid gap-3 md:grid-cols-2">
@@ -195,6 +225,163 @@ function ChecklistLoadingCard({
         </div>
       </div>
     </SectionCard>
+  );
+}
+
+function BuyerPreviewCard({
+  summary,
+  labels,
+  localePrefix,
+  isComplete,
+  publicShareUrl,
+  copyState,
+  onCopyPublicLink,
+}: {
+  summary: DashboardSetupSummary | null;
+  labels: DashboardOverviewLabels;
+  localePrefix: string;
+  isComplete: boolean;
+  publicShareUrl: string | null;
+  copyState: "idle" | "copied" | "error";
+  onCopyPublicLink: () => void;
+}) {
+  if (!isComplete) {
+    return (
+      <div className="mt-5 rounded-2xl border border-amber-100 bg-amber-50/60 p-4">
+        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-amber-700">
+          {labels.buyerPreviewTitle}
+        </p>
+        <p className="mt-2 text-sm leading-6 text-slate-700">
+          {labels.buyerPreviewIncompleteText}
+        </p>
+      </div>
+    );
+  }
+
+  const companyName =
+    summary?.companyLegalName || summary?.organizationName || labels.buyerPreviewNotProvided;
+  const location = summary?.companyLocation || labels.buyerPreviewNotProvided;
+  const industry = summary?.companyIndustry || labels.buyerPreviewNotProvided;
+  const employeeCount = summary?.companyEmployeeCount || labels.buyerPreviewNotProvided;
+  const shareHref = publicShareUrl ?? `${localePrefix}/dashboard/share`;
+
+  return (
+    <div className="mt-5 rounded-2xl border border-emerald-100 bg-gradient-to-br from-emerald-50/70 via-white to-sky-50/60 p-4 shadow-sm">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div className="min-w-0">
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-700">
+            {labels.buyerPreviewTitle}
+          </p>
+          <p className="mt-2 break-words text-lg font-semibold leading-tight text-slate-950">
+            {companyName}
+          </p>
+        </div>
+        <DashboardStatusPill tone="green">{labels.passportReadyTitle}</DashboardStatusPill>
+      </div>
+
+      <div className="mt-4 grid gap-2 text-sm">
+        <BuyerPreviewMeta label={labels.buyerPreviewLocation} value={location} />
+        <BuyerPreviewMeta label={labels.buyerPreviewIndustry} value={industry} />
+        <BuyerPreviewMeta label={labels.buyerPreviewEmployees} value={employeeCount} />
+      </div>
+
+      <div className="mt-4 flex flex-wrap gap-2">
+        <BuyerPreviewBadge>
+          {formatTemplate(labels.missingDataBadge, {
+            count: String(summary?.missingItemsCount ?? 0),
+          })}
+        </BuyerPreviewBadge>
+        <BuyerPreviewBadge>
+          {formatTemplate(labels.uploadedDocumentsBadge, {
+            count: String(summary?.documentsCount ?? 0),
+          })}
+        </BuyerPreviewBadge>
+        <BuyerPreviewBadge>
+          {formatTemplate(labels.linkedDocumentsBadge, {
+            count: String(summary?.linkedEvidenceCount ?? 0),
+          })}
+        </BuyerPreviewBadge>
+        <BuyerPreviewBadge>
+          {formatTemplate(labels.questionnaireAnswersBadge, {
+            completed: String(summary?.answeredQuestions ?? 0),
+            total: String(summary?.totalQuestions ?? 0),
+          })}
+        </BuyerPreviewBadge>
+        <BuyerPreviewBadge tone={publicShareUrl ? "green" : "amber"}>
+          {publicShareUrl
+            ? labels.buyerPreviewPublicLinkActive
+            : labels.buyerPreviewPublicLinkMissing}
+        </BuyerPreviewBadge>
+      </div>
+
+      <div className="mt-4 flex flex-wrap gap-2">
+        {publicShareUrl ? (
+          <>
+            <Link
+              href={shareHref}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex h-8 items-center justify-center gap-1.5 rounded-full border border-emerald-200 bg-white px-3 text-xs font-semibold text-emerald-800 transition hover:border-emerald-300 hover:bg-emerald-50 focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+            >
+              {labels.buyerPreviewOpenPublic}
+              <ArrowRight aria-hidden="true" className="size-3.5" />
+            </Link>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={onCopyPublicLink}
+              className="h-8 rounded-full border-emerald-200 bg-white px-3 text-xs font-semibold text-emerald-800 hover:bg-emerald-50"
+            >
+              <Link2 aria-hidden="true" className="size-3.5" />
+              {copyState === "copied" ? labels.linkCopied : labels.buyerPreviewCopyLink}
+            </Button>
+          </>
+        ) : (
+          <Link
+            href={shareHref}
+            className="inline-flex h-8 items-center justify-center gap-1.5 rounded-full border border-amber-200 bg-white px-3 text-xs font-semibold text-amber-800 transition hover:border-amber-300 hover:bg-amber-50 focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+          >
+            {labels.buyerPreviewCreateLink}
+            <ArrowRight aria-hidden="true" className="size-3.5" />
+          </Link>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function BuyerPreviewMeta({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex min-w-0 items-start justify-between gap-3 rounded-xl border border-white/80 bg-white/75 px-3 py-2">
+      <span className="shrink-0 text-xs font-medium uppercase tracking-[0.08em] text-slate-500">
+        {label}
+      </span>
+      <span className="min-w-0 break-words text-right font-semibold text-slate-900">
+        {value}
+      </span>
+    </div>
+  );
+}
+
+function BuyerPreviewBadge({
+  children,
+  tone = "slate",
+}: {
+  children: ReactNode;
+  tone?: "slate" | "green" | "amber";
+}) {
+  const className =
+    tone === "green"
+      ? "border-emerald-200 bg-emerald-50 text-emerald-800"
+      : tone === "amber"
+        ? "border-amber-200 bg-amber-50 text-amber-800"
+        : "border-slate-200 bg-white/80 text-slate-700";
+
+  return (
+    <span className={`rounded-full border px-2.5 py-1 text-xs font-semibold ${className}`}>
+      {children}
+    </span>
   );
 }
 

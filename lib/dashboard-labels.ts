@@ -137,6 +137,7 @@ export type DashboardOverviewLabels = {
   passportNotReadyDescription: string;
   activePublicLink: string;
   missingDataBadge: string;
+  uploadedDocumentsBadge: string;
   questionnaireAnswersBadge: string;
   linkedDocumentsBadge: string;
   openPublicLink: string;
@@ -147,6 +148,17 @@ export type DashboardOverviewLabels = {
   downloadingPdf: string;
   downloadPdfError: string;
   passportReadyNextStep: string;
+  buyerPreviewTitle: string;
+  buyerPreviewIncompleteText: string;
+  buyerPreviewLocation: string;
+  buyerPreviewIndustry: string;
+  buyerPreviewEmployees: string;
+  buyerPreviewNotProvided: string;
+  buyerPreviewPublicLinkActive: string;
+  buyerPreviewPublicLinkMissing: string;
+  buyerPreviewOpenPublic: string;
+  buyerPreviewCopyLink: string;
+  buyerPreviewCreateLink: string;
   contextualHelp: {
     title: string;
     text: string;
@@ -297,6 +309,7 @@ export const defaultDashboardOverviewLabels: DashboardOverviewLabels = {
   passportNotReadyDescription: "Complete missing data and evidence before sharing with buyers.",
   activePublicLink: "Active public link",
   missingDataBadge: "{count} missing data items",
+  uploadedDocumentsBadge: "{count} uploaded documents",
   questionnaireAnswersBadge: "{completed}/{total} answers",
   linkedDocumentsBadge: "{count} linked documents",
   openPublicLink: "Open public link",
@@ -307,6 +320,17 @@ export const defaultDashboardOverviewLabels: DashboardOverviewLabels = {
   downloadingPdf: "Generating PDF...",
   downloadPdfError: "We could not generate the PDF right now.",
   passportReadyNextStep: "Supplier Passport is ready to share.",
+  buyerPreviewTitle: "Buyer preview",
+  buyerPreviewIncompleteText: "Complete the remaining steps so the buyer preview is ready.",
+  buyerPreviewLocation: "Location",
+  buyerPreviewIndustry: "Industry",
+  buyerPreviewEmployees: "Employees",
+  buyerPreviewNotProvided: "Not provided yet",
+  buyerPreviewPublicLinkActive: "Public link active",
+  buyerPreviewPublicLinkMissing: "Public link missing",
+  buyerPreviewOpenPublic: "Open public preview",
+  buyerPreviewCopyLink: "Copy link",
+  buyerPreviewCreateLink: "Create public link",
   contextualHelp: {
     title: "How to complete your Supplier Passport",
     text: "Follow the steps below to complete the questionnaire, add evidence and prepare a buyer-safe Passport summary.",
