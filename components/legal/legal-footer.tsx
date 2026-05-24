@@ -25,6 +25,12 @@ export function LegalFooter({ className }: LegalFooterProps) {
           >
             {t("privacy")}
           </Link>
+          <Link
+            href={`/${locale}/terms`}
+            className="font-semibold text-slate-600 transition hover:text-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+          >
+            {t("terms")}
+          </Link>
           <button
             type="button"
             onClick={openCookieSettings}

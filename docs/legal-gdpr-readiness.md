@@ -36,6 +36,27 @@ The Privacy Policy draft documents these data categories:
 
 Do not add claims such as `GDPR compliant`, `fully compliant`, `legally certified`, `guaranteed compliance`, or `audit-ready`. Supplier Passport legal pages should explain privacy practices and readiness work without claiming certification or legal approval.
 
+## Terms And Conditions Pages
+
+Public Terms and Conditions draft pages are available at:
+
+- `/hr/terms`
+- `/en/terms`
+
+The Terms pages reuse the same Supplier Passport legal page layout as the Privacy Policy pages. They cover SaaS access, organization/workspace use, user content, supporting evidence, public sharing, password-protected links, acceptable use, pilots and billing, availability, no audit/certification, liability, privacy, support, termination, governing law, and contact.
+
+These pages are legal readiness drafts only. They must be reviewed by legal counsel before commercial launch and before replacing placeholders with final company details.
+
+Visible placeholders that must be replaced:
+
+- `[LEGAL ENTITY NAME]` / `[NAZIV PRAVNE OSOBE]`
+- `[ADDRESS]` / `[ADRESA]`
+- `[REGISTRATION / TAX ID]` / `[OIB / REGISTRACIJSKI BROJ]`
+- `[CONTACT EMAIL]` / `[KONTAKT E-MAIL]`
+- `[GOVERNING LAW AND JURISDICTION]` / `[NADLEŽNO PRAVO I SUD]`
+
+The Terms draft explicitly states that online billing is not enabled in this version. Pilot, commercial, or partner terms may be agreed separately in writing. Do not add Stripe, online payment, or automatic billing wording unless the product later implements it.
+
 ## Cookie Categories
 
 Strictly necessary:

@@ -5,11 +5,11 @@ import { LanguageSwitcher } from "@/components/shared/language-switcher";
 import { LegalFooter } from "@/components/legal/legal-footer";
 import { buttonVariants } from "@/components/ui/button";
 import type { AppLocale } from "@/i18n/routing";
-import type { PrivacyPolicyContent } from "@/lib/legal/privacy-policy-content";
+import type { LegalPageContent } from "@/lib/legal/privacy-policy-content";
 import { cn } from "@/lib/utils";
 
 type LegalPageLayoutProps = {
-  content: PrivacyPolicyContent;
+  content: LegalPageContent;
   locale: AppLocale;
 };
 

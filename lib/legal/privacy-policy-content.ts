@@ -16,6 +16,8 @@ export type PrivacyPolicyContent = {
   }>;
 };
 
+export type LegalPageContent = PrivacyPolicyContent;
+
 export const privacyPolicyContent: Record<"en" | "hr", PrivacyPolicyContent> = {
   en: {
     effectiveDate: "Last updated: [DATE]",

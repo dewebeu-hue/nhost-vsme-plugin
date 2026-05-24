@@ -4711,3 +4711,37 @@ Manual QA:
 4. Open the cookie settings dialog and confirm the Privacy Policy link opens the localized route.
 5. Check landing, plans, request-demo, public Passport, and buyer portal footer links for no 404 links.
 6. Inspect Network and page source for no private app data requests or sensitive fields.
+
+## Terms And Conditions Pages
+
+Terms and Conditions draft pages are available at `/hr/terms` and `/en/terms`.
+
+Implementation notes:
+
+- The pages reuse the shared Supplier Passport legal page layout used by the Privacy Policy pages.
+- Public legal footers link to both the localized Privacy Policy and Terms routes, plus the cookie settings action.
+- The Terms pages are public static legal content and must not load organization, document, user, admin, or share-link data.
+- The draft states that online billing is not enabled in this version and that pilot/commercial terms may be agreed separately in writing.
+
+Placeholders requiring legal review/replacement:
+
+- `[LEGAL ENTITY NAME]` / `[NAZIV PRAVNE OSOBE]`
+- `[ADDRESS]` / `[ADRESA]`
+- `[REGISTRATION / TAX ID]` / `[OIB / REGISTRACIJSKI BROJ]`
+- `[CONTACT EMAIL]` / `[KONTAKT E-MAIL]`
+- `[GOVERNING LAW AND JURISDICTION]` / `[NADLEŽNO PRAVO I SUD]`
+
+Legal copy guardrails:
+
+- Do not claim certified compliance, audited supplier status, guaranteed compliance, legal approval, full legal compliance, absolute security, or audit readiness.
+- The Terms may say Supplier Passport is VSME-aligned and buyer-safe, but must state that it is not an audit, certification, independent assurance report, legal opinion, or guarantee of compliance.
+- Do not add Stripe, online billing, automatic payment collection, or payment obligations unless a separate commercial implementation exists.
+
+Manual QA:
+
+1. Open `/hr/terms` and `/en/terms`.
+2. Confirm the pages use the Supplier Passport branded header, readable legal cards, anchor navigation, and legal footer.
+3. Confirm placeholders are visible where legal company details are missing.
+4. Confirm `/hr/terms` links back to `/hr/privacy` through the footer and `/en/terms` links back to `/en/privacy`.
+5. Confirm no Terms footer links point to missing Cookie Policy, DPA, Security, or Subprocessors routes.
+6. Inspect Network and page source for no private app data requests or sensitive fields.
