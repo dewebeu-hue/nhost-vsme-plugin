@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowLeft, ShieldCheck } from "lucide-react";
 import { Logo } from "@/components/brand/logo";
+import { CookieSettingsButton } from "@/components/legal/cookie-settings-button";
 import { LanguageSwitcher } from "@/components/shared/language-switcher";
 import { LegalFooter } from "@/components/legal/legal-footer";
 import { buttonVariants } from "@/components/ui/button";
@@ -50,6 +51,9 @@ export function LegalPageLayout({ content, locale }: LegalPageLayoutProps) {
               {content.hero.reviewNote}
             </p>
             <p className="mt-5 text-sm font-semibold text-slate-500">{content.effectiveDate}</p>
+            {content.hero.action?.type === "cookieSettings" ? (
+              <CookieSettingsButton label={content.hero.action.label} />
+            ) : null}
           </div>
 
           <aside className="h-fit rounded-2xl border border-slate-200 bg-slate-50 p-5 shadow-sm">
@@ -108,6 +112,34 @@ export function LegalPageLayout({ content, locale }: LegalPageLayoutProps) {
                       </li>
                     ))}
                   </ul>
+                ) : null}
+                {section.table ? (
+                  <div className="mt-5 overflow-hidden rounded-2xl border border-slate-200">
+                    <div className="overflow-x-auto">
+                      <table className="min-w-full divide-y divide-slate-200 text-left text-sm">
+                        <thead className="bg-slate-50 text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
+                          <tr>
+                            {section.table.headers.map((header) => (
+                              <th key={header} scope="col" className="px-4 py-3">
+                                {header}
+                              </th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-200 bg-white text-slate-600">
+                          {section.table.rows.map((row) => (
+                            <tr key={row.join("|")}>
+                              {row.map((cell) => (
+                                <td key={cell} className="px-4 py-4 align-top leading-6">
+                                  {cell}
+                                </td>
+                              ))}
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
                 ) : null}
               </article>
             ))}

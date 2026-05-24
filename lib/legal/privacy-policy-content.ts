@@ -5,6 +5,10 @@ export type PrivacyPolicyContent = {
     title: string;
     summary: string;
     reviewNote: string;
+    action?: {
+      label: string;
+      type: "cookieSettings";
+    };
   };
   placeholders: string[];
   tocTitle: string;
@@ -13,6 +17,10 @@ export type PrivacyPolicyContent = {
     title: string;
     body: string[];
     bullets?: string[];
+    table?: {
+      headers: string[];
+      rows: string[][];
+    };
   }>;
 };
 
@@ -106,7 +114,7 @@ export const privacyPolicyContent: Record<"en" | "hr", PrivacyPolicyContent> = {
         title: "Cookies",
         body: [
           "Necessary cookies are used for login, security and core application functionality. Optional preferences, analytics and marketing categories require consent before use.",
-          "A dedicated Cookie Policy page is planned. Until then, cookie categories and testing guidance are documented in the cookie settings panel and legal readiness docs.",
+          "The Cookie Policy page explains cookie categories and how to reopen the cookie settings panel.",
         ],
       },
       {
@@ -254,7 +262,7 @@ export const privacyPolicyContent: Record<"en" | "hr", PrivacyPolicyContent> = {
         title: "Kolačići",
         body: [
           "Nužni kolačići koriste se za prijavu, sigurnost i osnovni rad aplikacije. Neobavezne kategorije preferencija, analitike i marketinga zahtijevaju privolu prije korištenja.",
-          "Posebna Cookie Policy stranica je planirana. Do tada su kategorije kolačića i upute za testiranje opisane u panelu postavki kolačića i dokumentaciji legal readinessa.",
+          "Stranica Politika kolačića objašnjava kategorije kolačića i kako ponovno otvoriti panel postavki kolačića.",
         ],
       },
       {

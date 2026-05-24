@@ -4685,7 +4685,7 @@ Implementation notes:
 
 - The pages use the shared Supplier Passport public visual style and do not load organization, document, user, admin, or share-link data.
 - Public footer links and the cookie preference center link to the localized Privacy Policy route.
-- Only existing legal routes should be linked. Do not add footer links to Terms, Cookie Policy, DPA, Security, or Subprocessors until those routes exist.
+- Only existing legal routes should be linked. The final legal package includes Privacy, Terms, Cookie Policy, DPA, Security, and Subprocessors routes.
 - The pages intentionally include legal entity placeholders until final company details are supplied and reviewed.
 
 Placeholders requiring legal review/replacement:
@@ -4743,5 +4743,44 @@ Manual QA:
 2. Confirm the pages use the Supplier Passport branded header, readable legal cards, anchor navigation, and legal footer.
 3. Confirm placeholders are visible where legal company details are missing.
 4. Confirm `/hr/terms` links back to `/hr/privacy` through the footer and `/en/terms` links back to `/en/privacy`.
-5. Confirm no Terms footer links point to missing Cookie Policy, DPA, Security, or Subprocessors routes.
+5. Confirm Terms footer links open Cookie Policy, DPA, Security, and Subprocessors without 404.
 6. Inspect Network and page source for no private app data requests or sensitive fields.
+
+## Final Legal / GDPR Package
+
+Final legal readiness routes:
+
+- `/hr/cookies` and `/en/cookies`
+- `/hr/dpa` and `/en/dpa`
+- `/hr/security` and `/en/security`
+- `/hr/subprocessors` and `/en/subprocessors`
+
+Shared behavior:
+
+- All routes use the shared Supplier Passport `LegalPageLayout`.
+- The legal footer links to Privacy Policy, Terms, Cookie Policy, DPA, Security and Subprocessors.
+- Cookie settings remains an action that opens the preference center.
+- The cookie banner/settings modal links to both Privacy Policy and Cookie Policy.
+
+Legal review placeholders:
+
+- `[LEGAL ENTITY NAME]` / `[NAZIV PRAVNE OSOBE]`
+- `[PRIVACY CONTACT EMAIL]` / `[KONTAKT E-MAIL ZA PRIVATNOST]`
+- `[CONTACT EMAIL]` / `[KONTAKT E-MAIL]`
+- `[SECURITY CONTACT EMAIL]` / `[KONTAKT E-MAIL ZA SIGURNOST]`
+- `[VERIFY REGION]` / `[PROVJERITI REGIJU]`
+- `[VERIFY PROVIDER]` / `[PROVJERITI PROVIDERA]`
+- `[DPA VERSION]` / `[DPA VERZIJA]`
+- `[DATE]` / `[DATUM]`
+
+QA checklist:
+
+1. Open all HR and EN legal routes.
+2. Confirm the legal footer links resolve without 404.
+3. Open `/hr/cookies`; click `Otvorite postavke kolačića`; confirm the cookie settings modal opens.
+4. Open `/en/cookies`; click `Open cookie settings`; confirm the cookie settings modal opens.
+5. Confirm the Subprocessors table fits desktop and scrolls horizontally on narrow mobile if needed.
+6. Confirm Security does not claim SOC 2, ISO 27001 or other certifications.
+7. Confirm DPA is clearly marked as a working draft/overview, not a signed contract.
+8. Inspect Network and page source for no private document URLs, storage IDs, share tokens, admin data, user/member data, JWTs, cookies or secrets.
+9. Confirm no optional analytics, marketing pixel or tracking script loads before consent.

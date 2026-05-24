@@ -57,6 +57,54 @@ Visible placeholders that must be replaced:
 
 The Terms draft explicitly states that online billing is not enabled in this version. Pilot, commercial, or partner terms may be agreed separately in writing. Do not add Stripe, online payment, or automatic billing wording unless the product later implements it.
 
+## Final Legal / GDPR Page Package
+
+The remaining legal readiness pages are available at:
+
+- `/hr/cookies` and `/en/cookies`
+- `/hr/dpa` and `/en/dpa`
+- `/hr/security` and `/en/security`
+- `/hr/subprocessors` and `/en/subprocessors`
+
+All pages reuse the shared `LegalPageLayout` and shared legal footer.
+
+Cookie Policy:
+
+- Explains necessary, preference, analytics and marketing cookie categories.
+- States optional categories are off by default until consent.
+- Includes an `Open cookie settings` / `Otvorite postavke kolačića` action that reopens the existing preference center.
+- Confirms no optional analytics or marketing scripts should load before consent.
+
+DPA overview:
+
+- Is a working draft/overview, not a signed contract.
+- Covers party roles, processing subject matter, data categories, instructions, confidentiality, security measures, subprocessors, data subject rights, breach handling, deletion/return, audit information and transfers.
+- Requires legal counsel review before commercial use.
+
+Security overview:
+
+- Explains access/authentication, organization-level data isolation, evidence document privacy, public links, admin access, logs/support and user recommendations.
+- Does not claim SOC 2, ISO 27001 or other certifications.
+
+Subprocessors:
+
+- Lists current/planned infrastructure and service providers with placeholders for region/provider verification.
+- Notes that exact provider legal entities, regions and safeguards must be verified before commercial launch.
+
+Legal footer:
+
+- Links to Privacy Policy, Terms, Cookie Policy, DPA, Security and Subprocessors.
+- Keeps Cookie settings as an action that opens preferences, not a route.
+
+Final QA:
+
+1. Open every HR and EN legal route.
+2. Confirm all pages use Supplier Passport branding, header, cards, spacing and footer.
+3. Confirm all legal footer links resolve without 404.
+4. Confirm `/hr/cookies` and `/en/cookies` can reopen cookie settings.
+5. Confirm no public legal route loads organization data, documents, storage IDs, share tokens, admin data, user/member data or secrets.
+6. Confirm legal copy avoids full compliance, certification, audit-ready, SOC 2 and ISO 27001 claims except where explicitly saying those are not claimed.
+
 ## Cookie Categories
 
 Strictly necessary:
