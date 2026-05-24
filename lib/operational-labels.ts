@@ -105,6 +105,15 @@ export type AdminLabels = {
   publicLinkTested: string;
   pdfTested: string;
   buyerDemoReady: string;
+  buyerDemoScriptTitle: string;
+  buyerDemoScriptDescription: string;
+  copyBuyerDemoScript: string;
+  buyerDemoScriptCopied: string;
+  buyerDemoScriptCopyError: string;
+  buyerDemoScriptBody: string;
+  buyerDemoChecklistEvidenceIndexReviewed: string;
+  buyerDemoChecklistRequestInformationTested: string;
+  buyerDemoChecklistQuestionsPrepared: string;
   blocker: string;
   pilotStatusBuyerDemoReady: string;
   nextPilotAction: string;
@@ -513,6 +522,17 @@ export const defaultAdminLabels: AdminLabels = {
   publicLinkTested: "Public link tested",
   pdfTested: "PDF tested",
   buyerDemoReady: "Buyer demo ready",
+  buyerDemoScriptTitle: "Buyer demo script",
+  buyerDemoScriptDescription:
+    "Copy a 20-minute buyer validation script. It explains what buyers can see, the privacy boundary, and the questions to ask.",
+  copyBuyerDemoScript: "Copy buyer demo script",
+  buyerDemoScriptCopied: "Buyer demo script copied.",
+  buyerDemoScriptCopyError: "We could not copy the buyer demo script right now.",
+  buyerDemoScriptBody:
+    "Intro:\nSupplier Passport is a buyer-safe summary of supplier readiness, section status, evidence availability and certificate expiry signals. It is not a certification, audit or assurance report.\n\nWhat the buyer sees:\n- Readiness score and section status\n- Supplier company data and logo when available\n- Evidence availability and certificate expiry status\n- Evidence Index when enabled, without download URLs\n- Request additional information copy flow\n- Buyer-safe PDF summary\n\nPrivacy boundary:\nThe public link does not automatically give the buyer access to private documents. Private evidence files are available only on request or with additional supplier approval.\n\n20-minute flow:\n0-3 min: Explain the problem: repeated supplier questionnaires, evidence requests, certificates and follow-up.\n3-8 min: Show the public Supplier Passport.\n8-12 min: Show evidence availability or Evidence Index.\n12-15 min: Show PDF and request-additional-information flow.\n15-20 min: Ask validation questions.\n\nValidation questions:\n1. Is the Supplier Passport summary understandable without additional explanation?\n2. Which information helps you most when assessing a supplier?\n3. What is missing?\n4. Is the readiness percentage useful, or would you prefer section-level status?\n5. Are the sections clear enough?\n6. Would you like to see a structured evidence index?\n7. Which documents would you most often request from suppliers?\n8. Is \"available on request\" enough, or would you want direct download after approval?\n9. Would this reduce emails and Excel questionnaires with suppliers?\n10. Would you ask suppliers to use this kind of Supplier Passport?\n11. What would be required for you to use this in a real process?\n12. Would you pay for this as a buyer tool, supplier tool, or through a partner/consultant?",
+  buyerDemoChecklistEvidenceIndexReviewed: "Evidence index reviewed",
+  buyerDemoChecklistRequestInformationTested: "Request information CTA tested",
+  buyerDemoChecklistQuestionsPrepared: "Validation questions prepared",
   blocker: "Blocker",
   pilotStatusBuyerDemoReady: "Buyer demo ready",
   nextPilotAction: "Next pilot action",

@@ -92,6 +92,7 @@ export function AdminOrganizationDetailClient({
   const [savingAction, setSavingAction] = useState<AdminSaveAction>(null);
   const [isCopyingHandoff, setIsCopyingHandoff] = useState(false);
   const [isCopyingPilotInstructions, setIsCopyingPilotInstructions] = useState(false);
+  const [isCopyingBuyerDemoScript, setIsCopyingBuyerDemoScript] = useState(false);
   const [status, setStatus] = useState<"loading" | "ready" | "unauthorized" | "error">("loading");
   const [message, setMessage] = useState<string | null>(null);
 
@@ -343,6 +344,28 @@ export function AdminOrganizationDetailClient({
       setMessage(labels.pilotInstructionsCopyError);
     } finally {
       setIsCopyingPilotInstructions(false);
+    }
+  }
+
+  async function handleCopyBuyerDemoScript() {
+    if (!organization) {
+      setMessage(labels.missingOrganizationContext);
+      return;
+    }
+
+    if (isCopyingBuyerDemoScript) {
+      return;
+    }
+
+    setIsCopyingBuyerDemoScript(true);
+
+    try {
+      await navigator.clipboard.writeText(buildBuyerDemoScriptText(labels));
+      setMessage(labels.buyerDemoScriptCopied);
+    } catch {
+      setMessage(labels.buyerDemoScriptCopyError);
+    } finally {
+      setIsCopyingBuyerDemoScript(false);
     }
   }
 
@@ -863,6 +886,32 @@ export function AdminOrganizationDetailClient({
                 <PilotCheck label={labels.publicLinkTested} value={publicLinkTestedAt} locale={locale} fallback={labels.notProvided} />
                 <PilotCheck label={labels.pdfTested} value={pdfTestedAt} locale={locale} fallback={labels.notProvided} />
                 <PilotCheck label={labels.buyerDemoReady} value={buyerDemoReadyAt} locale={locale} fallback={labels.notProvided} />
+              </div>
+              <div className="rounded-xl border border-teal-100 bg-teal-50/70 p-4">
+                <div className="flex flex-col justify-between gap-3 md:flex-row md:items-start">
+                  <div>
+                    <p className="text-sm font-semibold text-slate-950">{labels.buyerDemoScriptTitle}</p>
+                    <p className="mt-1 text-xs leading-5 text-slate-600">{labels.buyerDemoScriptDescription}</p>
+                  </div>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    className="admin-secondary-action w-fit rounded-full bg-white font-semibold"
+                    onClick={handleCopyBuyerDemoScript}
+                    disabled={isCopyingBuyerDemoScript}
+                  >
+                    <ClipboardCopy aria-hidden="true" className="size-4" />
+                    {isCopyingBuyerDemoScript ? labels.copying : labels.copyBuyerDemoScript}
+                  </Button>
+                </div>
+                <div className="mt-4 grid gap-2 text-sm text-slate-700 md:grid-cols-2">
+                  <BuyerDemoChecklistRow label={labels.publicLinkTested} done={Boolean(publicLinkTestedAt)} labels={labels} />
+                  <BuyerDemoChecklistRow label={labels.pdfTested} done={Boolean(pdfTestedAt)} labels={labels} />
+                  <BuyerDemoChecklistRow label={labels.buyerDemoChecklistEvidenceIndexReviewed} labels={labels} />
+                  <BuyerDemoChecklistRow label={labels.buyerDemoChecklistRequestInformationTested} labels={labels} />
+                  <BuyerDemoChecklistRow label={labels.buyerDemoChecklistQuestionsPrepared} labels={labels} />
+                </div>
               </div>
               {message ? <p className="text-sm text-slate-600">{message}</p> : null}
               <div className="flex flex-wrap gap-2">
@@ -1659,6 +1708,32 @@ function PilotCheck({
   );
 }
 
+function BuyerDemoChecklistRow({
+  label,
+  done = false,
+  labels,
+}: {
+  label: string;
+  done?: boolean;
+  labels: AdminLabels;
+}) {
+  return (
+    <div className="flex items-center justify-between gap-3 rounded-lg bg-white/80 px-3 py-2">
+      <span className="font-medium text-slate-700">{label}</span>
+      <Badge
+        variant="outline"
+        className={
+          done
+            ? "rounded-full border-emerald-200 bg-emerald-50 text-emerald-700"
+            : "rounded-full border-amber-200 bg-amber-50 text-amber-700"
+        }
+      >
+        {done ? labels.statusCompleted : labels.firstCustomerManual}
+      </Badge>
+    </div>
+  );
+}
+
 function ReadinessSummaryCard({
   label,
   value,
@@ -1777,6 +1852,10 @@ function buildHandoffSummaryText({
 
 function buildPilotInvitationText(labels: AdminLabels) {
   return [`Subject: ${labels.pilotInvitationSubject}`, "", labels.pilotInvitationBody].join("\n");
+}
+
+function buildBuyerDemoScriptText(labels: AdminLabels) {
+  return [`${labels.buyerDemoScriptTitle} - Supplier Passport`, "", labels.buyerDemoScriptBody].join("\n");
 }
 
 function truncateText(value: string, maxLength: number) {

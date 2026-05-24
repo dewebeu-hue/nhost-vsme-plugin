@@ -4604,3 +4604,45 @@ Security notes:
 - Pilot tracking is admin-only. Do not surface these fields in supplier, public, buyer, share-link, or PDF mappers.
 - Do not store private file URLs, storage IDs, passwords, tokens, buyer secrets, or raw document content in pilot tracking notes.
 - This workflow is manual customer success tracking only; it does not send emails, create billing, or act as a CRM replacement.
+
+## Buyer Demo Validation Package
+
+Use `docs/buyer-demo-validation.md` before showing Supplier Passport to a real buyer or procurement contact.
+
+The package includes:
+
+- buyer-facing demo checklist
+- 20-minute demo flow
+- HR/EN buyer validation questions
+- public/private boundary explanation
+- positive signals for continuing the pilot
+
+Admin UI:
+
+- The organization detail pilot panel includes a copyable `Buyer demo script` / `Skripta za demo kupcu`.
+- The same panel shows a compact buyer-demo checklist using existing pilot markers where available:
+  - public link tested
+  - PDF tested
+  - Evidence Index reviewed
+  - request additional information CTA tested
+  - validation questions prepared
+- No new database fields are added for this buyer-demo package. Manual-only items remain labeled as manual checks.
+
+Buyer-safe guardrails:
+
+- Do not create buyer accounts for this step.
+- Do not send emails automatically.
+- Do not paste private evidence URLs, storage IDs, signed URLs, passwords, share tokens, admin notes, support notes, or raw evidence content into buyer messages.
+- The public link and public PDF should show only buyer-safe summary data and evidence availability.
+- Evidence Index, when enabled, may show safe metadata only and must not include download URLs.
+
+Manual QA:
+
+1. Open `/hr/admin/organizations/[id]`.
+2. Confirm the pilot panel shows `Skripta za demo kupcu`.
+3. Copy the buyer demo script and confirm it includes intro, privacy explanation, 20-minute flow, and validation questions.
+4. Open a valid `/hr/passport/[token]`.
+5. Confirm the public page explains that private evidence documents are not downloadable without additional approval.
+6. Download the public PDF and confirm it is buyer-safe.
+7. Repeat the public page check on `/en/passport/[token]`.
+8. Confirm no email is sent automatically and no buyer account is created.
