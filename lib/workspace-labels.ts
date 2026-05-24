@@ -131,7 +131,6 @@ export type DocumentsLabels = {
   allFolders: string;
   columnDocument: string;
   columnType: string;
-  columnLinkedTo: string;
   columnUploaded: string;
   columnStatus: string;
   columnActions: string;
@@ -433,7 +432,6 @@ export const defaultDocumentsLabels: DocumentsLabels = {
   allFolders: "All folders",
   columnDocument: "Document",
   columnType: "Type",
-  columnLinkedTo: "Linked to",
   columnUploaded: "Uploaded",
   columnStatus: "Status",
   columnActions: "Actions",

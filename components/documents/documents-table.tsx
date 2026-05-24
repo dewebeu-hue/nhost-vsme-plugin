@@ -40,7 +40,6 @@ export function DocumentsTable({
             </TableHead>
             <TableHead>{labels.columnDocument}</TableHead>
             <TableHead>{labels.columnType}</TableHead>
-            <TableHead>{labels.columnLinkedTo}</TableHead>
             <TableHead>{labels.columnUploaded}</TableHead>
             <TableHead>{labels.columnStatus}</TableHead>
             <TableHead className="text-right">{labels.columnActions}</TableHead>
@@ -80,14 +79,6 @@ export function DocumentsTable({
                 </TableCell>
                 <TableCell className="text-slate-600">
                   {labels.documentTypes[document.type] ?? document.type}
-                </TableCell>
-                <TableCell className="min-w-48 text-slate-600">
-                  {document.linkedTo.join(", ")}
-                  {document.linkedExtra ? (
-                    <span className="ml-1 font-medium text-slate-500">
-                      {document.linkedExtra}
-                    </span>
-                  ) : null}
                 </TableCell>
                 <TableCell className="min-w-48 text-slate-600">
                   <div>{document.uploaded}</div>
