@@ -397,6 +397,7 @@ export type CompanyProfileLabels = {
   workspace: string;
   notProvided: string;
   loadFailed: string;
+  loading: string;
   contextualHelpTitle: string;
   contextualHelpText: string;
   companyLogo: string;
@@ -865,6 +866,7 @@ export const defaultCompanyProfileLabels: CompanyProfileLabels = {
   workspace: "Workspace",
   notProvided: "Not provided yet",
   loadFailed: "We could not load company profile data.",
+  loading: "Loading profile...",
   contextualHelpTitle: "How Company Profile is filled",
   contextualHelpText: "Company Profile uses selected answers from Company Basics and related questionnaire sections. Update these values in the questionnaire.",
   companyLogo: "Company logo",

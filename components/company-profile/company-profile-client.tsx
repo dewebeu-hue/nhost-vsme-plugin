@@ -18,6 +18,8 @@ import type { CompanyProfileLabels } from "@/lib/operational-labels";
 import { getFreshBrowserNhostSession } from "@/lib/nhost/client";
 import { cn } from "@/lib/utils";
 
+const MINIMUM_PROFILE_LOADING_MS = 900;
+
 type CompanyProfileClientProps = {
   initialSummary: CompanyProfileSummary | null;
   initialLoadFailed?: boolean;
@@ -33,6 +35,7 @@ export function CompanyProfileClient({
 }: CompanyProfileClientProps) {
   const [summary, setSummary] = useState(initialSummary);
   const [loadFailed, setLoadFailed] = useState(initialLoadFailed);
+  const [isProfileLoading, setIsProfileLoading] = useState(!initialSummary && !initialLoadFailed);
   const [logoPreviewUrl, setLogoPreviewUrl] = useState<string | null>(initialSummary?.logoUrl ?? null);
   const [logoAltText, setLogoAltText] = useState(initialSummary?.logoAltText ?? "");
   const [logoMessage, setLogoMessage] = useState<{ tone: "success" | "error"; text: string } | null>(null);
@@ -41,11 +44,28 @@ export function CompanyProfileClient({
 
   useEffect(() => {
     let cancelled = false;
+    let loadingTimer: ReturnType<typeof setTimeout> | null = null;
+    const startedAt = Date.now();
+
+    function finishLoading() {
+      if (cancelled) {
+        return;
+      }
+
+      const remainingMs = Math.max(0, MINIMUM_PROFILE_LOADING_MS - (Date.now() - startedAt));
+
+      loadingTimer = setTimeout(() => {
+        if (!cancelled) {
+          setIsProfileLoading(false);
+        }
+      }, remainingMs);
+    }
 
     async function loadProfileSummary() {
       const session = await getFreshBrowserNhostSession();
 
       if (!session?.accessToken || cancelled) {
+        finishLoading();
         return;
       }
 
@@ -78,6 +98,8 @@ export function CompanyProfileClient({
         if (!cancelled) {
           setLoadFailed(true);
         }
+      } finally {
+        finishLoading();
       }
     }
 
@@ -85,6 +107,9 @@ export function CompanyProfileClient({
 
     return () => {
       cancelled = true;
+      if (loadingTimer) {
+        clearTimeout(loadingTimer);
+      }
     };
   }, []);
 
@@ -202,6 +227,10 @@ export function CompanyProfileClient({
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
+  }
+
+  if (isProfileLoading) {
+    return <ProfileLoadingState label={labels.loading} />;
   }
 
   return (
@@ -360,6 +389,17 @@ export function CompanyProfileClient({
           icon={Globe2}
         />
       </section>
+    </div>
+  );
+}
+
+function ProfileLoadingState({ label }: { label: string }) {
+  return (
+    <div className="mx-auto flex min-h-[calc(100vh-12rem)] w-full max-w-7xl items-center justify-center rounded-3xl bg-white px-6 py-16">
+      <div className="flex flex-col items-center gap-4 text-center">
+        <span className="size-10 rounded-full border-4 border-blue-100 border-t-blue-600 motion-safe:animate-spin" />
+        <p className="text-sm font-semibold text-slate-600">{label}</p>
+      </div>
     </div>
   );
 }

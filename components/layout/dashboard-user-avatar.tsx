@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { LogOut } from "lucide-react";
 import { useLocale } from "next-intl";
 import { useRouter } from "next/navigation";
@@ -18,6 +18,7 @@ export function DashboardUserAvatar({ fallbackLabel, logoutLabel }: DashboardUse
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [initials, setInitials] = useState(createInitials(fallbackLabel));
+  const menuRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -55,6 +56,32 @@ export function DashboardUserAvatar({ fallbackLabel, logoutLabel }: DashboardUse
     };
   }, [fallbackLabel]);
 
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    function handlePointerDown(event: PointerEvent) {
+      if (!menuRef.current?.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    }
+
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        setIsOpen(false);
+      }
+    }
+
+    document.addEventListener("pointerdown", handlePointerDown);
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("pointerdown", handlePointerDown);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isOpen]);
+
   async function handleSignOut() {
     const nhost = getBrowserNhostClient();
 
@@ -77,7 +104,7 @@ export function DashboardUserAvatar({ fallbackLabel, logoutLabel }: DashboardUse
   }
 
   return (
-    <div className="relative">
+    <div ref={menuRef} className="relative">
       <button
         type="button"
         className="rounded-full focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"

@@ -22,6 +22,8 @@ import {
 import type { DashboardSetupSummary } from "@/lib/data/dashboard";
 import { getFreshBrowserNhostSession } from "@/lib/nhost/client";
 
+const MINIMUM_DASHBOARD_LOADING_MS = 900;
+
 type DashboardOverviewPageProps = {
   labels?: DashboardOverviewLabels;
   localePrefix?: string;
@@ -38,6 +40,7 @@ export function DashboardOverviewPage({
   const [liveSetupSummary, setLiveSetupSummary] = useState<DashboardSetupSummary | null>(
     setupSummary,
   );
+  const [isSummaryLoading, setIsSummaryLoading] = useState(!setupSummary);
   const summary = liveSetupSummary;
   const moduleCompletion = summary?.sectionProgress.map((section) => ({
     name: section.title,
@@ -66,6 +69,22 @@ export function DashboardOverviewPage({
 
   useEffect(() => {
     let cancelled = false;
+    let loadingTimer: ReturnType<typeof setTimeout> | null = null;
+    const startedAt = Date.now();
+
+    function finishLoading() {
+      if (cancelled) {
+        return;
+      }
+
+      const remainingMs = Math.max(0, MINIMUM_DASHBOARD_LOADING_MS - (Date.now() - startedAt));
+
+      loadingTimer = setTimeout(() => {
+        if (!cancelled) {
+          setIsSummaryLoading(false);
+        }
+      }, remainingMs);
+    }
 
     async function loadBrowserSessionData() {
       const session = await getFreshBrowserNhostSession();
@@ -82,6 +101,7 @@ export function DashboardOverviewPage({
       }
 
       if (!session?.accessToken || cancelled) {
+        finishLoading();
         return;
       }
 
@@ -106,6 +126,8 @@ export function DashboardOverviewPage({
         }
       } catch {
         // Keep the server-rendered summary or neutral fallback.
+      } finally {
+        finishLoading();
       }
     }
 
@@ -113,8 +135,19 @@ export function DashboardOverviewPage({
 
     return () => {
       cancelled = true;
+      if (loadingTimer) {
+        clearTimeout(loadingTimer);
+      }
     };
   }, [labels.account]);
+
+  if (isSummaryLoading) {
+    return (
+      <DashboardLoadingState
+        label={localePrefix.startsWith("/hr") ? "Učitavanje podataka..." : "Loading data..."}
+      />
+    );
+  }
 
   return (
     <div className="mx-auto flex w-full max-w-[1600px] flex-col gap-6">
@@ -234,6 +267,17 @@ export function DashboardOverviewPage({
           labels={labels}
         />
       </section>
+    </div>
+  );
+}
+
+function DashboardLoadingState({ label }: { label: string }) {
+  return (
+    <div className="mx-auto flex min-h-[calc(100vh-12rem)] w-full max-w-[1600px] items-center justify-center rounded-3xl bg-white px-6 py-16">
+      <div className="flex flex-col items-center gap-4 text-center">
+        <span className="size-10 rounded-full border-4 border-blue-100 border-t-blue-600 motion-safe:animate-spin" />
+        <p className="text-sm font-semibold text-slate-600">{label}</p>
+      </div>
     </div>
   );
 }
