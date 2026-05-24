@@ -5,6 +5,7 @@ import { useLocale } from "next-intl";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/brand/logo";
+import { CookieSettingsButton } from "@/components/legal/cookie-settings-button";
 import { DashboardNavItem } from "@/components/layout/dashboard-nav-item";
 import { DashboardOrganizationSelector } from "@/components/layout/dashboard-organization-selector";
 import { DashboardUserAvatar } from "@/components/layout/dashboard-user-avatar";
@@ -55,17 +56,22 @@ export function DashboardTopbar({ labels }: DashboardTopbarProps) {
                 <SheetTitle className="sr-only">{labels.openNavigation}</SheetTitle>
                 <SheetDescription className="sr-only">{labels.workspace}</SheetDescription>
               </SheetHeader>
-              <nav className="grid gap-1.5 overflow-y-auto px-4 py-5">
-                {dashboardNavigation.map((item) => (
-                  <DashboardNavItem
-                    key={item.href}
-                    href={`/${locale}${item.href}`}
-                    label={labels.navigation[item.labelKey]}
-                    icon={item.icon}
-                    onClick={() => setIsNavigationOpen(false)}
-                  />
-                ))}
-              </nav>
+              <div className="flex h-[calc(100vh-5rem)] flex-col">
+                <nav className="grid gap-1.5 overflow-y-auto px-4 py-5">
+                  {dashboardNavigation.map((item) => (
+                    <DashboardNavItem
+                      key={item.href}
+                      href={`/${locale}${item.href}`}
+                      label={labels.navigation[item.labelKey]}
+                      icon={item.icon}
+                      onClick={() => setIsNavigationOpen(false)}
+                    />
+                  ))}
+                </nav>
+                <div className="mt-auto border-t border-slate-100 px-4 py-4">
+                  <CookieSettingsButton label={labels.cookieSettings} variant="sidebar" />
+                </div>
+              </div>
             </SheetContent>
           </Sheet>
           <DashboardOrganizationSelector fallbackName={labels.workspace} />

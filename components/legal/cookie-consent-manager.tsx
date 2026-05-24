@@ -149,16 +149,6 @@ export function CookieConsentManager() {
         </section>
       ) : null}
 
-      {consent ? (
-        <button
-          type="button"
-          onClick={openSettings}
-          className="fixed bottom-3 left-3 z-40 rounded-full border border-blue-100 bg-white/90 px-3 py-2 text-xs font-semibold text-slate-600 shadow-sm shadow-blue-100 backdrop-blur transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-        >
-          {t("settings")}
-        </button>
-      ) : null}
-
       {isSettingsOpen ? (
         <CookieSettingsDialog
           categories={categories}

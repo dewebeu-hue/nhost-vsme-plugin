@@ -17,6 +17,7 @@ export type DashboardShellLabels = {
   renewal: string;
   workspace: string;
   account: string;
+  cookieSettings: string;
   logOut: string;
   needHelp: string;
   helpCenter: string;
@@ -55,6 +56,7 @@ export const defaultDashboardShellLabels: DashboardShellLabels = {
   renewal: "Renewal",
   workspace: "Workspace",
   account: "Account",
+  cookieSettings: "Cookie settings",
   logOut: "Log out",
   needHelp: "Need help?",
   helpCenter: "Visit our Help Center",

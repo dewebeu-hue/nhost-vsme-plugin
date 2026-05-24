@@ -77,7 +77,7 @@ export const legalPackageContent: Record<LegalPageKey, Record<"en" | "hr", Legal
           title: "How to manage preferences",
           body: [
             "You can accept all optional categories, reject optional categories, or choose individual categories in the cookie settings panel.",
-            "You can reopen cookie settings at any time from the legal footer or the floating cookie settings control after a decision is saved.",
+            "You can reopen cookie settings at any time from the legal footer or the dashboard utility area after a decision is saved.",
           ],
         },
         {
@@ -167,7 +167,7 @@ export const legalPackageContent: Record<LegalPageKey, Record<"en" | "hr", Legal
           title: "Kako upravljati postavkama",
           body: [
             "Možete prihvatiti sve neobavezne kategorije, odbiti neobavezne kategorije ili odabrati pojedinačne kategorije u panelu postavki kolačića.",
-            "Postavke kolačića možete ponovno otvoriti u bilo kojem trenutku iz pravnog podnožja ili plutajuće kontrole nakon spremanja odluke.",
+            "Postavke kolačića možete ponovno otvoriti u bilo kojem trenutku iz pravnog podnožja ili pomoćnog područja u dashboardu nakon spremanja odluke.",
           ],
         },
         {

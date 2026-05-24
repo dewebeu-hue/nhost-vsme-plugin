@@ -2,6 +2,7 @@ import {
   HelpCircle,
 } from "lucide-react";
 import { Logo } from "@/components/brand/logo";
+import { CookieSettingsButton } from "@/components/legal/cookie-settings-button";
 import { DashboardNavItem } from "@/components/layout/dashboard-nav-item";
 import { DashboardSidebarWorkspaceCard } from "@/components/layout/dashboard-sidebar-workspace-card";
 import { SupportRequestDialog } from "@/components/support/support-request-dialog";
@@ -43,6 +44,10 @@ export function DashboardSidebar({ labels, localePrefix = "" }: DashboardSidebar
             <p className="mt-1 text-sm text-slate-600">{labels.helpCenter}</p>
             <SupportRequestDialog labels={labels.supportRequest} />
           </section>
+
+          <div className="border-t border-slate-100 pt-3">
+            <CookieSettingsButton label={labels.cookieSettings} variant="sidebar" />
+          </div>
         </div>
       </div>
     </aside>

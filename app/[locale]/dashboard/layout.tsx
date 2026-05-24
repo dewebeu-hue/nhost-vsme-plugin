@@ -22,6 +22,7 @@ export default async function DashboardRouteLayout({
   const statuses = await getTranslations("statuses");
   const shell = await getTranslations("dashboard.shell");
   const tour = await getTranslations("onboardingTour");
+  const cookieConsent = await getTranslations("cookieConsent");
 
   const labels: DashboardShellLabels = {
     navigation: {
@@ -41,6 +42,7 @@ export default async function DashboardRouteLayout({
     renewal: shell("renewal"),
     workspace: shell("workspace"),
     account: shell("account"),
+    cookieSettings: cookieConsent("settings"),
     logOut: shell("logOut"),
     needHelp: shell("needHelp"),
     helpCenter: shell("helpCenter"),
