@@ -5,7 +5,6 @@ import type { FileMetadata } from "@nhost/nhost-js/storage";
 import { deflateSync, inflateSync } from "node:zlib";
 import { executeHasuraGraphql } from "@/lib/graphql/client";
 import { getNhostAdminSecret, getNhostStorageUrl } from "@/lib/nhost/config";
-import type { PdfLogoImage } from "@/lib/pdf/simple-pdf";
 
 export const organizationLogoMaxBytes = 2 * 1024 * 1024;
 export const organizationLogoMimeTypes = ["image/png", "image/jpeg", "image/webp"] as const;
@@ -25,6 +24,13 @@ type OrganizationLogoResponse = {
 
 type UpdateOrganizationLogoResponse = {
   update_organizations_by_pk: (OrganizationLogoMetadata & { id: string; name: string }) | null;
+};
+
+type PdfLogoImage = {
+  bytes: Buffer;
+  format: "jpeg" | "rgb";
+  height: number;
+  width: number;
 };
 
 const getOrganizationLogoQuery = `

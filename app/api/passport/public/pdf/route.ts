@@ -1,9 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getPublicShareByToken, getShareLinkByToken, getShareVerificationCookieName } from "@/lib/data/share-links";
-import {
-  getOrganizationLogoMetadata,
-  getOrganizationLogoPdfImage,
-} from "@/lib/data/organization-logo";
+import { getPublicShareByToken, getShareVerificationCookieName } from "@/lib/data/share-links";
 import { createTextPdf } from "@/lib/pdf/simple-pdf";
 import type { publicSharePassport } from "@/lib/mock-data";
 
@@ -28,21 +24,8 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: labels.unavailable, category: "unavailable" }, { status: 404 });
     }
 
-    const shareLink = await getShareLinkByToken(token);
-    const logoMetadata = shareLink
-      ? await getOrganizationLogoMetadata(shareLink.organization_id).catch(() => null)
-      : null;
-    const logoImage = await getOrganizationLogoPdfImage(logoMetadata);
     const report = createPublicPdfReport(result.share, labels);
-    const pdf = createTextPdf(report.title, report.lines, {
-      footerLabel: labels.title,
-      logoImage,
-    });
-
-    if (pdf.byteLength < 1000) {
-      throw new Error("Public PDF render returned an unexpectedly small buffer.");
-    }
-
+    const pdf = createTextPdf(report.title, report.lines, { footerLabel: labels.title });
     const filename = createPublicFilename(result.share.company.name);
 
     return new Response(pdf, {
@@ -225,12 +208,12 @@ const publicPdfLabels = {
     vsmeAligned: "Usklađeno s VSME okvirom",
     readinessSummary: "Sažetak spremnosti",
     overallReadiness: "Ukupna spremnost",
-    scoreExplanation: "Ovaj rezultat odražava ispunjene stavke upitnika i dostupne metapodatke dokazne dokumentacije sigurne za kupce. To je pokazatelj spremnosti, a ne rezultat revizije.",
+    scoreExplanation: "Ovaj rezultat odražava ispunjene stavke upitnika i metapodatke dokazne dokumentacije sigurne za kupce. To je pokazatelj spremnosti, a ne rezultat revizije.",
     companySummary: "Sažetak tvrtke",
     organization: "Organizacija",
     industries: "Industrije",
     headquarters: "Sjedište",
-    employeeCount: "Broj zaposlenih",
+    employeeCount: "Broj zaposlenika",
     sectionSummary: "Sažetak po sekcijama",
     evidenceSummary: "Dokazna dokumentacija",
     evidenceAvailable: "Dostupni dokazi",
