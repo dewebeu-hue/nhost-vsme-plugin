@@ -413,7 +413,9 @@ type ProfileCardProps = {
 };
 
 function ProfileCard({ title, value, description, fallback, icon: Icon }: ProfileCardProps) {
-  const displayValue = value?.trim() || fallback;
+  const trimmedValue = value?.trim();
+  const isMissingValue = !trimmedValue;
+  const displayValue = trimmedValue || fallback;
 
   return (
     <Card className="supplier-surface rounded-2xl border-0">
@@ -428,8 +430,24 @@ function ProfileCard({ title, value, description, fallback, icon: Icon }: Profil
           <CardDescription className="mt-1 text-sm text-slate-500">{description}</CardDescription>
         </div>
       </CardHeader>
-      <CardContent>
-        <p className="text-base font-semibold text-slate-800">{displayValue}</p>
+      <CardContent className="pt-0">
+        <div
+          className={cn(
+            "rounded-2xl border px-4 py-3",
+            isMissingValue
+              ? "border-slate-100 bg-slate-50/80"
+              : "border-blue-100 bg-gradient-to-br from-blue-50/80 to-white",
+          )}
+        >
+          <p
+            className={cn(
+              "break-words text-xl font-semibold leading-7 tracking-tight sm:text-2xl",
+              isMissingValue ? "italic text-slate-500" : "text-slate-950",
+            )}
+          >
+            {displayValue}
+          </p>
+        </div>
       </CardContent>
     </Card>
   );
