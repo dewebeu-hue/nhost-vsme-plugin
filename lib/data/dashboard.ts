@@ -42,6 +42,7 @@ type DashboardDocument = {
 
 type DashboardShareLink = {
   id: string;
+  token: string;
   is_active: boolean;
   expires_at: string | null;
   created_at: string | null;
@@ -103,6 +104,7 @@ export type DashboardActiveShareLinkSummary = {
   module: string;
   status: "Active";
   expires: string;
+  publicPath: string;
 };
 
 export type DashboardActivitySummary = {
@@ -179,6 +181,7 @@ const dashboardSetupDataQuery = `
       order_by: { created_at: desc }
     ) {
       id
+      token
       is_active
       expires_at
       created_at
@@ -360,6 +363,7 @@ export async function getDashboardSetupSummaryForOrganization(
       module: "Supplier Passport",
       status: "Active" as const,
       expires: link.expires_at ?? "",
+      publicPath: `/passport/${encodeURIComponent(link.token)}`,
     })),
     recentBuyerRequests: data.buyer_requests.map((request) => ({
       id: request.id,

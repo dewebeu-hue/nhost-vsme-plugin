@@ -12,6 +12,7 @@ type DashboardShareLink = {
   module: string;
   status: "Active";
   expires: string;
+  publicPath?: string;
 };
 
 type ActiveShareLinksCardProps = {

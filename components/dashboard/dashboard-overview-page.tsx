@@ -2,7 +2,15 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, CheckCircle2, ClipboardList } from "lucide-react";
+import {
+  ArrowRight,
+  CheckCircle2,
+  ClipboardList,
+  Copy,
+  ExternalLink,
+  FileDown,
+  Link2,
+} from "lucide-react";
 import { ActiveShareLinksCard } from "@/components/dashboard/active-share-links-card";
 import { AnimatedWelcomeTitle } from "@/components/dashboard/animated-welcome-title";
 import { BuyerRequestsCard } from "@/components/dashboard/buyer-requests-card";
@@ -21,6 +29,7 @@ import {
 } from "@/lib/dashboard-labels";
 import type { DashboardSetupSummary } from "@/lib/data/dashboard";
 import { getFreshBrowserNhostSession } from "@/lib/nhost/client";
+import { markPassportChecklistProgress } from "@/lib/passport-checklist-progress";
 
 const MINIMUM_DASHBOARD_LOADING_MS = 900;
 
@@ -41,6 +50,8 @@ export function DashboardOverviewPage({
     setupSummary,
   );
   const [isSummaryLoading, setIsSummaryLoading] = useState(!setupSummary);
+  const [copyState, setCopyState] = useState<"idle" | "copied" | "error">("idle");
+  const [isExportingPdf, setIsExportingPdf] = useState(false);
   const summary = liveSetupSummary;
   const moduleCompletion = summary?.sectionProgress.map((section) => ({
     name: section.title,
@@ -57,7 +68,8 @@ export function DashboardOverviewPage({
     })) ?? [],
   };
   const tasks = createDashboardTasks(summary, labels);
-  const nextTask = tasks.find((task) => !task.completed) ?? tasks.at(-1);
+  const allTasksCompleted = tasks.every((task) => task.completed);
+  const nextTask = allTasksCompleted ? null : tasks.find((task) => !task.completed);
   const readinessData = summary
     ? [{ day: labels.lastUpdated, readiness: summary.readinessPercent }]
     : [];
@@ -66,6 +78,71 @@ export function DashboardOverviewPage({
     setSubtitleVisibleForTitle(welcomeTitle);
   }, [welcomeTitle]);
   const showWelcomeSubtitle = subtitleVisibleForTitle === welcomeTitle;
+  const activePublicShareLink = summary?.activeShareLinks[0];
+  const activePublicShareUrl = activePublicShareLink?.publicPath
+    ? `${activePublicShareLink.publicPath.startsWith(`/${localePrefix.replace("/", "")}`)
+      ? ""
+      : localePrefix}${activePublicShareLink.publicPath}`
+    : null;
+
+  async function handleCopyPublicLink() {
+    if (!activePublicShareUrl) {
+      return;
+    }
+
+    try {
+      const absoluteUrl = new URL(activePublicShareUrl, window.location.origin).toString();
+      await window.navigator.clipboard.writeText(absoluteUrl);
+      setCopyState("copied");
+      window.setTimeout(() => setCopyState("idle"), 2200);
+    } catch {
+      setCopyState("error");
+      window.setTimeout(() => setCopyState("idle"), 2200);
+    }
+  }
+
+  async function handleExportPdf() {
+    const session = await getFreshBrowserNhostSession();
+
+    if (!session?.accessToken) {
+      return;
+    }
+
+    setIsExportingPdf(true);
+
+    try {
+      const locale = localePrefix.replace("/", "") || "en";
+      const response = await fetch(`/api/passport/export/pdf?locale=${encodeURIComponent(locale)}`, {
+        method: "GET",
+        headers: {
+          authorization: `Bearer ${session.accessToken}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(labels.downloadPdfError);
+      }
+
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const disposition = response.headers.get("content-disposition") ?? "";
+      const filename = readFilenameFromContentDisposition(disposition) || "supplier-passport.pdf";
+      const link = document.createElement("a");
+
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+      markPassportChecklistProgress(summary?.organizationId, { pdfDownloaded: true });
+    } catch {
+      setCopyState("error");
+      window.setTimeout(() => setCopyState("idle"), 2200);
+    } finally {
+      setIsExportingPdf(false);
+    }
+  }
 
   useEffect(() => {
     let cancelled = false;
@@ -174,19 +251,16 @@ export function DashboardOverviewPage({
 
       <section className="supplier-surface overflow-hidden rounded-3xl border-0 p-5 sm:p-6">
         <div className="grid gap-4 lg:grid-cols-[1.05fr_0.95fr]">
-          <div className="rounded-2xl border border-blue-100 bg-gradient-to-br from-blue-50/90 to-white p-5">
-            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-blue-700">
-              {labels.overallReadiness}
-            </p>
-            <div className="mt-3 flex flex-wrap items-end gap-3">
-              <p className="text-5xl font-semibold tracking-tight text-slate-950">
-                {summary?.readinessPercent ?? 0}%
-              </p>
-              <p className="pb-2 text-sm font-semibold text-slate-600">
-                {getReadinessLabel(summary?.readinessPercent ?? 0, labels)}
-              </p>
-            </div>
-          </div>
+          <PassportStatusActionPanel
+            labels={labels}
+            localePrefix={localePrefix}
+            summary={summary}
+            publicShareUrl={activePublicShareUrl}
+            copyState={copyState}
+            isExportingPdf={isExportingPdf}
+            onCopyPublicLink={handleCopyPublicLink}
+            onExportPdf={handleExportPdf}
+          />
           <div
             data-tour="dashboard-next-step"
             className="rounded-2xl border border-teal-100 bg-gradient-to-br from-teal-50/90 to-white p-5"
@@ -195,7 +269,7 @@ export function DashboardOverviewPage({
               {labels.setupChecklist.nextRecommendedStep}
             </p>
             <p className="mt-3 text-lg font-semibold tracking-tight text-slate-950">
-              {nextTask?.title ?? labels.setupChecklist.neutralFallback}
+              {nextTask?.title ?? labels.passportReadyNextStep}
             </p>
             <p className="mt-1 text-sm font-medium text-slate-600">
               {labels.readinessHelper}
@@ -279,6 +353,139 @@ function DashboardLoadingState({ label }: { label: string }) {
         <p className="text-sm font-semibold text-slate-600">{label}</p>
       </div>
     </div>
+  );
+}
+
+function PassportStatusActionPanel({
+  labels,
+  localePrefix,
+  summary,
+  publicShareUrl,
+  copyState,
+  isExportingPdf,
+  onCopyPublicLink,
+  onExportPdf,
+}: {
+  labels: DashboardOverviewLabels;
+  localePrefix: string;
+  summary: DashboardSetupSummary | null;
+  publicShareUrl: string | null;
+  copyState: "idle" | "copied" | "error";
+  isExportingPdf: boolean;
+  onCopyPublicLink: () => void;
+  onExportPdf: () => void;
+}) {
+  const missingDataCount = summary?.missingItemsCount ?? 0;
+  const hasActivePublicLink = Boolean(publicShareUrl);
+  const isReadyForBuyers =
+    (summary?.readinessPercent ?? 0) >= 100 &&
+    missingDataCount === 0 &&
+    hasActivePublicLink;
+  const statusTitle = isReadyForBuyers ? labels.passportReadyTitle : labels.passportNotReadyTitle;
+  const statusDescription = isReadyForBuyers
+    ? labels.passportReadyDescription
+    : labels.passportNotReadyDescription;
+
+  return (
+    <div className="rounded-2xl border border-blue-100 bg-gradient-to-br from-blue-50/80 via-white to-teal-50/60 p-5">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-blue-700">
+            {labels.passportStatusTitle}
+          </p>
+          <h2 className="mt-3 text-2xl font-semibold tracking-tight text-slate-950">
+            {statusTitle}
+          </h2>
+        </div>
+        <span className="inline-flex items-center gap-2 rounded-full border border-teal-100 bg-white px-3 py-1.5 text-xs font-semibold text-teal-700 shadow-sm">
+          <Link2 aria-hidden="true" className="size-3.5" />
+          {hasActivePublicLink ? labels.activePublicLink : labels.setupChecklist.pending}
+        </span>
+      </div>
+
+      <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-600">{statusDescription}</p>
+
+      <div className="mt-4 flex flex-wrap gap-2">
+        <StatusChip tone={missingDataCount === 0 ? "green" : "amber"}>
+          {formatTemplate(labels.missingDataBadge, { count: String(missingDataCount) })}
+        </StatusChip>
+        <StatusChip tone="blue">
+          {formatTemplate(labels.questionnaireAnswersBadge, {
+            completed: String(summary?.answeredQuestions ?? 0),
+            total: String(summary?.totalQuestions ?? 0),
+          })}
+        </StatusChip>
+        <StatusChip tone={(summary?.linkedEvidenceCount ?? 0) > 0 ? "green" : "blue"}>
+          {formatTemplate(labels.linkedDocumentsBadge, {
+            count: String(summary?.linkedEvidenceCount ?? 0),
+          })}
+        </StatusChip>
+      </div>
+
+      <div className="mt-5 flex flex-wrap gap-2">
+        {publicShareUrl ? (
+          <Link
+            href={publicShareUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-blue-600/20"
+          >
+            <ExternalLink aria-hidden="true" className="size-4" />
+            {labels.openPublicLink}
+          </Link>
+        ) : (
+          <Link
+            href={`${localePrefix}/dashboard/share`}
+            className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-blue-600/20"
+          >
+            <Link2 aria-hidden="true" className="size-4" />
+            {labels.createPublicLink}
+          </Link>
+        )}
+        <button
+          type="button"
+          className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-blue-200 hover:text-blue-700 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-blue-600/20 disabled:cursor-not-allowed disabled:opacity-55"
+          disabled={!publicShareUrl}
+          onClick={onCopyPublicLink}
+        >
+          <Copy aria-hidden="true" className="size-4" />
+          {copyState === "copied" ? labels.linkCopied : labels.copyLink}
+        </button>
+        <button
+          type="button"
+          className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-blue-200 hover:text-blue-700 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-blue-600/20 disabled:cursor-not-allowed disabled:opacity-55"
+          disabled={isExportingPdf}
+          onClick={onExportPdf}
+        >
+          <FileDown aria-hidden="true" className="size-4" />
+          {isExportingPdf ? labels.downloadingPdf : labels.downloadPdf}
+        </button>
+      </div>
+
+      {copyState === "error" ? (
+        <p className="mt-3 text-sm font-medium text-amber-700">{labels.downloadPdfError}</p>
+      ) : null}
+    </div>
+  );
+}
+
+function StatusChip({
+  children,
+  tone,
+}: {
+  children: string;
+  tone: "green" | "blue" | "amber";
+}) {
+  const toneClass = {
+    green: "border-emerald-100 bg-emerald-50 text-emerald-700",
+    blue: "border-blue-100 bg-blue-50 text-blue-700",
+    amber: "border-amber-100 bg-amber-50 text-amber-700",
+  }[tone];
+
+  return (
+    <span className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold ${toneClass}`}>
+      {children}
+    </span>
   );
 }
 
@@ -419,6 +626,25 @@ function formatDate(value: string | null | undefined, labels: DashboardOverviewL
     month: "short",
     day: "numeric",
   }).format(new Date(value));
+}
+
+function formatTemplate(template: string, values: Record<string, string>) {
+  return Object.entries(values).reduce(
+    (result, [key, value]) => result.replaceAll(`{${key}}`, value),
+    template,
+  );
+}
+
+function readFilenameFromContentDisposition(disposition: string) {
+  const utf8Match = disposition.match(/filename\*=UTF-8''([^;]+)/i);
+
+  if (utf8Match?.[1]) {
+    return decodeURIComponent(utf8Match[1]);
+  }
+
+  const asciiMatch = disposition.match(/filename="?([^";]+)"?/i);
+
+  return asciiMatch?.[1] ?? null;
 }
 
 function getUserSafeLabel(
