@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { ArrowRight, Mail, ShieldCheck } from "lucide-react";
 import { LandingHeader } from "@/components/landing/landing-header";
+import { LegalFooter } from "@/components/legal/legal-footer";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -77,6 +78,7 @@ export function RequestDemoPageContent() {
           </aside>
         </div>
       </section>
+      <LegalFooter />
     </main>
   );
 }

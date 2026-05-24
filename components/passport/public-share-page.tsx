@@ -25,6 +25,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { PublicPdfDownloadButton } from "@/components/passport/public-pdf-download-button";
+import { LegalFooter } from "@/components/legal/legal-footer";
 import type { publicSharePassport } from "@/lib/mock-data";
 import { getReadinessVisualState } from "@/lib/readiness-visual-state";
 import { cn } from "@/lib/utils";
@@ -375,6 +376,7 @@ export function PublicSharePage({ locale, passport, token }: PublicSharePageProp
           </p>
         </div>
       </footer>
+      <LegalFooter className="border-t-0" />
       <RequestAdditionalInformationDialog
         open={isRequestOpen}
         copyState={copyState}

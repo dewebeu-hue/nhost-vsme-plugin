@@ -7,6 +7,7 @@ import { PricingPreview } from "@/components/landing/pricing-preview";
 import { ScrollReveal } from "@/components/landing/scroll-reveal";
 import { SocialProof } from "@/components/landing/social-proof";
 import { ValueDisclaimer } from "@/components/landing/value-disclaimer";
+import { LegalFooter } from "@/components/legal/legal-footer";
 
 export function LandingPageContent() {
   return (
@@ -31,6 +32,7 @@ export function LandingPageContent() {
       <ScrollReveal>
         <FinalCta />
       </ScrollReveal>
+      <LegalFooter />
     </main>
   );
 }

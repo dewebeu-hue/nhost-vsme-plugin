@@ -4676,3 +4676,38 @@ Manual QA:
 5. Clear consent and click `Prihvati sve`.
 6. Repeat on `/en`.
 7. Confirm no analytics, marketing, pixel, or optional tracking script loads before consent.
+
+## Privacy Policy Pages
+
+Privacy Policy draft pages are available at `/hr/privacy` and `/en/privacy`.
+
+Implementation notes:
+
+- The pages use the shared Supplier Passport public visual style and do not load organization, document, user, admin, or share-link data.
+- Public footer links and the cookie preference center link to the localized Privacy Policy route.
+- Only existing legal routes should be linked. Do not add footer links to Terms, Cookie Policy, DPA, Security, or Subprocessors until those routes exist.
+- The pages intentionally include legal entity placeholders until final company details are supplied and reviewed.
+
+Placeholders requiring legal review/replacement:
+
+- `[LEGAL ENTITY NAME]` / `[NAZIV PRAVNE OSOBE]`
+- `[ADDRESS]` / `[ADRESA]`
+- `[REGISTRATION / TAX ID]` / `[OIB / REGISTRACIJSKI BROJ]`
+- `[PRIVACY CONTACT EMAIL]` / `[KONTAKT E-MAIL ZA PRIVATNOST]`
+- `[DPO CONTACT IF APPLICABLE]` / `[DPO KONTAKT AKO POSTOJI]`
+- `[DEFINE RETENTION PERIODS]` / `[DEFINIRATI ROKOVE ČUVANJA]`
+
+Legal copy guardrails:
+
+- Do not claim GDPR compliance, full compliance, legal certification, guaranteed compliance, audit readiness, security certification, audit opinion, approval, or assurance.
+- Acceptable wording: privacy information, GDPR readiness draft, legal draft, and review by legal counsel required.
+- Public legal pages must not expose private document URLs, storage IDs, share tokens, support notes, admin notes, user/member records, JWTs, cookies, or secrets.
+
+Manual QA:
+
+1. Open `/hr/privacy` and `/en/privacy`.
+2. Confirm the pages use the Supplier Passport branded header, readable legal cards, anchor navigation, and legal footer.
+3. Confirm placeholders are visible where legal company details are missing.
+4. Open the cookie settings dialog and confirm the Privacy Policy link opens the localized route.
+5. Check landing, plans, request-demo, public Passport, and buyer portal footer links for no 404 links.
+6. Inspect Network and page source for no private app data requests or sensitive fields.

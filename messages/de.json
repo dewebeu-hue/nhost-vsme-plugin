@@ -24,6 +24,7 @@
     "title": "Cookie preferences",
     "bannerLabel": "Cookie consent notice",
     "bannerText": "We use necessary cookies to make the application work. With your consent, we may use optional cookies to improve the experience and analytics. You can change your preferences at any time.",
+    "privacyLink": "More information in the Privacy Policy.",
     "settings": "Cookie settings",
     "acceptAll": "Accept all",
     "rejectOptional": "Reject optional",
@@ -49,6 +50,12 @@
         "description": "Marketing cookies are used for campaigns and advertising measurement."
       }
     }
+  },
+  "legalFooter": {
+    "label": "Legal links",
+    "privacy": "Privacy Policy",
+    "cookieSettings": "Cookie settings",
+    "copyright": "Supplier Passport legal information. Privacy and cookie choices stay under your control."
   },
   "navigation": {
     "dashboard": "Dashboard",

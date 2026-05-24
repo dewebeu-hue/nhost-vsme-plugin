@@ -24,6 +24,7 @@
     "title": "Postavke kolačića",
     "bannerLabel": "Obavijest o kolačićima",
     "bannerText": "Koristimo nužne kolačiće za rad aplikacije. Uz vašu privolu možemo koristiti dodatne kolačiće za poboljšanje iskustva i analitiku. Postavke možete promijeniti u bilo kojem trenutku.",
+    "privacyLink": "Više informacija u Politici privatnosti.",
     "settings": "Postavke kolačića",
     "acceptAll": "Prihvati sve",
     "rejectOptional": "Odbij neobavezne",
@@ -49,6 +50,12 @@
         "description": "Marketinški kolačići koriste se za kampanje i mjerenje oglašavanja."
       }
     }
+  },
+  "legalFooter": {
+    "label": "Pravni linkovi",
+    "privacy": "Politika privatnosti",
+    "cookieSettings": "Postavke kolačića",
+    "copyright": "Supplier Passport pravne informacije. Privatnost i postavke kolačića ostaju pod vašom kontrolom."
   },
   "navigation": {
     "dashboard": "Dashboard",

@@ -9,6 +9,7 @@ import { PricingCard } from "@/components/pricing/pricing-card";
 import { PricingComparisonTable } from "@/components/pricing/pricing-comparison-table";
 import { PricingFaq } from "@/components/pricing/pricing-faq";
 import { PricingSection } from "@/components/pricing/pricing-section";
+import { LegalFooter } from "@/components/legal/legal-footer";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import {
@@ -95,6 +96,7 @@ export function PricingPageContent() {
       <PricingComparisonTable />
       <PricingFaq />
       <FinalCta />
+      <LegalFooter />
     </main>
   );
 }

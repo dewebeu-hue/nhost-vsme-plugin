@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { useTranslations } from "next-intl";
+import Link from "next/link";
+import { useLocale, useTranslations } from "next-intl";
 import { ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,6 +20,7 @@ const optionalCategories: OptionalCategory[] = ["preferences", "analytics", "mar
 
 export function CookieConsentManager() {
   const t = useTranslations("cookieConsent");
+  const locale = useLocale();
   const [consent, setConsent] = useState<CookieConsentPreferences | null>(null);
   const [hasLoaded, setHasLoaded] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -129,6 +131,12 @@ export function CookieConsentManager() {
                 </p>
                 <h2 className="mt-1 text-base font-semibold text-slate-950">{t("title")}</h2>
                 <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">{t("bannerText")}</p>
+                <Link
+                  href={`/${locale}/privacy`}
+                  className="mt-2 inline-flex text-sm font-semibold text-blue-700 transition hover:text-blue-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                >
+                  {t("privacyLink")}
+                </Link>
               </div>
             </div>
             <div className="grid gap-2 sm:flex sm:flex-wrap lg:shrink-0 lg:justify-end">
@@ -160,6 +168,7 @@ export function CookieConsentManager() {
         <CookieSettingsDialog
           categories={categories}
           draft={draft}
+          locale={locale}
           onAcceptAll={acceptAll}
           onClose={() => setIsSettingsOpen(false)}
           onRejectOptional={rejectOptional}
@@ -175,6 +184,7 @@ export function CookieConsentManager() {
 function CookieSettingsDialog({
   categories,
   draft,
+  locale,
   onAcceptAll,
   onClose,
   onRejectOptional,
@@ -189,6 +199,7 @@ function CookieSettingsDialog({
     title: string;
   }>;
   draft: Record<OptionalCategory, boolean>;
+  locale: string;
   onAcceptAll: () => void;
   onClose: () => void;
   onRejectOptional: () => void;
@@ -217,6 +228,12 @@ function CookieSettingsDialog({
                 {t("modalTitle")}
               </h2>
               <p className="mt-2 text-sm leading-6 text-slate-600">{t("modalDescription")}</p>
+              <Link
+                href={`/${locale}/privacy`}
+                className="mt-2 inline-flex text-sm font-semibold text-blue-700 transition hover:text-blue-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+              >
+                {t("privacyLink")}
+              </Link>
             </div>
           </div>
           <Button type="button" variant="ghost" onClick={onClose} className="w-fit rounded-xl text-slate-600 hover:bg-blue-50 hover:text-blue-700">

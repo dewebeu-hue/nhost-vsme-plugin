@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { Logo } from "@/components/brand/logo";
+import { LegalFooter } from "@/components/legal/legal-footer";
 import { LanguageSwitcher } from "@/components/shared/language-switcher";
 import type { ReactNode } from "react";
 
@@ -53,6 +54,7 @@ export function BuyerPortalShell({ children, locale }: BuyerPortalShellProps) {
         </div>
       </header>
       {children}
+      <LegalFooter />
     </div>
   );
 }

@@ -2,6 +2,40 @@
 
 This document describes the Supplier Passport cookie consent foundation added for Faza 4.6.
 
+## Privacy Policy Pages
+
+Public Privacy Policy draft pages are available at:
+
+- `/hr/privacy`
+- `/en/privacy`
+
+The pages use the Supplier Passport public visual style: branded header, light B2B SaaS background, blue/teal accents, readable legal content cards, table-of-contents anchors, and the shared legal footer.
+
+These pages are legal/GDPR readiness drafts only. They must be reviewed by legal counsel before commercial launch and before replacing placeholders with final company details.
+
+Visible placeholders that must be replaced:
+
+- `[LEGAL ENTITY NAME]` / `[NAZIV PRAVNE OSOBE]`
+- `[ADDRESS]` / `[ADRESA]`
+- `[REGISTRATION / TAX ID]` / `[OIB / REGISTRACIJSKI BROJ]`
+- `[PRIVACY CONTACT EMAIL]` / `[KONTAKT E-MAIL ZA PRIVATNOST]`
+- `[DPO CONTACT IF APPLICABLE]` / `[DPO KONTAKT AKO POSTOJI]`
+- `[DEFINE RETENTION PERIODS]` / `[DEFINIRATI ROKOVE ČUVANJA]`
+
+The Privacy Policy draft documents these data categories:
+
+- account and authentication data
+- organization/company profile data
+- questionnaire answers
+- uploaded document metadata and supporting evidence handling
+- evidence links between documents and answers
+- buyer requests and buyer-safe public links
+- support requests
+- technical logs
+- cookie consent preferences
+
+Do not add claims such as `GDPR compliant`, `fully compliant`, `legally certified`, `guaranteed compliance`, or `audit-ready`. Supplier Passport legal pages should explain privacy practices and readiness work without claiming certification or legal approval.
+
 ## Cookie Categories
 
 Strictly necessary:
@@ -86,4 +120,3 @@ Manual QA:
 4. Clear consent and click `Prihvati sve`.
 5. Repeat on `/en`.
 6. Confirm no analytics, marketing, `gtag`, `dataLayer`, PostHog, Plausible, or Meta Pixel script loads before consent.
-
