@@ -1097,9 +1097,15 @@
           ]
         }
       ],
-      "disclaimerEyebrow": "Wichtige Einschränkung",
+      "disclaimerEyebrow": "Klarer Rahmen",
       "disclaimerTitle": "Bereitschaft, keine Zertifizierung",
-      "disclaimerText": "Der Supplier Passport ist VSME-orientiert und für Lieferantenbereitschaftsprozesse gedacht. Er ist kein Prüfungsurteil, keine rechtliche Zertifizierung und kein Assurance-Bericht."
+      "disclaimerText": "Supplier Passport hilft, Lieferantendaten und Nachweise für eine Bereitschaftsprüfung zu strukturieren.",
+      "disclaimerItems": [
+        "Am VSME-Rahmen ausgerichtet",
+        "Basierend auf Daten und Nachweisen des Lieferanten",
+        "Keine Prüfung, Zertifizierung oder unabhängige Assurance"
+      ],
+      "disclaimerFooter": "Käufer können die Zusammenfassung als Ausgangspunkt für ihre eigene Prüfung nutzen."
     },
     "socialProof": {
       "logos": [

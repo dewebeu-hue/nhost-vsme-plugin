@@ -1120,9 +1120,15 @@
           ]
         }
       ],
-      "disclaimerEyebrow": "Važno ograničenje",
+      "disclaimerEyebrow": "Jasno postavljen okvir",
       "disclaimerTitle": "Spremnost, ne certifikacija",
-      "disclaimerText": "Supplier Passport je usklađen s VSME okvirom i namijenjen je procesima spremnosti dobavljača. Nije revizijsko mišljenje, pravni certifikat niti izvješće s neovisnim uvjerenjem."
+      "disclaimerText": "Supplier Passport pomaže strukturirati podatke i dokaze za procjenu spremnosti dobavljača.",
+      "disclaimerItems": [
+        "Usklađeno s VSME okvirom",
+        "Temeljeno na podacima i dokazima dobavljača",
+        "Nije revizija, certifikat ni neovisno uvjerenje"
+      ],
+      "disclaimerFooter": "Kupci mogu koristiti sažetak kao početnu točku za vlastitu provjeru."
     },
     "socialProof": {
       "logos": [
