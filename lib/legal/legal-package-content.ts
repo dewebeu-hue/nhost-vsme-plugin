@@ -5,7 +5,7 @@ type LegalPageKey = "cookies" | "dpa" | "security" | "subprocessors";
 export const legalPackageContent: Record<LegalPageKey, Record<"en" | "hr", LegalPageContent>> = {
   cookies: {
     en: {
-      effectiveDate: "Last updated: [DATE]",
+      effectiveDate: "Last updated: 24 May 2026",
       hero: {
         action: {
           label: "Open cookie settings",
@@ -19,10 +19,8 @@ export const legalPackageContent: Record<LegalPageKey, Record<"en" | "hr", Legal
         title: "Cookie Policy",
       },
       placeholders: [
-        "[LEGAL ENTITY NAME]",
-        "[PRIVACY CONTACT EMAIL]",
-        "[DATE]",
-        "[ADD ACTUAL COOKIES BEFORE COMMERCIAL LAUNCH]",
+        "Legal counsel review required",
+        "Exact production cookie inventory should be verified before commercial launch",
       ],
       tocTitle: "On this page",
       sections: [
@@ -46,8 +44,8 @@ export const legalPackageContent: Record<LegalPageKey, Record<"en" | "hr", Legal
           id: "cookie-inventory",
           title: "Cookie inventory",
           body: [
-            "Exact cookie names, purposes and lifetimes must be verified before commercial launch: [ADD ACTUAL COOKIES BEFORE COMMERCIAL LAUNCH].",
-            "Do not invent cookie names in this policy. Update this section only after the production cookie inventory is confirmed.",
+            "Exact cookie names, purposes and lifetimes should be verified before commercial launch. Current known necessary/preference storage includes authentication/session behavior, protected share-link verification where used, cookie consent settings, guided-tour state and interface preferences such as admin theme.",
+            "Analytics is not currently active. If introduced, it will be used only in accordance with consent settings and this Policy. Vercel Web Analytics is the recommended future option to evaluate, but it is not installed or loaded in this step.",
           ],
         },
         {
@@ -62,15 +60,15 @@ export const legalPackageContent: Record<LegalPageKey, Record<"en" | "hr", Legal
           id: "analytics",
           title: "Analytics cookies",
           body: [
-            "Analytics cookies may help understand product usage and improve the application.",
-            "No optional analytics script should load before analytics consent. If analytics are added later, they must be gated by the cookie consent helper.",
+            "Analytics is not currently active. If introduced, analytics may help understand product usage and improve the application.",
+            "No optional analytics script should load before analytics consent. If analytics are added later, it must be gated by the cookie consent helper and reflected in this policy.",
           ],
         },
         {
           id: "marketing",
           title: "Marketing cookies",
           body: [
-            "Marketing cookies may be used for campaigns or advertising measurement if such tools are introduced later.",
+            "Marketing cookies are not currently active. They may be used for campaigns or advertising measurement only if such tools are introduced later.",
             "No marketing pixel or campaign tracking should load before marketing consent.",
           ],
         },
@@ -92,12 +90,12 @@ export const legalPackageContent: Record<LegalPageKey, Record<"en" | "hr", Legal
         {
           id: "contact",
           title: "Contact",
-          body: ["For cookie or privacy questions, contact [PRIVACY CONTACT EMAIL]."],
+          body: ["For cookie or privacy questions, contact deweb.eu@gmail.com."],
         },
       ],
     },
     hr: {
-      effectiveDate: "Zadnje ažurirano: [DATUM]",
+      effectiveDate: "Zadnje ažurirano: 24.5.2026.",
       hero: {
         action: {
           label: "Otvorite postavke kolačića",
@@ -111,10 +109,8 @@ export const legalPackageContent: Record<LegalPageKey, Record<"en" | "hr", Legal
         title: "Politika kolačića",
       },
       placeholders: [
-        "[NAZIV PRAVNE OSOBE]",
-        "[KONTAKT E-MAIL ZA PRIVATNOST]",
-        "[DATUM]",
-        "[DODATI STVARNE KOLAČIĆE PRIJE KOMERCIJALNOG LANSIRANJA]",
+        "Potreban pravni pregled",
+        "Točan produkcijski inventar kolačića treba provjeriti prije komercijalnog lansiranja",
       ],
       tocTitle: "Na ovoj stranici",
       sections: [
@@ -138,8 +134,8 @@ export const legalPackageContent: Record<LegalPageKey, Record<"en" | "hr", Legal
           id: "cookie-inventory",
           title: "Inventar kolačića",
           body: [
-            "Točne nazive kolačića, svrhe i trajanja potrebno je provjeriti prije komercijalnog lansiranja: [DODATI STVARNE KOLAČIĆE PRIJE KOMERCIJALNOG LANSIRANJA].",
-            "Nemojte izmišljati nazive kolačića u ovoj politici. Ažurirajte ovaj odjeljak tek nakon potvrde produkcijskog inventara kolačića.",
+            "Točne nazive kolačića, svrhe i trajanja treba provjeriti prije komercijalnog lansiranja. Trenutno poznata nužna/preferencijska pohrana uključuje autentikacijsko/sesijsko ponašanje, provjeru zaštićenih share linkova gdje se koristi, postavke cookie privole, stanje vođene ture i postavke sučelja kao što je admin tema.",
+            "Analitika trenutno nije aktivna. Ako se uvede, koristit će se samo u skladu s postavkama privole i ovom Politikom. Vercel Web Analytics je preporučena buduća opcija za razmotriti, ali nije instaliran niti učitan u ovom koraku.",
           ],
         },
         {
@@ -154,15 +150,15 @@ export const legalPackageContent: Record<LegalPageKey, Record<"en" | "hr", Legal
           id: "analytics",
           title: "Analitički kolačići",
           body: [
-            "Analitički kolačići mogu pomoći razumjeti korištenje proizvoda i poboljšati aplikaciju.",
-            "Nijedna neobavezna analitička skripta ne smije se učitati prije privole za analitiku. Ako se analitika doda kasnije, mora biti ograničena pomoćnom funkcijom za privolu kolačića.",
+            "Analitika trenutno nije aktivna. Ako se uvede, analitika može pomoći razumjeti korištenje proizvoda i poboljšati aplikaciju.",
+            "Nijedna neobavezna analitička skripta ne smije se učitati prije privole za analitiku. Ako se analitika doda kasnije, mora biti ograničena pomoćnom funkcijom za privolu kolačića i opisana u ovoj politici.",
           ],
         },
         {
           id: "marketing",
           title: "Marketinški kolačići",
           body: [
-            "Marketinški kolačići mogu se koristiti za kampanje ili mjerenje oglašavanja ako se takvi alati uvedu kasnije.",
+            "Marketinški kolačići trenutno nisu aktivni. Mogu se koristiti za kampanje ili mjerenje oglašavanja samo ako se takvi alati uvedu kasnije.",
             "Marketinški piksel ili praćenje kampanja ne smije se učitati prije privole za marketing.",
           ],
         },
@@ -184,14 +180,14 @@ export const legalPackageContent: Record<LegalPageKey, Record<"en" | "hr", Legal
         {
           id: "contact",
           title: "Kontakt",
-          body: ["Za pitanja o kolačićima ili privatnosti kontaktirajte [KONTAKT E-MAIL ZA PRIVATNOST]."],
+          body: ["Za pitanja o kolačićima ili privatnosti kontaktirajte deweb.eu@gmail.com."],
         },
       ],
     },
   },
   dpa: {
     en: {
-      effectiveDate: "Last updated: [DATE]",
+      effectiveDate: "Last updated: 24 May 2026",
       hero: {
         eyebrow: "B2B data protection",
         reviewNote:
@@ -200,23 +196,27 @@ export const legalPackageContent: Record<LegalPageKey, Record<"en" | "hr", Legal
           "This overview explains the intended data processing terms for B2B customers using Supplier Passport.",
         title: "Data Processing Agreement",
       },
-      placeholders: ["[LEGAL ENTITY NAME]", "[CONTACT EMAIL]", "[DPA VERSION]", "[DATE]"],
+      placeholders: [
+        "Legal counsel review required",
+        "DPA execution/status should be confirmed before commercial launch",
+        "Nhost region and Hasura setup should be verified before commercial launch",
+      ],
       tocTitle: "On this page",
       sections: [
         {
           id: "purpose",
           title: "Purpose of the DPA",
           body: [
-            "This DPA overview describes how Supplier Passport may process personal data on behalf of B2B customers when providing the application and related services.",
-            "A final signed DPA may be required for commercial use and should be reviewed by legal counsel.",
+            "This DPA overview describes how deweb j.d.o.o., Prvča 58, 35400 Prvča, Croatia, VAT/OIB: 24631103366, may process personal data on behalf of B2B customers when providing Supplier Passport and related services.",
+            "This is a working draft / overview, not a signed agreement. DPA execution/status should be confirmed before commercial launch and reviewed by legal counsel.",
           ],
         },
         {
           id: "roles",
           title: "Roles of the parties",
           body: [
-            "The customer is generally expected to act as controller for the organization workspace data it submits. [LEGAL ENTITY NAME] may act as processor for personal data processed to provide Supplier Passport.",
-            "For its own account administration, support, security and commercial operations, the provider may act as an independent controller; this must be finalized in legal review.",
+            "The customer is generally expected to act as controller for the organization workspace data it submits. deweb j.d.o.o. may act as processor for personal data processed to provide Supplier Passport.",
+            "For its own account administration, support, security and commercial operations, deweb j.d.o.o. may act as an independent controller; this must be finalized in legal review.",
             "Role allocation may vary by customer and must be confirmed in the final agreement.",
           ],
         },
@@ -267,7 +267,8 @@ export const legalPackageContent: Record<LegalPageKey, Record<"en" | "hr", Legal
           id: "subprocessors",
           title: "Subprocessors",
           body: [
-            "Supplier Passport may use subprocessors for hosting, backend, authentication, storage, email and operational services. The current overview is listed on the Subprocessors page.",
+            "Supplier Passport may use Vercel, Nhost, Hasura and Google/Gmail for hosting, backend, authentication, storage, email and operational services. The current overview is listed on the Subprocessors page.",
+            "DPA execution/status with these providers should be confirmed before commercial launch.",
           ],
         },
         {
@@ -302,18 +303,19 @@ export const legalPackageContent: Record<LegalPageKey, Record<"en" | "hr", Legal
           id: "transfers",
           title: "International transfers",
           body: [
-            "International transfer safeguards and provider locations must be confirmed before commercial launch.",
+            "Data may be transferred to the United States and other countries outside the EEA depending on provider infrastructure.",
+            "Such transfers should be protected by appropriate safeguards such as the EU-U.S. Data Privacy Framework, Standard Contractual Clauses, or equivalent provider DPA safeguards where applicable. International transfer safeguards and provider locations must be confirmed before commercial launch.",
           ],
         },
         {
           id: "contact",
           title: "Contact",
-          body: ["For DPA questions, contact [CONTACT EMAIL]. DPA version: [DPA VERSION]. Date: [DATE]."],
+          body: ["For DPA questions, contact deweb.eu@gmail.com. DPA version: 1.0. Date: 24 May 2026."],
         },
       ],
     },
     hr: {
-      effectiveDate: "Zadnje ažurirano: [DATUM]",
+      effectiveDate: "Zadnje ažurirano: 24.5.2026.",
       hero: {
         eyebrow: "B2B zaštita podataka",
         reviewNote:
@@ -322,23 +324,27 @@ export const legalPackageContent: Record<LegalPageKey, Record<"en" | "hr", Legal
           "Ovaj pregled objašnjava predviđene uvjete obrade podataka za B2B korisnike koji koriste Supplier Passport.",
         title: "Ugovor o obradi podataka",
       },
-      placeholders: ["[NAZIV PRAVNE OSOBE]", "[KONTAKT E-MAIL]", "[DPA VERZIJA]", "[DATUM]"],
+      placeholders: [
+        "Potreban pravni pregled",
+        "Status DPA ugovora potrebno je potvrditi prije komercijalnog lansiranja",
+        "Nhost regiju i Hasura setup treba provjeriti prije komercijalnog lansiranja",
+      ],
       tocTitle: "Na ovoj stranici",
       sections: [
         {
           id: "purpose",
           title: "Svrha DPA",
           body: [
-            "Ovaj DPA pregled opisuje kako Supplier Passport može obrađivati osobne podatke u ime B2B korisnika pri pružanju aplikacije i povezanih usluga.",
-            "Za komercijalnu upotrebu može biti potreban finalni potpisani DPA koji treba pregledati pravni savjetnik.",
+            "Ovaj DPA pregled opisuje kako deweb j.d.o.o., Prvča 58, 35400 Prvča, Hrvatska, OIB: 24631103366, može obrađivati osobne podatke u ime B2B korisnika pri pružanju Supplier Passport aplikacije i povezanih usluga.",
+            "Ovo je radni nacrt / pregled, a ne potpisani ugovor. Status DPA ugovora potrebno je potvrditi prije komercijalnog lansiranja i pregledati s pravnim savjetnikom.",
           ],
         },
         {
           id: "roles",
           title: "Uloge strana",
           body: [
-            "Korisnik se u pravilu očekuje kao voditelj obrade za podatke organizacijskog radnog prostora koje dostavlja. [NAZIV PRAVNE OSOBE] može djelovati kao izvršitelj obrade za osobne podatke obrađene radi pružanja Supplier Passporta.",
-            "Za vlastitu administraciju računa, podršku, sigurnost i komercijalne operacije pružatelj može djelovati kao samostalni voditelj obrade; to treba finalizirati u pravnom pregledu.",
+            "Korisnik se u pravilu očekuje kao voditelj obrade za podatke organizacijskog radnog prostora koje dostavlja. deweb j.d.o.o. može djelovati kao izvršitelj obrade za osobne podatke obrađene radi pružanja Supplier Passporta.",
+            "Za vlastitu administraciju računa, podršku, sigurnost i komercijalne operacije deweb j.d.o.o. može djelovati kao samostalni voditelj obrade; to treba finalizirati u pravnom pregledu.",
             "Raspodjela uloga može se razlikovati po korisniku i mora se potvrditi u finalnom ugovoru.",
           ],
         },
@@ -389,7 +395,8 @@ export const legalPackageContent: Record<LegalPageKey, Record<"en" | "hr", Legal
           id: "subprocessors",
           title: "Podizvršitelji obrade",
           body: [
-            "Supplier Passport može koristiti podizvršitelje za hosting, pozadinsku infrastrukturu, autentikaciju, pohranu, e-mail i operativne usluge. Trenutni pregled naveden je na stranici Podizvršitelji obrade.",
+            "Supplier Passport može koristiti Vercel, Nhost, Hasura i Google/Gmail za hosting, pozadinsku infrastrukturu, autentikaciju, pohranu, e-mail i operativne usluge. Trenutni pregled naveden je na stranici Podizvršitelji obrade.",
+            "Status DPA ugovora s tim pružateljima potrebno je potvrditi prije komercijalnog lansiranja.",
           ],
         },
         {
@@ -424,20 +431,21 @@ export const legalPackageContent: Record<LegalPageKey, Record<"en" | "hr", Legal
           id: "transfers",
           title: "Međunarodni prijenosi",
           body: [
-            "Zaštitne mjere za međunarodne prijenose i lokacije pružatelja potrebno je potvrditi prije komercijalnog lansiranja.",
+            "Podaci se mogu prenositi u Sjedinjene Američke Države i druge države izvan EGP-a ovisno o infrastrukturi pružatelja.",
+            "Takvi prijenosi trebaju biti zaštićeni odgovarajućim zaštitnim mjerama kao što su EU-U.S. Data Privacy Framework, standardne ugovorne klauzule ili ekvivalentne DPA zaštitne mjere pružatelja gdje je primjenjivo. Zaštitne mjere za međunarodne prijenose i lokacije pružatelja potrebno je potvrditi prije komercijalnog lansiranja.",
           ],
         },
         {
           id: "contact",
           title: "Kontakt",
-          body: ["Za DPA pitanja kontaktirajte [KONTAKT E-MAIL]. DPA verzija: [DPA VERZIJA]. Datum: [DATUM]."],
+          body: ["Za DPA pitanja kontaktirajte deweb.eu@gmail.com. DPA verzija: 1.0. Datum: 24.5.2026."],
         },
       ],
     },
   },
   security: {
     en: {
-      effectiveDate: "Last updated: [DATE]",
+      effectiveDate: "Last updated: 24 May 2026",
       hero: {
         eyebrow: "Security overview",
         reviewNote:
@@ -446,7 +454,7 @@ export const legalPackageContent: Record<LegalPageKey, Record<"en" | "hr", Legal
           "This page explains the security posture of Supplier Passport in supplier- and buyer-friendly language.",
         title: "Security",
       },
-      placeholders: ["[SECURITY CONTACT EMAIL]", "[DATE]"],
+      placeholders: ["Legal counsel review required", "Security process review required as the product grows"],
       tocTitle: "On this page",
       sections: [
         {
@@ -454,6 +462,7 @@ export const legalPackageContent: Record<LegalPageKey, Record<"en" | "hr", Legal
           title: "Access and authentication",
           body: [
             "Supplier Passport uses authenticated access for supplier and admin workspaces. Password reset and protected share-link verification are handled through controlled application flows.",
+            "Admin access is intended to be restricted through admin access controls and allowlist-style checks where configured.",
           ],
         },
         {
@@ -506,12 +515,12 @@ export const legalPackageContent: Record<LegalPageKey, Record<"en" | "hr", Legal
         {
           id: "contact",
           title: "Security contact",
-          body: ["For security questions, contact [SECURITY CONTACT EMAIL]."],
+          body: ["For security questions, contact deweb.eu@gmail.com."],
         },
       ],
     },
     hr: {
-      effectiveDate: "Zadnje ažurirano: [DATUM]",
+      effectiveDate: "Zadnje ažurirano: 24.5.2026.",
       hero: {
         eyebrow: "Pregled sigurnosti",
         reviewNote:
@@ -520,7 +529,7 @@ export const legalPackageContent: Record<LegalPageKey, Record<"en" | "hr", Legal
           "Ova stranica objašnjava sigurnosni pristup Supplier Passporta jezikom razumljivim dobavljačima i kupcima.",
         title: "Sigurnost",
       },
-      placeholders: ["[KONTAKT E-MAIL ZA SIGURNOST]", "[DATUM]"],
+      placeholders: ["Potreban pravni pregled", "Pregled sigurnosnih procesa potreban je kako proizvod raste"],
       tocTitle: "Na ovoj stranici",
       sections: [
         {
@@ -528,6 +537,7 @@ export const legalPackageContent: Record<LegalPageKey, Record<"en" | "hr", Legal
           title: "Pristup i autentikacija",
           body: [
             "Supplier Passport koristi autentificirani pristup za dobavljačke i administratorske radne prostore. Resetiranje lozinke i provjera zaštićenih linkova za dijeljenje odvijaju se kroz kontrolirane aplikacijske tijekove.",
+            "Administratorski pristup namijenjen je ograničavanju kroz kontrole administratorskog pristupa i allowlist provjere gdje su konfigurirane.",
           ],
         },
         {
@@ -580,14 +590,14 @@ export const legalPackageContent: Record<LegalPageKey, Record<"en" | "hr", Legal
         {
           id: "contact",
           title: "Kontakt za sigurnosna pitanja",
-          body: ["Za sigurnosna pitanja kontaktirajte [KONTAKT E-MAIL ZA SIGURNOST]."],
+          body: ["Za sigurnosna pitanja kontaktirajte deweb.eu@gmail.com."],
         },
       ],
     },
   },
   subprocessors: {
     en: {
-      effectiveDate: "Last updated: [DATE]",
+      effectiveDate: "Last updated: 24 May 2026",
       hero: {
         eyebrow: "Provider overview",
         reviewNote:
@@ -597,9 +607,9 @@ export const legalPackageContent: Record<LegalPageKey, Record<"en" | "hr", Legal
         title: "Subprocessors",
       },
       placeholders: [
-        "[VERIFY LEGAL ENTITY / REGION]",
-        "[VERIFY PROVIDER]",
-        "[ADD BEFORE COMMERCIAL LAUNCH]",
+        "[VERIFY NHOST REGION IN CONFIGURATION]",
+        "[VERIFY DEPENDING ON NHOST/HASURA SETUP]",
+        "DPA execution/status should be confirmed before commercial launch",
       ],
       tocTitle: "On this page",
       sections: [
@@ -607,17 +617,18 @@ export const legalPackageContent: Record<LegalPageKey, Record<"en" | "hr", Legal
           id: "overview",
           title: "Subprocessor overview",
           body: [
-            "The following list describes providers used or expected for hosting, backend, authentication, storage, email and operational services.",
-            "Exact provider legal entities, data regions and contractual safeguards must be verified before commercial launch.",
+            "The following list describes providers used or expected for hosting, backend, authentication, storage, email, communication and operational services.",
+            "Data may be transferred to the United States and other countries outside the EEA depending on provider infrastructure. Such transfers should be protected by appropriate safeguards such as the EU-U.S. Data Privacy Framework, Standard Contractual Clauses, or equivalent provider DPA safeguards where applicable.",
+            "DPA execution/status should be confirmed before commercial launch.",
           ],
           table: {
             headers: ["Provider", "Purpose", "Location / region", "Data type", "Status"],
             rows: [
-              ["Vercel", "Hosting and frontend deployment", "[VERIFY LEGAL ENTITY / REGION]", "Application pages and operational logs", "Used / verify contract"],
-              ["Nhost", "Authentication, backend, database and storage infrastructure", "[VERIFY LEGAL ENTITY / REGION]", "Account, organization, questionnaire and document metadata", "Used / verify contract"],
-              ["Hasura / GraphQL", "API and data access layer where configured", "[VERIFY LEGAL ENTITY / REGION]", "Application data accessed through GraphQL", "Used / verify deployment model"],
-              ["Email provider", "Password reset and transactional email if configured", "[VERIFY PROVIDER]", "Email address and transactional message metadata", "Verify before commercial launch"],
-              ["Analytics provider", "None currently unless later enabled with consent", "Not applicable", "No analytics data currently loaded by default", "Not enabled"],
+              ["Vercel", "Hosting frontend application, deployment, edge/CDN infrastructure and security protection", "Global infrastructure; possible transfers outside the EEA, including the United States", "Technical request data, IP addresses in security/log records, public pages and application traffic", "Active; DPA/safeguards status should be confirmed before commercial launch"],
+              ["Nhost", "Authentication, database, storage and backend infrastructure", "[VERIFY NHOST REGION IN CONFIGURATION]", "User accounts, organizations, questionnaire, documents, share links and support requests", "Active; DPA should be confirmed/executed before commercial launch"],
+              ["Hasura", "GraphQL/API layer and data access", "[VERIFY DEPENDING ON NHOST/HASURA SETUP]", "Application data available through the GraphQL layer", "Active or part of Nhost infrastructure; verify contractual status"],
+              ["Google/Gmail", "Mailbox for privacy, security and support communication", "Global Google infrastructure; possible transfers outside the EEA", "Email addresses and communication content sent by the user to the contact address", "Active for communication"],
+              ["Vercel Web Analytics", "Recommended future web analytics", "Vercel infrastructure", "Aggregated/anonymized web analytics data according to Vercel documentation", "Not active in the application; planned/consider later"],
             ],
           },
         },
@@ -631,12 +642,12 @@ export const legalPackageContent: Record<LegalPageKey, Record<"en" | "hr", Legal
         {
           id: "contact",
           title: "Contact",
-          body: ["For subprocessor questions, contact [PRIVACY CONTACT EMAIL]."],
+          body: ["For subprocessor questions, contact deweb.eu@gmail.com."],
         },
       ],
     },
     hr: {
-      effectiveDate: "Zadnje ažurirano: [DATUM]",
+      effectiveDate: "Zadnje ažurirano: 24.5.2026.",
       hero: {
         eyebrow: "Pregled pružatelja",
         reviewNote:
@@ -646,9 +657,9 @@ export const legalPackageContent: Record<LegalPageKey, Record<"en" | "hr", Legal
         title: "Podizvršitelji obrade",
       },
       placeholders: [
-        "[PROVJERITI PRAVNI NAZIV / REGIJU]",
-        "[PROVJERITI PROVIDERA]",
-        "[DODATI PRIJE KOMERCIJALNOG LANSIRANJA]",
+        "[PROVJERITI REGIJU U NHOST KONFIGURACIJI]",
+        "[PROVJERITI OVISNO O KORIŠTENOM NHOST/HASURA SETUPU]",
+        "Status DPA ugovora potrebno je potvrditi prije komercijalnog lansiranja",
       ],
       tocTitle: "Na ovoj stranici",
       sections: [
@@ -656,17 +667,18 @@ export const legalPackageContent: Record<LegalPageKey, Record<"en" | "hr", Legal
           id: "overview",
           title: "Pregled podizvršitelja obrade",
           body: [
-            "Sljedeći popis opisuje pružatelje koji se koriste ili očekuju za hosting, pozadinsku infrastrukturu, autentikaciju, pohranu, e-mail i operativne usluge.",
-            "Točne pravne osobe pružatelja, podatkovne regije i ugovorne zaštitne mjere potrebno je provjeriti prije komercijalnog lansiranja.",
+            "Sljedeći popis opisuje pružatelje koji se koriste ili očekuju za hosting, pozadinsku infrastrukturu, autentikaciju, pohranu, e-mail, komunikaciju i operativne usluge.",
+            "Podaci se mogu prenositi u Sjedinjene Američke Države i druge države izvan EGP-a ovisno o infrastrukturi pružatelja. Takvi prijenosi trebaju biti zaštićeni odgovarajućim zaštitnim mjerama kao što su EU-U.S. Data Privacy Framework, standardne ugovorne klauzule ili ekvivalentne DPA zaštitne mjere pružatelja gdje je primjenjivo.",
+            "Status DPA ugovora potrebno je potvrditi prije komercijalnog lansiranja.",
           ],
           table: {
             headers: ["Naziv", "Svrha", "Lokacija / regija", "Vrsta podataka", "Status"],
             rows: [
-              ["Vercel", "Hosting i frontend implementacija", "[PROVJERITI PRAVNI NAZIV / REGIJU]", "Aplikacijske stranice i operativni logovi", "Koristi se / provjeriti ugovor"],
-              ["Nhost", "Autentikacija, pozadinska infrastruktura, baza podataka i infrastruktura pohrane", "[PROVJERITI PRAVNI NAZIV / REGIJU]", "Račun, organizacija, upitnik i metapodaci dokumenata", "Koristi se / provjeriti ugovor"],
-              ["Hasura / GraphQL", "API i podatkovni pristupni sloj gdje je konfigurirano", "[PROVJERITI PRAVNI NAZIV / REGIJU]", "Aplikacijski podaci dostupni kroz GraphQL", "Koristi se / provjeriti model implementacije"],
-              ["Pružatelj e-mail usluge", "Reset lozinke i transakcijski e-mail ako je konfigurirano", "[PROVJERITI PROVIDERA]", "E-mail adresa i metapodaci transakcijskih poruka", "Provjeriti prije komercijalnog lansiranja"],
-              ["Pružatelj analitike", "Trenutno nema, osim ako se kasnije omogući uz privolu", "Nije primjenjivo", "Analitički podaci se trenutno ne učitavaju prema zadanim postavkama", "Nije omogućeno"],
+              ["Vercel", "hosting frontend aplikacije, deployment, edge/CDN infrastruktura i sigurnosna zaštita", "globalna infrastruktura; mogući prijenosi izvan EGP-a, uključujući SAD", "tehnički podaci o zahtjevima, IP adrese u sigurnosnim/log zapisima, javne stranice i aplikacijski promet", "aktivan; DPA/status zaštitnih mjera potvrditi prije komercijalnog lansiranja"],
+              ["Nhost", "autentikacija, baza podataka, storage, backend infrastruktura", "[PROVJERITI REGIJU U NHOST KONFIGURACIJI]", "korisnički računi, organizacije, upitnik, dokumenti, share linkovi, support upiti", "aktivan; DPA potrebno potvrditi/potpisati prije komercijalnog lansiranja"],
+              ["Hasura", "GraphQL/API sloj i pristup podacima", "[PROVJERITI OVISNO O KORIŠTENOM NHOST/HASURA SETUPU]", "aplikacijski podaci dostupni kroz GraphQL sloj", "aktivan ili dio Nhost infrastrukture; provjeriti ugovorni status"],
+              ["Google/Gmail", "mailbox za privacy, security i support komunikaciju", "globalna Google infrastruktura; mogući prijenosi izvan EGP-a", "e-mail adrese, sadržaj komunikacije koju korisnik pošalje na kontakt adresu", "aktivan za komunikaciju"],
+              ["Vercel Web Analytics", "preporučena buduća web analitika", "Vercel infrastruktura", "agregirani/anonymized web analytics podaci prema Vercel dokumentaciji", "nije aktivno u aplikaciji, planirano/razmotriti kasnije"],
             ],
           },
         },
@@ -680,7 +692,7 @@ export const legalPackageContent: Record<LegalPageKey, Record<"en" | "hr", Legal
         {
           id: "contact",
           title: "Kontakt",
-          body: ["Za pitanja o podizvršiteljima obrade kontaktirajte [KONTAKT E-MAIL ZA PRIVATNOST]."],
+          body: ["Za pitanja o podizvršiteljima obrade kontaktirajte deweb.eu@gmail.com."],
         },
       ],
     },

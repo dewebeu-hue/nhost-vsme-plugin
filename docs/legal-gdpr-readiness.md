@@ -11,18 +11,19 @@ Public Privacy Policy draft pages are available at:
 
 The pages use the Supplier Passport public visual style: branded header, light B2B SaaS background, blue/teal accents, readable legal content cards, table-of-contents anchors, and the shared legal footer.
 
-These pages are legal/GDPR readiness drafts only. They must be reviewed by legal counsel before commercial launch and before replacing placeholders with final company details.
+These pages are legal/GDPR readiness drafts only. They must be reviewed by legal counsel before commercial launch.
 
-Visible placeholders that must be replaced:
+Filled legal details:
 
-- `[LEGAL ENTITY NAME]` / `[NAZIV PRAVNE OSOBE]`
-- `[ADDRESS]` / `[ADRESA]`
-- `[REGISTRATION / TAX ID]` / `[OIB / REGISTRACIJSKI BROJ]`
-- `[PRIVACY CONTACT EMAIL]` / `[KONTAKT E-MAIL ZA PRIVATNOST]`
-- `[DPO CONTACT IF APPLICABLE]` / `[DPO KONTAKT AKO POSTOJI]`
-- `[DEFINE RETENTION PERIODS]` / `[DEFINIRATI ROKOVE ČUVANJA]`
-- `[ADD ACTUAL COOKIES BEFORE COMMERCIAL LAUNCH]` / `[DODATI STVARNE KOLAČIĆE PRIJE KOMERCIJALNOG LANSIRANJA]`
-- `[VERIFY LEGAL ENTITY / REGION]` / `[PROVJERITI PRAVNI NAZIV / REGIJU]`
+- Legal entity: deweb j.d.o.o.
+- Address: Prvča 58, 35400 Prvča, Croatia / Hrvatska
+- OIB/VAT: 24631103366
+- Privacy, support and security contact: deweb.eu@gmail.com
+- DPO: no dedicated DPO appointed / nema imenovanog DPO-a
+- Governing law: laws of the Republic of Croatia / pravo Republike Hrvatske
+- Competent court: Commercial Court in Slavonski Brod / Trgovački sud u Slavonskom Brodu
+- Last updated: 24 May 2026 / 24.5.2026.
+- Version where needed: 1.0
 
 The Privacy Policy draft documents these data categories:
 
@@ -37,6 +38,16 @@ The Privacy Policy draft documents these data categories:
 - technical logs
 - cookie consent preferences
 
+Selected retention periods:
+
+- User account data: active account period and up to 24 months after account closure, unless longer retention is required for legal claims, security or dispute resolution.
+- Organization data and questionnaire answers: service period and up to 24 months after termination, unless earlier deletion is requested or another period is agreed.
+- Documents and supporting evidence: until deleted by the user/admin, or up to 12 months after termination, unless otherwise agreed or longer retention is legally required.
+- Support requests: up to 36 months after closure.
+- Technical and security logs: generally up to 90 days, unless longer retention is required for security, incident investigation or legal reasons.
+- Cookie consent record: up to 12 months or until preferences change.
+- Share links: until deactivated, expired, or the related organization/workspace is deleted.
+
 Do not add claims such as `GDPR compliant`, `fully compliant`, `legally certified`, `guaranteed compliance`, or `audit-ready`. Supplier Passport legal pages should explain privacy practices and readiness work without claiming certification or legal approval.
 
 ## Terms And Conditions Pages
@@ -48,15 +59,7 @@ Public Terms and Conditions draft pages are available at:
 
 The Terms pages reuse the same Supplier Passport legal page layout as the Privacy Policy pages. They cover SaaS access, organization/workspace use, user content, supporting evidence, public sharing, password-protected links, acceptable use, pilots and billing, availability, no audit/certification, liability, privacy, support, termination, governing law, and contact.
 
-These pages are legal readiness drafts only. They must be reviewed by legal counsel before commercial launch and before replacing placeholders with final company details.
-
-Visible placeholders that must be replaced:
-
-- `[LEGAL ENTITY NAME]` / `[NAZIV PRAVNE OSOBE]`
-- `[ADDRESS]` / `[ADRESA]`
-- `[REGISTRATION / TAX ID]` / `[OIB / REGISTRACIJSKI BROJ]`
-- `[CONTACT EMAIL]` / `[KONTAKT E-MAIL]`
-- `[GOVERNING LAW AND JURISDICTION]` / `[NADLEŽNO PRAVO I SUD]`
+These pages are legal readiness drafts only. They must be reviewed by legal counsel before commercial launch.
 
 The Terms draft explicitly states that online billing is not enabled in this version. Pilot, commercial, or partner terms may be agreed separately in writing. Do not add Stripe, online payment, or automatic billing wording unless the product later implements it.
 
@@ -78,6 +81,7 @@ Cookie Policy:
 - Includes an `Open cookie settings` / `Otvorite postavke kolačića` action that reopens the existing preference center.
 - Includes an actual-cookie inventory placeholder that must be replaced only after production cookies and lifetimes are verified.
 - Confirms no optional analytics or marketing scripts should load before consent.
+- States analytics is not currently active and Vercel Web Analytics is only a recommended future option to evaluate.
 
 DPA overview:
 
@@ -95,6 +99,21 @@ Subprocessors:
 
 - Lists current/planned infrastructure and service providers with placeholders for provider legal entity, region and provider verification.
 - Notes that exact provider legal entities, regions and safeguards must be verified before commercial launch.
+- Lists Vercel, Nhost, Hasura, Google/Gmail and Vercel Web Analytics as the current/future provider overview, with DPA/status verification clearly marked.
+
+Still to verify before commercial launch:
+
+- Confirm/sign DPA with Vercel.
+- Confirm/sign DPA with Nhost.
+- Confirm Hasura contractual/DPA status depending on setup.
+- Confirm Nhost region.
+- Confirm Hasura region/setup.
+- Confirm exact email provider/DPA for Gmail/Google Workspace if needed.
+- Decide whether to enable Vercel Web Analytics.
+- If analytics is enabled, ensure consent gating and legal notice are updated.
+- Legal counsel review required.
+- Confirm retention periods with legal counsel.
+- Confirm whether a DPO is required as the business grows.
 
 Legal footer:
 

@@ -2,7 +2,7 @@ import type { LegalPageContent } from "@/lib/legal/privacy-policy-content";
 
 export const termsContent: Record<"en" | "hr", LegalPageContent> = {
   en: {
-    effectiveDate: "Last updated: [DATE]",
+    effectiveDate: "Last updated: 24 May 2026",
     hero: {
       eyebrow: "Legal readiness draft",
       reviewNote:
@@ -11,11 +11,7 @@ export const termsContent: Record<"en" | "hr", LegalPageContent> = {
       title: "Terms and Conditions",
     },
     placeholders: [
-      "[LEGAL ENTITY NAME]",
-      "[ADDRESS]",
-      "[REGISTRATION / TAX ID]",
-      "[CONTACT EMAIL]",
-      "[GOVERNING LAW AND JURISDICTION]",
+      "Legal counsel review required",
     ],
     tocTitle: "On this page",
     sections: [
@@ -31,8 +27,8 @@ export const termsContent: Record<"en" | "hr", LegalPageContent> = {
         id: "provider",
         title: "Service provider",
         body: [
-          "Supplier Passport is provided by [LEGAL ENTITY NAME], [ADDRESS], [REGISTRATION / TAX ID].",
-          "For contractual or service questions, contact [CONTACT EMAIL]. These placeholders must be replaced with final legal entity details before commercial launch.",
+          "Supplier Passport is provided by deweb j.d.o.o., Prvča 58, 35400 Prvča, Croatia, VAT/OIB: 24631103366.",
+          "For contractual, support or service questions, contact deweb.eu@gmail.com.",
         ],
       },
       {
@@ -110,7 +106,7 @@ export const termsContent: Record<"en" | "hr", LegalPageContent> = {
         id: "plans-pilots-billing",
         title: "Plans, pilots and billing",
         body: [
-          "Online billing is not enabled in this version. Pilot, commercial or partner terms may be agreed separately in writing.",
+          "Supplier Passport is currently used as a pilot / pre-commercial version. Online billing is not enabled in this version. Pilot, commercial or partner terms may be agreed separately in writing.",
           "No payment obligation arises from using this draft/pilot version unless a separate written agreement states otherwise.",
         ],
       },
@@ -171,18 +167,18 @@ export const termsContent: Record<"en" | "hr", LegalPageContent> = {
         id: "governing-law",
         title: "Governing law and disputes",
         body: [
-          "Governing law and jurisdiction must be defined before commercial launch: [GOVERNING LAW AND JURISDICTION].",
+          "These terms are governed by the laws of the Republic of Croatia. The competent court is the Commercial Court in Slavonski Brod, unless mandatory law provides otherwise.",
         ],
       },
       {
         id: "contact",
         title: "Contact",
-        body: ["For questions about these terms, contact [CONTACT EMAIL]."],
+        body: ["For questions about these terms, contact deweb.eu@gmail.com."],
       },
     ],
   },
   hr: {
-    effectiveDate: "Zadnje ažurirano: [DATUM]",
+    effectiveDate: "Zadnje ažurirano: 24.5.2026.",
     hero: {
       eyebrow: "Nacrt pravne spremnosti",
       reviewNote:
@@ -191,11 +187,7 @@ export const termsContent: Record<"en" | "hr", LegalPageContent> = {
       title: "Uvjeti korištenja",
     },
     placeholders: [
-      "[NAZIV PRAVNE OSOBE]",
-      "[ADRESA]",
-      "[OIB / REGISTRACIJSKI BROJ]",
-      "[KONTAKT E-MAIL]",
-      "[NADLEŽNO PRAVO I SUD]",
+      "Potreban pravni pregled",
     ],
     tocTitle: "Na ovoj stranici",
     sections: [
@@ -211,8 +203,8 @@ export const termsContent: Record<"en" | "hr", LegalPageContent> = {
         id: "provider",
         title: "Tko pruža uslugu",
         body: [
-          "Supplier Passport pruža [NAZIV PRAVNE OSOBE], [ADRESA], [OIB / REGISTRACIJSKI BROJ].",
-          "Za pitanja o ugovoru ili usluzi kontaktirajte [KONTAKT E-MAIL]. Ove oznake potrebno je zamijeniti finalnim podacima pravne osobe prije komercijalnog lansiranja.",
+          "Supplier Passport pruža deweb j.d.o.o., Prvča 58, 35400 Prvča, Hrvatska, OIB: 24631103366.",
+          "Za pitanja o ugovoru, podršci ili usluzi kontaktirajte deweb.eu@gmail.com.",
         ],
       },
       {
@@ -290,7 +282,7 @@ export const termsContent: Record<"en" | "hr", LegalPageContent> = {
         id: "plans-pilots-billing",
         title: "Planovi, piloti i naplata",
         body: [
-          "Online naplata nije omogućena u ovoj verziji. Pilot, komercijalni ili partnerski uvjeti mogu biti dogovoreni zasebno u pisanom obliku.",
+          "Supplier Passport se trenutno koristi kao pilot / pre-komercijalna verzija. Online naplata nije omogućena u ovoj verziji. Pilot, komercijalni ili partnerski uvjeti mogu biti dogovoreni zasebno u pisanom obliku.",
           "Korištenjem ove draft/pilot verzije ne nastaje obveza plaćanja osim ako zaseban pisani dogovor ne navodi drugačije.",
         ],
       },
@@ -351,13 +343,13 @@ export const termsContent: Record<"en" | "hr", LegalPageContent> = {
         id: "governing-law",
         title: "Mjerodavno pravo i sporovi",
         body: [
-          "Mjerodavno pravo i nadležnost potrebno je definirati prije komercijalnog lansiranja: [DEFINIRATI MJERODAVNO PRAVO I NADLEŽNOST].",
+          "Na ove uvjete primjenjuje se pravo Republike Hrvatske. Nadležan je Trgovački sud u Slavonskom Brodu, osim ako obvezno primjenjivo pravo ne propisuje drugačije.",
         ],
       },
       {
         id: "contact",
         title: "Kontakt",
-        body: ["Za pitanja o ovim uvjetima kontaktirajte [KONTAKT E-MAIL]."],
+        body: ["Za pitanja o ovim uvjetima kontaktirajte deweb.eu@gmail.com."],
       },
     ],
   },

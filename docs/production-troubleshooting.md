@@ -4686,16 +4686,16 @@ Implementation notes:
 - The pages use the shared Supplier Passport public visual style and do not load organization, document, user, admin, or share-link data.
 - Public footer links and the cookie preference center link to the localized Privacy Policy route.
 - Only existing legal routes should be linked. The final legal package includes Privacy, Terms, Cookie Policy, DPA, Security, and Subprocessors routes.
-- The pages intentionally include legal entity placeholders until final company details are supplied and reviewed.
+- The pages use the provided deweb j.d.o.o. legal details and remain legal-readiness drafts pending legal review.
 
-Placeholders requiring legal review/replacement:
+Filled legal details:
 
-- `[LEGAL ENTITY NAME]` / `[NAZIV PRAVNE OSOBE]`
-- `[ADDRESS]` / `[ADRESA]`
-- `[REGISTRATION / TAX ID]` / `[OIB / REGISTRACIJSKI BROJ]`
-- `[PRIVACY CONTACT EMAIL]` / `[KONTAKT E-MAIL ZA PRIVATNOST]`
-- `[DPO CONTACT IF APPLICABLE]` / `[DPO KONTAKT AKO POSTOJI]`
-- `[DEFINE RETENTION PERIODS]` / `[DEFINIRATI ROKOVE ČUVANJA]`
+- Legal entity: deweb j.d.o.o.
+- Address: Prvča 58, 35400 Prvča, Croatia / Hrvatska
+- OIB/VAT: 24631103366
+- Privacy, support and security contact: deweb.eu@gmail.com
+- DPO: no dedicated DPO appointed / nema imenovanog DPO-a
+- Retention periods are selected in the Privacy Policy and should be confirmed by legal counsel.
 
 Legal copy guardrails:
 
@@ -4707,7 +4707,7 @@ Manual QA:
 
 1. Open `/hr/privacy` and `/en/privacy`.
 2. Confirm the pages use the Supplier Passport branded header, readable legal cards, anchor navigation, and legal footer.
-3. Confirm placeholders are visible where legal company details are missing.
+3. Confirm deweb j.d.o.o. legal details and retention periods are visible.
 4. Open the cookie settings dialog and confirm the Privacy Policy link opens the localized route.
 5. Check landing, plans, request-demo, public Passport, and buyer portal footer links for no 404 links.
 6. Inspect Network and page source for no private app data requests or sensitive fields.
@@ -4723,13 +4723,13 @@ Implementation notes:
 - The Terms pages are public static legal content and must not load organization, document, user, admin, or share-link data.
 - The draft states that online billing is not enabled in this version and that pilot/commercial terms may be agreed separately in writing.
 
-Placeholders requiring legal review/replacement:
+Filled legal details:
 
-- `[LEGAL ENTITY NAME]` / `[NAZIV PRAVNE OSOBE]`
-- `[ADDRESS]` / `[ADRESA]`
-- `[REGISTRATION / TAX ID]` / `[OIB / REGISTRACIJSKI BROJ]`
-- `[CONTACT EMAIL]` / `[KONTAKT E-MAIL]`
-- `[GOVERNING LAW AND JURISDICTION]` / `[NADLEŽNO PRAVO I SUD]`
+- Legal entity: deweb j.d.o.o.
+- Address: Prvča 58, 35400 Prvča, Croatia / Hrvatska
+- OIB/VAT: 24631103366
+- Contact: deweb.eu@gmail.com
+- Governing law/court: laws of the Republic of Croatia / pravo Republike Hrvatske; Commercial Court in Slavonski Brod / Trgovački sud u Slavonskom Brodu.
 
 Legal copy guardrails:
 
@@ -4741,7 +4741,7 @@ Manual QA:
 
 1. Open `/hr/terms` and `/en/terms`.
 2. Confirm the pages use the Supplier Passport branded header, readable legal cards, anchor navigation, and legal footer.
-3. Confirm placeholders are visible where legal company details are missing.
+3. Confirm deweb j.d.o.o. legal details and Croatian governing law/court are visible.
 4. Confirm `/hr/terms` links back to `/hr/privacy` through the footer and `/en/terms` links back to `/en/privacy`.
 5. Confirm Terms footer links open Cookie Policy, DPA, Security, and Subprocessors without 404.
 6. Inspect Network and page source for no private app data requests or sensitive fields.
@@ -4762,22 +4762,21 @@ Shared behavior:
 - Cookie settings remains an action that opens the preference center.
 - The cookie banner/settings modal links to both Privacy Policy and Cookie Policy.
 
-Legal review placeholders:
+Legal details and remaining verification items:
 
-- `[LEGAL ENTITY NAME]` / `[NAZIV PRAVNE OSOBE]`
-- `[PRIVACY CONTACT EMAIL]` / `[KONTAKT E-MAIL ZA PRIVATNOST]`
-- `[CONTACT EMAIL]` / `[KONTAKT E-MAIL]`
-- `[SECURITY CONTACT EMAIL]` / `[KONTAKT E-MAIL ZA SIGURNOST]`
-- `[ADD ACTUAL COOKIES BEFORE COMMERCIAL LAUNCH]` / `[DODATI STVARNE KOLAČIĆE PRIJE KOMERCIJALNOG LANSIRANJA]`
-- `[VERIFY LEGAL ENTITY / REGION]` / `[PROVJERITI PRAVNI NAZIV / REGIJU]`
-- `[VERIFY PROVIDER]` / `[PROVJERITI PROVIDERA]`
-- `[DPA VERSION]` / `[DPA VERZIJA]`
-- `[DATE]` / `[DATUM]`
+- deweb j.d.o.o., Prvča 58, 35400 Prvča, Hrvatska, OIB/VAT: 24631103366.
+- Contact emails use deweb.eu@gmail.com.
+- Last updated date: 24 May 2026 / 24.5.2026.
+- DPA version: 1.0 where needed.
+- Nhost region remains to verify in Nhost configuration.
+- Hasura region/setup remains to verify depending on Nhost/Hasura setup.
+- DPA execution/status with Vercel, Nhost, Hasura and Google/Gmail should be confirmed before commercial launch.
+- Legal counsel review is still required.
 
 Audit notes:
 
 - Privacy Policy includes supplier logo and brand/profile assets as processed data categories.
-- Cookie Policy includes a placeholder inventory for exact cookie names, purposes and lifetimes; do not invent cookie names before production verification.
+- Cookie Policy states analytics and marketing cookies are not currently active; Vercel Web Analytics is only a recommended future option to evaluate.
 - DPA clarifies the draft role model: customer workspace data is generally customer-controller/provider-processor, while provider account, support, security and commercial operations may involve independent controller activity that legal counsel must finalize.
 - Subprocessors page uses provider legal entity/region placeholders where exact provider legal names, regions or safeguards are not yet verified.
 
