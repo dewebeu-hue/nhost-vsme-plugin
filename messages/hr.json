@@ -20,6 +20,36 @@
       "requestDemo": "Zatraži demo"
     }
   },
+  "cookieConsent": {
+    "title": "Postavke kolačića",
+    "bannerLabel": "Obavijest o kolačićima",
+    "bannerText": "Koristimo nužne kolačiće za rad aplikacije. Uz vašu privolu možemo koristiti dodatne kolačiće za poboljšanje iskustva i analitiku. Postavke možete promijeniti u bilo kojem trenutku.",
+    "settings": "Postavke kolačića",
+    "acceptAll": "Prihvati sve",
+    "rejectOptional": "Odbij neobavezne",
+    "saveSettings": "Spremi postavke",
+    "close": "Zatvori",
+    "modalTitle": "Postavke kolačića",
+    "modalDescription": "Odaberite koje neobavezne kategorije kolačića se smiju koristiti. Neobavezne kategorije su isključene prema zadanim postavkama i možete ih promijeniti kasnije.",
+    "categories": {
+      "necessary": {
+        "title": "Nužni",
+        "description": "Nužni kolačići potrebni su za prijavu, sigurnost i osnovni rad aplikacije."
+      },
+      "preferences": {
+        "title": "Preferencije",
+        "description": "Preferencijski kolačići pamte odabrane postavke sučelja, poput jezika ili prikaza."
+      },
+      "analytics": {
+        "title": "Analitika",
+        "description": "Analitički kolačići pomažu razumjeti korištenje aplikacije i poboljšati proizvod."
+      },
+      "marketing": {
+        "title": "Marketing",
+        "description": "Marketinški kolačići koriste se za kampanje i mjerenje oglašavanja."
+      }
+    }
+  },
   "navigation": {
     "dashboard": "Dashboard",
     "companyProfile": "Profil tvrtke",

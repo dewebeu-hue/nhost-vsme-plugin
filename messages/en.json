@@ -20,6 +20,36 @@
       "requestDemo": "Request demo"
     }
   },
+  "cookieConsent": {
+    "title": "Cookie preferences",
+    "bannerLabel": "Cookie consent notice",
+    "bannerText": "We use necessary cookies to make the application work. With your consent, we may use optional cookies to improve the experience and analytics. You can change your preferences at any time.",
+    "settings": "Cookie settings",
+    "acceptAll": "Accept all",
+    "rejectOptional": "Reject optional",
+    "saveSettings": "Save settings",
+    "close": "Close",
+    "modalTitle": "Cookie settings",
+    "modalDescription": "Choose which optional cookie categories may be used. Optional categories are off by default and can be changed later.",
+    "categories": {
+      "necessary": {
+        "title": "Necessary",
+        "description": "Necessary cookies are required for login, security and core application functionality."
+      },
+      "preferences": {
+        "title": "Preferences",
+        "description": "Preference cookies remember interface settings such as language or display preferences."
+      },
+      "analytics": {
+        "title": "Analytics",
+        "description": "Analytics cookies help us understand product usage and improve the application."
+      },
+      "marketing": {
+        "title": "Marketing",
+        "description": "Marketing cookies are used for campaigns and advertising measurement."
+      }
+    }
+  },
   "navigation": {
     "dashboard": "Dashboard",
     "companyProfile": "Company Profile",

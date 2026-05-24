@@ -4646,3 +4646,33 @@ Manual QA:
 6. Download the public PDF and confirm it is buyer-safe.
 7. Repeat the public page check on `/en/passport/[token]`.
 8. Confirm no email is sent automatically and no buyer account is created.
+
+## GDPR Cookie Consent Foundation
+
+Cookie consent documentation lives in `docs/legal-gdpr-readiness.md`.
+
+Current cookie/storage audit:
+
+- Strictly necessary: Nhost authentication/session handling, protected share verification cookies, server-side security/session behavior.
+- Preferences: admin theme preference, guided-tour state, onboarding draft company name, buyer compare browser-local supplier tokens.
+- Analytics: no analytics provider or optional analytics script is loaded.
+- Marketing: no marketing pixel or advertising script is loaded.
+
+Implementation notes:
+
+- Consent is stored in browser `localStorage` under `supplierPassportCookieConsent`.
+- Optional categories default to `false`.
+- `Accept all` enables preferences, analytics, and marketing.
+- `Reject optional` keeps only necessary enabled.
+- `Cookie settings` / `Postavke kolačića` can reopen the preference center after a decision.
+- Future analytics or marketing scripts must be gated by `lib/cookie-consent.ts` helpers before loading.
+
+Manual QA:
+
+1. Clear `supplierPassportCookieConsent` from Local Storage.
+2. Open `/hr` and confirm the cookie banner appears.
+3. Click `Odbij neobavezne`, refresh, and confirm the banner does not reappear.
+4. Open `Postavke kolačića`, enable analytics, save, refresh, and confirm settings persist.
+5. Clear consent and click `Prihvati sve`.
+6. Repeat on `/en`.
+7. Confirm no analytics, marketing, pixel, or optional tracking script loads before consent.
