@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -29,7 +29,13 @@ import {
 } from "@/lib/dashboard-labels";
 import type { DashboardSetupSummary } from "@/lib/data/dashboard";
 import { getFreshBrowserNhostSession } from "@/lib/nhost/client";
-import { markPassportChecklistProgress } from "@/lib/passport-checklist-progress";
+import {
+  createEmptyPassportChecklistProgress,
+  getPassportChecklistProgressSnapshot,
+  markPassportChecklistProgress,
+  subscribePassportChecklistProgress,
+  type PassportChecklistProgress,
+} from "@/lib/passport-checklist-progress";
 
 const MINIMUM_DASHBOARD_LOADING_MS = 900;
 
@@ -37,6 +43,24 @@ type DashboardOverviewPageProps = {
   labels?: DashboardOverviewLabels;
   localePrefix?: string;
   setupSummary?: DashboardSetupSummary | null;
+};
+
+type NextStepKind =
+  | "basic"
+  | "questionnaire"
+  | "evidence"
+  | "linkEvidence"
+  | "review"
+  | "share"
+  | "pdf"
+  | "complete";
+
+type NextStepRecommendation = {
+  cta: string;
+  description: string;
+  href: string;
+  kind: NextStepKind;
+  title: string;
 };
 
 export function DashboardOverviewPage({
@@ -53,6 +77,15 @@ export function DashboardOverviewPage({
   const [copyState, setCopyState] = useState<"idle" | "copied" | "error">("idle");
   const [isExportingPdf, setIsExportingPdf] = useState(false);
   const summary = liveSetupSummary;
+  const actionProgressSnapshot = useSyncExternalStore(
+    subscribePassportChecklistProgress,
+    () => getPassportChecklistProgressSnapshot(summary?.organizationId),
+    () => "loading",
+  );
+  const actionProgress = useMemo(
+    () => parseActionProgressSnapshot(actionProgressSnapshot),
+    [actionProgressSnapshot],
+  );
   const moduleCompletion = summary?.sectionProgress.map((section) => ({
     name: section.title,
     completed: section.completed,
@@ -68,8 +101,6 @@ export function DashboardOverviewPage({
     })) ?? [],
   };
   const tasks = createDashboardTasks(summary, labels);
-  const allTasksCompleted = tasks.every((task) => task.completed);
-  const nextTask = allTasksCompleted ? null : tasks.find((task) => !task.completed);
   const readinessData = (summary?.readinessHistory ?? []).map((point) => ({
     date: formatDate(point.date, labels),
     dayLabel: formatShortDate(point.date),
@@ -86,6 +117,13 @@ export function DashboardOverviewPage({
       ? ""
       : localePrefix}${activePublicShareLink.publicPath}`
     : null;
+  const nextStep = createNextStepRecommendation({
+    actionProgress,
+    labels,
+    localePrefix,
+    publicShareUrl: activePublicShareUrl,
+    summary,
+  });
 
   async function handleCopyPublicLink() {
     if (!activePublicShareUrl) {
@@ -263,20 +301,16 @@ export function DashboardOverviewPage({
             onCopyPublicLink={handleCopyPublicLink}
             onExportPdf={handleExportPdf}
           />
-          <div
-            data-tour="dashboard-next-step"
-            className="rounded-2xl border border-teal-100 bg-gradient-to-br from-teal-50/90 to-white p-5"
-          >
-            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-teal-700">
-              {labels.setupChecklist.nextRecommendedStep}
-            </p>
-            <p className="mt-3 text-lg font-semibold tracking-tight text-slate-950">
-              {nextTask?.title ?? labels.passportReadyNextStep}
-            </p>
-            <p className="mt-1 text-sm font-medium text-slate-600">
-              {labels.readinessHelper}
-            </p>
-          </div>
+          <NextRecommendedStepCard
+            labels={labels}
+            recommendation={nextStep}
+            summary={summary}
+            publicShareUrl={activePublicShareUrl}
+            copyState={copyState}
+            isExportingPdf={isExportingPdf}
+            onCopyPublicLink={handleCopyPublicLink}
+            onExportPdf={handleExportPdf}
+          />
         </div>
       </section>
 
@@ -352,6 +386,122 @@ function DashboardLoadingState({ label }: { label: string }) {
       <div className="flex flex-col items-center gap-4 text-center">
         <span className="size-10 rounded-full border-4 border-blue-100 border-t-blue-600 motion-safe:animate-spin" />
         <p className="text-sm font-semibold text-slate-600">{label}</p>
+      </div>
+    </div>
+  );
+}
+
+function NextRecommendedStepCard({
+  labels,
+  recommendation,
+  summary,
+  publicShareUrl,
+  copyState,
+  isExportingPdf,
+  onCopyPublicLink,
+  onExportPdf,
+}: {
+  labels: DashboardOverviewLabels;
+  recommendation: NextStepRecommendation;
+  summary: DashboardSetupSummary | null;
+  publicShareUrl: string | null;
+  copyState: "idle" | "copied" | "error";
+  isExportingPdf: boolean;
+  onCopyPublicLink: () => void;
+  onExportPdf: () => void;
+}) {
+  const isComplete = recommendation.kind === "complete";
+
+  return (
+    <div
+      data-tour="dashboard-next-step"
+      className="flex min-h-full flex-col rounded-2xl border border-teal-100 bg-gradient-to-br from-teal-50/90 to-white p-5"
+    >
+      <p className="text-sm font-semibold uppercase tracking-[0.16em] text-teal-700">
+        {labels.setupChecklist.nextRecommendedStep}
+      </p>
+      <p className="mt-3 text-xl font-semibold tracking-tight text-slate-950">
+        {recommendation.title}
+      </p>
+      <p className="mt-2 text-sm leading-6 text-slate-600">
+        {recommendation.description}
+      </p>
+
+      <div className="mt-4 flex flex-wrap gap-2">
+        <StatusChip tone={(summary?.missingItemsCount ?? 0) === 0 ? "green" : "amber"}>
+          {formatTemplate(labels.missingDataBadge, {
+            count: String(summary?.missingItemsCount ?? 0),
+          })}
+        </StatusChip>
+        <StatusChip tone="blue">
+          {formatTemplate(labels.questionnaireAnswersBadge, {
+            completed: String(summary?.answeredQuestions ?? 0),
+            total: String(summary?.totalQuestions ?? 0),
+          })}
+        </StatusChip>
+        <StatusChip tone={(summary?.linkedEvidenceCount ?? 0) > 0 ? "green" : "blue"}>
+          {formatTemplate(labels.linkedDocumentsBadge, {
+            count: String(summary?.linkedEvidenceCount ?? 0),
+          })}
+        </StatusChip>
+        <StatusChip tone={publicShareUrl ? "green" : "amber"}>
+          {publicShareUrl ? labels.nextStepPublicLinkActive : labels.nextStepPublicLinkMissing}
+        </StatusChip>
+      </div>
+
+      <div className="mt-auto flex flex-wrap gap-2 pt-5">
+        {isComplete ? (
+          <>
+            {publicShareUrl ? (
+              <>
+                <Link
+                  href={publicShareUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex h-9 items-center justify-center gap-2 rounded-full bg-teal-700 px-4 text-sm font-semibold text-white transition hover:bg-teal-800 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-teal-700/20"
+                >
+                  {labels.openPublicLink}
+                  <ExternalLink aria-hidden="true" className="size-4" />
+                </Link>
+                <button
+                  type="button"
+                  onClick={onCopyPublicLink}
+                  className="inline-flex h-9 items-center justify-center gap-2 rounded-full border border-teal-200 bg-white px-4 text-sm font-semibold text-teal-800 transition hover:bg-teal-50 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-teal-700/20"
+                >
+                  <Copy aria-hidden="true" className="size-4" />
+                  {copyState === "copied" ? labels.linkCopied : labels.copyLink}
+                </button>
+              </>
+            ) : null}
+            <button
+              type="button"
+              onClick={onExportPdf}
+              disabled={isExportingPdf}
+              className="inline-flex h-9 items-center justify-center gap-2 rounded-full border border-blue-200 bg-white px-4 text-sm font-semibold text-blue-700 transition hover:bg-blue-50 disabled:cursor-not-allowed disabled:opacity-60 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-blue-600/20"
+            >
+              <FileDown aria-hidden="true" className="size-4" />
+              {isExportingPdf ? labels.downloadingPdf : labels.downloadPdf}
+            </button>
+          </>
+        ) : recommendation.kind === "pdf" ? (
+          <button
+            type="button"
+            onClick={onExportPdf}
+            disabled={isExportingPdf}
+            className="inline-flex h-9 items-center justify-center gap-2 rounded-full bg-teal-700 px-4 text-sm font-semibold text-white transition hover:bg-teal-800 disabled:cursor-not-allowed disabled:opacity-60 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-teal-700/20"
+          >
+            <FileDown aria-hidden="true" className="size-4" />
+            {isExportingPdf ? labels.downloadingPdf : recommendation.cta}
+          </button>
+        ) : (
+          <Link
+            href={recommendation.href}
+            className="inline-flex h-9 items-center justify-center gap-2 rounded-full bg-teal-700 px-4 text-sm font-semibold text-white transition hover:bg-teal-800 focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-teal-700/20"
+          >
+            {recommendation.cta}
+            <ArrowRight aria-hidden="true" className="size-4" />
+          </Link>
+        )}
       </div>
     </div>
   );
@@ -561,6 +711,128 @@ function BeforeYouStartCard({
       </div>
     </section>
   );
+}
+
+function parseActionProgressSnapshot(snapshot: string): PassportChecklistProgress {
+  if (!snapshot || snapshot === "loading") {
+    return createEmptyPassportChecklistProgress();
+  }
+
+  try {
+    const parsed = JSON.parse(snapshot) as Partial<PassportChecklistProgress>;
+
+    return {
+      passportViewed: parsed.passportViewed === true,
+      pdfDownloaded: parsed.pdfDownloaded === true,
+    };
+  } catch {
+    return createEmptyPassportChecklistProgress();
+  }
+}
+
+function createNextStepRecommendation({
+  actionProgress,
+  labels,
+  localePrefix,
+  publicShareUrl,
+  summary,
+}: {
+  actionProgress: PassportChecklistProgress;
+  labels: DashboardOverviewLabels;
+  localePrefix: string;
+  publicShareUrl: string | null;
+  summary: DashboardSetupSummary | null;
+}): NextStepRecommendation {
+  const companyBasicsComplete = Boolean(
+    summary?.organizationName &&
+      summary.companyLocation &&
+      summary.companyIndustry &&
+      summary.companyEmployeeCount,
+  );
+  const questionnaireComplete = Boolean(
+    summary &&
+      summary.totalQuestions > 0 &&
+      summary.answeredQuestions >= summary.totalQuestions &&
+      summary.missingItemsCount === 0,
+  );
+
+  if (!companyBasicsComplete) {
+    return {
+      kind: "basic",
+      title: labels.nextStepBasicTitle,
+      description: labels.nextStepBasicDescription,
+      cta: labels.nextStepBasicCta,
+      href: `${localePrefix}/dashboard/questionnaire?section=company_basics`,
+    };
+  }
+
+  if (!questionnaireComplete) {
+    return {
+      kind: "questionnaire",
+      title: labels.nextStepQuestionnaireTitle,
+      description: labels.nextStepQuestionnaireDescription,
+      cta: labels.nextStepQuestionnaireCta,
+      href: `${localePrefix}/dashboard/questionnaire`,
+    };
+  }
+
+  if ((summary?.documentsCount ?? 0) === 0) {
+    return {
+      kind: "evidence",
+      title: labels.nextStepEvidenceTitle,
+      description: labels.nextStepEvidenceDescription,
+      cta: labels.nextStepEvidenceCta,
+      href: `${localePrefix}/dashboard/documents`,
+    };
+  }
+
+  if ((summary?.linkedEvidenceCount ?? 0) === 0 || (summary?.evidenceRequiredCount ?? 0) > 0) {
+    return {
+      kind: "linkEvidence",
+      title: labels.nextStepLinkEvidenceTitle,
+      description: labels.nextStepLinkEvidenceDescription,
+      cta: labels.nextStepLinkEvidenceCta,
+      href: `${localePrefix}/dashboard/documents`,
+    };
+  }
+
+  if (!actionProgress.passportViewed) {
+    return {
+      kind: "review",
+      title: labels.nextStepReviewTitle,
+      description: labels.nextStepReviewDescription,
+      cta: labels.nextStepReviewCta,
+      href: `${localePrefix}/dashboard/passport`,
+    };
+  }
+
+  if (!publicShareUrl) {
+    return {
+      kind: "share",
+      title: labels.nextStepShareTitle,
+      description: labels.nextStepShareDescription,
+      cta: labels.nextStepShareCta,
+      href: `${localePrefix}/dashboard/share`,
+    };
+  }
+
+  if (!actionProgress.pdfDownloaded) {
+    return {
+      kind: "pdf",
+      title: labels.nextStepPdfTitle,
+      description: labels.nextStepPdfDescription,
+      cta: labels.nextStepPdfCta,
+      href: `${localePrefix}/dashboard/passport`,
+    };
+  }
+
+  return {
+    kind: "complete",
+    title: labels.nextStepCompleteTitle,
+    description: labels.nextStepCompleteDescription,
+    cta: labels.openPublicLink,
+    href: publicShareUrl,
+  };
 }
 
 function createDashboardTasks(

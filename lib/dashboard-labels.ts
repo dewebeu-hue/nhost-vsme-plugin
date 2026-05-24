@@ -153,6 +153,31 @@ export type DashboardOverviewLabels = {
   downloadingPdf: string;
   downloadPdfError: string;
   passportReadyNextStep: string;
+  nextStepBasicTitle: string;
+  nextStepBasicDescription: string;
+  nextStepBasicCta: string;
+  nextStepQuestionnaireTitle: string;
+  nextStepQuestionnaireDescription: string;
+  nextStepQuestionnaireCta: string;
+  nextStepEvidenceTitle: string;
+  nextStepEvidenceDescription: string;
+  nextStepEvidenceCta: string;
+  nextStepLinkEvidenceTitle: string;
+  nextStepLinkEvidenceDescription: string;
+  nextStepLinkEvidenceCta: string;
+  nextStepReviewTitle: string;
+  nextStepReviewDescription: string;
+  nextStepReviewCta: string;
+  nextStepShareTitle: string;
+  nextStepShareDescription: string;
+  nextStepShareCta: string;
+  nextStepPdfTitle: string;
+  nextStepPdfDescription: string;
+  nextStepPdfCta: string;
+  nextStepCompleteTitle: string;
+  nextStepCompleteDescription: string;
+  nextStepPublicLinkActive: string;
+  nextStepPublicLinkMissing: string;
   buyerPreviewTitle: string;
   buyerPreviewIncompleteText: string;
   buyerPreviewLocation: string;
@@ -329,6 +354,31 @@ export const defaultDashboardOverviewLabels: DashboardOverviewLabels = {
   downloadingPdf: "Generating PDF...",
   downloadPdfError: "We could not generate the PDF right now.",
   passportReadyNextStep: "Supplier Passport is ready to share.",
+  nextStepBasicTitle: "Complete Company Basics",
+  nextStepBasicDescription: "Add legal name, location, industry and other basic data.",
+  nextStepBasicCta: "Open Company Basics",
+  nextStepQuestionnaireTitle: "Complete the questionnaire",
+  nextStepQuestionnaireDescription: "Answer the remaining questions so the Passport is more useful for buyers.",
+  nextStepQuestionnaireCta: "Open questionnaire",
+  nextStepEvidenceTitle: "Upload evidence documents",
+  nextStepEvidenceDescription: "Add certificates, policies, invoices or other documents that support your answers.",
+  nextStepEvidenceCta: "Open Data Room",
+  nextStepLinkEvidenceTitle: "Link evidence to answers",
+  nextStepLinkEvidenceDescription: "Connect uploaded documents to the relevant questionnaire answers.",
+  nextStepLinkEvidenceCta: "Open Data Room",
+  nextStepReviewTitle: "Review Supplier Passport",
+  nextStepReviewDescription: "Check the summary, readiness status and linked evidence before sharing.",
+  nextStepReviewCta: "Open Passport",
+  nextStepShareTitle: "Create public link",
+  nextStepShareDescription: "Create a buyer-safe public link that you can send to buyers.",
+  nextStepShareCta: "Open sharing",
+  nextStepPdfTitle: "Download PDF draft",
+  nextStepPdfDescription: "Download a draft for manual review or sharing with a buyer.",
+  nextStepPdfCta: "Download PDF",
+  nextStepCompleteTitle: "Supplier Passport is ready",
+  nextStepCompleteDescription: "All core steps are complete. You can share the public link or download the PDF.",
+  nextStepPublicLinkActive: "Public link: active",
+  nextStepPublicLinkMissing: "Public link: missing",
   buyerPreviewTitle: "Buyer preview",
   buyerPreviewIncompleteText: "Complete the remaining steps so the buyer preview is ready.",
   buyerPreviewLocation: "Location",
