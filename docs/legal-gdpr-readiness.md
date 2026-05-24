@@ -21,11 +21,14 @@ Visible placeholders that must be replaced:
 - `[PRIVACY CONTACT EMAIL]` / `[KONTAKT E-MAIL ZA PRIVATNOST]`
 - `[DPO CONTACT IF APPLICABLE]` / `[DPO KONTAKT AKO POSTOJI]`
 - `[DEFINE RETENTION PERIODS]` / `[DEFINIRATI ROKOVE ČUVANJA]`
+- `[ADD ACTUAL COOKIES BEFORE COMMERCIAL LAUNCH]` / `[DODATI STVARNE KOLAČIĆE PRIJE KOMERCIJALNOG LANSIRANJA]`
+- `[VERIFY LEGAL ENTITY / REGION]` / `[PROVJERITI PRAVNI NAZIV / REGIJU]`
 
 The Privacy Policy draft documents these data categories:
 
 - account and authentication data
 - organization/company profile data
+- supplier logo and brand/profile assets
 - questionnaire answers
 - uploaded document metadata and supporting evidence handling
 - evidence links between documents and answers
@@ -73,12 +76,14 @@ Cookie Policy:
 - Explains necessary, preference, analytics and marketing cookie categories.
 - States optional categories are off by default until consent.
 - Includes an `Open cookie settings` / `Otvorite postavke kolačića` action that reopens the existing preference center.
+- Includes an actual-cookie inventory placeholder that must be replaced only after production cookies and lifetimes are verified.
 - Confirms no optional analytics or marketing scripts should load before consent.
 
 DPA overview:
 
 - Is a working draft/overview, not a signed contract.
 - Covers party roles, processing subject matter, data categories, instructions, confidentiality, security measures, subprocessors, data subject rights, breach handling, deletion/return, audit information and transfers.
+- Clarifies the draft role model: customer workspace data is generally customer-controller/provider-processor, while provider account, support, security and commercial operations may involve independent controller activity that legal counsel must finalize.
 - Requires legal counsel review before commercial use.
 
 Security overview:
@@ -88,7 +93,7 @@ Security overview:
 
 Subprocessors:
 
-- Lists current/planned infrastructure and service providers with placeholders for region/provider verification.
+- Lists current/planned infrastructure and service providers with placeholders for provider legal entity, region and provider verification.
 - Notes that exact provider legal entities, regions and safeguards must be verified before commercial launch.
 
 Legal footer:

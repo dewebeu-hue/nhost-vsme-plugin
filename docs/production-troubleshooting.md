@@ -4768,10 +4768,18 @@ Legal review placeholders:
 - `[PRIVACY CONTACT EMAIL]` / `[KONTAKT E-MAIL ZA PRIVATNOST]`
 - `[CONTACT EMAIL]` / `[KONTAKT E-MAIL]`
 - `[SECURITY CONTACT EMAIL]` / `[KONTAKT E-MAIL ZA SIGURNOST]`
-- `[VERIFY REGION]` / `[PROVJERITI REGIJU]`
+- `[ADD ACTUAL COOKIES BEFORE COMMERCIAL LAUNCH]` / `[DODATI STVARNE KOLAČIĆE PRIJE KOMERCIJALNOG LANSIRANJA]`
+- `[VERIFY LEGAL ENTITY / REGION]` / `[PROVJERITI PRAVNI NAZIV / REGIJU]`
 - `[VERIFY PROVIDER]` / `[PROVJERITI PROVIDERA]`
 - `[DPA VERSION]` / `[DPA VERZIJA]`
 - `[DATE]` / `[DATUM]`
+
+Audit notes:
+
+- Privacy Policy includes supplier logo and brand/profile assets as processed data categories.
+- Cookie Policy includes a placeholder inventory for exact cookie names, purposes and lifetimes; do not invent cookie names before production verification.
+- DPA clarifies the draft role model: customer workspace data is generally customer-controller/provider-processor, while provider account, support, security and commercial operations may involve independent controller activity that legal counsel must finalize.
+- Subprocessors page uses provider legal entity/region placeholders where exact provider legal names, regions or safeguards are not yet verified.
 
 QA checklist:
 

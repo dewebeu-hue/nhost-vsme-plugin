@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { BadgeCheck, LockKeyhole, ShieldCheck } from "lucide-react";
 import { Logo } from "@/components/brand/logo";
+import { LegalFooter } from "@/components/legal/legal-footer";
 import { LanguageSwitcher } from "@/components/shared/language-switcher";
 
 type AuthShellProps = {
@@ -85,6 +86,7 @@ export function AuthShell({ eyebrow, title, subtitle, children }: AuthShellProps
           </div>
         </section>
       </div>
+      <LegalFooter />
     </main>
   );
 }

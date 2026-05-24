@@ -18,7 +18,12 @@ export const legalPackageContent: Record<LegalPageKey, Record<"en" | "hr", Legal
           "This page explains which types of cookies and similar technologies we use, why we use them, and how you can manage your preferences.",
         title: "Cookie Policy",
       },
-      placeholders: ["[LEGAL ENTITY NAME]", "[PRIVACY CONTACT EMAIL]", "[DATE]"],
+      placeholders: [
+        "[LEGAL ENTITY NAME]",
+        "[PRIVACY CONTACT EMAIL]",
+        "[DATE]",
+        "[ADD ACTUAL COOKIES BEFORE COMMERCIAL LAUNCH]",
+      ],
       tocTitle: "On this page",
       sections: [
         {
@@ -35,6 +40,14 @@ export const legalPackageContent: Record<LegalPageKey, Record<"en" | "hr", Legal
           body: [
             "Necessary cookies and related storage are required for login, security, password-protected share links, organization access and core application functionality.",
             "These are used without optional consent because the service cannot function securely without them.",
+          ],
+        },
+        {
+          id: "cookie-inventory",
+          title: "Cookie inventory",
+          body: [
+            "Exact cookie names, purposes and lifetimes must be verified before commercial launch: [ADD ACTUAL COOKIES BEFORE COMMERCIAL LAUNCH].",
+            "Do not invent cookie names in this policy. Update this section only after the production cookie inventory is confirmed.",
           ],
         },
         {
@@ -97,7 +110,12 @@ export const legalPackageContent: Record<LegalPageKey, Record<"en" | "hr", Legal
           "Ova stranica objašnjava koje vrste kolačića i sličnih tehnologija koristimo, zašto ih koristimo i kako možete upravljati postavkama.",
         title: "Politika kolačića",
       },
-      placeholders: ["[NAZIV PRAVNE OSOBE]", "[KONTAKT E-MAIL ZA PRIVATNOST]", "[DATUM]"],
+      placeholders: [
+        "[NAZIV PRAVNE OSOBE]",
+        "[KONTAKT E-MAIL ZA PRIVATNOST]",
+        "[DATUM]",
+        "[DODATI STVARNE KOLAČIĆE PRIJE KOMERCIJALNOG LANSIRANJA]",
+      ],
       tocTitle: "Na ovoj stranici",
       sections: [
         {
@@ -112,15 +130,23 @@ export const legalPackageContent: Record<LegalPageKey, Record<"en" | "hr", Legal
           id: "necessary",
           title: "Nužni kolačići",
           body: [
-            "Nužni kolačići i povezana pohrana potrebni su za prijavu, sigurnost, lozinkom zaštićene share linkove, pristup organizaciji i osnovni rad aplikacije.",
+            "Nužni kolačići i povezana pohrana potrebni su za prijavu, sigurnost, lozinkom zaštićene linkove za dijeljenje, pristup organizaciji i osnovni rad aplikacije.",
             "Koriste se bez neobavezne privole jer usluga bez njih ne može sigurno funkcionirati.",
+          ],
+        },
+        {
+          id: "cookie-inventory",
+          title: "Inventar kolačića",
+          body: [
+            "Točne nazive kolačića, svrhe i trajanja potrebno je provjeriti prije komercijalnog lansiranja: [DODATI STVARNE KOLAČIĆE PRIJE KOMERCIJALNOG LANSIRANJA].",
+            "Nemojte izmišljati nazive kolačića u ovoj politici. Ažurirajte ovaj odjeljak tek nakon potvrde produkcijskog inventara kolačića.",
           ],
         },
         {
           id: "preferences",
           title: "Preferencijski kolačići",
           body: [
-            "Preferencijski kolačići mogu pamtiti odabire sučelja poput jezika, prikaza ili onboarding stanja.",
+            "Preferencijski kolačići mogu pamtiti odabire sučelja poput jezika, prikaza ili stanja uvođenja.",
             "Preferencijski kolačići su neobavezni i trebaju se koristiti samo nakon što korisnik omogući ovu kategoriju.",
           ],
         },
@@ -129,7 +155,7 @@ export const legalPackageContent: Record<LegalPageKey, Record<"en" | "hr", Legal
           title: "Analitički kolačići",
           body: [
             "Analitički kolačići mogu pomoći razumjeti korištenje proizvoda i poboljšati aplikaciju.",
-            "Nijedna neobavezna analitička skripta ne smije se učitati prije privole za analitiku. Ako se analitika doda kasnije, mora biti ograničena helperom za cookie privolu.",
+            "Nijedna neobavezna analitička skripta ne smije se učitati prije privole za analitiku. Ako se analitika doda kasnije, mora biti ograničena pomoćnom funkcijom za privolu kolačića.",
           ],
         },
         {
@@ -137,7 +163,7 @@ export const legalPackageContent: Record<LegalPageKey, Record<"en" | "hr", Legal
           title: "Marketinški kolačići",
           body: [
             "Marketinški kolačići mogu se koristiti za kampanje ili mjerenje oglašavanja ako se takvi alati uvedu kasnije.",
-            "Marketinški pixel ili campaign tracking ne smije se učitati prije privole za marketing.",
+            "Marketinški piksel ili praćenje kampanja ne smije se učitati prije privole za marketing.",
           ],
         },
         {
@@ -145,7 +171,7 @@ export const legalPackageContent: Record<LegalPageKey, Record<"en" | "hr", Legal
           title: "Kako upravljati postavkama",
           body: [
             "Možete prihvatiti sve neobavezne kategorije, odbiti neobavezne kategorije ili odabrati pojedinačne kategorije u panelu postavki kolačića.",
-            "Postavke kolačića možete ponovno otvoriti u bilo kojem trenutku iz pravnog footera ili plutajuće kontrole nakon spremanja odluke.",
+            "Postavke kolačića možete ponovno otvoriti u bilo kojem trenutku iz pravnog podnožja ili plutajuće kontrole nakon spremanja odluke.",
           ],
         },
         {
@@ -190,6 +216,7 @@ export const legalPackageContent: Record<LegalPageKey, Record<"en" | "hr", Legal
           title: "Roles of the parties",
           body: [
             "The customer is generally expected to act as controller for the organization workspace data it submits. [LEGAL ENTITY NAME] may act as processor for personal data processed to provide Supplier Passport.",
+            "For its own account administration, support, security and commercial operations, the provider may act as an independent controller; this must be finalized in legal review.",
             "Role allocation may vary by customer and must be confirmed in the final agreement.",
           ],
         },
@@ -311,6 +338,7 @@ export const legalPackageContent: Record<LegalPageKey, Record<"en" | "hr", Legal
           title: "Uloge strana",
           body: [
             "Korisnik se u pravilu očekuje kao voditelj obrade za podatke organizacijskog radnog prostora koje dostavlja. [NAZIV PRAVNE OSOBE] može djelovati kao izvršitelj obrade za osobne podatke obrađene radi pružanja Supplier Passporta.",
+            "Za vlastitu administraciju računa, podršku, sigurnost i komercijalne operacije pružatelj može djelovati kao samostalni voditelj obrade; to treba finalizirati u pravnom pregledu.",
             "Raspodjela uloga može se razlikovati po korisniku i mora se potvrditi u finalnom ugovoru.",
           ],
         },
@@ -326,14 +354,14 @@ export const legalPackageContent: Record<LegalPageKey, Record<"en" | "hr", Legal
           id: "personal-data",
           title: "Vrste osobnih podataka",
           body: [
-            "Osobni podaci mogu uključivati imena, e-mail adrese, korisničke uloge, support poruke, tehničke logove i osobne podatke sadržane u korisnički učitanom sadržaju.",
+            "Osobni podaci mogu uključivati imena, e-mail adrese, korisničke uloge, poruke podršci, tehničke logove i osobne podatke sadržane u korisnički učitanom sadržaju.",
           ],
         },
         {
           id: "data-subjects",
           title: "Kategorije ispitanika",
           body: [
-            "Ispitanici mogu uključivati korisnike kupca, korisnike dobavljača, kontakte organizacije, support kontakte i osobe navedene u korisnički učitanom sadržaju.",
+            "Ispitanici mogu uključivati korisnike kupca, korisnike dobavljača, kontakte organizacije, kontakte podrške i osobe navedene u korisnički učitanom sadržaju.",
           ],
         },
         {
@@ -361,7 +389,7 @@ export const legalPackageContent: Record<LegalPageKey, Record<"en" | "hr", Legal
           id: "subprocessors",
           title: "Podizvršitelji obrade",
           body: [
-            "Supplier Passport može koristiti podizvršitelje za hosting, backend, autentikaciju, pohranu, e-mail i operativne usluge. Trenutni pregled naveden je na stranici Podizvršitelji obrade.",
+            "Supplier Passport može koristiti podizvršitelje za hosting, pozadinsku infrastrukturu, autentikaciju, pohranu, e-mail i operativne usluge. Trenutni pregled naveden je na stranici Podizvršitelji obrade.",
           ],
         },
         {
@@ -499,42 +527,42 @@ export const legalPackageContent: Record<LegalPageKey, Record<"en" | "hr", Legal
           id: "access-authentication",
           title: "Pristup i autentikacija",
           body: [
-            "Supplier Passport koristi autentificirani pristup za dobavljačke i admin radne prostore. Resetiranje lozinke i provjera zaštićenih share linkova odvijaju se kroz kontrolirane aplikacijske tijekove.",
+            "Supplier Passport koristi autentificirani pristup za dobavljačke i administratorske radne prostore. Resetiranje lozinke i provjera zaštićenih linkova za dijeljenje odvijaju se kroz kontrolirane aplikacijske tijekove.",
           ],
         },
         {
           id: "organization-isolation",
           title: "Organizacijsko razgraničenje podataka",
           body: [
-            "Radimo na sigurnom razdvajanju organizacijskih podataka i kontroli pristupa. Podaci radnog prostora trebaju se dohvaćati server-side kroz članstvo u organizaciji i scopeane loadere.",
+            "Radimo na sigurnom razdvajanju organizacijskih podataka i kontroli pristupa. Podaci radnog prostora trebaju se dohvaćati na poslužitelju kroz članstvo u organizaciji i učitavanje ograničeno organizacijom.",
           ],
         },
         {
           id: "evidence-privacy",
           title: "Privatnost dokazne dokumentacije",
           body: [
-            "Privatni dokazni dokumenti nisu javno dostupni za preuzimanje prema zadanim postavkama. Javne stranice i PDF-ovi trebaju prikazivati sažetke sigurne za kupce i dostupnost dokaza, a ne privatne URL-ove dokumenata ili storage ID-eve.",
+            "Privatni dokazni dokumenti nisu javno dostupni za preuzimanje prema zadanim postavkama. Javne stranice i PDF-ovi trebaju prikazivati sažetke sigurne za kupce i dostupnost dokaza, a ne privatne URL-ove dokumenata ili ID-eve pohrane.",
           ],
         },
         {
           id: "public-links",
-          title: "Javni linkovi i buyer-safe prikaz",
+          title: "Javni linkovi i prikaz siguran za kupce",
           body: [
-            "Javni Supplier Passport linkovi namijenjeni su prikazu sažetka sigurnog za kupce. Share linkovi mogu uključivati istek i zaštitu lozinkom gdje je konfigurirano.",
+            "Javni Supplier Passport linkovi namijenjeni su prikazu sažetka sigurnog za kupce. Linkovi za dijeljenje mogu uključivati istek i zaštitu lozinkom gdje je konfigurirano.",
           ],
         },
         {
           id: "admin-access",
           title: "Admin pristup",
           body: [
-            "Admin radni prostori namijenjeni su internim operativnim i customer success tijekovima. Admin bilješke i detalji podrške ne smiju se prikazivati na dobavljačkim, javnim, buyer ili PDF površinama.",
+            "Administratorski radni prostori namijenjeni su internim operativnim tijekovima i korisničkom uspjehu. Administratorske bilješke i detalji podrške ne smiju se prikazivati na dobavljačkim, javnim, kupčevim ili PDF površinama.",
           ],
         },
         {
           id: "logs-support",
           title: "Evidencija i podrška",
           body: [
-            "Operativni logovi i support tijekovi trebaju izbjegavati zapisivanje tajni, JWT-ova, kolačića, share tokena, lozinki, privatnih URL-ova ili sadržaja dokumenata.",
+            "Operativni logovi i tijekovi podrške trebaju izbjegavati zapisivanje tajni, JWT-ova, kolačića, tokena za dijeljenje, lozinki, privatnih URL-ova ili sadržaja dokumenata.",
           ],
         },
         {
@@ -568,7 +596,11 @@ export const legalPackageContent: Record<LegalPageKey, Record<"en" | "hr", Legal
           "This page lists infrastructure and service providers used or planned for Supplier Passport.",
         title: "Subprocessors",
       },
-      placeholders: ["[VERIFY REGION]", "[VERIFY PROVIDER]", "[ADD BEFORE COMMERCIAL LAUNCH]"],
+      placeholders: [
+        "[VERIFY LEGAL ENTITY / REGION]",
+        "[VERIFY PROVIDER]",
+        "[ADD BEFORE COMMERCIAL LAUNCH]",
+      ],
       tocTitle: "On this page",
       sections: [
         {
@@ -581,9 +613,9 @@ export const legalPackageContent: Record<LegalPageKey, Record<"en" | "hr", Legal
           table: {
             headers: ["Provider", "Purpose", "Location / region", "Data type", "Status"],
             rows: [
-              ["Vercel", "Hosting and frontend deployment", "[VERIFY REGION]", "Application pages and operational logs", "Used / verify contract"],
-              ["Nhost", "Authentication, backend, database and storage infrastructure", "[VERIFY REGION]", "Account, organization, questionnaire and document metadata", "Used / verify contract"],
-              ["Hasura / GraphQL", "API and data access layer where configured", "[VERIFY REGION]", "Application data accessed through GraphQL", "Used / verify deployment model"],
+              ["Vercel", "Hosting and frontend deployment", "[VERIFY LEGAL ENTITY / REGION]", "Application pages and operational logs", "Used / verify contract"],
+              ["Nhost", "Authentication, backend, database and storage infrastructure", "[VERIFY LEGAL ENTITY / REGION]", "Account, organization, questionnaire and document metadata", "Used / verify contract"],
+              ["Hasura / GraphQL", "API and data access layer where configured", "[VERIFY LEGAL ENTITY / REGION]", "Application data accessed through GraphQL", "Used / verify deployment model"],
               ["Email provider", "Password reset and transactional email if configured", "[VERIFY PROVIDER]", "Email address and transactional message metadata", "Verify before commercial launch"],
               ["Analytics provider", "None currently unless later enabled with consent", "Not applicable", "No analytics data currently loaded by default", "Not enabled"],
             ],
@@ -613,24 +645,28 @@ export const legalPackageContent: Record<LegalPageKey, Record<"en" | "hr", Legal
           "Ova stranica navodi infrastrukturne i uslužne pružatelje koji se koriste ili planiraju za Supplier Passport.",
         title: "Podizvršitelji obrade",
       },
-      placeholders: ["[PROVJERITI REGIJU]", "[PROVJERITI PROVIDERA]", "[DODATI PRIJE KOMERCIJALNOG LANSIRANJA]"],
+      placeholders: [
+        "[PROVJERITI PRAVNI NAZIV / REGIJU]",
+        "[PROVJERITI PROVIDERA]",
+        "[DODATI PRIJE KOMERCIJALNOG LANSIRANJA]",
+      ],
       tocTitle: "Na ovoj stranici",
       sections: [
         {
           id: "overview",
           title: "Pregled podizvršitelja obrade",
           body: [
-            "Sljedeći popis opisuje pružatelje koji se koriste ili očekuju za hosting, backend, autentikaciju, pohranu, e-mail i operativne usluge.",
+            "Sljedeći popis opisuje pružatelje koji se koriste ili očekuju za hosting, pozadinsku infrastrukturu, autentikaciju, pohranu, e-mail i operativne usluge.",
             "Točne pravne osobe pružatelja, podatkovne regije i ugovorne zaštitne mjere potrebno je provjeriti prije komercijalnog lansiranja.",
           ],
           table: {
             headers: ["Naziv", "Svrha", "Lokacija / regija", "Vrsta podataka", "Status"],
             rows: [
-              ["Vercel", "Hosting i frontend deployment", "[PROVJERITI REGIJU]", "Aplikacijske stranice i operativni logovi", "Koristi se / provjeriti ugovor"],
-              ["Nhost", "Autentikacija, backend, baza podataka i storage infrastruktura", "[PROVJERITI REGIJU]", "Račun, organizacija, upitnik i metapodaci dokumenata", "Koristi se / provjeriti ugovor"],
-              ["Hasura / GraphQL", "API i podatkovni pristupni sloj gdje je konfigurirano", "[PROVJERITI REGIJU]", "Aplikacijski podaci dostupni kroz GraphQL", "Koristi se / provjeriti deployment model"],
-              ["Email provider", "Reset lozinke i transakcijski e-mail ako je konfigurirano", "[PROVJERITI PROVIDERA]", "E-mail adresa i metapodaci transakcijskih poruka", "Provjeriti prije komercijalnog lansiranja"],
-              ["Analytics provider", "Trenutno nema, osim ako se kasnije omogući uz privolu", "Nije primjenjivo", "Analitički podaci se trenutno ne učitavaju prema zadanim postavkama", "Nije omogućeno"],
+              ["Vercel", "Hosting i frontend implementacija", "[PROVJERITI PRAVNI NAZIV / REGIJU]", "Aplikacijske stranice i operativni logovi", "Koristi se / provjeriti ugovor"],
+              ["Nhost", "Autentikacija, pozadinska infrastruktura, baza podataka i infrastruktura pohrane", "[PROVJERITI PRAVNI NAZIV / REGIJU]", "Račun, organizacija, upitnik i metapodaci dokumenata", "Koristi se / provjeriti ugovor"],
+              ["Hasura / GraphQL", "API i podatkovni pristupni sloj gdje je konfigurirano", "[PROVJERITI PRAVNI NAZIV / REGIJU]", "Aplikacijski podaci dostupni kroz GraphQL", "Koristi se / provjeriti model implementacije"],
+              ["Pružatelj e-mail usluge", "Reset lozinke i transakcijski e-mail ako je konfigurirano", "[PROVJERITI PROVIDERA]", "E-mail adresa i metapodaci transakcijskih poruka", "Provjeriti prije komercijalnog lansiranja"],
+              ["Pružatelj analitike", "Trenutno nema, osim ako se kasnije omogući uz privolu", "Nije primjenjivo", "Analitički podaci se trenutno ne učitavaju prema zadanim postavkama", "Nije omogućeno"],
             ],
           },
         },

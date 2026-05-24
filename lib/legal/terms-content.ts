@@ -184,7 +184,7 @@ export const termsContent: Record<"en" | "hr", LegalPageContent> = {
   hr: {
     effectiveDate: "Zadnje ažurirano: [DATUM]",
     hero: {
-      eyebrow: "Legal readiness nacrt",
+      eyebrow: "Nacrt pravne spremnosti",
       reviewNote:
         "Ovi uvjeti su nacrt za pravnu spremnost Supplier Passporta i treba ih pregledati pravni savjetnik prije komercijalne upotrebe.",
       summary: "Ovi uvjeti uređuju korištenje Supplier Passport aplikacije i povezanih usluga.",
@@ -203,7 +203,7 @@ export const termsContent: Record<"en" | "hr", LegalPageContent> = {
         id: "introduction",
         title: "Uvod",
         body: [
-          "Ovi Uvjeti korištenja uređuju pristup i korištenje Supplier Passporta, uključujući aplikaciju, javne stranice, share linkove, PDF sažetke i povezane usluge podrške.",
+          "Ovi Uvjeti korištenja uređuju pristup i korištenje Supplier Passporta, uključujući aplikaciju, javne stranice, linkove za dijeljenje, PDF sažetke i povezane usluge podrške.",
           "Korištenjem usluge korisnik potvrđuje da je ovlašten koristiti Supplier Passport za svoju organizaciju i dostaviti podatke unesene u radni prostor.",
         ],
       },
@@ -219,7 +219,7 @@ export const termsContent: Record<"en" | "hr", LegalPageContent> = {
         id: "service-description",
         title: "Opis usluge",
         body: [
-          "Supplier Passport je SaaS aplikacija za pripremu profila spremnosti dobavljača, ispunjavanje VSME-aligned upitnika, organizaciju metapodataka dokazne dokumentacije, izradu sažetaka sigurnih za kupce, preuzimanje PDF sažetaka i podršku onboarding/admin tijekovima gdje je primjenjivo.",
+          "Supplier Passport je SaaS aplikacija za pripremu profila spremnosti dobavljača, ispunjavanje upitnika usklađenog s VSME okvirom, organizaciju metapodataka dokazne dokumentacije, izradu sažetaka sigurnih za kupce, preuzimanje PDF sažetaka i podršku tijekovima uvođenja i administracije gdje je primjenjivo.",
           "Usluga pomaže strukturirati informacije o dobavljaču. Ona ne certificira, ne revidira, ne odobrava i ne pravno validira dobavljača.",
         ],
       },
@@ -243,7 +243,7 @@ export const termsContent: Record<"en" | "hr", LegalPageContent> = {
         id: "user-content",
         title: "Korisnički sadržaj",
         body: [
-          "Korisnički sadržaj može uključivati odgovore u upitniku, podatke o tvrtki, učitane dokumente, logotipe, support upite, podatke o zahtjevima kupaca i povezane metapodatke.",
+          "Korisnički sadržaj može uključivati odgovore u upitniku, podatke o tvrtki, učitane dokumente, logotipe, upite podršci, podatke o zahtjevima kupaca i povezane metapodatke.",
           "Korisnici i njihove organizacije zadržavaju odgovornost za svoj sadržaj. Pružatelj usluge dobiva ograničeno pravo obrade, pohrane, prikaza i prijenosa tog sadržaja samo koliko je potrebno za pružanje, sigurnost i podršku Supplier Passport usluge.",
         ],
       },
@@ -253,14 +253,14 @@ export const termsContent: Record<"en" | "hr", LegalPageContent> = {
         body: [
           "Dobavljači dobrovoljno učitavaju dokaznu dokumentaciju i moraju imati pravo učitati i dijeliti dokumente koje dostavljaju.",
           "Dobavljači ne bi trebali učitavati nepotrebne osjetljive osobne podatke ili dokumente koje nisu ovlašteni obrađivati. Javni linkovi ne izlažu automatski privatne dokazne dokumente osim ako određena funkcionalnost ili postavka dopušta pristup.",
-          "Pravila pristupa dokumentima mogu ovisiti o postavkama share linka, konfiguraciji radnog prostora i budućim tijekovima pristupa dokumentima.",
+          "Pravila pristupa dokumentima mogu ovisiti o postavkama linka za dijeljenje, konfiguraciji radnog prostora i budućim tijekovima pristupa dokumentima.",
         ],
       },
       {
         id: "public-links",
         title: "Javni linkovi i dijeljenje",
         body: [
-          "Dobavljači upravljaju izradom javnih ili buyer-specific linkova. Svatko s važećim linkom može pristupiti prikazu sigurnom za kupce, osim ako se primjenjuje zaštita lozinkom, istek ili deaktivacija.",
+          "Dobavljači upravljaju izradom javnih linkova ili linkova specifičnih za kupca. Svatko s važećim linkom može pristupiti prikazu sigurnom za kupce, osim ako se primjenjuje zaštita lozinkom, istek ili deaktivacija.",
           "Dobavljači su odgovorni dijeliti linkove samo s namijenjenim primateljima. Javni sažeci nisu potpune revizije, certifikati ili izvješća s neovisnim uvjerenjem.",
         ],
       },
@@ -269,7 +269,7 @@ export const termsContent: Record<"en" | "hr", LegalPageContent> = {
         title: "Lozinkom zaštićeni linkovi",
         body: [
           "Zaštita lozinkom može ograničiti pristup dijeljenom linku, ali ne zamjenjuje odgovornost dobavljača da link i lozinku dijeli sigurno.",
-          "Ako buyer računi ili zasebna provjera identiteta nisu implementirani, usluga ne jamči identitet osobe koja unese ispravnu lozinku.",
+          "Ako računi kupaca ili zasebna provjera identiteta nisu implementirani, usluga ne jamči identitet osobe koja unese ispravnu lozinku.",
         ],
       },
       {
@@ -337,7 +337,7 @@ export const termsContent: Record<"en" | "hr", LegalPageContent> = {
         id: "support",
         title: "Podrška",
         body: [
-          "Support upiti mogu se slati kroz aplikaciju gdje je dostupno. Rokovi odgovora nisu zajamčeni osim ako su zasebno dogovoreni u pisanom obliku.",
+          "Upiti podršci mogu se slati kroz aplikaciju gdje je dostupno. Rokovi odgovora nisu zajamčeni osim ako su zasebno dogovoreni u pisanom obliku.",
         ],
       },
       {

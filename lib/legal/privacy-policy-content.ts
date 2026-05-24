@@ -62,6 +62,7 @@ export const privacyPolicyContent: Record<"en" | "hr", PrivacyPolicyContent> = {
         bullets: [
           "account data, such as name, email address, authentication status and workspace role",
           "organization and company profile data",
+          "supplier logo and brand/profile assets uploaded for reports and buyer-facing pages",
           "questionnaire answers and readiness metadata",
           "uploaded documents and document metadata",
           "evidence links between documents and answers",
@@ -178,7 +179,7 @@ export const privacyPolicyContent: Record<"en" | "hr", PrivacyPolicyContent> = {
   hr: {
     effectiveDate: "Zadnje ažurirano: [DATUM]",
     hero: {
-      eyebrow: "Legal / GDPR readiness nacrt",
+      eyebrow: "Nacrt za pravnu / GDPR spremnost",
       reviewNote:
         "Ova stranica je nacrt informacija o privatnosti za Supplier Passport i treba je pregledati pravni savjetnik prije komercijalne upotrebe.",
       summary:
@@ -210,13 +211,14 @@ export const privacyPolicyContent: Record<"en" | "hr", PrivacyPolicyContent> = {
         bullets: [
           "podaci o korisničkom računu, uključujući ime, e-mail adresu, autentikacijski status i ulogu u radnom prostoru",
           "podaci o organizaciji i profilu tvrtke",
+          "logo dobavljača i brand/profilni materijali učitani za izvještaje i stranice za kupce",
           "odgovori u upitniku i metapodaci o spremnosti",
           "učitani dokumenti i metapodaci dokumenata",
           "povezivanje dokaza s odgovorima",
           "podaci o zahtjevima kupaca i metapodaci javnih linkova",
-          "support upiti i operativne poruke",
+          "upiti podršci i operativne poruke",
           "tehnički logovi, sigurnosni događaji i podaci o uređaju/pregledniku",
-          "cookie privole i postavke sučelja",
+          "privole za kolačiće i postavke sučelja",
         ],
       },
       {
