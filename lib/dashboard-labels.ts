@@ -117,6 +117,9 @@ export type DashboardOverviewLabels = {
   yourTasks: string;
   tasksDescription: string;
   readinessOverTime: string;
+  readinessHistoryDescription: string;
+  readinessHistoryStartsToday: string;
+  currentReadiness: string;
   endValue: string;
   activeShareLinks: string;
   activeShareLinksDescription: string;
@@ -288,6 +291,10 @@ export const defaultDashboardOverviewLabels: DashboardOverviewLabels = {
   yourTasks: "Your tasks",
   tasksDescription: "Priority items assigned to your workspace.",
   readinessOverTime: "Readiness over time",
+  readinessHistoryDescription: "Daily progress from account creation through today.",
+  readinessHistoryStartsToday:
+    "Readiness history starts tracking from today. The curve will appear after more daily snapshots.",
+  currentReadiness: "Current readiness",
   endValue: "End value",
   activeShareLinks: "Active share links",
   activeShareLinksDescription: "Secure passport links currently available to buyers.",

@@ -21,6 +21,8 @@ export type OrganizationBasics = {
   plan_key?: string;
   billing_interval?: string;
   subscription_status?: string;
+  created_at?: string | null;
+  updated_at?: string | null;
 };
 
 export type CreateOrganizationWithOwnerInput = {

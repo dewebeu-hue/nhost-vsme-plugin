@@ -70,9 +70,11 @@ export function DashboardOverviewPage({
   const tasks = createDashboardTasks(summary, labels);
   const allTasksCompleted = tasks.every((task) => task.completed);
   const nextTask = allTasksCompleted ? null : tasks.find((task) => !task.completed);
-  const readinessData = summary
-    ? [{ day: labels.lastUpdated, readiness: summary.readinessPercent }]
-    : [];
+  const readinessData = (summary?.readinessHistory ?? []).map((point) => ({
+    date: formatDate(point.date, labels),
+    dayLabel: formatShortDate(point.date),
+    readinessPercent: point.readinessPercent,
+  }));
   const welcomeTitle = labels.title.replace("{name}", welcomeName);
   const handleWelcomeTypingDone = useCallback(() => {
     setSubtitleVisibleForTitle(welcomeTitle);
@@ -335,9 +337,8 @@ export function DashboardOverviewPage({
         <TasksCard tasks={tasks} labels={labels} />
         <ReadinessChartCard
           data={readinessData}
-          improvementText={labels.readinessHelper}
-          rangeLabel={labels.lastUpdated}
-          endValue={summary?.readinessPercent ?? 0}
+          latestValue={summary?.readinessPercent ?? 0}
+          lastUpdated={formatDate(summary?.lastUpdated, labels)}
           labels={labels}
         />
       </section>
@@ -623,6 +624,17 @@ function formatDate(value: string | null | undefined, labels: DashboardOverviewL
 
   return new Intl.DateTimeFormat(undefined, {
     year: "numeric",
+    month: "short",
+    day: "numeric",
+  }).format(new Date(value));
+}
+
+function formatShortDate(value: string | null | undefined) {
+  if (!value) {
+    return "";
+  }
+
+  return new Intl.DateTimeFormat(undefined, {
     month: "short",
     day: "numeric",
   }).format(new Date(value));

@@ -4819,3 +4819,20 @@ Manual pilot gate:
 6. Download HR and EN public PDFs and confirm visible, buyer-safe output. HR must show Croatian diacritics correctly before pilot.
 7. Submit a support request as supplier and resolve it as admin.
 8. Confirm legal pages, cookie consent and footer links work on HR and EN routes.
+
+## Readiness History Chart
+
+Dashboard readiness history is persisted in `public.readiness_snapshots`.
+
+- Migration: `nhost/migrations/default/0012_add_readiness_snapshots`.
+- One row is stored per organization per day with `organization_id`, `snapshot_date` and `readiness_percent`.
+- The dashboard upserts today's snapshot only after live readiness data has been calculated.
+- Repeated dashboard refreshes update the same daily row instead of creating duplicates.
+- Previous days remain unchanged, so the chart shows an honest daily history rather than fabricated backfill.
+
+Production setup:
+
+1. Apply the `0012_add_readiness_snapshots` migration.
+2. Confirm the `readiness_snapshots` table is tracked in Hasura/Nhost GraphQL.
+3. Open the supplier dashboard and confirm today's readiness snapshot appears.
+4. Existing organizations without prior snapshots will start with today's point and show the one-point helper message until more daily records exist.
