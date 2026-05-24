@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { ProductPreview } from "@/components/landing/product-preview";
 import { ScrollReveal } from "@/components/landing/scroll-reveal";
+import { SegmentedTypingHeadline } from "@/components/landing/segmented-typing-headline";
 import { cn } from "@/lib/utils";
 
 export function HeroSection() {
@@ -12,6 +13,9 @@ export function HeroSection() {
   const t = useTranslations("landing.hero");
   const common = useTranslations("common.cta");
   const trustChips = t.raw("trustChips") as string[];
+  const titlePrefix = t("titlePrefix");
+  const titleEmphasis = t("titleEmphasis");
+  const headlineSegments = createHeadlineSegments(titlePrefix, titleEmphasis);
 
   return (
     <section
@@ -38,8 +42,7 @@ export function HeroSection() {
           <ScrollReveal delay={140}>
             <div className="flex max-w-3xl flex-col gap-6">
               <h1 className="text-5xl font-semibold tracking-tight text-slate-950 sm:text-6xl lg:text-7xl">
-                {t("titlePrefix")}{" "}
-                <span className="text-teal-500">{t("titleEmphasis")}</span>
+                <SegmentedTypingHeadline segments={headlineSegments} />
               </h1>
               <p className="max-w-2xl text-lg leading-8 text-slate-600 sm:text-xl sm:leading-9">
                 {t("description")}
@@ -89,4 +92,25 @@ export function HeroSection() {
       </div>
     </section>
   );
+}
+
+function createHeadlineSegments(titlePrefix: string, titleEmphasis: string) {
+  const brandName = "Supplier Passport";
+
+  if (!titleEmphasis.includes(brandName)) {
+    return [
+      { text: `${titlePrefix} `, className: "text-slate-950" },
+      { text: titleEmphasis, className: "text-teal-500" },
+    ];
+  }
+
+  const brandStart = titleEmphasis.indexOf(brandName);
+  const beforeBrand = titleEmphasis.slice(0, brandStart);
+  const afterBrand = titleEmphasis.slice(brandStart + brandName.length);
+
+  return [
+    { text: `${titlePrefix} ${beforeBrand}`, className: "text-slate-950" },
+    { text: brandName, className: "text-teal-500" },
+    { text: afterBrand, className: "text-slate-950" },
+  ];
 }
