@@ -192,14 +192,10 @@
         "text": "Link documents to questionnaire answers to show where evidence exists."
       },
       "10": {
-        "title": "Review Supplier Passport",
-        "text": "Review your Supplier Passport before sharing it with buyers."
-      },
-      "11": {
         "title": "Share public link",
         "text": "Share this public link with buyers. It shows a buyer-safe summary, not private files."
       },
-      "12": {
+      "11": {
         "title": "Download PDF draft",
         "text": "Download a PDF draft for review or manual sharing."
       }

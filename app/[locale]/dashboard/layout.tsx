@@ -81,7 +81,7 @@ export default async function DashboardRouteLayout({
     promptTitle: tour("promptTitle"),
     promptText: tour("promptText"),
     missingTargetText: tour("missingTargetText"),
-    steps: Array.from({ length: 12 }, (_, index) => ({
+    steps: Array.from({ length: 11 }, (_, index) => ({
       title: tour(`steps.${index + 1}.title`),
       text: tour(`steps.${index + 1}.text`),
     })),

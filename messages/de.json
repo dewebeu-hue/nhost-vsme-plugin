@@ -191,14 +191,10 @@
         "text": "Verknuepfen Sie Dokumente mit Fragebogenantworten, um vorhandene Nachweise sichtbar zu machen."
       },
       "10": {
-        "title": "Supplier Passport pruefen",
-        "text": "Pruefen Sie Ihren Supplier Passport, bevor Sie ihn mit Kaeufern teilen."
-      },
-      "11": {
         "title": "Oeffentlichen Link teilen",
         "text": "Teilen Sie diesen oeffentlichen Link mit Kaeufern. Er zeigt eine kaeufergeeignete Zusammenfassung, keine privaten Dateien."
       },
-      "12": {
+      "11": {
         "title": "PDF-Entwurf herunterladen",
         "text": "Laden Sie einen PDF-Entwurf zur Pruefung oder manuellen Weitergabe herunter."
       }

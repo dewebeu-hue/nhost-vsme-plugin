@@ -65,7 +65,6 @@ const tourSteps: TourStep[] = [
   { route: "/dashboard/documents", target: "documents-page" },
   { route: "/dashboard/documents", target: "documents-upload" },
   { route: "/dashboard/documents", target: "documents-link-evidence" },
-  { route: "/dashboard/passport", target: "passport-readiness-summary" },
   { route: "/dashboard/share", target: "share-public-link" },
   { route: "/dashboard/passport", target: "passport-pdf" },
 ];

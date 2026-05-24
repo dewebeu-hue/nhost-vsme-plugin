@@ -191,14 +191,10 @@
         "text": "Povežite dokumente s odgovorima iz upitnika kako biste pokazali gdje postoje dokazi."
       },
       "10": {
-        "title": "Pregled Supplier Passporta",
-        "text": "Pregledajte Supplier Passport prije dijeljenja s kupcima."
-      },
-      "11": {
         "title": "Dijeljenje javnog linka",
         "text": "Podijelite ovaj javni link s kupcima. Prikazuje buyer-safe sažetak, a ne privatne dokumente."
       },
-      "12": {
+      "11": {
         "title": "Preuzimanje PDF nacrta",
         "text": "Preuzmite PDF nacrt za pregled ili ručno dijeljenje."
       }
