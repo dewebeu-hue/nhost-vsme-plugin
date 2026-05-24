@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, CheckCircle2, ClipboardList } from "lucide-react";
 import { ActiveShareLinksCard } from "@/components/dashboard/active-share-links-card";
+import { AnimatedWelcomeTitle } from "@/components/dashboard/animated-welcome-title";
 import { BuyerRequestsCard } from "@/components/dashboard/buyer-requests-card";
 import { FirstPassportChecklistCard } from "@/components/dashboard/first-passport-checklist-card";
 import { MissingDataSummaryCard } from "@/components/dashboard/missing-data-summary-card";
@@ -33,6 +34,7 @@ export function DashboardOverviewPage({
   setupSummary = null,
 }: DashboardOverviewPageProps) {
   const [welcomeName, setWelcomeName] = useState(labels.account);
+  const [subtitleVisibleForTitle, setSubtitleVisibleForTitle] = useState<string | null>(null);
   const [liveSetupSummary, setLiveSetupSummary] = useState<DashboardSetupSummary | null>(
     setupSummary,
   );
@@ -56,6 +58,11 @@ export function DashboardOverviewPage({
   const readinessData = summary
     ? [{ day: labels.lastUpdated, readiness: summary.readinessPercent }]
     : [];
+  const welcomeTitle = labels.title.replace("{name}", welcomeName);
+  const handleWelcomeTypingDone = useCallback(() => {
+    setSubtitleVisibleForTitle(welcomeTitle);
+  }, [welcomeTitle]);
+  const showWelcomeSubtitle = subtitleVisibleForTitle === welcomeTitle;
 
   useEffect(() => {
     let cancelled = false;
@@ -112,8 +119,24 @@ export function DashboardOverviewPage({
   return (
     <div className="mx-auto flex w-full max-w-[1600px] flex-col gap-6">
       <PageHeader
-        title={labels.title.replace("{name}", welcomeName)}
-        subtitle={labels.subtitle}
+        title={
+          <AnimatedWelcomeTitle
+            key={welcomeTitle}
+            text={welcomeTitle}
+            onDone={handleWelcomeTypingDone}
+          />
+        }
+        subtitle={
+          <span
+            className={
+              showWelcomeSubtitle
+                ? "block opacity-100 transition-opacity duration-300 ease-out motion-reduce:transition-none"
+                : "block opacity-0 transition-opacity duration-300 ease-out motion-reduce:opacity-100 motion-reduce:transition-none"
+            }
+          >
+            {labels.subtitle}
+          </span>
+        }
       />
 
       <section className="supplier-surface overflow-hidden rounded-3xl border-0 p-5 sm:p-6">
