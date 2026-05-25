@@ -1333,16 +1333,16 @@
       },
       "buyer-pro": {
         "name": "Napredni paket za kupce",
-        "displayLabel": "Buduće",
-        "audience": "Budući radni prostor za kupce s mrežom dobavljača.",
-        "description": "Odgođeno pozicioniranje plana za veće mreže kupaca i praćenje portfelja dobavljača.",
+        "displayLabel": "U pripremi",
+        "audience": "Planirano za veće kupce i mreže dobavljača.",
+        "description": "Napredni radni prostor za kupce koji žele pratiti više dobavljača, zahtjeve i status spremnosti na jednom mjestu.",
         "features": [
-          "Nadzorna ploča za kupce u budućoj verziji",
-          "Lista dobavljača buduće",
-          "Koordinacija zahtjeva kupaca buduće",
-          "Mrežno izvještavanje buduće"
+          "Nadzorna ploča za kupce",
+          "Lista dobavljača",
+          "Koordinacija zahtjeva kupaca",
+          "Mrežno izvještavanje"
         ],
-        "setup": "Buduće/odgođeno. Nije implementirano u ovoj verziji.",
+        "setup": "Ovaj paket nije uključen u trenutnu verziju.",
         "ctaLabel": "Razgovarajte s nama"
       }
     },
