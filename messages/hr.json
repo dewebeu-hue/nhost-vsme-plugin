@@ -1089,7 +1089,7 @@
     "hero": {
       "badge": "Spremnost dobavljača usklađena s VSME okvirom",
       "titlePrefix": "Izradite",
-      "titleEmphasis": "Supplier Passport spreman za kupce.",
+      "titleEmphasis": "Supplier Passport spreman za kupce",
       "description": "Prikupite odgovore iz upitnika, dokaznu dokumentaciju i status spremnosti u jednom profilu dobavljača usklađenom s VSME okvirom.",
       "trustChips": [
         "Usklađeno s VSME okvirom",

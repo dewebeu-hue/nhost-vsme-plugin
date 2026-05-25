@@ -11,10 +11,11 @@ type SegmentedTypingHeadlineProps = {
   segments: TypingSegment[];
 };
 
-const typingDelayMs = 18;
+const wordTypingDelayMs = 72;
 
 export function SegmentedTypingHeadline({ segments }: SegmentedTypingHeadlineProps) {
   const fullText = useMemo(() => segments.map((segment) => segment.text).join(""), [segments]);
+  const typingSteps = useMemo(() => createTypingSteps(fullText), [fullText]);
   const [visibleCharacters, setVisibleCharacters] = useState(0);
   const [isTyping, setIsTyping] = useState(true);
 
@@ -34,18 +35,19 @@ export function SegmentedTypingHeadline({ segments }: SegmentedTypingHeadlinePro
       };
     }
 
-    let index = 0;
+    let stepIndex = 0;
     let doneTimer: number | undefined;
 
     const interval = window.setInterval(() => {
-      index += 1;
-      setVisibleCharacters(index);
+      const nextVisibleCharacters = typingSteps[stepIndex] ?? fullText.length;
+      setVisibleCharacters(nextVisibleCharacters);
+      stepIndex += 1;
 
-      if (index >= fullText.length) {
+      if (nextVisibleCharacters >= fullText.length) {
         window.clearInterval(interval);
         doneTimer = window.setTimeout(() => setIsTyping(false), 120);
       }
-    }, typingDelayMs);
+    }, wordTypingDelayMs);
 
     return () => {
       window.clearInterval(interval);
@@ -54,18 +56,18 @@ export function SegmentedTypingHeadline({ segments }: SegmentedTypingHeadlinePro
         window.clearTimeout(doneTimer);
       }
     };
-  }, [fullText.length]);
+  }, [fullText.length, typingSteps]);
 
   return (
-    <span className="relative inline-block max-w-full align-bottom" aria-label={fullText}>
-      <span aria-hidden="true" className="invisible">
+    <span className="relative block w-full max-w-full align-bottom" aria-label={fullText}>
+      <span aria-hidden="true" className="invisible block w-full whitespace-normal">
         {segments.map((segment, index) => (
           <span key={`${segment.text}-${index}`} className={segment.className}>
             {segment.text}
           </span>
         ))}
       </span>
-      <span aria-hidden="true" className="absolute inset-0 whitespace-normal">
+      <span aria-hidden="true" className="absolute inset-0 block w-full whitespace-normal">
         {renderVisibleSegments(segments, visibleCharacters)}
         {isTyping ? (
           <span className="ml-1 inline-block h-[0.9em] w-px translate-y-0.5 animate-pulse bg-teal-500 align-baseline" />
@@ -73,6 +75,12 @@ export function SegmentedTypingHeadline({ segments }: SegmentedTypingHeadlinePro
       </span>
     </span>
   );
+}
+
+function createTypingSteps(value: string) {
+  const wordSteps = [...value.matchAll(/\S+\s*/g)].map((match) => match.index + match[0].length);
+
+  return wordSteps.length ? wordSteps : Array.from({ length: value.length }, (_, index) => index + 1);
 }
 
 function renderVisibleSegments(segments: TypingSegment[], visibleCharacters: number) {
