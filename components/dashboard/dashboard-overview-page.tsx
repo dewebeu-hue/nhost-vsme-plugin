@@ -17,10 +17,8 @@ import { BuyerRequestsCard } from "@/components/dashboard/buyer-requests-card";
 import { FirstPassportChecklistCard } from "@/components/dashboard/first-passport-checklist-card";
 import { MissingDataSummaryCard } from "@/components/dashboard/missing-data-summary-card";
 import { OverallReadinessCard } from "@/components/dashboard/overall-readiness-card";
-import { ReadinessChartCard } from "@/components/dashboard/readiness-chart-card";
 import { RecentActivityCard } from "@/components/dashboard/recent-activity-card";
 import { RecentUploadsCard } from "@/components/dashboard/recent-uploads-card";
-import { TasksCard } from "@/components/dashboard/tasks-card";
 import { PageHeader } from "@/components/layout/page-header";
 import { ContextualHelpCard } from "@/components/onboarding/contextual-help";
 import {
@@ -100,12 +98,6 @@ export function DashboardOverviewPage({
       items: section.missing,
     })) ?? [],
   };
-  const tasks = createDashboardTasks(summary, labels);
-  const readinessData = (summary?.readinessHistory ?? []).map((point) => ({
-    date: formatDate(point.date, labels),
-    dayLabel: formatShortDate(point.date),
-    readinessPercent: point.readinessPercent,
-  }));
   const welcomeTitle = labels.title.replace("{name}", welcomeName);
   const handleWelcomeTypingDone = useCallback(() => {
     setSubtitleVisibleForTitle(welcomeTitle);
@@ -367,15 +359,6 @@ export function DashboardOverviewPage({
         onAction={() => window.dispatchEvent(new CustomEvent("supplier-passport-tour:restart"))}
       />
 
-      <section className="grid gap-6 xl:grid-cols-[0.95fr_1.05fr]">
-        <TasksCard tasks={tasks} labels={labels} />
-        <ReadinessChartCard
-          data={readinessData}
-          latestValue={summary?.readinessPercent ?? 0}
-          lastUpdated={formatDate(summary?.lastUpdated, labels)}
-          labels={labels}
-        />
-      </section>
     </div>
   );
 }
@@ -835,40 +818,6 @@ function createNextStepRecommendation({
   };
 }
 
-function createDashboardTasks(
-  summary: DashboardSetupSummary | null,
-  labels: DashboardOverviewLabels,
-) {
-  const setup = labels.setupChecklist;
-
-  return [
-    {
-      title: setup.completeQuestionnaire,
-      category: "Questionnaire",
-      due: summary && summary.answeredQuestions > 0 ? setup.completed : setup.pending,
-      completed: Boolean(summary && summary.answeredQuestions > 0),
-    },
-    {
-      title: setup.uploadEvidence,
-      category: "Evidence",
-      due: summary && summary.documentsCount > 0 ? setup.completed : setup.pending,
-      completed: Boolean(summary && summary.documentsCount > 0),
-    },
-    {
-      title: setup.linkEvidence,
-      category: "Evidence",
-      due: summary && summary.linkedEvidenceCount > 0 ? setup.completed : setup.pending,
-      completed: Boolean(summary && summary.linkedEvidenceCount > 0),
-    },
-    {
-      title: setup.sharePublicLink,
-      category: "Passport",
-      due: summary && summary.activeShareLinkCount > 0 ? setup.completed : setup.pending,
-      completed: Boolean(summary && summary.activeShareLinkCount > 0),
-    },
-  ];
-}
-
 function getReadinessLabel(readiness: number, labels: DashboardOverviewLabels) {
   if (readiness >= 100) {
     return labels.readinessStrong;
@@ -896,17 +845,6 @@ function formatDate(value: string | null | undefined, labels: DashboardOverviewL
 
   return new Intl.DateTimeFormat(undefined, {
     year: "numeric",
-    month: "short",
-    day: "numeric",
-  }).format(new Date(value));
-}
-
-function formatShortDate(value: string | null | undefined) {
-  if (!value) {
-    return "";
-  }
-
-  return new Intl.DateTimeFormat(undefined, {
     month: "short",
     day: "numeric",
   }).format(new Date(value));

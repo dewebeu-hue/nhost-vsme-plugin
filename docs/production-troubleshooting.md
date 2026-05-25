@@ -4820,19 +4820,10 @@ Manual pilot gate:
 7. Submit a support request as supplier and resolve it as admin.
 8. Confirm legal pages, cookie consent and footer links work on HR and EN routes.
 
-## Readiness History Chart
+## Readiness History Cleanup
 
-Dashboard readiness history is persisted in `public.readiness_snapshots`.
+The dashboard no longer shows the redundant readiness history chart.
 
-- Migration: `nhost/migrations/default/0012_add_readiness_snapshots`.
-- One row is stored per organization per day with `organization_id`, `snapshot_date` and `readiness_percent`.
-- The dashboard upserts today's snapshot only after live readiness data has been calculated.
-- Repeated dashboard refreshes update the same daily row instead of creating duplicates.
-- Previous days remain unchanged, so the chart shows an honest daily history rather than fabricated backfill.
-
-Production setup:
-
-1. Apply the `0012_add_readiness_snapshots` migration.
-2. Confirm the `readiness_snapshots` table is tracked in Hasura/Nhost GraphQL.
-3. Open the supplier dashboard and confirm today's readiness snapshot appears.
-4. Existing organizations without prior snapshots will start with today's point and show the one-point helper message until more daily records exist.
+- The supplier dashboard does not upsert or fetch readiness snapshots.
+- Do not add new readiness history writes from the dashboard unless a future product decision reintroduces a meaningful history view.
+- If `public.readiness_snapshots` already exists in production from an earlier migration, leave the table in place unless a separate, reviewed data cleanup task confirms it is unused and safe to remove.

@@ -116,13 +116,6 @@ export type DashboardOverviewLabels = {
   due: string;
   recentUploads: string;
   recentUploadsDescription: string;
-  yourTasks: string;
-  tasksDescription: string;
-  readinessOverTime: string;
-  readinessHistoryDescription: string;
-  readinessHistoryStartsToday: string;
-  currentReadiness: string;
-  endValue: string;
   activeShareLinks: string;
   activeShareLinksDescription: string;
   expires: string;
@@ -132,7 +125,6 @@ export type DashboardOverviewLabels = {
   noRecentUploads: string;
   noRecentActivity: string;
   noActiveShareLinks: string;
-  noReadinessTrend: string;
   publicSupplierPassport: string;
   noExpiry: string;
   passportStatusTitle: string;
@@ -315,14 +307,6 @@ export const defaultDashboardOverviewLabels: DashboardOverviewLabels = {
   due: "Due",
   recentUploads: "Recent uploads",
   recentUploadsDescription: "Evidence files added to the data room.",
-  yourTasks: "Your tasks",
-  tasksDescription: "Priority items assigned to your workspace.",
-  readinessOverTime: "Readiness over time",
-  readinessHistoryDescription: "Daily progress from account creation through today.",
-  readinessHistoryStartsToday:
-    "Readiness history starts tracking from today. The curve will appear after more daily snapshots.",
-  currentReadiness: "Current readiness",
-  endValue: "End value",
   activeShareLinks: "Active share links",
   activeShareLinksDescription: "Secure passport links currently available to buyers.",
   expires: "Expires",
@@ -332,7 +316,6 @@ export const defaultDashboardOverviewLabels: DashboardOverviewLabels = {
   noRecentUploads: "No evidence documents uploaded yet.",
   noRecentActivity: "Activity will appear after questionnaire, evidence, sharing, or PDF work starts.",
   noActiveShareLinks: "No active public share links yet.",
-  noReadinessTrend: "Readiness trend will appear after more saved progress.",
   publicSupplierPassport: "Public Supplier Passport",
   noExpiry: "No expiry",
   passportStatusTitle: "Supplier Passport status",

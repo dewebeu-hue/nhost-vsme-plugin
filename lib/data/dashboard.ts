@@ -64,14 +64,6 @@ type DashboardBuyerRequest = {
   created_at: string | null;
 };
 
-type DashboardReadinessSnapshot = {
-  id: string;
-  snapshot_date: string;
-  readiness_percent: number;
-  created_at: string | null;
-  updated_at: string | null;
-};
-
 type DashboardSetupDataResponse = {
   question_sections: DashboardQuestionSection[];
   question_items: DashboardQuestionItem[];
@@ -89,14 +81,6 @@ type DashboardDocumentLinksResponse = {
     question_answer_id: string;
     created_at: string | null;
   }>;
-};
-
-type DashboardReadinessSnapshotsResponse = {
-  readiness_snapshots: DashboardReadinessSnapshot[];
-};
-
-type DashboardUpsertReadinessSnapshotResponse = {
-  insert_readiness_snapshots_one: DashboardReadinessSnapshot | null;
 };
 
 export type DashboardSectionProgress = {
@@ -136,12 +120,6 @@ export type DashboardBuyerRequestSummary = {
   dueDate: string | null;
 };
 
-export type DashboardReadinessHistoryPoint = {
-  date: string;
-  readinessPercent: number;
-  recordedAt: string | null;
-};
-
 export type DashboardSetupSummary = {
   organizationId: string;
   organizationName: string;
@@ -164,7 +142,6 @@ export type DashboardSetupSummary = {
   sectionProgress: DashboardSectionProgress[];
   missingSections: DashboardSectionProgress[];
   recentUploads: DashboardRecentUploadSummary[];
-  readinessHistory: DashboardReadinessHistoryPoint[];
   activeShareLinks: DashboardActiveShareLinkSummary[];
   recentBuyerRequests: DashboardBuyerRequestSummary[];
   recentActivity: DashboardActivitySummary[];
@@ -252,39 +229,6 @@ const dashboardDocumentLinksQuery = `
       document_id
       question_answer_id
       created_at
-    }
-  }
-`;
-
-const dashboardReadinessSnapshotsQuery = `
-  query GetDashboardReadinessSnapshots($organizationId: uuid!) {
-    readiness_snapshots(
-      where: { organization_id: { _eq: $organizationId } }
-      order_by: { snapshot_date: asc }
-    ) {
-      id
-      snapshot_date
-      readiness_percent
-      created_at
-      updated_at
-    }
-  }
-`;
-
-const dashboardUpsertReadinessSnapshotMutation = `
-  mutation UpsertDashboardReadinessSnapshot($object: readiness_snapshots_insert_input!) {
-    insert_readiness_snapshots_one(
-      object: $object
-      on_conflict: {
-        constraint: readiness_snapshots_organization_id_snapshot_date_key
-        update_columns: [readiness_percent, updated_at]
-      }
-    ) {
-      id
-      snapshot_date
-      readiness_percent
-      created_at
-      updated_at
     }
   }
 `;
@@ -403,12 +347,6 @@ export async function getDashboardSetupSummaryForOrganization(
   ]
     .filter(Boolean)
     .join(", ") || null;
-  const readinessHistory = await recordAndLoadReadinessHistory({
-    organizationId: organization.id,
-    readinessPercent: overallCompletion.percent,
-    recordedAt: lastUpdated,
-  });
-
   return {
     organizationId: organization.id,
     organizationName: organization.name,
@@ -435,7 +373,6 @@ export async function getDashboardSetupSummaryForOrganization(
       category: document.document_type || "other",
       uploadedAt: document.created_at ?? "",
     })),
-    readinessHistory,
     activeShareLinks: activeShareLinks.map((link) => ({
       buyer: "public_supplier_passport",
       module: "Supplier Passport",
@@ -470,52 +407,6 @@ function isShareLinkActive(link: DashboardShareLink) {
   }
 
   return new Date(link.expires_at).getTime() > Date.now();
-}
-
-async function recordAndLoadReadinessHistory({
-  organizationId,
-  readinessPercent,
-  recordedAt,
-}: {
-  organizationId: string;
-  readinessPercent: number;
-  recordedAt: string | null;
-}): Promise<DashboardReadinessHistoryPoint[]> {
-  const today = new Date().toISOString().slice(0, 10);
-  const currentPoint: DashboardReadinessHistoryPoint = {
-    date: today,
-    readinessPercent,
-    recordedAt,
-  };
-
-  try {
-    await executeHasuraGraphql<DashboardUpsertReadinessSnapshotResponse>(
-      dashboardUpsertReadinessSnapshotMutation,
-      {
-        object: {
-          organization_id: organizationId,
-          snapshot_date: today,
-          readiness_percent: readinessPercent,
-          updated_at: new Date().toISOString(),
-        },
-      },
-      { useAdminSecret: true },
-    );
-
-    const history = await executeHasuraGraphql<DashboardReadinessSnapshotsResponse>(
-      dashboardReadinessSnapshotsQuery,
-      { organizationId },
-      { useAdminSecret: true },
-    );
-
-    return history.readiness_snapshots.map((snapshot) => ({
-      date: snapshot.snapshot_date,
-      readinessPercent: snapshot.readiness_percent,
-      recordedAt: snapshot.updated_at ?? snapshot.created_at,
-    }));
-  } catch {
-    return [currentPoint];
-  }
 }
 
 function mapBuyerRequestStatus(status: string): DashboardBuyerRequestSummary["status"] {
