@@ -153,6 +153,21 @@
     "promptTitle": "Gefuehrte Tour starten?",
     "promptText": "Eine kurze Tour fuehrt Sie durch den wichtigsten Supplier-Passport-Ablauf.",
     "missingTargetText": "Dieser Schritt hat auf dieser Seite keinen sichtbaren hervorgehobenen Bereich, aber Sie koennen die Tour fortsetzen.",
+    "mobileGuide": {
+      "title": "Setup-Leitfaden",
+      "subtitle": "Schliessen Sie die wichtigsten Schritte ab, damit Ihr Supplier Passport fuer Kaeufer bereit ist.",
+      "close": "Leitfaden schliessen",
+      "open": "Oeffnen",
+      "steps": [
+        "Unternehmensdaten ergaenzen",
+        "Fragebogen ausfuellen",
+        "Dokumente hochladen",
+        "Nachweise mit Antworten verknuepfen",
+        "Supplier Passport pruefen",
+        "Oeffentlichen Link erstellen oder pruefen",
+        "PDF-Entwurf herunterladen"
+      ]
+    },
     "steps": {
       "1": {
         "title": "Willkommen bei Supplier Passport",
@@ -388,7 +403,12 @@
         "openQuestionnaire": "Fragebogen oeffnen",
         "openDocuments": "Data Room oeffnen",
         "openPassport": "Passport oeffnen",
-        "openShare": "Teilen oeffnen"
+        "openShare": "Teilen oeffnen",
+        "mobileGuideTitle": "Setup-Leitfaden",
+        "mobileGuideSubtitle": "Schliessen Sie die wichtigsten Schritte ab, damit Ihr Supplier Passport fuer Kaeufer bereit ist.",
+        "closeGuide": "Setup-Leitfaden schliessen",
+        "continueStep": "Fortfahren",
+        "reviewStep": "Pruefen"
       },
       "setupChecklist": {
         "title": "Supplier-Passport-Einrichtung",

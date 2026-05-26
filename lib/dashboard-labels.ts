@@ -226,6 +226,11 @@ export type DashboardOverviewLabels = {
     openDocuments: string;
     openPassport: string;
     openShare: string;
+    mobileGuideTitle: string;
+    mobileGuideSubtitle: string;
+    closeGuide: string;
+    continueStep: string;
+    reviewStep: string;
   };
   setupChecklist: {
     title: string;
@@ -437,6 +442,11 @@ export const defaultDashboardOverviewLabels: DashboardOverviewLabels = {
     openDocuments: "Open Data Room",
     openPassport: "Open Passport",
     openShare: "Open sharing",
+    mobileGuideTitle: "Setup guide",
+    mobileGuideSubtitle: "Complete the core steps so your Supplier Passport is ready for buyers.",
+    closeGuide: "Close setup guide",
+    continueStep: "Continue",
+    reviewStep: "Review",
   },
   setupChecklist: {
     title: "Supplier Passport setup",

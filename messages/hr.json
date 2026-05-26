@@ -153,6 +153,21 @@
     "promptTitle": "Pokrenuti vodič?",
     "promptText": "Kratki vodič može vas provesti kroz glavni Supplier Passport tijek.",
     "missingTargetText": "Ovaj korak nema vidljivo označeno područje na ovoj stranici, ali možete nastaviti vodič.",
+    "mobileGuide": {
+      "title": "Vodič za postavljanje",
+      "subtitle": "Dovršite osnovne korake kako bi vaš Supplier Passport bio spreman za kupce.",
+      "close": "Zatvori vodič",
+      "open": "Otvori",
+      "steps": [
+        "Dopunite osnovne podatke",
+        "Ispunite upitnik",
+        "Učitajte dokumente",
+        "Povežite dokaze s odgovorima",
+        "Pregledajte Supplier Passport",
+        "Izradite ili provjerite javni link",
+        "Preuzmite PDF nacrt"
+      ]
+    },
     "steps": {
       "1": {
         "title": "Dobrodošli u Supplier Passport",
@@ -388,7 +403,12 @@
         "openQuestionnaire": "Otvori upitnik",
         "openDocuments": "Otvori Data Room",
         "openPassport": "Otvori Passport",
-        "openShare": "Otvori dijeljenje"
+        "openShare": "Otvori dijeljenje",
+        "mobileGuideTitle": "Vodič za postavljanje",
+        "mobileGuideSubtitle": "Dovršite osnovne korake kako bi vaš Supplier Passport bio spreman za kupce.",
+        "closeGuide": "Zatvori vodič za postavljanje",
+        "continueStep": "Nastavi",
+        "reviewStep": "Pregledaj"
       },
       "setupChecklist": {
         "title": "Postavljanje Supplier Passporta",

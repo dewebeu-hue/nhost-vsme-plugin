@@ -13,6 +13,7 @@ import {
   PlayCircle,
   Share2,
   UploadCloud,
+  X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DashboardStatusPill } from "@/components/dashboard/dashboard-status-pill";
@@ -21,6 +22,7 @@ import {
   defaultDashboardOverviewLabels,
   type DashboardOverviewLabels,
 } from "@/lib/dashboard-labels";
+import { cn } from "@/lib/utils";
 import type { DashboardSetupSummary } from "@/lib/data/dashboard";
 import {
   createEmptyPassportChecklistProgress,
@@ -62,6 +64,7 @@ export function FirstPassportChecklistCard({
     [actionProgressSnapshot],
   );
   const [copyState, setCopyState] = useState<"idle" | "copied" | "error">("idle");
+  const [isMobileGuideOpen, setIsMobileGuideOpen] = useState(false);
 
   if (actionProgressSnapshot === "loading") {
     return <ChecklistLoadingCard labels={labels} localePrefix={localePrefix} />;
@@ -157,13 +160,20 @@ export function FirstPassportChecklistCard({
               type="button"
               variant="ghost"
               size="sm"
-              onClick={restartSupplierTour}
+              onClick={() => setIsMobileGuideOpen(true)}
               className="restart-guide-cta rounded-full px-4 font-semibold sm:hidden"
             >
               <PlayCircle aria-hidden="true" className="size-4" />
               {quickStart.startGuidedTour}
             </Button>
           </div>
+          {isMobileGuideOpen ? (
+            <MobileChecklistPanel
+              items={items}
+              labels={labels}
+              onClose={() => setIsMobileGuideOpen(false)}
+            />
+          ) : null}
           <BuyerPreviewCard
             summary={summary}
             labels={labels}
@@ -182,6 +192,106 @@ export function FirstPassportChecklistCard({
         </div>
       </div>
     </SectionCard>
+  );
+}
+
+function MobileChecklistPanel({
+  items,
+  labels,
+  onClose,
+}: {
+  items: QuickStartItem[];
+  labels: DashboardOverviewLabels;
+  onClose: () => void;
+}) {
+  const quickStart = labels.quickStart;
+  const nextIncompleteKey = items.find((item) => !item.completed)?.key ?? null;
+
+  return (
+    <div className="fixed inset-0 z-[80] flex items-end bg-slate-950/45 px-3 pb-3 pt-10 sm:hidden">
+      <div
+        role="dialog"
+        aria-modal="true"
+        className="max-h-[calc(100vh-3rem)] w-full overflow-y-auto rounded-3xl border border-slate-200 bg-white p-4 shadow-2xl shadow-slate-950/25"
+      >
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-emerald-700">
+              Supplier Passport
+            </p>
+            <h2 className="mt-1 text-xl font-semibold tracking-tight text-slate-950">
+              {quickStart.mobileGuideTitle}
+            </h2>
+            <p className="mt-2 text-sm leading-6 text-slate-600">{quickStart.mobileGuideSubtitle}</p>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label={quickStart.closeGuide}
+            className="rounded-full border border-slate-200 bg-white p-2 text-slate-500 shadow-sm transition hover:bg-slate-50 hover:text-slate-900"
+          >
+            <X aria-hidden="true" className="size-4" />
+          </button>
+        </div>
+
+        <ol className="mt-5 grid gap-3">
+          {items.map((item, index) => {
+            const Icon = item.icon;
+            const isNext = item.key === nextIncompleteKey;
+            const status = item.completed
+              ? quickStart.completed
+              : isNext
+                ? quickStart.recommended
+                : quickStart.pending;
+
+            return (
+              <li
+                key={item.key}
+                className={cn(
+                  "rounded-2xl border p-3",
+                  item.completed
+                    ? "border-emerald-100 bg-emerald-50/70"
+                    : isNext
+                      ? "border-blue-100 bg-blue-50/70"
+                      : "border-slate-200 bg-slate-50/70",
+                )}
+              >
+                <div className="flex items-start gap-3">
+                  <span
+                    className={cn(
+                      "flex size-8 shrink-0 items-center justify-center rounded-full text-xs font-semibold",
+                      item.completed ? "bg-emerald-600 text-white" : "bg-white text-slate-600 ring-1 ring-slate-200",
+                    )}
+                  >
+                    {item.completed ? <CheckCircle2 aria-hidden="true" className="size-4" /> : index + 1}
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap items-start justify-between gap-2">
+                      <div className="flex min-w-0 items-center gap-2">
+                        <Icon aria-hidden="true" className="size-4 shrink-0 text-emerald-700" />
+                        <p className="min-w-0 font-semibold text-slate-950">{item.title}</p>
+                      </div>
+                      <DashboardStatusPill tone={item.completed ? "green" : isNext ? "blue" : "amber"}>
+                        {status}
+                      </DashboardStatusPill>
+                    </div>
+                    <p className="mt-1 text-sm leading-6 text-slate-600">{item.description}</p>
+                    <Link
+                      href={item.href}
+                      onClick={onClose}
+                      className="mt-3 inline-flex h-8 items-center justify-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 text-xs font-semibold text-blue-700 transition hover:border-blue-200 hover:bg-blue-50"
+                    >
+                      {item.completed ? quickStart.reviewStep : quickStart.continueStep}
+                      <ArrowRight aria-hidden="true" className="size-3.5" />
+                    </Link>
+                  </div>
+                </div>
+              </li>
+            );
+          })}
+        </ol>
+      </div>
+    </div>
   );
 }
 

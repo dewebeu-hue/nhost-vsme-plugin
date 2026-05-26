@@ -87,6 +87,13 @@ export default async function DashboardRouteLayout({
       title: tour(`steps.${index + 1}.title`),
       text: tour(`steps.${index + 1}.text`),
     })),
+    mobileGuide: {
+      title: tour("mobileGuide.title"),
+      subtitle: tour("mobileGuide.subtitle"),
+      close: tour("mobileGuide.close"),
+      open: tour("mobileGuide.open"),
+      steps: tour.raw("mobileGuide.steps") as string[],
+    },
   };
 
   return (

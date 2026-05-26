@@ -160,6 +160,11 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
       openDocuments: t("quickStart.openDocuments"),
       openPassport: t("quickStart.openPassport"),
       openShare: t("quickStart.openShare"),
+      mobileGuideTitle: t("quickStart.mobileGuideTitle"),
+      mobileGuideSubtitle: t("quickStart.mobileGuideSubtitle"),
+      closeGuide: t("quickStart.closeGuide"),
+      continueStep: t("quickStart.continueStep"),
+      reviewStep: t("quickStart.reviewStep"),
     },
     setupChecklist: {
       title: t("setupChecklist.title"),

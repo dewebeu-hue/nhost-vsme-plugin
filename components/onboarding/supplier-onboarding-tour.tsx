@@ -23,6 +23,13 @@ export type SupplierOnboardingTourLabels = {
     title: string;
     text: string;
   }>;
+  mobileGuide: {
+    title: string;
+    subtitle: string;
+    close: string;
+    open: string;
+    steps: string[];
+  };
 };
 
 type SupplierOnboardingTourProps = {
@@ -69,10 +76,22 @@ const tourSteps: TourStep[] = [
   { route: "/dashboard/passport", target: "passport-pdf" },
 ];
 
+const mobileGuideRoutes = [
+  "/dashboard/questionnaire?section=company_basics",
+  "/dashboard/questionnaire",
+  "/dashboard/documents",
+  "/dashboard/documents",
+  "/dashboard/passport",
+  "/dashboard/share",
+  "/dashboard/passport",
+];
+
 export function SupplierOnboardingTour({ locale, labels }: SupplierOnboardingTourProps) {
   const pathname = usePathname();
   const router = useRouter();
   const [isReady, setIsReady] = useState(false);
+  const [isMobileViewport, setIsMobileViewport] = useState(false);
+  const [isMobileGuideOpen, setIsMobileGuideOpen] = useState(false);
   const [isPromptOpen, setIsPromptOpen] = useState(false);
   const [isRunning, setIsRunning] = useState(false);
   const [stepIndex, setStepIndex] = useState(0);
@@ -93,6 +112,14 @@ export function SupplierOnboardingTour({ locale, labels }: SupplierOnboardingTou
   );
 
   const startTour = useCallback(() => {
+    if (isMobileViewport) {
+      window.localStorage.removeItem(stepKey);
+      setIsPromptOpen(false);
+      setIsRunning(false);
+      setIsMobileGuideOpen(true);
+      return;
+    }
+
     window.localStorage.removeItem(completedKey);
     window.localStorage.removeItem(dismissedKey);
     window.localStorage.setItem(stepKey, "0");
@@ -100,7 +127,7 @@ export function SupplierOnboardingTour({ locale, labels }: SupplierOnboardingTou
     setStepIndex(0);
     setIsPromptOpen(false);
     setIsRunning(true);
-  }, [updateTargetRect]);
+  }, [isMobileViewport, updateTargetRect]);
 
   const dismissTour = useCallback(() => {
     window.localStorage.setItem(dismissedKey, "true");
@@ -125,7 +152,13 @@ export function SupplierOnboardingTour({ locale, labels }: SupplierOnboardingTou
 
   useEffect(() => {
     const timeoutId = window.setTimeout(() => {
+      const mobile = window.matchMedia("(max-width: 767px)").matches;
+      setIsMobileViewport(mobile);
       setIsReady(true);
+
+      if (mobile) {
+        return;
+      }
 
       const completed = window.localStorage.getItem(completedKey) === "true";
       const dismissed = window.localStorage.getItem(dismissedKey) === "true";
@@ -142,6 +175,28 @@ export function SupplierOnboardingTour({ locale, labels }: SupplierOnboardingTou
 
     return () => window.clearTimeout(timeoutId);
   }, []);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(max-width: 767px)");
+
+    function handleViewportChange(event: MediaQueryListEvent | MediaQueryList) {
+      const mobile = event.matches;
+      setIsMobileViewport(mobile);
+
+      if (mobile) {
+        setIsPromptOpen(false);
+        setIsRunning(false);
+        updateTargetRect(null);
+      } else {
+        setIsMobileGuideOpen(false);
+      }
+    }
+
+    handleViewportChange(mediaQuery);
+    mediaQuery.addEventListener("change", handleViewportChange);
+
+    return () => mediaQuery.removeEventListener("change", handleViewportChange);
+  }, [updateTargetRect]);
 
   useEffect(() => {
     function handleRestart() {
@@ -413,7 +468,18 @@ export function SupplierOnboardingTour({ locale, labels }: SupplierOnboardingTou
         </button>
       ) : null}
 
-      {isPromptOpen ? (
+      {isMobileGuideOpen ? (
+        <MobileOnboardingGuide
+          labels={labels}
+          onClose={() => setIsMobileGuideOpen(false)}
+          onOpenStep={(route) => {
+            setIsMobileGuideOpen(false);
+            router.push(localizedRoute(route));
+          }}
+        />
+      ) : null}
+
+      {isPromptOpen && !isMobileViewport ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/45 px-4">
           <div
             role="dialog"
@@ -445,7 +511,7 @@ export function SupplierOnboardingTour({ locale, labels }: SupplierOnboardingTou
         </div>
       ) : null}
 
-      {isRunning ? (
+      {isRunning && !isMobileViewport ? (
         <>
           <TourOverlay targetRect={targetRect} />
           {targetRect ? (
@@ -522,6 +588,71 @@ export function SupplierOnboardingTour({ locale, labels }: SupplierOnboardingTou
         </>
       ) : null}
     </>
+  );
+}
+
+function MobileOnboardingGuide({
+  labels,
+  onClose,
+  onOpenStep,
+}: {
+  labels: SupplierOnboardingTourLabels;
+  onClose: () => void;
+  onOpenStep: (route: string) => void;
+}) {
+  return (
+    <div className="fixed inset-0 z-[80] flex items-end bg-slate-950/45 px-3 pb-3 pt-10 sm:hidden">
+      <div
+        role="dialog"
+        aria-modal="true"
+        className="max-h-[calc(100vh-3rem)] w-full overflow-y-auto rounded-3xl border border-slate-200 bg-white p-4 shadow-2xl shadow-slate-950/25"
+      >
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-blue-700">
+              Supplier Passport
+            </p>
+            <h2 className="mt-1 text-xl font-semibold tracking-tight text-slate-950">
+              {labels.mobileGuide.title}
+            </h2>
+            <p className="mt-2 text-sm leading-6 text-slate-600">{labels.mobileGuide.subtitle}</p>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label={labels.mobileGuide.close}
+            className="rounded-full border border-slate-200 bg-white p-2 text-slate-500 shadow-sm transition hover:bg-slate-50 hover:text-slate-900"
+          >
+            <X aria-hidden="true" className="size-4" />
+          </button>
+        </div>
+
+        <ol className="mt-5 grid gap-3">
+          {labels.mobileGuide.steps.map((step, index) => (
+            <li key={step} className="rounded-2xl border border-slate-200 bg-slate-50/70 p-3">
+              <div className="flex items-start gap-3">
+                <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-blue-600 text-xs font-semibold text-white">
+                  {index + 1}
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="font-semibold text-slate-950">{step}</p>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    className="mt-3 h-8 rounded-full bg-white px-3 text-xs font-semibold"
+                    onClick={() => onOpenStep(mobileGuideRoutes[index] ?? "/dashboard")}
+                  >
+                    {labels.mobileGuide.open}
+                    <ArrowRight data-icon="inline-end" />
+                  </Button>
+                </div>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </div>
   );
 }
 

@@ -154,6 +154,21 @@
     "promptTitle": "Start guided tour?",
     "promptText": "A short walkthrough can guide you through the main Supplier Passport workflow.",
     "missingTargetText": "This step does not have a visible highlighted area on this page, but you can continue the guide.",
+    "mobileGuide": {
+      "title": "Setup guide",
+      "subtitle": "Complete the core steps so your Supplier Passport is ready for buyers.",
+      "close": "Close guide",
+      "open": "Open",
+      "steps": [
+        "Complete Company Basics",
+        "Complete the questionnaire",
+        "Upload documents",
+        "Link evidence to answers",
+        "Review Supplier Passport",
+        "Create or check the public link",
+        "Download the PDF draft"
+      ]
+    },
     "steps": {
       "1": {
         "title": "Welcome to Supplier Passport",
@@ -389,7 +404,12 @@
         "openQuestionnaire": "Open questionnaire",
         "openDocuments": "Open Data Room",
         "openPassport": "Open Passport",
-        "openShare": "Open sharing"
+        "openShare": "Open sharing",
+        "mobileGuideTitle": "Setup guide",
+        "mobileGuideSubtitle": "Complete the core steps so your Supplier Passport is ready for buyers.",
+        "closeGuide": "Close setup guide",
+        "continueStep": "Continue",
+        "reviewStep": "Review"
       },
       "setupChecklist": {
         "title": "Supplier Passport setup",
