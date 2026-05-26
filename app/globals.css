@@ -644,10 +644,10 @@
     content: "";
     position: absolute;
     inset: 0;
-    background-image: radial-gradient(circle, rgb(0 43 54 / 0.14) 0 1px, transparent 1.35px);
+    background-image: radial-gradient(circle, rgb(0 43 54 / 0.17) 0 1px, transparent 1.35px);
     background-position: 0 0;
     background-size: 18px 18px;
-    opacity: 0.12;
+    opacity: 0.16;
     -webkit-mask-image: linear-gradient(115deg, transparent 0%, #000 18%, #000 78%, transparent 100%);
     mask-image: linear-gradient(115deg, transparent 0%, #000 18%, #000 78%, transparent 100%);
   }
@@ -655,12 +655,12 @@
   .landing-wave-mesh-svg {
     position: absolute;
     left: -8%;
-    top: 4%;
+    top: -1%;
     width: 116%;
-    height: 74%;
+    height: 86%;
     overflow: visible;
-    opacity: 0.86;
-    filter: drop-shadow(0 18px 34px rgb(20 184 166 / 0.08));
+    opacity: 0.98;
+    filter: drop-shadow(0 20px 38px rgb(20 184 166 / 0.12));
   }
 
   .landing-wave-mesh-field {
@@ -673,68 +673,68 @@
   }
 
   .landing-wave-mesh-field-primary {
-    animation: landingWaveMeshPrimary 18s ease-in-out infinite;
+    animation: landingWaveMeshPrimary 17s ease-in-out infinite;
     transform-origin: 50% 50%;
   }
 
   .landing-wave-mesh-field-secondary {
-    opacity: 0.7;
-    transform: translate3d(-42px, 18px, 0) scaleY(0.9);
-    animation: landingWaveMeshSecondary 24s ease-in-out infinite;
+    opacity: 0.82;
+    transform: translate3d(-42px, 24px, 0) scaleY(1.02);
+    animation: landingWaveMeshSecondary 22s ease-in-out infinite;
     transform-origin: 50% 50%;
   }
 
   @keyframes landingWaveMeshPrimary {
     0% {
       stroke-dashoffset: 0;
-      transform: translate3d(-18px, 4px, 0) skewY(-0.35deg);
-      opacity: 0.72;
+      transform: translate3d(-18px, 8px, 0) skewY(-0.45deg);
+      opacity: 0.82;
     }
 
     50% {
       stroke-dashoffset: -38;
-      transform: translate3d(20px, -8px, 0) skewY(0.35deg);
-      opacity: 0.98;
+      transform: translate3d(20px, -12px, 0) skewY(0.45deg);
+      opacity: 1;
     }
 
     100% {
       stroke-dashoffset: -76;
-      transform: translate3d(-18px, 4px, 0) skewY(-0.35deg);
-      opacity: 0.72;
+      transform: translate3d(-18px, 8px, 0) skewY(-0.45deg);
+      opacity: 0.82;
     }
   }
 
   @keyframes landingWaveMeshSecondary {
     0% {
       stroke-dashoffset: -14;
-      transform: translate3d(-42px, 18px, 0) scaleY(0.9) skewX(0.25deg);
-      opacity: 0.42;
+      transform: translate3d(-42px, 24px, 0) scaleY(1.02) skewX(0.32deg);
+      opacity: 0.54;
     }
 
     50% {
       stroke-dashoffset: -58;
-      transform: translate3d(34px, -2px, 0) scaleY(0.94) skewX(-0.25deg);
-      opacity: 0.62;
+      transform: translate3d(34px, -6px, 0) scaleY(1.08) skewX(-0.32deg);
+      opacity: 0.78;
     }
 
     100% {
       stroke-dashoffset: -102;
-      transform: translate3d(-42px, 18px, 0) scaleY(0.9) skewX(0.25deg);
-      opacity: 0.42;
+      transform: translate3d(-42px, 24px, 0) scaleY(1.02) skewX(0.32deg);
+      opacity: 0.54;
     }
   }
 
   @media (max-width: 767px) {
     .landing-wave-mesh::before {
-      opacity: 0.08;
+      opacity: 0.11;
     }
 
     .landing-wave-mesh-svg {
       left: -38%;
-      top: 10%;
+      top: 8%;
       width: 170%;
-      height: 58%;
-      opacity: 0.58;
+      height: 66%;
+      opacity: 0.7;
     }
   }
 
