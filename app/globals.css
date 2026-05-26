@@ -643,54 +643,100 @@
   .landing-hero-grid::after {
     content: "";
     position: absolute;
-    inset: -18%;
-    background:
-      repeating-radial-gradient(
-        circle at 50% 44%,
-        transparent 0,
-        transparent 5.5rem,
-        rgb(20 184 166 / 0.18) 5.8rem,
-        transparent 6.35rem
-      ),
-      radial-gradient(circle at 50% 44%, rgb(37 99 235 / 0.16), transparent 30rem);
+    inset: -14%;
+    pointer-events: none;
     mix-blend-mode: multiply;
-    opacity: 0;
-    transform: scale(0.86);
-    transform-origin: 50% 44%;
-    animation: landingGridRipple 13s cubic-bezier(0.16, 1, 0.3, 1) infinite;
-    will-change: opacity, transform;
+    will-change: background-position, opacity, transform;
+  }
+
+  .landing-hero-grid::before {
+    background-image:
+      linear-gradient(rgb(20 184 166 / 0.18) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(37 99 235 / 0.14) 1px, transparent 1px),
+      linear-gradient(
+        112deg,
+        transparent 0%,
+        rgb(20 184 166 / 0.05) 24%,
+        rgb(37 99 235 / 0.08) 44%,
+        transparent 64%,
+        rgb(20 184 166 / 0.04) 82%,
+        transparent 100%
+      );
+    background-position: 0 0, 0 0, 0% 50%;
+    background-size: 32px 32px, 32px 32px, 220% 100%;
+    opacity: 0.36;
+    transform: translate3d(-1%, 0, 0) skewY(-0.45deg);
+    animation: landingGridWave 18s ease-in-out infinite;
+    -webkit-mask-image: linear-gradient(100deg, transparent 0%, #000 18%, #000 82%, transparent 100%);
+    mask-image: linear-gradient(100deg, transparent 0%, #000 18%, #000 82%, transparent 100%);
   }
 
   .landing-hero-grid::after {
-    background:
-      repeating-radial-gradient(
-        circle at 50% 44%,
+    background-image:
+      repeating-linear-gradient(
+        118deg,
         transparent 0,
-        transparent 7rem,
-        rgb(37 99 235 / 0.13) 7.35rem,
-        transparent 8rem
+        transparent 5.5rem,
+        rgb(37 99 235 / 0.055) 6.5rem,
+        transparent 8.75rem
       ),
-      radial-gradient(circle at 50% 44%, rgb(20 184 166 / 0.12), transparent 34rem);
-    animation-delay: 6.5s;
+      repeating-linear-gradient(
+        62deg,
+        transparent 0,
+        transparent 6.75rem,
+        rgb(20 184 166 / 0.05) 7.5rem,
+        transparent 10rem
+      );
+    background-position: 0% 0%, 100% 0%;
+    background-size: 180% 180%, 170% 170%;
+    opacity: 0.34;
+    transform: translate3d(0.8%, -0.4%, 0) skewX(0.35deg);
+    animation: landingGridFlow 24s ease-in-out infinite;
+    -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 14%, #000 78%, transparent 100%);
+    mask-image: linear-gradient(180deg, transparent 0%, #000 14%, #000 78%, transparent 100%);
   }
 
-  @keyframes landingGridRipple {
+  @keyframes landingGridWave {
     0% {
-      opacity: 0;
-      transform: scale(0.82);
+      background-position: 0 0, 0 0, 0% 50%;
+      opacity: 0.28;
+      transform: translate3d(-1%, 0, 0) skewY(-0.45deg);
     }
 
-    18% {
-      opacity: 0.62;
+    45% {
+      background-position: 10px 6px, 7px 12px, 100% 50%;
+      opacity: 0.4;
+      transform: translate3d(1.1%, -0.7%, 0) skewY(0.45deg);
     }
 
-    62% {
-      opacity: 0.2;
+    70% {
+      opacity: 0.32;
     }
 
     100% {
-      opacity: 0;
-      transform: scale(1.18);
+      background-position: 32px 16px, 16px 32px, 0% 50%;
+      opacity: 0.28;
+      transform: translate3d(-1%, 0, 0) skewY(-0.45deg);
+    }
+  }
+
+  @keyframes landingGridFlow {
+    0% {
+      background-position: 0% 0%, 100% 0%;
+      opacity: 0.24;
+      transform: translate3d(0.8%, -0.4%, 0) skewX(0.35deg);
+    }
+
+    50% {
+      background-position: 100% 45%, 0% 70%;
+      opacity: 0.38;
+      transform: translate3d(-0.9%, 0.5%, 0) skewX(-0.35deg);
+    }
+
+    100% {
+      background-position: 0% 0%, 100% 0%;
+      opacity: 0.24;
+      transform: translate3d(0.8%, -0.4%, 0) skewX(0.35deg);
     }
   }
 
@@ -698,8 +744,8 @@
     .landing-hero-grid::before,
     .landing-hero-grid::after {
       inset: -34%;
-      opacity: 0;
-      animation-duration: 16s;
+      opacity: 0.24;
+      animation-duration: 26s;
     }
   }
 
