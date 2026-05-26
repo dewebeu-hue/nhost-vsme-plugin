@@ -633,4 +633,82 @@
       linear-gradient(90deg, rgb(226 232 240 / 0.55) 1px, transparent 1px);
     background-size: 32px 32px;
   }
+
+  .landing-hero-grid {
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .landing-hero-grid::before,
+  .landing-hero-grid::after {
+    content: "";
+    position: absolute;
+    inset: -18%;
+    background:
+      repeating-radial-gradient(
+        circle at 50% 44%,
+        transparent 0,
+        transparent 5.5rem,
+        rgb(20 184 166 / 0.18) 5.8rem,
+        transparent 6.35rem
+      ),
+      radial-gradient(circle at 50% 44%, rgb(37 99 235 / 0.16), transparent 30rem);
+    mix-blend-mode: multiply;
+    opacity: 0;
+    transform: scale(0.86);
+    transform-origin: 50% 44%;
+    animation: landingGridRipple 13s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+    will-change: opacity, transform;
+  }
+
+  .landing-hero-grid::after {
+    background:
+      repeating-radial-gradient(
+        circle at 50% 44%,
+        transparent 0,
+        transparent 7rem,
+        rgb(37 99 235 / 0.13) 7.35rem,
+        transparent 8rem
+      ),
+      radial-gradient(circle at 50% 44%, rgb(20 184 166 / 0.12), transparent 34rem);
+    animation-delay: 6.5s;
+  }
+
+  @keyframes landingGridRipple {
+    0% {
+      opacity: 0;
+      transform: scale(0.82);
+    }
+
+    18% {
+      opacity: 0.62;
+    }
+
+    62% {
+      opacity: 0.2;
+    }
+
+    100% {
+      opacity: 0;
+      transform: scale(1.18);
+    }
+  }
+
+  @media (max-width: 767px) {
+    .landing-hero-grid::before,
+    .landing-hero-grid::after {
+      inset: -34%;
+      opacity: 0;
+      animation-duration: 16s;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .landing-hero-grid::before,
+    .landing-hero-grid::after {
+      animation: none;
+      opacity: 0;
+      transform: none;
+    }
+  }
 }

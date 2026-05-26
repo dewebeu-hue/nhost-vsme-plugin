@@ -22,7 +22,7 @@ export function HeroSection() {
       id="product"
       className="relative overflow-hidden px-6 py-16 sm:py-20 lg:px-8 lg:py-20"
     >
-      <div className="absolute inset-0 supplier-subtle-grid opacity-45" />
+      <div className="landing-hero-grid absolute inset-0 supplier-subtle-grid opacity-45" />
       <div className="absolute left-1/2 top-0 h-[540px] w-[760px] -translate-x-1/2 rounded-full bg-blue-100/70 blur-3xl" />
       <div className="absolute right-[-8rem] top-24 hidden h-[520px] w-[520px] rounded-full bg-teal-200/30 blur-3xl lg:block" />
       <div className="absolute right-[10%] top-28 hidden h-[360px] w-[360px] rounded-full bg-blue-500/10 blur-3xl lg:block" />
