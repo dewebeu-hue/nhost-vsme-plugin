@@ -1210,15 +1210,27 @@
       "passportPreview": "Passport-Vorschau",
       "exampleSupplierName": "Beispiel Lieferant GmbH",
       "summaryOnly": "Nur Zusammenfassung",
+      "buyerSafeSummary": "Käufersichere Zusammenfassung",
+      "readyForBuyers": "Bereit für Käufer",
       "basicModule": "VSME Basic Module",
       "module": "VSME Module",
       "readiness": "Bereitschaft {score}%",
+      "sectionStatus": "Abschnittsstatus",
+      "evidenceIndex": "Evidence Index",
+      "evidenceCount": "{count} Dokumente",
+      "availableOnRequest": "Auf Anfrage verfügbar",
+      "evidenceIndexNote": "Käufer sehen die Nachweisverfügbarkeit ohne private URLs oder automatische Downloads.",
       "sections": [
         "Unternehmensüberblick",
         "Umwelt",
         "Soziales",
         "Governance",
         "Nachweiszusammenfassung"
+      ],
+      "evidenceRows": [
+        "ISO-Zertifikate",
+        "Energierechnungen",
+        "Umweltrichtlinie"
       ],
       "secureLine": "Private Dateien sind nicht öffentlich herunterladbar",
       "moduleLabels": {

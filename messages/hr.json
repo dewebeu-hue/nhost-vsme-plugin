@@ -1233,9 +1233,16 @@
       "passportPreview": "Pregled Passporta",
       "exampleSupplierName": "Primjer dobavljača d.o.o.",
       "summaryOnly": "Samo sažetak",
+      "buyerSafeSummary": "Sažetak za kupce",
+      "readyForBuyers": "Spremno za kupce",
       "basicModule": "VSME Basic modul",
       "module": "VSME modul",
       "readiness": "Spremnost {score}%",
+      "sectionStatus": "Status sekcija",
+      "evidenceIndex": "Evidence Index",
+      "evidenceCount": "{count} dokumenata",
+      "availableOnRequest": "Dostupno na zahtjev",
+      "evidenceIndexNote": "Kupci vide dostupnost dokaza, bez privatnih URL-ova i automatskog preuzimanja.",
       "moduleLabels": {
         "Company profile": "Osnovni podaci",
         "Environment": "Okoliš",
@@ -1248,6 +1255,11 @@
         "Društvo",
         "Upravljanje",
         "Sažetak dokaza"
+      ],
+      "evidenceRows": [
+        "ISO certifikati",
+        "Računi za energiju",
+        "Okolišna politika"
       ],
       "secureLine": "Privatne datoteke nisu javno dostupne za preuzimanje"
     }

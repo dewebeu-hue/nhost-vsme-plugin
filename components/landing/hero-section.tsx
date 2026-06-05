@@ -21,15 +21,15 @@ export function HeroSection() {
   return (
     <section
       id="product"
-      className="relative overflow-hidden px-6 py-16 sm:py-20 lg:px-8 lg:py-20"
+      className="relative isolate overflow-hidden bg-white px-6 py-16 sm:py-20 lg:px-8 lg:py-24"
     >
       <WaveMeshBackground />
-      <div className="absolute left-1/2 top-0 h-[540px] w-[760px] -translate-x-1/2 rounded-full bg-blue-100/70 blur-3xl" />
-      <div className="absolute right-[-8rem] top-24 hidden h-[520px] w-[520px] rounded-full bg-teal-200/30 blur-3xl lg:block" />
-      <div className="absolute right-[10%] top-28 hidden h-[360px] w-[360px] rounded-full bg-blue-500/10 blur-3xl lg:block" />
+      <div className="absolute inset-x-0 top-0 h-72 bg-gradient-to-b from-blue-50/90 via-white/50 to-transparent" />
+      <div className="absolute inset-y-0 right-0 hidden w-[58%] bg-[linear-gradient(118deg,transparent_0%,rgba(20,184,166,0.10)_42%,rgba(37,99,235,0.08)_68%,transparent_100%)] blur-2xl lg:block" />
+      <div className="absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-white via-white/[0.82] to-transparent" />
 
-      <div className="relative mx-auto grid w-full max-w-7xl items-start gap-12 lg:grid-cols-[0.95fr_1.05fr]">
-        <div className="flex flex-col items-start gap-8">
+      <div className="relative mx-auto grid w-full max-w-7xl items-center gap-14 lg:grid-cols-[0.88fr_1.12fr] lg:gap-16">
+        <div className="flex flex-col items-start gap-7">
           <ScrollReveal delay={60}>
             <Badge
               variant="outline"
@@ -42,10 +42,10 @@ export function HeroSection() {
 
           <ScrollReveal delay={140}>
             <div className="flex max-w-3xl flex-col gap-6">
-              <h1 className="text-5xl font-semibold tracking-tight text-slate-950 sm:text-6xl lg:text-7xl">
+              <h1 className="max-w-4xl text-5xl font-semibold tracking-tight text-slate-950 sm:text-6xl lg:text-[4.75rem] lg:leading-[0.96]">
                 <SegmentedTypingHeadline segments={headlineSegments} />
               </h1>
-              <p className="max-w-2xl text-lg leading-8 text-slate-600 sm:text-xl sm:leading-9">
+              <p className="max-w-xl text-lg leading-8 text-slate-600 sm:text-xl sm:leading-9">
                 {t("description")}
               </p>
             </div>

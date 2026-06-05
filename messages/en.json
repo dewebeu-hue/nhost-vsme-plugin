@@ -1234,15 +1234,27 @@
       "passportPreview": "Passport preview",
       "exampleSupplierName": "Example Supplier Ltd.",
       "summaryOnly": "Summary only",
+      "buyerSafeSummary": "Buyer-safe summary",
+      "readyForBuyers": "Ready for buyers",
       "basicModule": "VSME Basic Module",
       "module": "VSME Module",
       "readiness": "Readiness {score}%",
+      "sectionStatus": "Section status",
+      "evidenceIndex": "Evidence Index",
+      "evidenceCount": "{count} documents",
+      "availableOnRequest": "Available on request",
+      "evidenceIndexNote": "Buyers see evidence availability without private URLs or automatic downloads.",
       "sections": [
         "Company overview",
         "Environment",
         "Social",
         "Governance",
         "Evidence summary"
+      ],
+      "evidenceRows": [
+        "ISO certificates",
+        "Energy invoices",
+        "Environmental policy"
       ],
       "secureLine": "Private files are not publicly downloadable",
       "moduleLabels": {

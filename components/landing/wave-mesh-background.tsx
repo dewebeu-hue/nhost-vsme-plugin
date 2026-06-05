@@ -20,15 +20,15 @@ export function WaveMeshBackground() {
         <defs>
           <linearGradient id="landing-wave-mesh-stroke" x1="0%" y1="45%" x2="100%" y2="55%">
             <stop offset="0%" stopColor="#0b5cff" stopOpacity="0" />
-            <stop offset="18%" stopColor="#10bfa8" stopOpacity="0.37" />
-            <stop offset="52%" stopColor="#002b36" stopOpacity="0.32" />
-            <stop offset="78%" stopColor="#0b5cff" stopOpacity="0.25" />
+            <stop offset="18%" stopColor="#10bfa8" stopOpacity="0.46" />
+            <stop offset="52%" stopColor="#002b36" stopOpacity="0.4" />
+            <stop offset="78%" stopColor="#0b5cff" stopOpacity="0.32" />
             <stop offset="100%" stopColor="#14b8a6" stopOpacity="0" />
           </linearGradient>
           <linearGradient id="landing-wave-mesh-soft" x1="0%" y1="55%" x2="100%" y2="45%">
             <stop offset="0%" stopColor="#14b8a6" stopOpacity="0" />
-            <stop offset="34%" stopColor="#0b5cff" stopOpacity="0.19" />
-            <stop offset="68%" stopColor="#10bfa8" stopOpacity="0.23" />
+            <stop offset="34%" stopColor="#0b5cff" stopOpacity="0.25" />
+            <stop offset="68%" stopColor="#10bfa8" stopOpacity="0.3" />
             <stop offset="100%" stopColor="#0b5cff" stopOpacity="0" />
           </linearGradient>
         </defs>
@@ -38,7 +38,7 @@ export function WaveMeshBackground() {
               key={`primary-${path}`}
               d={path}
               stroke={index % 2 === 0 ? "url(#landing-wave-mesh-stroke)" : "url(#landing-wave-mesh-soft)"}
-              strokeWidth={index === 2 ? 2.55 : 1.9}
+              strokeWidth={index === 2 ? 2.85 : 2.15}
               opacity={index === 2 ? 1 : 0.82}
             />
           ))}
@@ -49,8 +49,8 @@ export function WaveMeshBackground() {
               key={`secondary-${path}`}
               d={path}
               stroke="url(#landing-wave-mesh-soft)"
-              strokeWidth={1.45}
-              opacity={0.56 - index * 0.04}
+              strokeWidth={1.65}
+              opacity={0.64 - index * 0.04}
             />
           ))}
         </g>
